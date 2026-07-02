@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Style Atlas｜风格图鉴</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button id="backBtn" class="icon-btn hidden" type="button" aria-label="Back">‹</button>
+      <div class="brand">
+        <strong>Style Atlas</strong>
+        <span>风格图鉴</span>
+      </div>
+      <div class="top-actions">
+        <button id="searchOpenBtn" class="icon-btn" type="button" aria-label="Search">⌕</button>
+        <button id="langBtn" class="lang-toggle" type="button">EN｜中文</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="homeView" class="view active" aria-label="Today">
+        <div class="section-head">
+          <p id="todayLabel">今日风格</p>
+          <button id="randomBtn" class="small-action" type="button">随机</button>
+        </div>
+
+        <article id="styleDeck" class="style-card" tabindex="0" aria-live="polite"></article>
+
+        <div class="deck-controls">
+          <button id="prevBtn" class="arrow-btn" type="button">←</button>
+          <span id="swipeHint">左右滑动探索</span>
+          <button id="nextBtn" class="arrow-btn" type="button">→</button>
+        </div>
+
+        <section class="category-strip" aria-label="Categories">
+          <h2 id="categoryTitle">分类</h2>
+          <div id="categoryChips" class="chip-row"></div>
+        </section>
+      </section>
+
+      <section id="detailView" class="view" aria-label="Style detail">
+        <article id="detailContent" class="detail"></article>
+      </section>
+
+      <section id="searchView" class="view" aria-label="Search">
+        <div class="search-panel">
+          <label for="searchInput" id="searchLabel">搜索风格</label>
+          <div class="search-box">
+            <input id="searchInput" autocomplete="off" placeholder="瑞士、Ukiyo-e、海报、复古..." />
+            <button id="clearSearchBtn" type="button">×</button>
+          </div>
+          <div id="filterChips" class="chip-row filters"></div>
+        </div>
+        <div id="searchResults" class="result-list"></div>
+      </section>
+
+      <section id="savedView" class="view" aria-label="Saved">
+        <div class="saved-head">
+          <p id="savedCount">已收藏 0 个风格</p>
+          <button id="copyListBtn" class="small-action" type="button">复制清单</button>
+        </div>
+        <div id="savedList" class="result-list"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main">
+      <button class="nav-btn active" type="button" data-view="home">今日</button>
+      <button class="nav-btn" type="button" data-view="detail">探索</button>
+      <button class="nav-btn" type="button" data-view="search">搜索</button>
+      <button class="nav-btn" type="button" data-view="saved">收藏</button>
+    </nav>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="./game.js"></script>
+</body>
+</html>
