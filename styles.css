@@ -22,17 +22,16 @@
 
 html,
 body {
+  width: 100%;
+  max-width: 100%;
   margin: 0;
   min-height: 100%;
+  overflow-x: hidden;
   background:
     linear-gradient(90deg, rgba(243, 212, 134, 0.05) 1px, transparent 1px) 0 0 / 28px 28px,
     radial-gradient(circle at 50% 0, rgba(217, 170, 69, 0.18), transparent 360px),
     var(--bg);
   color: var(--text);
-}
-
-body {
-  overflow-x: hidden;
 }
 
 button,
@@ -50,9 +49,11 @@ button {
 }
 
 .app-shell {
-  width: min(430px, 100vw);
+  width: 100%;
+  max-width: 430px;
   min-height: 100vh;
   margin: 0 auto;
+  overflow-x: clip;
   padding: env(safe-area-inset-top) clamp(10px, 4vw, 18px) 22px;
   position: relative;
 }
