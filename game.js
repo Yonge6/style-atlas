@@ -210,11 +210,129 @@
     "repeating-linear-gradient(45deg, #101010 0 18px, #dfb44f 18px 20px, #7c1f1f 20px 34px)"
   ];
 
+  const peopleByStyle = {
+    "swiss-style": [["约瑟夫·穆勒-布罗克曼", "Josef Muller-Brockmann"], ["阿明·霍夫曼", "Armin Hofmann"], ["马克斯·比尔", "Max Bill"]],
+    bauhaus: [["沃尔特·格罗皮乌斯", "Walter Gropius"], ["保罗·克利", "Paul Klee"], ["瓦西里·康定斯基", "Wassily Kandinsky"]],
+    "art-deco": [["阿道夫·穆龙·卡桑德尔", "A. M. Cassandre"], ["埃尔特", "Erte"], ["塔玛拉·德·蓝碧嘉", "Tamara de Lempicka"]],
+    "art-nouveau": [["阿尔丰斯·穆夏", "Alphonse Mucha"], ["维克多·奥塔", "Victor Horta"], ["赫克托·吉马尔", "Hector Guimard"]],
+    constructivism: [["亚历山大·罗德琴科", "Alexander Rodchenko"], ["埃尔·利西茨基", "El Lissitzky"], ["瓦尔瓦拉·斯捷潘诺娃", "Varvara Stepanova"]],
+    "de-stijl": [["皮特·蒙德里安", "Piet Mondrian"], ["特奥·范·杜斯堡", "Theo van Doesburg"], ["赫里特·里特费尔德", "Gerrit Rietveld"]],
+    futurism: [["菲利波·托马索·马里内蒂", "F. T. Marinetti"], ["翁贝托·博乔尼", "Umberto Boccioni"], ["贾科莫·巴拉", "Giacomo Balla"]],
+    minimalism: [["唐纳德·贾德", "Donald Judd"], ["阿格尼丝·马丁", "Agnes Martin"], ["索尔·勒维特", "Sol LeWitt"]],
+    brutalism: [["勒·柯布西耶", "Le Corbusier"], ["保罗·兰德", "Paul Rand"], ["彼得·萨维尔", "Peter Saville"]],
+    memphis: [["埃托雷·索特萨斯", "Ettore Sottsass"], ["娜塔莉·杜·帕斯奎尔", "Nathalie Du Pasquier"], ["米歇尔·德·卢基", "Michele De Lucchi"]],
+    "editorial-typography": [["扬·奇肖尔德", "Jan Tschichold"], ["阿列克谢·布罗多维奇", "Alexey Brodovitch"], ["赫布·卢巴林", "Herb Lubalin"]],
+    "new-wave-typography": [["沃尔夫冈·魏因加特", "Wolfgang Weingart"], ["阿普丽尔·格雷曼", "April Greiman"], ["丹·弗里德曼", "Dan Friedman"]],
+    "punk-diy": [["杰米·里德", "Jamie Reid"], ["莱尼·凯伊", "Lenny Kaye"], ["维维安·韦斯特伍德", "Vivienne Westwood"]],
+    grunge: [["大卫·卡森", "David Carson"], ["阿特·钱特里", "Art Chantry"], ["雷·冈", "Ray Gun"]],
+    "psychedelic-poster": [["维克托·莫斯科索", "Victor Moscoso"], ["韦斯·威尔逊", "Wes Wilson"], ["斯坦利·米勒", "Stanley Mouse"]],
+    "pop-art-poster": [["安迪·沃霍尔", "Andy Warhol"], ["罗伊·利希滕斯坦", "Roy Lichtenstein"], ["彼得·布莱克", "Peter Blake"]],
+    "corporate-modernism": [["保罗·兰德", "Paul Rand"], ["马西莫·维涅利", "Massimo Vignelli"], ["索尔·巴斯", "Saul Bass"]],
+    "anti-design": [["盖塔诺·佩谢", "Gaetano Pesce"], ["埃托雷·索特萨斯", "Ettore Sottsass"], ["内维尔·布罗迪", "Neville Brody"]],
+    "experimental-typography": [["内维尔·布罗迪", "Neville Brody"], ["大卫·卡森", "David Carson"], ["凯瑟琳·麦考伊", "Katherine McCoy"]],
+    "kinetic-poster": [["拉斯洛·莫霍利-纳吉", "Laszlo Moholy-Nagy"], ["约瑟夫·穆勒-布罗克曼", "Josef Muller-Brockmann"], ["索尔·巴斯", "Saul Bass"]],
+    renaissance: [["列奥纳多·达·芬奇", "Leonardo da Vinci"], ["米开朗基罗", "Michelangelo"], ["拉斐尔", "Raphael"]],
+    baroque: [["卡拉瓦乔", "Caravaggio"], ["彼得·保罗·鲁本斯", "Peter Paul Rubens"], ["贝尔尼尼", "Gian Lorenzo Bernini"]],
+    rococo: [["让-奥诺雷·弗拉戈纳尔", "Jean-Honore Fragonard"], ["安托万·华托", "Antoine Watteau"], ["弗朗索瓦·布歇", "Francois Boucher"]],
+    neoclassicism: [["雅克-路易·大卫", "Jacques-Louis David"], ["安格尔", "Jean-Auguste-Dominique Ingres"], ["安东尼奥·卡诺瓦", "Antonio Canova"]],
+    romanticism: [["欧仁·德拉克罗瓦", "Eugene Delacroix"], ["威廉·特纳", "J. M. W. Turner"], ["卡斯帕·大卫·弗里德里希", "Caspar David Friedrich"]],
+    realism: [["古斯塔夫·库尔贝", "Gustave Courbet"], ["让-弗朗索瓦·米勒", "Jean-Francois Millet"], ["奥诺雷·杜米埃", "Honore Daumier"]],
+    "academic-painting": [["威廉-阿道夫·布格罗", "William-Adolphe Bouguereau"], ["让-莱昂·热罗姆", "Jean-Leon Gerome"], ["亚历山大·卡巴内尔", "Alexandre Cabanel"]],
+    "pre-raphaelite": [["但丁·加百列·罗塞蒂", "Dante Gabriel Rossetti"], ["约翰·埃弗里特·米莱", "John Everett Millais"], ["威廉·霍尔曼·亨特", "William Holman Hunt"]],
+    impressionism: [["克洛德·莫奈", "Claude Monet"], ["皮埃尔-奥古斯特·雷诺阿", "Pierre-Auguste Renoir"], ["埃德加·德加", "Edgar Degas"]],
+    "post-impressionism": [["文森特·梵高", "Vincent van Gogh"], ["保罗·塞尚", "Paul Cezanne"], ["保罗·高更", "Paul Gauguin"]],
+    "van-gogh": [["文森特·梵高", "Vincent van Gogh"], ["西奥·梵高", "Theo van Gogh"], ["保罗·高更", "Paul Gauguin"]],
+    monet: [["克洛德·莫奈", "Claude Monet"], ["卡米耶·毕沙罗", "Camille Pissarro"], ["贝尔特·莫里索", "Berthe Morisot"]],
+    renoir: [["皮埃尔-奥古斯特·雷诺阿", "Pierre-Auguste Renoir"], ["克洛德·莫奈", "Claude Monet"], ["埃德加·德加", "Edgar Degas"]],
+    cezanne: [["保罗·塞尚", "Paul Cezanne"], ["埃米尔·贝尔纳", "Emile Bernard"], ["巴勃罗·毕加索", "Pablo Picasso"]],
+    "picasso-cubism": [["巴勃罗·毕加索", "Pablo Picasso"], ["乔治·布拉克", "Georges Braque"], ["胡安·格里斯", "Juan Gris"]],
+    matisse: [["亨利·马蒂斯", "Henri Matisse"], ["安德烈·德兰", "Andre Derain"], ["拉乌尔·杜菲", "Raoul Dufy"]],
+    dali: [["萨尔瓦多·达利", "Salvador Dali"], ["路易斯·布努埃尔", "Luis Bunuel"], ["加拉·达利", "Gala Dali"]],
+    magritte: [["勒内·马格利特", "Rene Magritte"], ["保罗·努热", "Paul Nouge"], ["乔治·德·基里科", "Giorgio de Chirico"]],
+    "edward-hopper": [["爱德华·霍普", "Edward Hopper"], ["约瑟芬·霍普", "Josephine Hopper"], ["罗伯特·亨利", "Robert Henri"]],
+    "gustav-klimt": [["古斯塔夫·克里姆特", "Gustav Klimt"], ["埃贡·席勒", "Egon Schiele"], ["约瑟夫·霍夫曼", "Josef Hoffmann"]],
+    kandinsky: [["瓦西里·康定斯基", "Wassily Kandinsky"], ["弗朗茨·马克", "Franz Marc"], ["加布里埃尔·明特", "Gabriele Munter"]],
+    mondrian: [["皮特·蒙德里安", "Piet Mondrian"], ["特奥·范·杜斯堡", "Theo van Doesburg"], ["巴特·范德莱克", "Bart van der Leck"]],
+    pollock: [["杰克逊·波洛克", "Jackson Pollock"], ["李·克拉斯纳", "Lee Krasner"], ["克莱门特·格林伯格", "Clement Greenberg"]],
+    rothko: [["马克·罗斯科", "Mark Rothko"], ["巴尼特·纽曼", "Barnett Newman"], ["克莱福德·斯蒂尔", "Clyfford Still"]],
+    basquiat: [["让-米歇尔·巴斯奎特", "Jean-Michel Basquiat"], ["凯斯·哈林", "Keith Haring"], ["安迪·沃霍尔", "Andy Warhol"]],
+    expressionism: [["爱德华·蒙克", "Edvard Munch"], ["埃贡·席勒", "Egon Schiele"], ["奥斯卡·柯柯施卡", "Oskar Kokoschka"]],
+    "german-expressionism": [["恩斯特·路德维希·基希纳", "Ernst Ludwig Kirchner"], ["埃米尔·诺尔德", "Emil Nolde"], ["弗朗茨·马克", "Franz Marc"]],
+    surrealism: [["安德烈·布勒东", "Andre Breton"], ["萨尔瓦多·达利", "Salvador Dali"], ["马克斯·恩斯特", "Max Ernst"]],
+    symbolism: [["古斯塔夫·莫罗", "Gustave Moreau"], ["奥迪隆·雷东", "Odilon Redon"], ["费尔南·克诺普夫", "Fernand Khnopff"]],
+    fauvism: [["亨利·马蒂斯", "Henri Matisse"], ["安德烈·德兰", "Andre Derain"], ["莫里斯·德·弗拉芒克", "Maurice de Vlaminck"]],
+    dada: [["马塞尔·杜尚", "Marcel Duchamp"], ["汉娜·霍赫", "Hannah Hoch"], ["特里斯坦·查拉", "Tristan Tzara"]],
+    "abstract-expressionism": [["杰克逊·波洛克", "Jackson Pollock"], ["威廉·德·库宁", "Willem de Kooning"], ["李·克拉斯纳", "Lee Krasner"]],
+    "color-field-painting": [["马克·罗斯科", "Mark Rothko"], ["海伦·弗兰肯塔勒", "Helen Frankenthaler"], ["莫里斯·路易斯", "Morris Louis"]],
+    "op-art": [["维克托·瓦萨雷里", "Victor Vasarely"], ["布里奇特·赖利", "Bridget Riley"], ["赫苏斯·拉斐尔·索托", "Jesus Rafael Soto"]],
+    "conceptual-art": [["约瑟夫·科苏斯", "Joseph Kosuth"], ["索尔·勒维特", "Sol LeWitt"], ["劳伦斯·韦纳", "Lawrence Weiner"]],
+    "chinese-ink-painting": [["王维", "Wang Wei"], ["董其昌", "Dong Qichang"], ["齐白石", "Qi Baishi"]],
+    gongbi: [["顾恺之", "Gu Kaizhi"], ["宋徽宗", "Emperor Huizong of Song"], ["仇英", "Qiu Ying"]],
+    xieyi: [["徐渭", "Xu Wei"], ["八大山人", "Bada Shanren"], ["齐白石", "Qi Baishi"]],
+    shanshui: [["范宽", "Fan Kuan"], ["郭熙", "Guo Xi"], ["黄公望", "Huang Gongwang"]],
+    "dunhuang-mural": [["张大千", "Zhang Daqian"], ["常书鸿", "Chang Shuhong"], ["敦煌画工", "Dunhuang mural painters"]],
+    "ukiyo-e": [["葛饰北斋", "Katsushika Hokusai"], ["歌川广重", "Utagawa Hiroshige"], ["喜多川歌麿", "Kitagawa Utamaro"]],
+    "sumi-e": [["雪舟等杨", "Sesshu Toyo"], ["狩野元信", "Kano Motonobu"], ["白隐慧鹤", "Hakuin Ekaku"]],
+    nihonga: [["横山大观", "Yokoyama Taikan"], ["菱田春草", "Hishida Shunso"], ["上村松园", "Uemura Shoen"]],
+    "yamato-e": [["土佐光信", "Tosa Mitsunobu"], ["土佐光起", "Tosa Mitsuoki"], ["俵屋宗达", "Tawaraya Sotatsu"]],
+    "korean-minhwa": [["朝鲜民画画工", "Joseon folk painters"], ["申师任堂", "Shin Saimdang"], ["张承业", "Jang Seung-eop"]],
+    "indian-miniature": [["比萨万", "Basawan"], ["曼苏尔", "Ustad Mansur"], ["尼哈尔·昌德", "Nihal Chand"]],
+    "persian-miniature": [["比赫扎德", "Behzad"], ["礼萨·阿巴西", "Reza Abbasi"], ["苏丹·穆罕默德", "Sultan Muhammad"]],
+    "islamic-geometric": [["阿尔罕布拉工匠", "Alhambra craftsmen"], ["奥斯曼瓷砖工匠", "Ottoman tile makers"], ["伊斯兰书法家", "Islamic calligraphers"]],
+    "tibetan-thangka": [["门拉顿珠", "Menla Dondrup"], ["赤美仁增", "Choying Dorje"], ["藏传佛教画师", "Tibetan Buddhist painters"]],
+    "thai-temple-mural": [["泰国寺庙壁画师", "Thai temple muralists"], ["Khrua In Khong", "Khrua In Khong"], ["查克里时期宫廷画师", "Chakri court painters"]],
+    "byzantine-icon": [["安德烈·鲁布廖夫", "Andrei Rublev"], ["塞萨洛尼基圣像画师", "Thessaloniki icon painters"], ["拜占庭镶嵌工匠", "Byzantine mosaicists"]],
+    "mexican-muralism": [["迭戈·里维拉", "Diego Rivera"], ["何塞·克莱门特·奥罗斯科", "Jose Clemente Orozco"], ["大卫·阿尔法罗·西凯罗斯", "David Alfaro Siqueiros"]],
+    "aboriginal-dot-painting": [["杰弗里·巴登", "Geoffrey Bardon"], ["克利福德·波苏姆", "Clifford Possum Tjapaltjarri"], ["艾米丽·卡梅·金瓦雷耶", "Emily Kame Kngwarreye"]],
+    "african-tribal-pattern": [["约鲁巴工匠", "Yoruba makers"], ["恩德贝莱画师", "Ndebele painters"], ["库巴织工", "Kuba weavers"]],
+    "native-american-art": [["玛丽亚·马丁内斯", "Maria Martinez"], ["纳瓦霍织工", "Navajo weavers"], ["海达雕刻师", "Haida carvers"]],
+    "russian-lubok": [["俄罗斯民间版画师", "Russian lubok printmakers"], ["伊万·比利宾", "Ivan Bilibin"], ["瓦西里·科伦", "Vasily Koren"]],
+    "nordic-folk-art": [["卡尔·拉松", "Carl Larsson"], ["达拉木马工匠", "Dala horse painters"], ["罗斯马林画师", "Rosemaling painters"]],
+    "celtic-art": [["凯尔斯书抄写员", "Book of Kells scribes"], ["乔治·贝恩", "George Bain"], ["凯尔特金工匠", "Celtic metalworkers"]],
+    madhubani: [["西塔·德维", "Sita Devi"], ["甘加·德维", "Ganga Devi"], ["巴乌阿·德维", "Baua Devi"]],
+    "chinese-new-year-woodblock": [["天津杨柳青年画艺人", "Yangliuqing printmakers"], ["苏州桃花坞画师", "Taohuawu printmakers"], ["潍坊杨家埠画师", "Yangjiabu printmakers"]],
+    "healing-animation": [["宫崎骏", "Hayao Miyazaki"], ["高畑勋", "Isao Takahata"], ["近藤喜文", "Yoshifumi Kondo"]],
+    "cinematic-anime": [["新海诚", "Makoto Shinkai"], ["田中将贺", "Masayoshi Tanaka"], ["丹治匠", "Takumi Tanji"]],
+    "classic-disney": [["华特·迪士尼", "Walt Disney"], ["乌布·伊沃克斯", "Ub Iwerks"], ["玛丽·布莱尔", "Mary Blair"]],
+    "warm-3d-animation": [["约翰·拉塞特", "John Lasseter"], ["彼特·道格特", "Pete Docter"], ["布伦达·查普曼", "Brenda Chapman"]],
+    "dreamworks-cartoon": [["杰弗里·卡森伯格", "Jeffrey Katzenberg"], ["克里斯·桑德斯", "Chris Sanders"], ["吉尔·卡尔顿", "Jill Culton"]],
+    anime: [["手冢治虫", "Osamu Tezuka"], ["大友克洋", "Katsuhiro Otomo"], ["庵野秀明", "Hideaki Anno"]],
+    manga: [["手冢治虫", "Osamu Tezuka"], ["石之森章太郎", "Shotaro Ishinomori"], ["赤冢不二夫", "Fujio Akatsuka"]],
+    shonen: [["鸟山明", "Akira Toriyama"], ["尾田荣一郎", "Eiichiro Oda"], ["岸本齐史", "Masashi Kishimoto"]],
+    shojo: [["萩尾望都", "Moto Hagio"], ["竹宫惠子", "Keiko Takemiya"], ["池田理代子", "Riyoko Ikeda"]],
+    "american-comic-book": [["杰克·柯比", "Jack Kirby"], ["斯坦·李", "Stan Lee"], ["威尔·艾斯纳", "Will Eisner"]],
+    "ligne-claire": [["埃尔热", "Herge"], ["埃德加·皮埃尔·雅各布", "E. P. Jacobs"], ["雅克·马丁", "Jacques Martin"]],
+    "graphic-novel": [["威尔·艾斯纳", "Will Eisner"], ["阿特·斯皮格尔曼", "Art Spiegelman"], ["艾伦·摩尔", "Alan Moore"]],
+    "noir-illustration": [["爱德华·霍普", "Edward Hopper"], ["弗兰克·米勒", "Frank Miller"], ["罗伯特·麦金尼斯", "Robert McGinnis"]],
+    "childrens-picture-book": [["莫里斯·桑达克", "Maurice Sendak"], ["碧雅翠丝·波特", "Beatrix Potter"], ["埃里克·卡尔", "Eric Carle"]],
+    "editorial-illustration": [["索尔·斯坦伯格", "Saul Steinberg"], ["米尔顿·格拉泽", "Milton Glaser"], ["西摩·克瓦斯特", "Seymour Chwast"]],
+    "fashion-illustration": [["勒内·格吕奥", "Rene Gruau"], ["安东尼奥·洛佩兹", "Antonio Lopez"], ["大卫·唐顿", "David Downton"]],
+    "botanical-illustration": [["玛丽亚·西比拉·梅里安", "Maria Sibylla Merian"], ["皮埃尔-约瑟夫·雷杜德", "Pierre-Joseph Redoute"], ["玛格丽特·米", "Margaret Mee"]],
+    "scientific-illustration": [["恩斯特·海克尔", "Ernst Haeckel"], ["圣地亚哥·拉蒙-卡哈尔", "Santiago Ramon y Cajal"], ["约翰·詹姆斯·奥杜邦", "John James Audubon"]],
+    "isometric-illustration": [["奥托·纽拉特", "Otto Neurath"], ["格尔德·阿恩茨", "Gerd Arntz"], ["现代信息设计师", "Contemporary information designers"]],
+    "flat-illustration": [["苏珊·卡尔", "Susan Kare"], ["马林·费尔蒙", "Malika Favre"], ["现代产品插画师", "Contemporary product illustrators"]]
+  };
+
+  const categoryHistory = {
+    poster: ["20 世纪平面设计史", "20th-century graphic design"],
+    painting: ["欧洲绘画史", "European painting history"],
+    master: ["艺术家个人语言与现代艺术史", "an artist's personal language and modern art history"],
+    modern: ["19 世纪末到 20 世纪的现代艺术运动", "late-19th- to 20th-century modern art movements"],
+    asian: ["亚洲艺术史、宗教图像和手工艺传统", "Asian art history, religious imagery and craft traditions"],
+    folk: ["地方民俗、公共图像和手工艺传统", "regional folklore, public imagery and craft traditions"],
+    animation: ["动画工业、漫画出版和影视美术", "animation production, comics publishing and film art direction"],
+    illustration: ["出版、商业传播和说明图像史", "publishing, commercial communication and explanatory image history"]
+  };
+
   const styles = rawStyles.map((item, index) => {
     const [id, en, zh, category, pinyin, keywords] = item;
     const copy = categoryCopy[category];
     const tagsZh = copy.featuresZh.slice(0, 3);
     const tagsEn = copy.featuresEn.slice(0, 3);
+    const people = peopleByStyle[id] || [["相关创作者", "Relevant creators"]];
+    const peopleZh = people.map((item) => item[0]);
+    const peopleEn = people.map((item) => item[1]);
+    const era = categoryHistory[category];
     return {
       id,
       number: index + 1,
@@ -234,20 +352,21 @@
         en: `${en} compresses ${tagsEn[0].toLowerCase()}, ${tagsEn[1].toLowerCase()} and ${tagsEn[2].toLowerCase()} into one clear signal; from far away you catch the mood, up close you see the structure.`
       },
       history: {
-        zh: `${zh}来自${catName(category, "zh")}的脉络。它不是一个单独的滤镜，而是一整套关于色彩、构图、材质和观看方式的习惯。理解它时，先看它解决了什么问题：如何让画面在第一眼被认出，又能承载特定时代、地域或创作者的审美。`,
-        en: `${en} comes from the ${catName(category, "en").toLowerCase()} tradition. It is not a single filter, but a system of color, composition, material and ways of seeing. Learn it by asking what visual problem it solves and why the image becomes recognizable at first glance.`
+        zh: `${zh}通常放在${era[0]}中理解。它不是一个单独滤镜，而是一套由时代背景、媒介技术和创作者选择共同形成的视觉语言；代表人物包括${peopleZh.join("、")}。阅读这个风格时，可以像查百科一样先看它出现的年代和地域，再看它怎样改变了色彩、构图、线条和图像叙事。`,
+        en: `${en} is best understood through ${era[1]}. It is not a single filter, but a visual language shaped by historical context, media technology and creative choices; representative figures include ${peopleEn.join(", ")}. Read it like an encyclopedia entry: first locate its time and place, then see how it changed color, composition, line and image narrative.`
       },
       why: {
-        zh: `这种风格之所以成立，是因为它持续强化${tagsZh.join("、")}，把复杂信息压缩成容易记住的视觉信号。创作时不要只套表面元素，要先确定画面的主情绪、主体关系和节奏，再选择颜色、线条和构图。`,
-        en: `This style works because it repeatedly reinforces ${tagsEn.join(", ").toLowerCase()}, turning complex information into memorable visual signals. Do not copy surface details only; define mood, subject hierarchy and rhythm first, then choose color, line and composition.`
+        zh: `它会形成这种样子，通常是因为创作者需要用${tagsZh.join("、")}回应当时的审美问题：有的要让信息更清楚，有的要摆脱学院规则，有的要把地方记忆变成可传播的图像。复刻时先抓${peopleZh[0]}这类代表人物的核心方法，再把它转译到自己的主题里。`,
+        en: `It looks this way because artists and designers used ${tagsEn.join(", ").toLowerCase()} to answer the visual problems of their time: clearer information, freedom from academic rules, or local memory made shareable. To replicate it, start from the core method behind figures such as ${peopleEn[0]}, then translate it into your own subject.`
       },
+      people: { zh: peopleZh, en: peopleEn },
       lookFor: {
         zh: [`第一眼先看${tagsZh[0]}`, `再看${tagsZh[1]}如何组织画面`, `最后看${tagsZh[2]}是否稳定地重复出现`],
         en: [`First notice ${tagsEn[0].toLowerCase()}`, `Then see how ${tagsEn[1].toLowerCase()} organizes the image`, `Finally check whether ${tagsEn[2].toLowerCase()} repeats consistently`]
       },
       references: {
-        zh: [`${zh}风格封面案例`, `${zh}海报应用案例`, `${zh}AI 生图复刻练习`],
-        en: [`${en} cover case`, `${en} poster application`, `${en} AI style-replication exercise`]
+        zh: [`先看${peopleZh[0]}的代表作品或案例，理解这个风格的基本语法`, `对照${peopleZh[1]}，观察同一风格在构图和材料上的变化`, `再做一张${zh}原创封面/海报，练习把历史语言转成现代应用`],
+        en: [`Start with representative works or cases by ${peopleEn[0]} to understand the basic grammar`, `Compare ${peopleEn[1]} to see how composition and material can shift inside the same style`, `Create an original ${en} cover or poster to translate the historical language into a modern use case`]
       },
       visualFeatures: { zh: copy.featuresZh, en: copy.featuresEn },
       useCases: { zh: copy.usesZh, en: copy.usesEn },
@@ -318,10 +437,11 @@
       saveCard: "保存卡片",
       copyPrompt: "复制提示词",
       features: "视觉特征",
-      history: "历史来源",
-      why: "为什么这样画",
-      lookFor: "一眼识别",
-      references: "作品与案例",
+      history: "风格源流",
+      why: "形成原因",
+      people: "代表人物",
+      lookFor: "识别方法",
+      references: "代表作品与案例",
       memory: "记住它",
       useCases: "适用场景",
       prompt: "AI 提示词",
@@ -350,8 +470,9 @@
       saveCard: "Save card",
       copyPrompt: "Copy prompt",
       features: "Visual features",
-      history: "History",
-      why: "Why It Looks This Way",
+      history: "Origins",
+      why: "Why It Formed",
+      people: "Representative Figures",
       lookFor: "How To Recognize It",
       references: "Works And Cases",
       memory: "Remember it",
@@ -543,6 +664,10 @@
       <section class="detail-section">
         <h2>${t("why")}</h2>
         <p>${escapeHtml(style.why[lang])}</p>
+      </section>
+      <section class="detail-section">
+        <h2>${t("people")}</h2>
+        <div class="chip-row">${style.people[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
       </section>
       <section class="detail-section">
         <h2>${t("lookFor")}</h2>
