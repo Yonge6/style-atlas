@@ -397,8 +397,8 @@
       <div class="cover-top">
         <span>#${style.number}</span>
         <div class="card-actions">
-          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" aria-label="${t(saved ? "unfavorite" : "favorite")}">♡</button>
-          <button class="card-action" type="button" data-action="share" aria-label="${t("share")}">↥</button>
+          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" aria-label="${t(saved ? "unfavorite" : "favorite")}">${saved ? "♥" : "♡"}</button>
+          <button class="card-action" type="button" data-action="share" aria-label="${t("share")}">↗</button>
         </div>
       </div>
       <div class="cover-title">
@@ -415,8 +415,8 @@
       <div class="badge-row">
         <div class="badge">#${style.number} · ${escapeHtml(catName(style.category))}<br>${escapeHtml(style.subtitle[lang])}</div>
         <div class="card-actions">
-          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" aria-label="${t(saved ? "unfavorite" : "favorite")}">♡</button>
-          <button class="card-action" type="button" data-action="share" aria-label="${t("share")}">↥</button>
+          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" aria-label="${t(saved ? "unfavorite" : "favorite")}">${saved ? "♥" : "♡"}</button>
+          <button class="card-action" type="button" data-action="share" aria-label="${t("share")}">↗</button>
         </div>
       </div>
       <div class="visual">
@@ -519,7 +519,7 @@
           <h3>${escapeHtml(style.name[lang])}</h3>
           <p>${escapeHtml(style.summary[lang])}</p>
         </div>
-        <button class="card-action ${isSaved(style.id) ? "saved" : ""}" type="button" data-action="save-row" data-id="${style.id}" aria-label="${t("favorite")}">♡</button>
+        <button class="card-action ${isSaved(style.id) ? "saved" : ""}" type="button" data-action="save-row" data-id="${style.id}" aria-label="${t("favorite")}">${isSaved(style.id) ? "♥" : "♡"}</button>
       </article>
     `;
   }
@@ -614,10 +614,15 @@
   async function shareStyle(style = activeStyle()) {
     const url = `${location.origin}${location.pathname}#${style.id}`;
     const payload = { title: style.name[store.lang], text: style.summary[store.lang], url };
-    if (navigator.share) {
-      await navigator.share(payload).catch(() => {});
-    } else {
+    try {
+      if (navigator.share) {
+        await navigator.share(payload);
+        return;
+      }
       await navigator.clipboard.writeText(`${payload.title}\n${payload.text}\n${payload.url}`);
+      toast(t("shared"));
+    } catch {
+      await navigator.clipboard.writeText(url).catch(() => {});
       toast(t("shared"));
     }
   }
@@ -716,14 +721,18 @@
     dom.prevBtn.addEventListener("click", () => setActiveByOffset(-1));
     dom.nextBtn.addEventListener("click", () => setActiveByOffset(1));
     dom.styleDeck.addEventListener("click", (event) => {
+      const action = event.target.closest("[data-action]")?.dataset.action;
+      if (action) {
+        event.stopPropagation();
+        moved = false;
+        if (action === "save") return toggleSaved();
+        if (action === "share") return shareStyle();
+        if (action === "detail") return setView("detail");
+      }
       if (moved) {
         moved = false;
         return;
       }
-      const action = event.target.closest("[data-action]")?.dataset.action;
-      if (action === "save") return toggleSaved();
-      if (action === "share") return shareStyle();
-      if (action === "detail") return setView("detail");
       setView("detail");
     });
 

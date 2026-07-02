@@ -414,8 +414,8 @@ button {
 }
 
 .card-action {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-color: rgba(20, 15, 6, 0.16);
   background: #17130d;
   color: var(--paper);
