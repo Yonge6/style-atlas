@@ -731,6 +731,22 @@
     let startY = 0;
     let dragging = false;
     let moved = false;
+    let dragFrame = 0;
+    let dragX = 0;
+
+    function paintDrag() {
+      dragFrame = 0;
+      dom.styleDeck.style.setProperty("--drag-x", `${dragX}px`);
+      dom.styleDeck.style.setProperty("--drag-rotate", `${dragX / 13}deg`);
+    }
+
+    function resetDrag() {
+      if (dragFrame) cancelAnimationFrame(dragFrame);
+      dragFrame = 0;
+      dom.deckStage.classList.remove("dragging");
+      dom.styleDeck.style.removeProperty("--drag-x");
+      dom.styleDeck.style.removeProperty("--drag-rotate");
+    }
 
     dom.styleDeck.addEventListener("pointerdown", (event) => {
       if (event.target.closest("button")) return;
@@ -747,9 +763,8 @@
       const dx = event.clientX - startX;
       const dy = event.clientY - startY;
       if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
-      const clamped = Math.max(-130, Math.min(130, dx));
-      dom.styleDeck.style.setProperty("--drag-x", `${clamped}px`);
-      dom.styleDeck.style.setProperty("--drag-rotate", `${clamped / 13}deg`);
+      dragX = Math.max(-130, Math.min(130, dx));
+      if (!dragFrame) dragFrame = requestAnimationFrame(paintDrag);
     });
 
     dom.styleDeck.addEventListener("pointerup", (event) => {
@@ -757,9 +772,7 @@
       dragging = false;
       const dx = event.clientX - startX;
       const dy = event.clientY - startY;
-      dom.deckStage.classList.remove("dragging");
-      dom.styleDeck.style.removeProperty("--drag-x");
-      dom.styleDeck.style.removeProperty("--drag-rotate");
+      resetDrag();
       if (Math.abs(dx) > 84 && Math.abs(dx) > Math.abs(dy)) {
         dom.deckStage.classList.add(dx < 0 ? "fly-left" : "fly-right");
         setTimeout(() => setActiveByOffset(dx < 0 ? 1 : -1), 210);
@@ -770,9 +783,7 @@
 
     dom.styleDeck.addEventListener("pointercancel", () => {
       dragging = false;
-      dom.deckStage.classList.remove("dragging");
-      dom.styleDeck.style.removeProperty("--drag-x");
-      dom.styleDeck.style.removeProperty("--drag-rotate");
+      resetDrag();
     });
 
     document.body.addEventListener("click", (event) => {
