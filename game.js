@@ -388,6 +388,26 @@
     return typeof value === "function" ? value(...args) : value;
   }
 
+  function renderDeckCard(style) {
+    const lang = store.lang;
+    const saved = isSaved(style.id);
+    return `
+      <img class="cover-image" src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="eager">
+      <div class="cover-shade"></div>
+      <div class="cover-top">
+        <span>#${style.number}</span>
+        <div class="card-actions">
+          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" aria-label="${t(saved ? "unfavorite" : "favorite")}">♡</button>
+          <button class="card-action" type="button" data-action="share" aria-label="${t("share")}">↥</button>
+        </div>
+      </div>
+      <div class="cover-title">
+        <h1>${escapeHtml(style.name.en)}</h1>
+        <p>${escapeHtml(style.name.zh)}</p>
+      </div>
+    `;
+  }
+
   function renderCard(style, compact = false) {
     const lang = store.lang;
     const saved = isSaved(style.id);
@@ -413,17 +433,30 @@
 
   function renderHome() {
     const style = activeStyle();
+    const lang = store.lang;
     dom.todayLabel.textContent = t("today");
     dom.randomBtn.textContent = t("random");
     dom.swipeHint.textContent = t("swipe");
     dom.categoryTitle.textContent = t("categories");
-    dom.styleDeck.innerHTML = renderCard(style);
-    dom.prevGhost.innerHTML = renderCard(styleByOffset(-1), true);
-    dom.nextGhost.innerHTML = renderCard(styleByOffset(1), true);
+    dom.styleDeck.innerHTML = renderDeckCard(style);
+    dom.prevGhost.innerHTML = renderDeckCard(styleByOffset(-1));
+    dom.nextGhost.innerHTML = renderDeckCard(styleByOffset(1));
     dom.deckStage.classList.remove("dragging", "fly-left", "fly-right");
     dom.styleDeck.style.removeProperty("--drag-x");
     dom.styleDeck.style.removeProperty("--drag-rotate");
-    dom.categoryChips.innerHTML = categories.map((cat) => `<button class="chip" type="button" data-filter="${cat[0]}">${escapeHtml(catName(cat[0]))}</button>`).join("");
+    dom.categoryChips.innerHTML = categories.map((cat) => {
+      const categoryStyles = styles.filter((item) => item.category === cat[0]);
+      const preview = categoryStyles.slice(0, 3).map((item) => `<img src="${item.image}" alt="${escapeHtml(item.name[lang])}" loading="lazy">`).join("");
+      return `
+        <button class="category-card" type="button" data-filter="${cat[0]}">
+          <span class="category-copy">
+            <strong>${escapeHtml(catName(cat[0]))}</strong>
+            <small>${categoryStyles.length} styles</small>
+          </span>
+          <span class="category-stack">${preview}</span>
+        </button>
+      `;
+    }).join("");
   }
 
   function renderDetail() {

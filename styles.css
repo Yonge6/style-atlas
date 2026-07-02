@@ -163,8 +163,8 @@ button {
 
 .deck-stage {
   position: relative;
-  min-height: 760px;
-  margin: 0 -8px;
+  height: calc((min(430px, 100vw) - 44px) * 5 / 3);
+  margin: 0 -4px;
   perspective: 1000px;
 }
 
@@ -186,7 +186,7 @@ button {
 
 .deck-stage .style-card {
   position: absolute;
-  inset: 0 8px auto;
+  inset: 0 8px;
   transition: transform 260ms cubic-bezier(.2, .8, .2, 1), opacity 220ms ease, filter 220ms ease;
   will-change: transform;
 }
@@ -204,11 +204,11 @@ button {
 }
 
 .ghost-card.prev {
-  transform: translateX(-34px) rotate(-6deg) scale(0.92);
+  transform: translateX(-46px) rotate(-7deg) scale(0.91);
 }
 
 .ghost-card.next {
-  transform: translateX(34px) rotate(6deg) scale(0.92);
+  transform: translateX(46px) rotate(7deg) scale(0.91);
 }
 
 .deck-stage.dragging .style-card {
@@ -252,6 +252,95 @@ button {
     linear-gradient(115deg, transparent 0 38%, rgba(255,255,255,.22) 39%, transparent 40%),
     repeating-linear-gradient(90deg, rgba(27, 20, 8, .06) 0 1px, transparent 1px 46px);
   content: "";
+}
+
+.cover-card::before {
+  display: none;
+}
+
+.cover-card {
+  min-height: 0;
+  padding: 0;
+  border-color: rgba(255, 236, 187, 0.18);
+  border-radius: 24px;
+  background: #0e0c08;
+  color: #fff6dc;
+  box-shadow: 0 34px 80px rgba(0, 0, 0, 0.62);
+}
+
+.cover-image,
+.cover-shade {
+  position: absolute;
+  inset: 0;
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-shade {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.58), transparent 24%, transparent 50%, rgba(0, 0, 0, 0.84)),
+    radial-gradient(circle at 50% 38%, transparent 0 34%, rgba(0, 0, 0, 0.28) 78%);
+}
+
+.cover-top,
+.cover-title {
+  position: absolute;
+  z-index: 2;
+  right: 16px;
+  left: 16px;
+}
+
+.cover-top {
+  top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cover-top > span {
+  min-width: 52px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 246, 220, 0.32);
+  border-radius: 999px;
+  background: rgba(12, 10, 7, 0.42);
+  color: #f5d98e;
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  backdrop-filter: blur(14px);
+}
+
+.cover-card .card-action {
+  border-color: rgba(255, 246, 220, 0.28);
+  background: rgba(12, 10, 7, 0.48);
+  color: #fff6dc;
+  backdrop-filter: blur(14px);
+}
+
+.cover-title {
+  bottom: 22px;
+}
+
+.cover-title h1 {
+  max-width: 95%;
+  color: #fff6dc;
+  font-size: clamp(38px, 11vw, 58px);
+  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.72);
+}
+
+.cover-title p {
+  margin: 10px 0 0;
+  color: #f4cf76;
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.7);
 }
 
 .badge-row,
@@ -417,7 +506,7 @@ button {
 
 .deck-controls {
   justify-content: space-between;
-  margin: 14px 0 24px;
+  margin: 12px 0 24px;
   color: var(--muted);
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 12px;
@@ -437,10 +526,87 @@ button {
   font-size: 18px;
 }
 
-.category-strip .chip {
-  border-color: var(--line);
-  background: rgba(255, 255, 255, 0.055);
+.category-cards {
+  display: grid;
+  gap: 12px;
+}
+
+.category-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 132px;
+  align-items: center;
+  min-height: 102px;
+  padding: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.035)),
+    rgba(255, 255, 255, 0.045);
   color: var(--text);
+  text-align: left;
+}
+
+.category-card::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.16), transparent 56%);
+  content: "";
+}
+
+.category-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+}
+
+.category-copy strong {
+  max-width: 180px;
+  color: #fff4d1;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.category-copy small {
+  color: #c9b47e;
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.category-stack {
+  position: relative;
+  z-index: 1;
+  height: 76px;
+}
+
+.category-stack img {
+  position: absolute;
+  top: 0;
+  width: 52px;
+  height: 76px;
+  border: 1px solid rgba(255, 239, 190, 0.22);
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.34);
+}
+
+.category-stack img:nth-child(1) {
+  right: 72px;
+  transform: rotate(-8deg);
+}
+
+.category-stack img:nth-child(2) {
+  right: 36px;
+  transform: rotate(2deg);
+}
+
+.category-stack img:nth-child(3) {
+  right: 0;
+  transform: rotate(9deg);
 }
 
 .detail {
