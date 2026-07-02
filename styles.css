@@ -1,5 +1,6 @@
 :root {
   color-scheme: dark;
+  --page-pad: clamp(10px, 4vw, 18px);
   --bg: #080806;
   --panel: #15130f;
   --paper: #f3e7c9;
@@ -34,6 +35,12 @@ body {
   color: var(--text);
 }
 
+body.drawer-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
 button,
 input {
   font: inherit;
@@ -54,21 +61,30 @@ button {
   min-height: 100vh;
   margin: 0 auto;
   overflow-x: clip;
-  padding: env(safe-area-inset-top) clamp(10px, 4vw, 18px) 22px;
+  padding: 0 var(--page-pad) 22px;
   position: relative;
 }
 
 .topbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 50%;
   z-index: 10;
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 8px;
   align-items: center;
+  width: 100%;
+  max-width: 430px;
   min-height: 70px;
+  padding: env(safe-area-inset-top) var(--page-pad) 0;
   background: linear-gradient(180deg, rgba(8, 8, 6, 0.98), rgba(8, 8, 6, 0.76));
   backdrop-filter: blur(18px);
+  transform: translateX(-50%);
+}
+
+main {
+  padding-top: calc(70px + env(safe-area-inset-top));
 }
 
 .brand {
@@ -113,14 +129,15 @@ button {
 .icon-btn {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  min-width: 44px;
+  height: 44px;
   font-family: ui-sans-serif, system-ui, sans-serif;
   font-size: 24px;
 }
 
 .lang-toggle {
-  height: 38px;
+  min-width: 64px;
+  height: 44px;
   padding: 0 8px;
   color: var(--gold-2);
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
@@ -132,7 +149,7 @@ button {
 }
 
 .topbar:has(#backBtn:not(.hidden)) {
-  grid-template-columns: 38px 1fr auto;
+  grid-template-columns: 44px 1fr auto;
 }
 
 #backBtn.hidden {
@@ -149,16 +166,15 @@ button {
   }
 
   .icon-btn {
-    width: 34px;
-    height: 34px;
+    min-width: 44px;
+    height: 44px;
     font-size: 20px;
   }
 
   .lang-toggle {
-    width: 38px;
-    height: 34px;
-    overflow: hidden;
-    padding: 0;
+    min-width: 52px;
+    height: 44px;
+    padding: 0 6px;
     white-space: nowrap;
   }
 }
@@ -200,8 +216,9 @@ button {
 
 .deck-stage {
   position: relative;
-  height: calc((min(430px, 100vw) - 44px) * 5 / 3);
-  margin: 0 -4px;
+  aspect-ratio: 3 / 5;
+  height: auto;
+  margin: 0;
   perspective: 1000px;
 }
 
@@ -223,7 +240,7 @@ button {
 
 .deck-stage .style-card {
   position: absolute;
-  inset: 0 8px;
+  inset: 0;
   transition: transform 260ms cubic-bezier(.2, .8, .2, 1), opacity 220ms ease, filter 220ms ease;
   will-change: transform;
 }
@@ -238,6 +255,10 @@ button {
   opacity: 0.48;
   filter: saturate(0.78) brightness(0.78);
   pointer-events: none;
+}
+
+.ghost-card .card-actions {
+  display: none;
 }
 
 .ghost-card.prev {
@@ -303,6 +324,10 @@ button {
   background: #0e0c08;
   color: #fff6dc;
   box-shadow: 0 34px 80px rgba(0, 0, 0, 0.62);
+}
+
+.deck-stage .cover-card {
+  min-height: 0;
 }
 
 .cover-image,
@@ -531,7 +556,7 @@ button {
 .chip {
   display: inline-flex;
   align-items: center;
-  min-height: 30px;
+  min-height: 44px;
   padding: 0 10px;
   border: 1px solid rgba(22, 18, 12, 0.14);
   border-radius: 999px;
@@ -551,7 +576,7 @@ button {
 
 .arrow-btn {
   width: 46px;
-  height: 38px;
+  height: 44px;
   color: var(--gold-2);
   font-size: 20px;
 }
@@ -857,8 +882,8 @@ button {
   position: absolute;
   right: 14px;
   top: 14px;
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
 }
 
 .thumb {

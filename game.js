@@ -2,10 +2,19 @@
   "use strict";
 
   const $ = (id) => document.getElementById(id);
+  const readLang = () => (["zh", "en"].includes(localStorage.getItem("styleAtlasLang")) ? localStorage.getItem("styleAtlasLang") : (navigator.language.startsWith("zh") ? "zh" : "en"));
+  const readArray = (key) => {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  };
   const store = {
-    lang: localStorage.getItem("styleAtlasLang") || (navigator.language.startsWith("zh") ? "zh" : "en"),
-    saved: JSON.parse(localStorage.getItem("styleAtlasSaved") || "[]"),
-    recent: JSON.parse(localStorage.getItem("styleAtlasRecent") || "[]"),
+    lang: readLang(),
+    saved: readArray("styleAtlasSaved"),
+    recent: readArray("styleAtlasRecent"),
     activeId: null,
     view: "home",
     query: "",
@@ -574,9 +583,18 @@
   }
 
   function setDrawer(open) {
+    if (open) {
+      store.drawerScrollY = window.scrollY;
+      document.body.style.top = `-${store.drawerScrollY}px`;
+    }
     dom.drawer.classList.toggle("open", open);
     dom.drawer.setAttribute("aria-hidden", String(!open));
     dom.drawerBackdrop.hidden = !open;
+    document.body.classList.toggle("drawer-open", open);
+    if (!open) {
+      document.body.style.removeProperty("top");
+      window.scrollTo(0, store.drawerScrollY || 0);
+    }
   }
 
   function setActiveByOffset(offset) {
@@ -804,7 +822,12 @@
         event.stopPropagation();
         return toggleSaved(id);
       }
-      if (action === "copy-prompt") return copyText(activeStyle().imagePrompts[store.lang]);
+      if (action === "save") return toggleSaved();
+      if (action === "share") return shareStyle();
+      if (action === "copy-prompt") {
+        const style = activeStyle();
+        return copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
+      }
       if (action === "save-card") return saveShareCard();
       if (filter) {
         store.filter = store.filter === filter ? "" : filter;
@@ -837,10 +860,16 @@
       const list = store.saved.map((id) => styles.find((style) => style.id === id)).filter(Boolean).map((style) => `${style.name.en} / ${style.name.zh}`).join("\n");
       copyText(list || "Style Atlas");
     });
+    window.addEventListener("hashchange", () => {
+      const id = location.hash.slice(1);
+      if (!styles.some((style) => style.id === id)) return;
+      store.activeId = id;
+      setView("detail");
+    });
   }
 
   function renderAll() {
-    dom.langBtn.textContent = store.lang === "zh" ? "EN｜中文" : "EN｜中文";
+    dom.langBtn.textContent = store.lang === "zh" ? "EN / 中" : "EN / 中";
     renderHome();
     if (store.view === "detail") renderDetail();
     if (store.view === "search") renderSearch();
@@ -859,7 +888,9 @@
   store.activeId = location.hash.slice(1) && styles.some((style) => style.id === location.hash.slice(1))
     ? location.hash.slice(1)
     : styles[dailyIndex()].id;
+  if (location.hash.slice(1) && styles.some((style) => style.id === location.hash.slice(1))) store.view = "detail";
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
   bind();
   renderAll();
+  setView(store.view);
 })();
