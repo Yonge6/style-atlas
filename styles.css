@@ -699,6 +699,19 @@ main {
   line-height: 1.7;
 }
 
+.detail-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #dbcba4;
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.detail-list li + li {
+  margin-top: 6px;
+}
+
 .feature-grid {
   align-items: stretch;
   flex-wrap: wrap;

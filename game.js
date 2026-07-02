@@ -230,19 +230,31 @@
         en: `${en} emphasizes ${tagsEn.join(", ").toLowerCase()}. ${copy.en}`
       },
       memoryAnchor: {
-        zh: `${zh}就像一张把“${tagsZh[0]}”放到最大声的视觉记忆卡。`,
-        en: `${en} feels like a visual memory card that turns "${tagsEn[0].toLowerCase()}" up loud.`
+        zh: `${zh}像把${tagsZh[0]}、${tagsZh[1]}和${tagsZh[2]}压成一个清晰符号；远看先抓住气质，近看才发现它的结构。`,
+        en: `${en} compresses ${tagsEn[0].toLowerCase()}, ${tagsEn[1].toLowerCase()} and ${tagsEn[2].toLowerCase()} into one clear signal; from far away you catch the mood, up close you see the structure.`
       },
       history: {
-        zh: `${zh}来自${catName(category, "zh")}的脉络。第一版把它写成面向创作者的简明解释，便于快速记住和用于 AI 生图。`,
-        en: `${en} belongs to the ${catName(category, "en").toLowerCase()} tradition. This first version explains it in creator-friendly language for quick learning and AI prompting.`
+        zh: `${zh}来自${catName(category, "zh")}的脉络。它不是一个单独的滤镜，而是一整套关于色彩、构图、材质和观看方式的习惯。理解它时，先看它解决了什么问题：如何让画面在第一眼被认出，又能承载特定时代、地域或创作者的审美。`,
+        en: `${en} comes from the ${catName(category, "en").toLowerCase()} tradition. It is not a single filter, but a system of color, composition, material and ways of seeing. Learn it by asking what visual problem it solves and why the image becomes recognizable at first glance.`
+      },
+      why: {
+        zh: `这种风格之所以成立，是因为它持续强化${tagsZh.join("、")}，把复杂信息压缩成容易记住的视觉信号。创作时不要只套表面元素，要先确定画面的主情绪、主体关系和节奏，再选择颜色、线条和构图。`,
+        en: `This style works because it repeatedly reinforces ${tagsEn.join(", ").toLowerCase()}, turning complex information into memorable visual signals. Do not copy surface details only; define mood, subject hierarchy and rhythm first, then choose color, line and composition.`
+      },
+      lookFor: {
+        zh: [`第一眼先看${tagsZh[0]}`, `再看${tagsZh[1]}如何组织画面`, `最后看${tagsZh[2]}是否稳定地重复出现`],
+        en: [`First notice ${tagsEn[0].toLowerCase()}`, `Then see how ${tagsEn[1].toLowerCase()} organizes the image`, `Finally check whether ${tagsEn[2].toLowerCase()} repeats consistently`]
+      },
+      references: {
+        zh: [`${zh}风格封面案例`, `${zh}海报应用案例`, `${zh}AI 生图复刻练习`],
+        en: [`${en} cover case`, `${en} poster application`, `${en} AI style-replication exercise`]
       },
       visualFeatures: { zh: copy.featuresZh, en: copy.featuresEn },
       useCases: { zh: copy.usesZh, en: copy.usesEn },
       tags: { zh: tagsZh.concat(["高级", "灵感"]), en: tagsEn.concat(["Premium", "Inspiration"]) },
       imagePrompts: {
-        zh: `${zh}视觉风格，${copy.featuresZh.join("，")}，高级手机端视觉案例，原创图像，不复制具体作品`,
-        en: `${en} visual style, ${copy.featuresEn.join(", ").toLowerCase()}, premium mobile visual example, original image, not copying a specific artwork`
+        zh: `以复刻${zh}视觉语言为目标，提取${copy.featuresZh.join("、")}，控制色彩、构图、线条和材质，让画面像该风格的原创应用案例，高清，完整构图，不复制具体原作`,
+        en: `Replicate the visual language of ${en}: extract ${copy.featuresEn.join(", ").toLowerCase()}, control color, composition, line and material, create an original applied case in this style, high resolution, complete composition, not a copy of a specific artwork`
       },
       negativePrompt: {
         zh: "避免盗用原作、低清晰度文字、杂乱构图、廉价滤镜、直接复制当代工作室完整风格",
@@ -253,6 +265,41 @@
       image: `assets/styles/${id}.png`,
       keywords
     };
+  });
+
+  Object.assign(styles.find((style) => style.id === "matisse"), {
+    summary: {
+      zh: "马蒂斯式色块强调明亮、扁平、自由的颜色关系，用剪纸般的形状和流动线条，把画面变成有节奏的色彩乐章。",
+      en: "Matisse-like color blocks use bright flat color, cut-paper shapes and flowing lines to turn the image into a rhythmic color composition."
+    },
+    memoryAnchor: {
+      zh: "像把花园、舞蹈和阳光剪成彩纸，再贴成一幅会呼吸的画。",
+      en: "Like cutting gardens, dance and sunlight into colored paper, then arranging them into a breathing image."
+    },
+    history: {
+      zh: "亨利·马蒂斯（Henri Matisse，1869–1954）是法国现代艺术的重要人物，也是野兽派的核心代表。他长期探索颜色和线条的关系：颜色不只是给物体上色，而是可以直接表达情绪、空间和节奏。晚年因身体受限，他把涂有水粉的彩纸剪成植物、人物和抽象形状，再由助手协助固定和组合，发展出著名的 cut-outs 剪纸作品。马蒂斯式色块因此不是“简单儿童画”，而是把绘画、装饰、空间和身体动作压缩成最直接的颜色结构。",
+      en: "Henri Matisse (1869-1954) was a major French modern artist and a central figure of Fauvism. He treated color not as decoration on objects, but as a direct tool for emotion, space and rhythm. In his late years, limited physically, he cut shapes from gouache-painted paper and arranged them with studio assistance, developing his celebrated cut-outs. The Matisse-like color block language is therefore not childish simplicity, but a concentrated structure of painting, decoration, space and bodily movement."
+    },
+    why: {
+      zh: "他喜欢这样画，是因为明亮色块能绕开传统明暗塑形，直接把观看者带进一种轻快、装饰性、充满生命感的空间。剪纸让他像“用剪刀画画”：先用颜色决定情绪，再用轮廓决定节奏，最后用色块之间的距离决定画面的呼吸。",
+      en: "He worked this way because bright color blocks could bypass traditional light-and-shadow modeling and create a lively decorative space immediately. Cut paper let him 'draw with scissors': color sets the mood, contour sets rhythm, and the spacing between blocks gives the image its breathing room."
+    },
+    lookFor: {
+      zh: ["高饱和纯色大色块", "剪纸感边缘和植物/舞蹈般曲线", "少阴影、少透视，靠色彩关系建立空间", "画面像装饰、壁画或拼贴，而不是写实场景"],
+      en: ["Large areas of saturated flat color", "Cut-paper edges and plant-like or dance-like curves", "Little shadow or perspective; space is built through color relationships", "The image feels like decoration, mural or collage rather than realism"]
+    },
+    references: {
+      zh: ["《The Snail》（1953）：用彩纸方块组成近乎抽象的蜗牛旋涡", "《Memory of Oceania》（1953）：把海洋记忆变成漂浮的色块和符号", "《Large Decoration with Masks》（1953）：壁画尺度的剪纸装饰案例", "《The Swimming Pool》（1952）：房间尺度的蓝白剪纸环境"],
+      en: ["The Snail (1953): colored paper blocks forming an almost abstract spiral", "Memory of Oceania (1953): ocean memory translated into floating color signs", "Large Decoration with Masks (1953): a mural-scale cut-out decoration", "The Swimming Pool (1952): a room-scale blue-and-white cut-out environment"]
+    },
+    imagePrompts: {
+      zh: "以复刻马蒂斯晚期剪纸与色块视觉语言为目标，明亮高饱和色块，扁平构图，剪纸边缘，植物叶片、舞蹈曲线、阳光感，大面积留白与装饰性节奏，少阴影少写实透视，原创海报/封面案例，不复制马蒂斯具体作品",
+      en: "Replicate the visual language of late Matisse cut-outs and color blocks: bright saturated flat color, cut-paper edges, botanical leaf shapes, dance-like curves, sunny decorative rhythm, generous negative space, minimal shadow and realism, original poster or cover case, not a copy of a specific Matisse artwork"
+    },
+    negativePrompt: {
+      zh: "避免照片写实、厚重油画肌理、复杂透视、灰暗脏色、直接复制《The Snail》或其他具体作品构图",
+      en: "Avoid photorealism, heavy oil-paint texture, complex perspective, muddy colors, directly copying The Snail or any specific composition"
+    }
   });
 
   const text = {
@@ -272,6 +319,9 @@
       copyPrompt: "复制提示词",
       features: "视觉特征",
       history: "历史来源",
+      why: "为什么这样画",
+      lookFor: "一眼识别",
+      references: "作品与案例",
       memory: "记住它",
       useCases: "适用场景",
       prompt: "AI 提示词",
@@ -301,6 +351,9 @@
       copyPrompt: "Copy prompt",
       features: "Visual features",
       history: "History",
+      why: "Why It Looks This Way",
+      lookFor: "How To Recognize It",
+      references: "Works And Cases",
       memory: "Remember it",
       useCases: "Use cases",
       prompt: "AI prompt",
@@ -486,6 +539,18 @@
       <section class="detail-section">
         <h2>${t("history")}</h2>
         <p>${escapeHtml(style.history[lang])}</p>
+      </section>
+      <section class="detail-section">
+        <h2>${t("why")}</h2>
+        <p>${escapeHtml(style.why[lang])}</p>
+      </section>
+      <section class="detail-section">
+        <h2>${t("lookFor")}</h2>
+        <ul class="detail-list">${style.lookFor[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </section>
+      <section class="detail-section">
+        <h2>${t("references")}</h2>
+        <ul class="detail-list">${style.references[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
       </section>
       <section class="detail-section">
         <h2>${t("useCases")}</h2>
