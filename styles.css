@@ -13,7 +13,6 @@
   --line-strong: rgba(243, 212, 134, 0.48);
   --danger: #d45f55;
   --radius: 8px;
-  --nav-lift: 0px;
   font-family: ui-serif, Georgia, "Times New Roman", "Songti SC", serif;
 }
 
@@ -54,7 +53,7 @@ button {
   width: min(430px, 100vw);
   min-height: 100vh;
   margin: 0 auto;
-  padding: env(safe-area-inset-top) 18px calc(92px + env(safe-area-inset-bottom));
+  padding: env(safe-area-inset-top) 18px 22px;
   position: relative;
 }
 
@@ -182,6 +181,7 @@ button {
   color: var(--ink);
   box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45);
   touch-action: pan-y;
+  cursor: grab;
 }
 
 .deck-stage .style-card {
@@ -213,6 +213,7 @@ button {
 
 .deck-stage.dragging .style-card {
   transition: none;
+  cursor: grabbing;
 }
 
 .deck-stage.dragging .ghost-card {
@@ -258,8 +259,7 @@ button {
 .deck-controls,
 .chip-row,
 .feature-grid,
-.prompt-actions,
-.bottom-nav {
+.prompt-actions {
   display: flex;
   align-items: center;
 }
@@ -499,6 +499,39 @@ button {
   line-height: 1.6;
 }
 
+.example-card {
+  margin: 0;
+}
+
+.example-card img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #111;
+}
+
+.example-card figcaption {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.example-card strong {
+  color: var(--paper);
+  font-size: 14px;
+}
+
+.example-card a {
+  color: var(--gold-2);
+  text-decoration: none;
+}
+
 .prompt-actions {
   gap: 8px;
   margin-top: 10px;
@@ -655,32 +688,62 @@ button {
   text-align: center;
 }
 
-.bottom-nav {
+.drawer-backdrop {
   position: fixed;
-  right: 14px;
-  bottom: calc(12px + env(safe-area-inset-bottom) + var(--nav-lift));
-  left: 14px;
-  z-index: 100;
-  justify-content: space-around;
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(2px);
+}
+
+.drawer {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  right: max(12px, calc((100vw - 430px) / 2 + 12px));
+  z-index: 90;
+  width: min(250px, calc(100vw - 28px));
+  padding: 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: rgba(16, 14, 11, 0.96);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.52);
+  transform: translateY(-8px) scale(0.96);
+  transform-origin: top right;
+  opacity: 0;
+  pointer-events: none;
+  transition: 160ms ease;
+}
+
+.drawer.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: var(--paper);
+}
+
+.drawer-nav {
+  display: grid;
   gap: 8px;
-  min-height: 62px;
-  padding: 8px;
-  border: 1px solid rgba(243, 212, 134, 0.16);
-  border-radius: 18px;
-  background: rgba(20, 18, 15, 0.9);
-  backdrop-filter: blur(18px);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
 }
 
 .nav-btn {
-  flex: 1;
-  min-width: 0;
-  min-height: 44px;
-  border: 0;
-  background: transparent;
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.045);
   color: var(--muted);
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
-  font-size: 12px;
+  font-size: 14px;
+  text-align: left;
+  padding: 0 14px;
 }
 
 .nav-btn.active {
@@ -713,15 +776,4 @@ button {
 .toast.show {
   transform: translateY(0);
   opacity: 1;
-}
-
-@media (min-width: 820px) {
-  .app-shell {
-    width: min(1120px, calc(100vw - 48px));
-  }
-
-  main {
-    width: 430px;
-    margin: 0 auto;
-  }
 }

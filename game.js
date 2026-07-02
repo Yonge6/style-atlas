@@ -266,6 +266,8 @@
       memory: "记住它",
       useCases: "适用场景",
       prompt: "AI 提示词",
+      examples: "公开案例",
+      source: "查看来源",
       similar: "相似风格",
       empty: "没找到这个风格。试试：海报、油画、东方、漫画、科技、复古。",
       copied: "已复制",
@@ -293,6 +295,8 @@
       memory: "Remember it",
       useCases: "Use cases",
       prompt: "AI prompt",
+      examples: "Public example",
+      source: "View source",
       similar: "Similar styles",
       empty: "No style found. Try poster, painting, Eastern, comic, tech or retro.",
       copied: "Copied",
@@ -307,6 +311,10 @@
     backBtn: $("backBtn"),
     langBtn: $("langBtn"),
     searchOpenBtn: $("searchOpenBtn"),
+    drawerBtn: $("drawerBtn"),
+    drawerCloseBtn: $("drawerCloseBtn"),
+    drawer: $("drawer"),
+    drawerBackdrop: $("drawerBackdrop"),
     deckStage: $("deckStage"),
     prevGhost: $("prevGhost"),
     nextGhost: $("nextGhost"),
@@ -421,6 +429,7 @@
   function renderDetail() {
     const style = activeStyle();
     const lang = store.lang;
+    const example = window.STYLE_EXAMPLES?.[style.id];
     addRecent(style.id);
     dom.detailContent.innerHTML = `
       <div class="detail-hero style-card">${renderCard(style, true)}</div>
@@ -440,6 +449,19 @@
         <h2>${t("useCases")}</h2>
         <div class="chip-row">${style.useCases[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
       </section>
+      ${example ? `
+        <section class="detail-section">
+          <h2>${t("examples")}</h2>
+          <figure class="example-card">
+            <img src="${escapeHtml(example.image)}" alt="${escapeHtml(example.title)}" loading="lazy">
+            <figcaption>
+              <strong>${escapeHtml(example.title)}</strong>
+              <span>${escapeHtml(example.artist)}</span>
+              <a href="${escapeHtml(example.source)}" target="_blank" rel="noreferrer">${t("source")}</a>
+            </figcaption>
+          </figure>
+        </section>
+      ` : ""}
       <section class="detail-section">
         <h2>${t("prompt")}</h2>
         <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
@@ -505,6 +527,7 @@
 
   function setView(view) {
     if (view === "detail") renderDetail();
+    setDrawer(false);
     store.view = view;
     document.querySelectorAll(".view").forEach((node) => node.classList.toggle("active", node.id === `${view}View`));
     document.querySelectorAll(".nav-btn").forEach((node) => node.classList.toggle("active", node.dataset.view === view));
@@ -515,6 +538,12 @@
     }
     if (view === "saved") renderSaved();
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function setDrawer(open) {
+    dom.drawer.classList.toggle("open", open);
+    dom.drawer.setAttribute("aria-hidden", String(!open));
+    dom.drawerBackdrop.hidden = !open;
   }
 
   function setActiveByOffset(offset) {
@@ -643,6 +672,9 @@
     });
 
     dom.searchOpenBtn.addEventListener("click", () => setView("search"));
+    dom.drawerBtn.addEventListener("click", () => setDrawer(true));
+    dom.drawerCloseBtn.addEventListener("click", () => setDrawer(false));
+    dom.drawerBackdrop.addEventListener("click", () => setDrawer(false));
     dom.backBtn.addEventListener("click", () => setView("home"));
     dom.randomBtn.addEventListener("click", () => {
       store.activeId = styles[Math.floor(Math.random() * styles.length)].id;
@@ -733,7 +765,10 @@
     });
 
     document.querySelectorAll(".nav-btn").forEach((button) => {
-      button.addEventListener("click", () => setView(button.dataset.view));
+      button.addEventListener("click", () => {
+        setView(button.dataset.view);
+        setDrawer(false);
+      });
     });
 
     dom.searchInput.addEventListener("input", () => {
@@ -749,11 +784,6 @@
       const list = store.saved.map((id) => styles.find((style) => style.id === id)).filter(Boolean).map((style) => `${style.name.en} / ${style.name.zh}`).join("\n");
       copyText(list || "Style Atlas");
     });
-  }
-
-  function updateViewportVars() {
-    const lift = window.visualViewport ? Math.max(0, window.innerHeight - window.visualViewport.height) : 0;
-    document.documentElement.style.setProperty("--nav-lift", `${lift}px`);
   }
 
   function renderAll() {
@@ -777,9 +807,6 @@
     ? location.hash.slice(1)
     : styles[dailyIndex()].id;
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
-  updateViewportVars();
-  window.visualViewport?.addEventListener("resize", updateViewportVars);
-  window.addEventListener("resize", updateViewportVars);
   bind();
   renderAll();
 })();

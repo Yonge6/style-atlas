@@ -11,7 +11,10 @@ Checked against selected option 2, "Swipe Deck Studio".
 - Save-card canvas action runs without frontend errors.
 - V2 swipe deck check passed: dragging the card changes the active style and shows neighboring cards behind the active card.
 - V2 gallery check passed: search view defaults to a two-column gallery with 100 image thumbnails, then returns to list mode after search input.
+- V3 navigation check passed: bottom nav is removed, right-top drawer opens and navigates without staying over the swipe deck.
+- V3 cover check passed: 100 generated covers still load, and four high-priority covers were replaced with Image Tool outputs.
+- V3 public-example check passed locally for styles with `examples.js` entries.
 
 Known P3 follow-up:
 
-- The 100 images are programmatic original raster examples; hand-curated Image2 replacements can be added for higher art fidelity.
+- Public-domain example coverage is partial because The Met API fetch is slow; rerun the incremental script to add more.
