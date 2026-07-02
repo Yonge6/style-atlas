@@ -241,6 +241,7 @@
       },
       relatedStyles: related(index),
       art: palettes[index % palettes.length],
+      image: `assets/styles/${id}.png`,
       keywords
     };
   });
@@ -306,6 +307,9 @@
     backBtn: $("backBtn"),
     langBtn: $("langBtn"),
     searchOpenBtn: $("searchOpenBtn"),
+    deckStage: $("deckStage"),
+    prevGhost: $("prevGhost"),
+    nextGhost: $("nextGhost"),
     todayLabel: $("todayLabel"),
     randomBtn: $("randomBtn"),
     styleDeck: $("styleDeck"),
@@ -346,6 +350,11 @@
     return styles.find((style) => style.id === store.activeId) || styles[0];
   }
 
+  function styleByOffset(offset) {
+    const index = styles.findIndex((style) => style.id === store.activeId);
+    return styles[(index + offset + styles.length) % styles.length];
+  }
+
   function isSaved(id) {
     return store.saved.includes(id);
   }
@@ -382,7 +391,8 @@
           <button class="card-action" type="button" data-action="share" aria-label="${t("share")}">↥</button>
         </div>
       </div>
-      <div class="visual" style="--art:${style.art}">
+      <div class="visual">
+        <img src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy">
         <p class="visual-title">${escapeHtml(style.name.en)}</p>
       </div>
       <h1>${escapeHtml(style.name.en)}</h1>
@@ -400,6 +410,11 @@
     dom.swipeHint.textContent = t("swipe");
     dom.categoryTitle.textContent = t("categories");
     dom.styleDeck.innerHTML = renderCard(style);
+    dom.prevGhost.innerHTML = renderCard(styleByOffset(-1), true);
+    dom.nextGhost.innerHTML = renderCard(styleByOffset(1), true);
+    dom.deckStage.classList.remove("dragging", "fly-left", "fly-right");
+    dom.styleDeck.style.removeProperty("--drag-x");
+    dom.styleDeck.style.removeProperty("--drag-rotate");
     dom.categoryChips.innerHTML = categories.map((cat) => `<button class="chip" type="button" data-filter="${cat[0]}">${escapeHtml(catName(cat[0]))}</button>`).join("");
   }
 
@@ -444,7 +459,7 @@
     const lang = store.lang;
     return `
       <article class="result-card" data-style="${style.id}">
-        <div class="thumb" style="--art:${style.art}"></div>
+        <img class="thumb" src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy">
         <div>
           <h3>${escapeHtml(style.name[lang])}</h3>
           <p>${escapeHtml(style.summary[lang])}</p>
@@ -477,6 +492,7 @@
       return (!store.filter || style.category === store.filter) && (!query || haystack.includes(query));
     });
 
+    dom.searchResults.classList.toggle("gallery-grid", !query && !store.filter);
     dom.searchResults.innerHTML = results.length ? results.map(resultCard).join("") : `<p class="empty">${t("empty")}</p>`;
   }
 
@@ -635,6 +651,10 @@
     dom.prevBtn.addEventListener("click", () => setActiveByOffset(-1));
     dom.nextBtn.addEventListener("click", () => setActiveByOffset(1));
     dom.styleDeck.addEventListener("click", (event) => {
+      if (moved) {
+        moved = false;
+        return;
+      }
       const action = event.target.closest("[data-action]")?.dataset.action;
       if (action === "save") return toggleSaved();
       if (action === "share") return shareStyle();
@@ -644,17 +664,51 @@
 
     let startX = 0;
     let startY = 0;
-    dom.styleDeck.addEventListener("touchstart", (event) => {
-      startX = event.touches[0].clientX;
-      startY = event.touches[0].clientY;
-    }, { passive: true });
-    dom.styleDeck.addEventListener("touchend", (event) => {
-      const touch = event.changedTouches[0];
-      const dx = touch.clientX - startX;
-      const dy = touch.clientY - startY;
-      if (Math.abs(dx) > 56 && Math.abs(dx) > Math.abs(dy)) setActiveByOffset(dx < 0 ? 1 : -1);
-      if (dy < -70 && Math.abs(dy) > Math.abs(dx)) setView("detail");
-    }, { passive: true });
+    let dragging = false;
+    let moved = false;
+
+    dom.styleDeck.addEventListener("pointerdown", (event) => {
+      if (event.target.closest("button")) return;
+      dragging = true;
+      moved = false;
+      startX = event.clientX;
+      startY = event.clientY;
+      dom.styleDeck.setPointerCapture(event.pointerId);
+      dom.deckStage.classList.add("dragging");
+    });
+
+    dom.styleDeck.addEventListener("pointermove", (event) => {
+      if (!dragging) return;
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
+      const clamped = Math.max(-130, Math.min(130, dx));
+      dom.styleDeck.style.setProperty("--drag-x", `${clamped}px`);
+      dom.styleDeck.style.setProperty("--drag-rotate", `${clamped / 13}deg`);
+    });
+
+    dom.styleDeck.addEventListener("pointerup", (event) => {
+      if (!dragging) return;
+      dragging = false;
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      dom.deckStage.classList.remove("dragging");
+      dom.styleDeck.style.removeProperty("--drag-x");
+      dom.styleDeck.style.removeProperty("--drag-rotate");
+      if (Math.abs(dx) > 84 && Math.abs(dx) > Math.abs(dy)) {
+        dom.deckStage.classList.add(dx < 0 ? "fly-left" : "fly-right");
+        setTimeout(() => setActiveByOffset(dx < 0 ? 1 : -1), 210);
+        return;
+      }
+      if (dy < -80 && Math.abs(dy) > Math.abs(dx)) setView("detail");
+    });
+
+    dom.styleDeck.addEventListener("pointercancel", () => {
+      dragging = false;
+      dom.deckStage.classList.remove("dragging");
+      dom.styleDeck.style.removeProperty("--drag-x");
+      dom.styleDeck.style.removeProperty("--drag-rotate");
+    });
 
     document.body.addEventListener("click", (event) => {
       const row = event.target.closest("[data-style]");
@@ -697,6 +751,11 @@
     });
   }
 
+  function updateViewportVars() {
+    const lift = window.visualViewport ? Math.max(0, window.innerHeight - window.visualViewport.height) : 0;
+    document.documentElement.style.setProperty("--nav-lift", `${lift}px`);
+  }
+
   function renderAll() {
     dom.langBtn.textContent = store.lang === "zh" ? "EN｜中文" : "EN｜中文";
     renderHome();
@@ -718,6 +777,9 @@
     ? location.hash.slice(1)
     : styles[dailyIndex()].id;
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
+  updateViewportVars();
+  window.visualViewport?.addEventListener("resize", updateViewportVars);
+  window.addEventListener("resize", updateViewportVars);
   bind();
   renderAll();
 })();

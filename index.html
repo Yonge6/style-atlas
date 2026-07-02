@@ -28,7 +28,11 @@
           <button id="randomBtn" class="small-action" type="button">随机</button>
         </div>
 
-        <article id="styleDeck" class="style-card" tabindex="0" aria-live="polite"></article>
+        <div id="deckStage" class="deck-stage" aria-live="polite">
+          <article id="prevGhost" class="style-card ghost-card prev" aria-hidden="true"></article>
+          <article id="nextGhost" class="style-card ghost-card next" aria-hidden="true"></article>
+          <article id="styleDeck" class="style-card live-card" tabindex="0"></article>
+        </div>
 
         <div class="deck-controls">
           <button id="prevBtn" class="arrow-btn" type="button">←</button>
