@@ -23,12 +23,6 @@
     filter: ""
   };
 
-  function digitalSvg(id, en, zh, index) {
-    const hue = (index * 37) % 360;
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1500"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="hsl(${hue},90%,58%)"/><stop offset=".55" stop-color="#101018"/><stop offset="1" stop-color="hsl(${(hue + 120) % 360},90%,58%)"/></linearGradient><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="2"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .18"/></feComponentTransfer></filter></defs><rect width="900" height="1500" fill="url(#g)"/><rect width="900" height="1500" filter="url(#noise)"/><g fill="none" stroke="rgba(255,255,255,.28)" stroke-width="3">${Array.from({length:12},(_,i)=>`<path d="M${80+i*64} 0V1500"/>`).join("")}${Array.from({length:18},(_,i)=>`<path d="M0 ${70+i*82}H900"/>`).join("")}</g><circle cx="650" cy="330" r="180" fill="rgba(255,255,255,.16)"/><path d="M120 1120C260 830 500 760 780 980" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="26"/><text x="70" y="1250" font-size="82" font-family="Georgia,serif" font-weight="700" fill="#fff6dc">${en}</text><text x="74" y="1322" font-size="38" font-family="sans-serif" font-weight="800" fill="#f4cf76">${zh}</text></svg>`;
-    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-  }
-
   const styles = rawStyles.map((item, index) => {
     const [id, en, zh, category, pinyin, keywords] = item;
     const copy = categoryCopy[category];
@@ -93,7 +87,7 @@
       },
       relatedStyles: related(index),
       art: palettes[index % palettes.length],
-      image: category === "digital" ? digitalSvg(id, en, zh, index) : `assets/styles/${id}.png`,
+      image: `assets/styles/${id}.png`,
       keywords
     };
   });
