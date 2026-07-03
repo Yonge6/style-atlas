@@ -216,6 +216,8 @@
       launchPrice: "首发限时 ¥28 / $3.99",
       regularPrice: "正式价 ¥48 / $7.99",
       comingSoon: "即将开放",
+      unlockPlus: "解锁 Plus",
+      restorePurchases: "恢复购买",
       appStoreFootnote: "正式版将在 App Store 内开放",
       savedLimit: "你已经收藏了 20 个风格。升级 Plus，建立无限风格灵感库。",
       lockedExpression: "完整风格表达词已收纳在 Plus。",
@@ -296,6 +298,8 @@
       launchPrice: "Launch offer ¥28 / $3.99",
       regularPrice: "Regular ¥48 / $7.99",
       comingSoon: "Coming Soon",
+      unlockPlus: "Unlock Plus",
+      restorePurchases: "Restore Purchases",
       appStoreFootnote: "Available later via App Store in-app purchase",
       savedLimit: "You’ve saved 20 styles. Upgrade to Plus to build an unlimited style library.",
       lockedExpression: "Complete style expression is included in Plus.",
@@ -366,7 +370,8 @@
     plusLaunchPrice: $("plusLaunchPrice"),
     plusRegularPrice: $("plusRegularPrice"),
     plusFootnote: $("plusFootnote"),
-    plusCta: $("plusCta")
+    plusCta: $("plusCta"),
+    plusRestoreBtn: $("plusRestoreBtn")
   };
 
   document.addEventListener("error", (event) => {
@@ -433,7 +438,19 @@
     return typeof value === "function" ? value(...args) : value;
   }
 
+  function postNativeMessage(type, payload = {}) {
+    const handler = window.webkit?.messageHandlers?.styleAtlas;
+    if (!handler) return false;
+    handler.postMessage({ type, payload });
+    return true;
+  }
+
+  function hasNativeBridge() {
+    return Boolean(window.webkit?.messageHandlers?.styleAtlas);
+  }
+
   function showPlus(reasonKey = "plusSubtitle") {
+    const native = hasNativeBridge();
     store.plusReasonKey = reasonKey;
     dom.plusTitle.textContent = t("plus");
     dom.plusSubtitle.textContent = t(reasonKey);
@@ -447,7 +464,10 @@
     dom.plusLaunchPrice.textContent = t("launchPrice");
     dom.plusRegularPrice.textContent = t("regularPrice");
     dom.plusFootnote.textContent = t("appStoreFootnote");
-    dom.plusCta.textContent = t("comingSoon");
+    dom.plusCta.textContent = native ? t("unlockPlus") : t("comingSoon");
+    dom.plusCta.disabled = !native;
+    dom.plusRestoreBtn.hidden = !native;
+    dom.plusRestoreBtn.textContent = t("restorePurchases");
     dom.plusModal.hidden = false;
     document.body.classList.add("drawer-lock");
     setDrawer(false);
@@ -1311,6 +1331,8 @@
         const img = event.target.closest("img");
         return openImage(img.currentSrc || img.src, img.alt);
       }
+      if (action === "purchase-plus") return postNativeMessage("purchasePlus") || toast(t("comingSoon"));
+      if (action === "restore-purchases") return postNativeMessage("restorePurchases") || toast(t("comingSoon"));
       if (action === "close-lightbox") return closeImage();
       if (action === "share-lightbox") return shareImage();
       if (action === "save-lightbox") return saveImage();
@@ -1400,7 +1422,8 @@
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
   window.StyleAtlasNativeBridge = {
     setPlusAccess: setPlusAccessFromNative,
-    getPlusAccess: hasPlusAccess
+    getPlusAccess: hasPlusAccess,
+    postNativeMessage
   };
   window.StyleAtlasNative = window.StyleAtlasNativeBridge;
   bind();

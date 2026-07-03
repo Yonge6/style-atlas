@@ -1579,6 +1579,17 @@ main {
   opacity: 1;
 }
 
+.plus-cta:disabled {
+  cursor: default;
+}
+
+.plus-restore {
+  width: 100%;
+  margin-top: 8px;
+  border-color: rgba(243, 212, 134, 0.22);
+  background: rgba(255, 246, 220, 0.04);
+}
+
 .lightbox img {
   max-width: min(100%, 430px);
   max-height: 78vh;
