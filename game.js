@@ -124,9 +124,25 @@
   styles.forEach((style) => {
     style.isFreeFullAccess = ACCESS_CONFIG.freeFullStyleIds.includes(style.id);
     style.accessTier = style.isFreeFullAccess ? "free-full" : "plus";
-    style.isPlusLocked = !ACCESS_CONFIG.plusEnabled && !style.isFreeFullAccess;
-    style.exportTier = ACCESS_CONFIG.plusEnabled ? "plus" : "free";
+    style.isPlusLocked = !canViewFullStyle(style);
+    style.exportTier = hasPlusAccess() ? "plus" : "free";
   });
+
+  function hasPlusAccess() {
+    return ACCESS_CONFIG.plusEnabled === true;
+  }
+
+  function canViewFullStyle(style) {
+    return hasPlusAccess() || style.isFreeFullAccess;
+  }
+
+  function isStyleLocked(style) {
+    return !canViewFullStyle(style);
+  }
+
+  function canExportHighRes() {
+    return hasPlusAccess();
+  }
 
   const text = {
     zh: {
@@ -179,7 +195,9 @@
       launchPrice: "首发限时 ¥28 / $3.99",
       regularPrice: "正式价 ¥48 / $7.99",
       comingSoon: "即将开放",
+      appStoreFootnote: "正式版将在 App Store 内开放",
       savedLimit: "你已经收藏了 20 个风格。升级 Plus，建立无限风格灵感库。",
+      lockedExpression: "完整风格表达词已收纳在 Plus。",
       highResLocked: "高清无水印导出属于 Plus 预览功能。"
     },
     en: {
@@ -231,7 +249,9 @@
       launchPrice: "Launch offer ¥28 / $3.99",
       regularPrice: "Regular ¥48 / $7.99",
       comingSoon: "Coming Soon",
+      appStoreFootnote: "Available later via App Store in-app purchase",
       savedLimit: "You’ve saved 20 styles. Upgrade to Plus to build an unlimited style library.",
+      lockedExpression: "Complete style expression is included in Plus.",
       highResLocked: "HD watermark-free export is a Plus preview feature."
     }
   };
@@ -274,6 +294,7 @@
     plusBenefits: $("plusBenefits"),
     plusLaunchPrice: $("plusLaunchPrice"),
     plusRegularPrice: $("plusRegularPrice"),
+    plusFootnote: $("plusFootnote"),
     plusCta: $("plusCta")
   };
 
@@ -341,12 +362,14 @@
     return typeof value === "function" ? value(...args) : value;
   }
 
-  function showPlus(reason) {
+  function showPlus(reasonKey = "plusSubtitle") {
+    store.plusReasonKey = reasonKey;
     dom.plusTitle.textContent = t("plus");
-    dom.plusSubtitle.textContent = reason || t("plusSubtitle");
+    dom.plusSubtitle.textContent = t(reasonKey);
     dom.plusBenefits.innerHTML = t("plusBenefits").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     dom.plusLaunchPrice.textContent = t("launchPrice");
     dom.plusRegularPrice.textContent = t("regularPrice");
+    dom.plusFootnote.textContent = t("appStoreFootnote");
     dom.plusCta.textContent = t("comingSoon");
     dom.plusModal.hidden = false;
     document.body.classList.add("drawer-lock");
@@ -355,6 +378,7 @@
 
   function closePlus() {
     dom.plusModal.hidden = true;
+    store.plusReasonKey = "";
     document.body.classList.remove("drawer-lock");
   }
 
@@ -376,11 +400,12 @@
   }
 
   function renderExportPanel() {
+    const highResReady = canExportHighRes();
     return `
       <section class="detail-section export-section">
         <h2>${t("exportOptions")}</h2>
         <button class="copy-btn" type="button" data-action="save-card">${t("freeExport")}</button>
-        <button class="copy-btn locked-export" type="button" data-action="plus-export">${t("plusExport")}</button>
+        <button class="copy-btn ${highResReady ? "plus-export-ready" : "locked-export"}" type="button" data-action="plus-export">${t("plusExport")}</button>
       </section>
     `;
   }
@@ -461,7 +486,7 @@
   function renderDetail() {
     const style = activeStyle();
     const lang = store.lang;
-    const locked = style.isPlusLocked;
+    const locked = isStyleLocked(style);
     const example = {
       title: `${style.name[lang]} ${store.lang === "zh" ? "原创示例" : "original example"}`,
       artist: "Style Atlas",
@@ -720,8 +745,8 @@
       store.saved = store.saved.filter((item) => item !== id);
       toast(t("removedToast"));
     } else {
-      if (!ACCESS_CONFIG.plusEnabled && store.saved.length >= ACCESS_CONFIG.maxFreeSaved) {
-        showPlus(t("savedLimit"));
+      if (!hasPlusAccess() && store.saved.length >= ACCESS_CONFIG.maxFreeSaved) {
+        showPlus("savedLimit");
         return;
       }
       store.saved.push(id);
@@ -737,6 +762,14 @@
   async function copyText(value) {
     await navigator.clipboard.writeText(value);
     toast(t("copied"));
+  }
+
+  async function copyStyleExpression(style = activeStyle()) {
+    if (isStyleLocked(style)) {
+      showPlus("lockedExpression");
+      return;
+    }
+    await copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
   }
 
   async function loadImage(src) {
@@ -981,7 +1014,7 @@
   }
 
   function drawWatermark(ctx, width, height) {
-    if (!ACCESS_CONFIG.freeExportWatermark || ACCESS_CONFIG.plusEnabled) return;
+    if (!ACCESS_CONFIG.freeExportWatermark || hasPlusAccess()) return;
     ctx.save();
     ctx.globalAlpha = 0.82;
     ctx.fillStyle = "rgba(10, 8, 6, 0.58)";
@@ -1026,10 +1059,7 @@
         moved = false;
         if (action === "save") return toggleSaved();
         if (action === "share") return shareStyle();
-        if (action === "copy-prompt") {
-          const style = activeStyle();
-          return copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
-        }
+        if (action === "copy-prompt") return copyStyleExpression();
         if (action === "detail") return setView("detail");
       }
       if (moved) {
@@ -1118,11 +1148,8 @@
       if (action === "save-lightbox") return saveImage();
       if (action === "show-plus") return showPlus();
       if (action === "close-plus") return closePlus();
-      if (action === "plus-export") return showPlus(t("highResLocked"));
-      if (action === "copy-prompt") {
-        const style = activeStyle();
-        return copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
-      }
+      if (action === "plus-export") return canExportHighRes() ? saveShareCard() : showPlus("highResLocked");
+      if (action === "copy-prompt") return copyStyleExpression();
       if (action === "save-card") return saveShareCard();
       if (filter) {
         store.filter = store.filter === filter ? "" : filter;
@@ -1139,6 +1166,10 @@
 
     document.querySelectorAll(".nav-btn").forEach((button) => {
       button.addEventListener("click", () => {
+        if (button.dataset.action === "show-plus") {
+          showPlus();
+          return;
+        }
         setView(button.dataset.view);
         setDrawer(false);
       });
@@ -1180,7 +1211,7 @@
       };
       button.textContent = button.dataset.view ? map[button.dataset.view] : t("plus");
     });
-    if (!dom.plusModal.hidden) showPlus(dom.plusSubtitle.textContent);
+    if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
   }
 
   store.activeId = location.hash.slice(1) && styles.some((style) => style.id === location.hash.slice(1))

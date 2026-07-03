@@ -940,6 +940,12 @@ main {
   color: #d8c694;
 }
 
+.plus-export-ready {
+  border-color: rgba(243, 212, 134, 0.48);
+  background: rgba(217, 170, 69, 0.2);
+  color: var(--gold-2);
+}
+
 .copy-btn {
   min-height: 38px;
   padding: 0 12px;
@@ -1297,11 +1303,21 @@ main {
   font-weight: 700;
 }
 
+.plus-footnote {
+  margin: -4px 0 12px;
+  color: #b8a77d;
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .plus-cta {
   width: 100%;
   min-height: 46px;
   border-color: rgba(243, 212, 134, 0.38);
   background: rgba(217, 170, 69, 0.14);
+  color: var(--gold-2);
+  opacity: 1;
 }
 
 .lightbox img {
