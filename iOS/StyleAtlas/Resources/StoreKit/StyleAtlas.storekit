@@ -1,0 +1,31 @@
+{
+  "identifier": "StyleAtlas",
+  "products": [
+    {
+      "displayPrice": "3.99",
+      "familyShareable": false,
+      "internalID": "xiazishuo-style-atlas-plus-lifetime",
+      "localizations": [
+        {
+          "description": "Unlock all complete style archives, unlimited saved styles, HD watermark-free export, multi-ratio export, and offline viewing.",
+          "displayName": "Xiazishuo Style Atlas Plus",
+          "locale": "en_US"
+        },
+        {
+          "description": "解锁全部完整风格档案、无限收藏、高清无水印保存、多比例导出和离线查看。",
+          "displayName": "虾子曰 Style Atlas Plus",
+          "locale": "zh_Hans"
+        }
+      ],
+      "productID": "xiazishuo_style_atlas_plus_lifetime",
+      "referenceName": "Xiazishuo Style Atlas Plus",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {
+    "_failTransactionsEnabled": false,
+    "_locale": "en_US",
+    "_storefront": "USA"
+  },
+  "subscriptionGroups": []
+}
