@@ -683,6 +683,22 @@ main {
   min-height: auto;
 }
 
+.detail-hero .visual {
+  height: auto;
+  aspect-ratio: 3 / 5;
+}
+
+.detail-hero .visual img {
+  object-fit: contain;
+}
+
+.detail .chip {
+  border-color: rgba(217, 170, 69, 0.36);
+  background: rgba(217, 170, 69, 0.16);
+  color: #f4e5bd;
+  font-weight: 700;
+}
+
 .detail-section {
   margin: 14px 0;
   padding: 16px;
@@ -731,6 +747,7 @@ main {
   border-radius: 10px;
   background: #111;
   object-fit: cover;
+  cursor: zoom-in;
 }
 
 .gallery-item figcaption {
@@ -865,10 +882,21 @@ main {
 }
 
 .filters {
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin-inline: -2px;
   margin-top: 10px;
+  padding: 0 2px 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
 }
 
 .filters .chip {
+  flex: 0 0 auto;
   border-color: var(--line);
   background: transparent;
   color: var(--muted);
@@ -1051,4 +1079,46 @@ main {
 .toast.show {
   transform: translateY(0);
   opacity: 1;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  gap: 14px;
+  padding: max(18px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
+  background: rgba(4, 4, 3, 0.92);
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox img {
+  max-width: min(100%, 430px);
+  max-height: 78vh;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  object-fit: contain;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.62);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(18, 15, 10, 0.88);
+  color: var(--paper);
+  font-size: 24px;
+}
+
+.lightbox-actions {
+  display: flex;
+  gap: 10px;
 }
