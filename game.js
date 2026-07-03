@@ -87,7 +87,7 @@
       },
       relatedStyles: related(index),
       art: palettes[index % palettes.length],
-      image: `assets/styles/${id}.png`,
+      image: `assets/styles/${id}.webp`,
       keywords
     };
   });
@@ -199,6 +199,13 @@
     savedList: $("savedList"),
     toast: $("toast")
   };
+
+  document.addEventListener("error", (event) => {
+    const img = event.target;
+    if (img instanceof HTMLImageElement && img.src.includes("/assets/styles/") && img.src.endsWith(".webp")) {
+      img.src = img.src.replace(".webp", ".png");
+    }
+  }, true);
 
   function catName(id, lang = store.lang) {
     const cat = categories.find((item) => item[0] === id);
