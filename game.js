@@ -889,11 +889,127 @@
     toast(t("copied"));
   }
 
+  async function loadImage(src) {
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = src;
+    await image.decode();
+    return image;
+  }
+
+  async function coverCardBlob(style) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1800;
+    const ctx = canvas.getContext("2d");
+    const image = await loadImage(style.image);
+    const scale = Math.max(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+    ctx.drawImage(image, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+    const shade = ctx.createLinearGradient(0, 850, 0, 1800);
+    shade.addColorStop(0, "rgba(0,0,0,0)");
+    shade.addColorStop(0.52, "rgba(0,0,0,0.42)");
+    shade.addColorStop(1, "rgba(0,0,0,0.82)");
+    ctx.fillStyle = shade;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(22, 18, 12, 0.82)";
+    roundRect(ctx, 52, 62, 150, 70, 30);
+    ctx.fill();
+    ctx.fillStyle = "#f4cf76";
+    ctx.font = "700 34px sans-serif";
+    ctx.fillText(`#${style.number}`, 85, 108);
+    ctx.fillStyle = "#fff6dc";
+    ctx.font = "700 126px Georgia";
+    wrap(ctx, style.name.en, 64, 1540, 940, 124);
+    ctx.fillStyle = "#f4cf76";
+    ctx.font = "800 48px sans-serif";
+    wrap(ctx, style.name.zh, 68, 1688, 900, 58);
+    return new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.94));
+  }
+
+  async function detailCardBlob(style) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 2500;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ead397";
+    roundRect(ctx, 0, 0, 1080, 2500, 48);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(27, 20, 8, .08)";
+    ctx.lineWidth = 2;
+    for (let x = 48; x < 1080; x += 92) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, 2500);
+      ctx.stroke();
+    }
+    const shine = ctx.createLinearGradient(0, 0, 1080, 700);
+    shine.addColorStop(0, "rgba(255,255,255,0)");
+    shine.addColorStop(0.58, "rgba(255,255,255,0.2)");
+    shine.addColorStop(0.66, "rgba(255,255,255,0)");
+    ctx.fillStyle = shine;
+    ctx.fillRect(0, 0, 1080, 2500);
+    ctx.fillStyle = "rgba(22, 18, 12, 0.92)";
+    roundRect(ctx, 52, 50, 590, 148, 16);
+    ctx.fill();
+    ctx.fillStyle = "#f4cf76";
+    ctx.font = "800 28px sans-serif";
+    wrap(ctx, `#${style.number} · ${catName(style.category)} ${style.subtitle[store.lang]}`, 78, 88, 520, 38);
+    ctx.fillStyle = "#17130d";
+    roundRect(ctx, 760, 50, 110, 110, 18);
+    ctx.fill();
+    roundRect(ctx, 900, 50, 110, 110, 18);
+    ctx.fill();
+    ctx.fillStyle = "#fff6dc";
+    ctx.font = "700 50px sans-serif";
+    ctx.fillText(isSaved(style.id) ? "♥" : "♡", 797, 122);
+    ctx.fillText("↗", 938, 122);
+    const image = await loadImage(style.image);
+    const x = 52;
+    const y = 230;
+    const width = 976;
+    const height = 1627;
+    ctx.save();
+    roundRect(ctx, x, y, width, height, 18);
+    ctx.clip();
+    const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+    const imageWidth = image.naturalWidth * scale;
+    const imageHeight = image.naturalHeight * scale;
+    ctx.fillStyle = "#111";
+    ctx.fillRect(x, y, width, height);
+    ctx.drawImage(image, x + (width - imageWidth) / 2, y + (height - imageHeight) / 2, imageWidth, imageHeight);
+    ctx.restore();
+    ctx.fillStyle = "#14100a";
+    ctx.font = "700 124px Georgia";
+    wrap(ctx, style.name.en, 52, 2010, 980, 124);
+    ctx.fillStyle = "#57451e";
+    ctx.font = "800 52px sans-serif";
+    wrap(ctx, style.name.zh, 56, 2142, 920, 64);
+    ctx.fillStyle = "#3f3422";
+    ctx.font = "42px sans-serif";
+    wrap(ctx, style.summary[store.lang], 56, 2260, 920, 60);
+    let chipX = 56;
+    const chipY = 2388;
+    ctx.font = "700 32px sans-serif";
+    style.tags[store.lang].slice(0, 3).forEach((tag) => {
+      const chipWidth = Math.min(250, ctx.measureText(tag).width + 64);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.36)";
+      roundRect(ctx, chipX, chipY, chipWidth, 78, 39);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(22, 18, 12, 0.14)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = "#302716";
+      ctx.fillText(tag, chipX + 32, chipY + 50);
+      chipX += chipWidth + 22;
+    });
+    return new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.94));
+  }
+
   async function coverFile(style) {
-    const response = await fetch(style.image);
-    if (!response.ok) throw new Error("image fetch failed");
-    const blob = await response.blob();
-    return new File([blob], `${style.id}-style-atlas.png`, { type: blob.type || "image/png" });
+    const blob = await (store.view === "detail" ? detailCardBlob(style) : coverCardBlob(style));
+    return new File([blob], `${style.id}-style-atlas-card.png`, { type: "image/png" });
   }
 
   async function imageFile(src, name = "style-atlas-image.png") {
@@ -958,44 +1074,13 @@
     }
   }
 
-  function saveShareCard(style = activeStyle()) {
-    const canvas = document.createElement("canvas");
-    canvas.width = 1080;
-    canvas.height = 1920;
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#090806";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#f3e7c9";
-    roundRect(ctx, 80, 110, 920, 1540, 40);
-    ctx.fill();
-    ctx.fillStyle = "#14100a";
-    ctx.font = "700 96px Georgia";
-    wrap(ctx, style.name.en, 130, 270, 820, 105);
-    ctx.fillStyle = "#6a5122";
-    ctx.font = "700 46px sans-serif";
-    ctx.fillText(style.name.zh, 130, 450);
-    const gradient = ctx.createLinearGradient(130, 540, 950, 1180);
-    gradient.addColorStop(0, "#0d0b08");
-    gradient.addColorStop(0.45, "#d8a93f");
-    gradient.addColorStop(1, "#2b1d0c");
-    ctx.fillStyle = gradient;
-    roundRect(ctx, 130, 540, 820, 620, 28);
-    ctx.fill();
-    ctx.fillStyle = "#fff0c4";
-    ctx.font = "700 72px Georgia";
-    ctx.textAlign = "center";
-    wrap(ctx, style.name.en, 540, 840, 680, 80, true);
-    ctx.textAlign = "left";
-    ctx.fillStyle = "#21190e";
-    ctx.font = "40px sans-serif";
-    wrap(ctx, style.summary[store.lang], 130, 1260, 820, 56);
-    ctx.fillStyle = "#d8a93f";
-    ctx.font = "700 34px sans-serif";
-    ctx.fillText("Style Atlas | 风格图鉴", 130, 1540);
+  async function saveShareCard(style = activeStyle()) {
+    const blob = await (store.view === "detail" ? detailCardBlob(style) : coverCardBlob(style));
     const link = document.createElement("a");
     link.download = `${style.id}-style-atlas.png`;
-    link.href = canvas.toDataURL("image/png");
+    link.href = URL.createObjectURL(blob);
     link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
     toast(t("cardSaved"));
   }
 
