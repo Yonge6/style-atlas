@@ -147,7 +147,11 @@
   const text = {
     zh: {
       today: "今日风格",
-      positioning: "一本装进口袋里的视觉风格图鉴。每天 3 分钟认识一种风格，建立自己的审美词库。",
+      brandTitle: "虾子曰 Style Atlas",
+      brandSubtitle: "风格图鉴",
+      productName: "虾子曰 Style Atlas",
+      positioning: "虾子曰 Style Atlas 是一本装进口袋里的视觉风格图鉴。\n每天 3 分钟认识一种风格，建立自己的审美词库。",
+      valueLine: "不是替你生成图片，而是帮你知道什么好看、为什么好看、怎么表达好看。",
       random: "随机",
       swipe: "左右滑动探索",
       categories: "分类",
@@ -181,9 +185,9 @@
       shared: "链接已复制",
       cardSaved: "分享卡片已下载"
       ,
-      plus: "Style Atlas Plus",
+      plus: "虾子曰 Style Atlas Plus",
       unlockTitle: "解锁完整风格档案",
-      unlockBody: "完整源流、形成原因、识别方法、代表案例和完整风格表达词已收纳在 Plus。",
+      unlockBody: "免费版可以先认识风格，Plus 帮你建立完整审美资料库。",
       unlockCta: "了解 Plus",
       locked: "Plus",
       freePreview: "免费预览",
@@ -192,6 +196,10 @@
       plusExport: "高清无水印 · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "建立你的私人审美资料库。",
       plusBenefits: ["解锁全部 120 个风格完整档案", "无限收藏", "高清无水印保存", "多比例导出", "离线查看", "后续小更新"],
+      freePlan: "免费版",
+      plusPlan: "Plus",
+      freePlanItems: ["每日推荐", "浏览全部 120 个风格封面", "查看 20 个完整风格档案", "收藏最多 20 个", "普通清晰度带水印保存"],
+      plusPlanItems: ["解锁全部 120 个完整风格档案", "无限收藏", "高清无水印保存", "多比例导出", "离线查看", "后续小更新"],
       launchPrice: "首发限时 ¥28 / $3.99",
       regularPrice: "正式价 ¥48 / $7.99",
       comingSoon: "即将开放",
@@ -199,10 +207,32 @@
       savedLimit: "你已经收藏了 20 个风格。升级 Plus，建立无限风格灵感库。",
       lockedExpression: "完整风格表达词已收纳在 Plus。",
       highResLocked: "高清无水印导出属于 Plus 预览功能。"
+      ,
+      about: "关于",
+      aboutTitle: "关于虾子曰 Style Atlas",
+      aboutBody: "虾子曰 Style Atlas 不是一个 AI 生成工具，而是一本帮助你建立审美词库的视觉风格图鉴。它把海报、绘画、插画、动画、民俗、数字艺术等 120 种视觉语言整理成可学习、可收藏、可表达的风格卡片。\n\n每天认识一种风格，慢慢你会更清楚地知道：什么好看，为什么好看，以及如何把脑海中的视觉感受准确表达出来。",
+      aboutFor: "适合设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
+      aboutFree: "免费版可以查看每日推荐、浏览全部风格封面、搜索风格、收藏 20 个风格，并学习 20 个完整风格档案。",
+      aboutPlus: "Plus 未来会解锁全部完整风格档案、无限收藏、高清无水印保存、多比例导出和离线查看。",
+      safetyTitle: "版权与风格安全说明",
+      safetyBody: "Style Atlas 鼓励学习视觉语言，而不是复制具体作品、具体角色或当代创作者的完整可识别风格。历史艺术流派可以作为学习对象，涉及当代工作室、IP 或在世创作者时，我们更建议使用通用视觉特征来表达。",
+      screenshotsTitle: "App Store Screenshot Kit",
+      screenshotSlides: [
+        ["每天 3 分钟提升审美", "今日风格"],
+        ["120 种全球视觉风格", "风格图鉴"],
+        ["看懂风格为什么好看", "深度档案"],
+        ["建立你的审美资料库", "风格收藏"],
+        ["保存好看的风格卡片", "高清导出"],
+        ["解锁完整风格档案", "Style Atlas Plus"]
+      ]
     },
     en: {
       today: "Today's Pick",
-      positioning: "A pocket visual style atlas. Learn one visual style a day and build your own taste vocabulary.",
+      brandTitle: "Xiazishuo Style Atlas",
+      brandSubtitle: "Style Atlas",
+      productName: "Xiazishuo Style Atlas",
+      positioning: "Xiazishuo Style Atlas is a pocket visual style atlas.\nLearn one visual style a day and build your own taste vocabulary.",
+      valueLine: "Not just generating images — but helping you understand what looks good, why it works, and how to express it.",
       random: "Random",
       swipe: "Swipe to explore",
       categories: "Categories",
@@ -235,9 +265,9 @@
       removedToast: "Removed",
       shared: "Link copied",
       cardSaved: "Share card downloaded",
-      plus: "Style Atlas Plus",
+      plus: "Xiazishuo Style Atlas Plus",
       unlockTitle: "Unlock the full style archive",
-      unlockBody: "Full origins, reasons, recognition methods, representative cases and complete style expression are included in Plus.",
+      unlockBody: "The free version helps you discover styles. Plus helps you build a complete taste archive.",
       unlockCta: "View Plus",
       locked: "Plus",
       freePreview: "Free preview",
@@ -246,6 +276,10 @@
       plusExport: "HD watermark-free · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "Build your private taste archive.",
       plusBenefits: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Offline viewing", "Future minor updates"],
+      freePlan: "Free",
+      plusPlan: "Plus",
+      freePlanItems: ["Daily pick", "Browse all 120 style covers", "View 20 full style archives", "Save up to 20 styles", "Standard watermarked export"],
+      plusPlanItems: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Offline viewing", "Future minor updates"],
       launchPrice: "Launch offer ¥28 / $3.99",
       regularPrice: "Regular ¥48 / $7.99",
       comingSoon: "Coming Soon",
@@ -253,6 +287,24 @@
       savedLimit: "You’ve saved 20 styles. Upgrade to Plus to build an unlimited style library.",
       lockedExpression: "Complete style expression is included in Plus.",
       highResLocked: "HD watermark-free export is a Plus preview feature."
+      ,
+      about: "About",
+      aboutTitle: "About Xiazishuo Style Atlas",
+      aboutBody: "Xiazishuo Style Atlas is not just an AI image tool. It is a visual style atlas that helps you build your taste vocabulary. It turns 120 visual languages across posters, painting, illustration, animation, folk art and digital aesthetics into learnable, saveable and expressible style cards.\n\nLearn one style a day, and you will gradually understand what looks good, why it works, and how to express the visual feeling in your mind more clearly.",
+      aboutFor: "For designers, AI creators, brand builders, content creators, design students and art lovers.",
+      aboutFree: "The free version includes the daily pick, all style covers, search, 20 saved styles and 20 full style archives.",
+      aboutPlus: "Plus will unlock all full archives, unlimited saved styles, HD watermark-free export, multi-ratio export and offline viewing.",
+      safetyTitle: "Copyright And Style Safety",
+      safetyBody: "Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
+      screenshotsTitle: "App Store Screenshot Kit",
+      screenshotSlides: [
+        ["Learn one visual style a day", "Today's Pick"],
+        ["120 global visual styles", "Style Atlas"],
+        ["Understand why each style works", "Deep Archive"],
+        ["Build your taste archive", "Saved Styles"],
+        ["Save beautiful style cards", "Export"],
+        ["Unlock the full style archive", "Style Atlas Plus"]
+      ]
     }
   };
 
@@ -279,6 +331,8 @@
     categoryTitle: $("categoryTitle"),
     categoryChips: $("categoryChips"),
     detailContent: $("detailContent"),
+    aboutContent: $("aboutContent"),
+    screenshotsContent: $("screenshotsContent"),
     searchLabel: $("searchLabel"),
     searchInput: $("searchInput"),
     clearSearchBtn: $("clearSearchBtn"),
@@ -292,6 +346,10 @@
     plusTitle: $("plusTitle"),
     plusSubtitle: $("plusSubtitle"),
     plusBenefits: $("plusBenefits"),
+    freePlanTitle: $("freePlanTitle"),
+    freePlanList: $("freePlanList"),
+    plusPlanTitle: $("plusPlanTitle"),
+    plusPlanList: $("plusPlanList"),
     plusLaunchPrice: $("plusLaunchPrice"),
     plusRegularPrice: $("plusRegularPrice"),
     plusFootnote: $("plusFootnote"),
@@ -366,7 +424,13 @@
     store.plusReasonKey = reasonKey;
     dom.plusTitle.textContent = t("plus");
     dom.plusSubtitle.textContent = t(reasonKey);
+    $("plusKicker").textContent = t("plus");
+    $("plusGentleNote").textContent = t("unlockBody");
     dom.plusBenefits.innerHTML = t("plusBenefits").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+    dom.freePlanTitle.textContent = t("freePlan");
+    dom.plusPlanTitle.textContent = t("plusPlan");
+    dom.freePlanList.innerHTML = t("freePlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+    dom.plusPlanList.innerHTML = t("plusPlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     dom.plusLaunchPrice.textContent = t("launchPrice");
     dom.plusRegularPrice.textContent = t("regularPrice");
     dom.plusFootnote.textContent = t("appStoreFootnote");
@@ -458,7 +522,10 @@
     const style = activeStyle();
     const lang = store.lang;
     dom.todayLabel.textContent = t("today");
-    dom.positioningCopy.textContent = t("positioning");
+    dom.positioningCopy.textContent = `${t("positioning")}\n${t("valueLine")}`;
+    document.querySelector(".brand strong").textContent = t("brandTitle");
+    document.querySelector(".brand span").textContent = t("brandSubtitle");
+    document.querySelector(".drawer-head strong").textContent = t("brandTitle");
     dom.randomBtn.textContent = t("random");
     dom.swipeHint.textContent = t("swipe");
     dom.categoryTitle.textContent = t("categories");
@@ -697,7 +764,83 @@
     dom.savedList.innerHTML = savedStyles.length ? savedStyles.map(resultCard).join("") : `<p class="empty">${t("empty")}</p>`;
   }
 
+  function renderAbout() {
+    dom.aboutContent.innerHTML = `
+      <section class="detail-section about-hero">
+        <p class="plus-kicker">${escapeHtml(t("productName"))}</p>
+        <h1>${escapeHtml(t("aboutTitle"))}</h1>
+        ${t("aboutBody").split("\n\n").map((item) => `<p>${escapeHtml(item)}</p>`).join("")}
+      </section>
+      <section class="detail-section">
+        <h2>${store.lang === "zh" ? "产品定位" : "Positioning"}</h2>
+        <p>${escapeHtml(t("positioning"))}</p>
+        <p>${escapeHtml(t("valueLine"))}</p>
+      </section>
+      <section class="detail-section">
+        <h2>${store.lang === "zh" ? "适合谁使用" : "Who It Is For"}</h2>
+        <p>${escapeHtml(t("aboutFor"))}</p>
+      </section>
+      <section class="detail-section">
+        <h2>${store.lang === "zh" ? "免费版能做什么" : "What Free Includes"}</h2>
+        <p>${escapeHtml(t("aboutFree"))}</p>
+      </section>
+      <section class="detail-section">
+        <h2>${store.lang === "zh" ? "Plus 未来会解锁什么" : "What Plus Will Unlock"}</h2>
+        <p>${escapeHtml(t("aboutPlus"))}</p>
+      </section>
+      <section class="detail-section">
+        <h2>${escapeHtml(t("safetyTitle"))}</h2>
+        <p>${escapeHtml(t("safetyBody"))}</p>
+      </section>
+    `;
+  }
+
+  function renderScreenshots() {
+    const lang = store.lang;
+    const featured = [styles[38], styles[0], styles[2], styles[60], styles[35], styles[99]].filter(Boolean);
+    dom.screenshotsContent.innerHTML = `
+      <section class="screenshot-head">
+        <p>${escapeHtml(t("productName"))}</p>
+        <h1>${escapeHtml(t("screenshotsTitle"))}</h1>
+        <span>${escapeHtml(t("valueLine"))}</span>
+      </section>
+      <div class="screenshot-grid">
+        ${t("screenshotSlides").map((slide, index) => {
+          const style = featured[index] || styles[index];
+          return `
+            <article class="screenshot-card shot-${index + 1}">
+              <div class="shot-copy">
+                <strong>${escapeHtml(slide[0])}</strong>
+                <span>${escapeHtml(slide[1])}</span>
+              </div>
+              ${screenshotMock(index, style, lang)}
+              <small>${escapeHtml(t("productName"))}</small>
+            </article>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+
+  function screenshotMock(index, style, lang) {
+    if (index === 5) {
+      return `<div class="shot-paywall"><h2>${escapeHtml(t("plus"))}</h2><p>${escapeHtml(t("plusSubtitle"))}</p><ul>${t("plusPlanItems").slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>`;
+    }
+    if (index === 2) {
+      return `<div class="shot-panel"><h3>${escapeHtml(style.name[lang])}</h3><p>${escapeHtml(style.history[lang]).slice(0, 90)}...</p><p>${escapeHtml(style.why[lang]).slice(0, 72)}...</p></div>`;
+    }
+    if (index === 3) {
+      return `<div class="shot-list">${styles.slice(0, 4).map((item) => `<span><img src="${item.image}" alt=""><b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
+    }
+    if (index === 4) {
+      return `<div class="shot-export"><img src="${style.image}" alt=""><button>${escapeHtml(t("freeExport"))}</button></div>`;
+    }
+    return `<div class="shot-card-visual"><img src="${style.image}" alt=""><h2>${escapeHtml(style.name.en)}</h2><p>${escapeHtml(style.name.zh)}</p></div>`;
+  }
+
   function setView(view) {
+    if (view === "screenshots") renderScreenshots();
+    if (view === "about") renderAbout();
     if (view === "detail") renderDetail();
     setDrawer(false);
     store.view = view;
@@ -807,6 +950,11 @@
     ctx.fillStyle = "#f4cf76";
     ctx.font = "700 34px sans-serif";
     ctx.fillText(`#${style.number}`, 85, 108);
+    ctx.fillStyle = "rgba(255, 246, 220, 0.82)";
+    ctx.font = "700 30px sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(t("productName"), canvas.width - 64, 108);
+    ctx.textAlign = "left";
     ctx.fillStyle = "#fff6dc";
     ctx.font = "700 126px Georgia";
     wrap(ctx, style.name.en, 64, 1540, 940, 124);
@@ -845,6 +993,11 @@
     ctx.fillStyle = "#f4cf76";
     ctx.font = "800 28px sans-serif";
     wrap(ctx, `#${style.number} · ${catName(style.category)} ${style.subtitle[store.lang]}`, 78, 88, 520, 38);
+    ctx.fillStyle = "#5b4518";
+    ctx.font = "800 28px sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(t("productName"), 1020, 208);
+    ctx.textAlign = "left";
     ctx.fillStyle = "#17130d";
     roundRect(ctx, 760, 50, 110, 110, 18);
     ctx.fill();
@@ -1015,14 +1168,16 @@
 
   function drawWatermark(ctx, width, height) {
     if (!ACCESS_CONFIG.freeExportWatermark || hasPlusAccess()) return;
+    const watermark = store.lang === "zh" ? "虾子曰 Style Atlas Free" : "Xiazishuo Style Atlas Free";
     ctx.save();
     ctx.globalAlpha = 0.82;
     ctx.fillStyle = "rgba(10, 8, 6, 0.58)";
-    roundRect(ctx, width - 352, height - 92, 292, 50, 25);
+    const boxWidth = Math.min(430, Math.max(292, watermark.length * 18));
+    roundRect(ctx, width - boxWidth - 60, height - 92, boxWidth, 50, 25);
     ctx.fill();
     ctx.fillStyle = "#fff6dc";
     ctx.font = "700 24px sans-serif";
-    ctx.fillText("Style Atlas Free", width - 326, height - 58);
+    ctx.fillText(watermark, width - boxWidth - 32, height - 58);
     ctx.restore();
   }
 
@@ -1186,10 +1341,14 @@
     });
     dom.copyListBtn.addEventListener("click", () => {
       const list = store.saved.map((id) => styles.find((style) => style.id === id)).filter(Boolean).map((style) => `${style.name.en} / ${style.name.zh}`).join("\n");
-      copyText(list || "Style Atlas");
+      copyText(list || t("productName"));
     });
     window.addEventListener("hashchange", () => {
       const id = location.hash.slice(1);
+      if (id === "screenshots") {
+        setView("screenshots");
+        return;
+      }
       if (!styles.some((style) => style.id === id)) return;
       store.activeId = id;
       setView("detail");
@@ -1207,17 +1366,24 @@
         home: store.lang === "zh" ? "今日" : "Today",
         detail: store.lang === "zh" ? "探索" : "Explore",
         search: store.lang === "zh" ? "搜索" : "Search",
-        saved: store.lang === "zh" ? "收藏" : "Saved"
+        saved: store.lang === "zh" ? "收藏" : "Saved",
+        about: t("about"),
+        screenshots: t("screenshotsTitle")
       };
       button.textContent = button.dataset.view ? map[button.dataset.view] : t("plus");
     });
+    if (store.view === "about") renderAbout();
+    if (store.view === "screenshots") renderScreenshots();
     if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
   }
 
-  store.activeId = location.hash.slice(1) && styles.some((style) => style.id === location.hash.slice(1))
+  const initialHash = location.hash.slice(1);
+  const screenshotMode = initialHash === "screenshots" || new URLSearchParams(location.search).get("screenshots") === "1";
+  store.activeId = initialHash && styles.some((style) => style.id === initialHash)
     ? location.hash.slice(1)
     : styles[dailyIndex()].id;
-  if (location.hash.slice(1) && styles.some((style) => style.id === location.hash.slice(1))) store.view = "detail";
+  if (initialHash && styles.some((style) => style.id === initialHash)) store.view = "detail";
+  if (screenshotMode) store.view = "screenshots";
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
   bind();
   renderAll();
