@@ -521,6 +521,8 @@
     drawerCloseBtn: $("drawerCloseBtn"),
     drawer: $("drawer"),
     drawerBackdrop: $("drawerBackdrop"),
+    lightbox: $("lightbox"),
+    lightboxImage: $("lightboxImage"),
     deckStage: $("deckStage"),
     prevGhost: $("prevGhost"),
     nextGhost: $("nextGhost"),
@@ -684,7 +686,7 @@
         <h2>${t("exhibitImages")}</h2>
         <div class="gallery-grid" id="galleryGrid">
           <figure class="gallery-item">
-            <img src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy">
+            <img src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy" data-action="open-image">
             <figcaption>${escapeHtml(style.name[lang])}</figcaption>
           </figure>
         </div>
@@ -767,7 +769,7 @@
         .slice(0, 4);
       gallery.insertAdjacentHTML("beforeend", pages.map((page) => `
         <figure class="gallery-item">
-          <img src="${escapeHtml(page.thumbnail.source)}" alt="${escapeHtml(page.title)}" loading="lazy">
+          <img src="${escapeHtml(page.thumbnail.source)}" alt="${escapeHtml(page.title)}" loading="lazy" data-action="open-image">
           <figcaption><a href="${escapeHtml(page.fullurl)}" target="_blank" rel="noreferrer">${escapeHtml(page.title)}</a></figcaption>
         </figure>
       `).join(""));
@@ -892,6 +894,47 @@
     if (!response.ok) throw new Error("image fetch failed");
     const blob = await response.blob();
     return new File([blob], `${style.id}-style-atlas.png`, { type: blob.type || "image/png" });
+  }
+
+  async function imageFile(src, name = "style-atlas-image.png") {
+    const response = await fetch(src);
+    if (!response.ok) throw new Error("image fetch failed");
+    const blob = await response.blob();
+    return new File([blob], name, { type: blob.type || "image/png" });
+  }
+
+  function openImage(src, alt) {
+    dom.lightboxImage.src = src;
+    dom.lightboxImage.alt = alt || "";
+    dom.lightbox.hidden = false;
+    dom.lightbox.dataset.src = src;
+    document.body.classList.add("drawer-lock");
+  }
+
+  function closeImage() {
+    dom.lightbox.hidden = true;
+    dom.lightboxImage.removeAttribute("src");
+    delete dom.lightbox.dataset.src;
+    document.body.classList.remove("drawer-lock");
+  }
+
+  async function shareImage(src = dom.lightbox.dataset.src) {
+    if (!src) return;
+    const file = await imageFile(src, "style-atlas-image.png");
+    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+      await navigator.share({ title: activeStyle().name[store.lang], files: [file] });
+      return;
+    }
+    await navigator.clipboard.writeText(src);
+    toast(t("shared"));
+  }
+
+  function saveImage(src = dom.lightbox.dataset.src) {
+    if (!src) return;
+    const link = document.createElement("a");
+    link.href = src;
+    link.download = "style-atlas-image.png";
+    link.click();
   }
 
   async function shareStyle(style = activeStyle()) {
@@ -1107,6 +1150,13 @@
       }
       if (action === "save") return toggleSaved();
       if (action === "share") return shareStyle();
+      if (action === "open-image") {
+        const img = event.target.closest("img");
+        return openImage(img.currentSrc || img.src, img.alt);
+      }
+      if (action === "close-lightbox") return closeImage();
+      if (action === "share-lightbox") return shareImage();
+      if (action === "save-lightbox") return saveImage();
       if (action === "copy-prompt") {
         const style = activeStyle();
         return copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
