@@ -4,6 +4,34 @@
   const $ = (id) => document.getElementById(id);
   const data = window.STYLE_ATLAS_DATA || {};
   const { categories, categoryAliases, styleAliases, categoryCopy, palettes, peopleByStyle, categoryHistory, riskByStyle, rawStyles, refinedStyles } = data;
+  const ACCESS_CONFIG = {
+    freeFullStyleLimit: 20,
+    maxFreeSaved: 20,
+    freeExportWatermark: true,
+    plusEnabled: false,
+    freeFullStyleIds: [
+      "swiss-style",
+      "bauhaus",
+      "art-deco",
+      "art-nouveau",
+      "constructivism",
+      "minimalism",
+      "pop-art-poster",
+      "van-gogh",
+      "monet",
+      "picasso-cubism",
+      "matisse",
+      "dali",
+      "magritte",
+      "edward-hopper",
+      "gustav-klimt",
+      "chinese-ink-painting",
+      "dunhuang-mural",
+      "ukiyo-e",
+      "cinematic-anime",
+      "childrens-picture-book"
+    ]
+  };
   const readLang = () => (["zh", "en"].includes(localStorage.getItem("styleAtlasLang")) ? localStorage.getItem("styleAtlasLang") : (navigator.language.startsWith("zh") ? "zh" : "en"));
   const readArray = (key) => {
     try {
@@ -93,10 +121,17 @@
   });
 
   Object.entries(refinedStyles || {}).forEach(([id, data]) => Object.assign(styles.find((style) => style.id === id), data));
+  styles.forEach((style) => {
+    style.isFreeFullAccess = ACCESS_CONFIG.freeFullStyleIds.includes(style.id);
+    style.accessTier = style.isFreeFullAccess ? "free-full" : "plus";
+    style.isPlusLocked = !ACCESS_CONFIG.plusEnabled && !style.isFreeFullAccess;
+    style.exportTier = ACCESS_CONFIG.plusEnabled ? "plus" : "free";
+  });
 
   const text = {
     zh: {
       today: "今日风格",
+      positioning: "一本装进口袋里的视觉风格图鉴。每天 3 分钟认识一种风格，建立自己的审美词库。",
       random: "随机",
       swipe: "左右滑动探索",
       categories: "分类",
@@ -108,7 +143,7 @@
       unfavorite: "已收藏",
       share: "分享",
       saveCard: "保存卡片",
-      copyPrompt: "复制提示词",
+      copyPrompt: "复制表达词",
       features: "视觉特征",
       history: "风格源流",
       why: "形成原因",
@@ -119,7 +154,7 @@
       references: "代表作品与案例",
       memory: "记住它",
       useCases: "适用场景",
-      prompt: "AI 提示词",
+      prompt: "风格表达词",
       examples: "公开案例",
       source: "查看来源",
       similar: "相似风格",
@@ -129,9 +164,27 @@
       removedToast: "已取消收藏",
       shared: "链接已复制",
       cardSaved: "分享卡片已下载"
+      ,
+      plus: "Style Atlas Plus",
+      unlockTitle: "解锁完整风格档案",
+      unlockBody: "完整源流、形成原因、识别方法、代表案例和完整风格表达词已收纳在 Plus。",
+      unlockCta: "了解 Plus",
+      locked: "Plus",
+      freePreview: "免费预览",
+      exportOptions: "保存导出",
+      freeExport: "普通清晰度 · 9:16 · 带水印",
+      plusExport: "高清无水印 · 9:16 / 1:1 / 4:5 / 16:9",
+      plusSubtitle: "建立你的私人审美资料库。",
+      plusBenefits: ["解锁全部 120 个风格完整档案", "无限收藏", "高清无水印保存", "多比例导出", "离线查看", "后续小更新"],
+      launchPrice: "首发限时 ¥28 / $3.99",
+      regularPrice: "正式价 ¥48 / $7.99",
+      comingSoon: "即将开放",
+      savedLimit: "你已经收藏了 20 个风格。升级 Plus，建立无限风格灵感库。",
+      highResLocked: "高清无水印导出属于 Plus 预览功能。"
     },
     en: {
       today: "Today's Pick",
+      positioning: "A pocket visual style atlas. Learn one visual style a day and build your own taste vocabulary.",
       random: "Random",
       swipe: "Swipe to explore",
       categories: "Categories",
@@ -143,7 +196,7 @@
       unfavorite: "Saved",
       share: "Share",
       saveCard: "Save card",
-      copyPrompt: "Copy prompt",
+      copyPrompt: "Copy expression",
       features: "Visual features",
       history: "Origins",
       why: "Why It Formed",
@@ -154,7 +207,7 @@
       references: "Works And Cases",
       memory: "Remember it",
       useCases: "Use cases",
-      prompt: "AI prompt",
+      prompt: "Style Expression",
       examples: "Public example",
       source: "View source",
       similar: "Similar styles",
@@ -163,7 +216,23 @@
       savedToast: "Saved",
       removedToast: "Removed",
       shared: "Link copied",
-      cardSaved: "Share card downloaded"
+      cardSaved: "Share card downloaded",
+      plus: "Style Atlas Plus",
+      unlockTitle: "Unlock the full style archive",
+      unlockBody: "Full origins, reasons, recognition methods, representative cases and complete style expression are included in Plus.",
+      unlockCta: "View Plus",
+      locked: "Plus",
+      freePreview: "Free preview",
+      exportOptions: "Export",
+      freeExport: "Standard clarity · 9:16 · watermarked",
+      plusExport: "HD watermark-free · 9:16 / 1:1 / 4:5 / 16:9",
+      plusSubtitle: "Build your private taste archive.",
+      plusBenefits: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Offline viewing", "Future minor updates"],
+      launchPrice: "Launch offer ¥28 / $3.99",
+      regularPrice: "Regular ¥48 / $7.99",
+      comingSoon: "Coming Soon",
+      savedLimit: "You’ve saved 20 styles. Upgrade to Plus to build an unlimited style library.",
+      highResLocked: "HD watermark-free export is a Plus preview feature."
     }
   };
 
@@ -181,6 +250,7 @@
     prevGhost: $("prevGhost"),
     nextGhost: $("nextGhost"),
     todayLabel: $("todayLabel"),
+    positioningCopy: $("positioningCopy"),
     randomBtn: $("randomBtn"),
     styleDeck: $("styleDeck"),
     prevBtn: $("prevBtn"),
@@ -197,7 +267,14 @@
     savedCount: $("savedCount"),
     copyListBtn: $("copyListBtn"),
     savedList: $("savedList"),
-    toast: $("toast")
+    toast: $("toast"),
+    plusModal: $("plusModal"),
+    plusTitle: $("plusTitle"),
+    plusSubtitle: $("plusSubtitle"),
+    plusBenefits: $("plusBenefits"),
+    plusLaunchPrice: $("plusLaunchPrice"),
+    plusRegularPrice: $("plusRegularPrice"),
+    plusCta: $("plusCta")
   };
 
   document.addEventListener("error", (event) => {
@@ -264,6 +341,50 @@
     return typeof value === "function" ? value(...args) : value;
   }
 
+  function showPlus(reason) {
+    dom.plusTitle.textContent = t("plus");
+    dom.plusSubtitle.textContent = reason || t("plusSubtitle");
+    dom.plusBenefits.innerHTML = t("plusBenefits").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+    dom.plusLaunchPrice.textContent = t("launchPrice");
+    dom.plusRegularPrice.textContent = t("regularPrice");
+    dom.plusCta.textContent = t("comingSoon");
+    dom.plusModal.hidden = false;
+    document.body.classList.add("drawer-lock");
+    setDrawer(false);
+  }
+
+  function closePlus() {
+    dom.plusModal.hidden = true;
+    document.body.classList.remove("drawer-lock");
+  }
+
+  function lockedSection(title, preview) {
+    return `
+      <section class="detail-section locked-section">
+        <div class="locked-preview">
+          <h2>${escapeHtml(title)}</h2>
+          <p>${escapeHtml(preview)}</p>
+        </div>
+        <div class="lock-overlay">
+          <span>${t("locked")}</span>
+          <strong>${t("unlockTitle")}</strong>
+          <p>${t("unlockBody")}</p>
+          <button class="copy-btn" type="button" data-action="show-plus">${t("unlockCta")}</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderExportPanel() {
+    return `
+      <section class="detail-section export-section">
+        <h2>${t("exportOptions")}</h2>
+        <button class="copy-btn" type="button" data-action="save-card">${t("freeExport")}</button>
+        <button class="copy-btn locked-export" type="button" data-action="plus-export">${t("plusExport")}</button>
+      </section>
+    `;
+  }
+
   function renderDeckCard(style) {
     const lang = store.lang;
     const saved = isSaved(style.id);
@@ -312,6 +433,7 @@
     const style = activeStyle();
     const lang = store.lang;
     dom.todayLabel.textContent = t("today");
+    dom.positioningCopy.textContent = t("positioning");
     dom.randomBtn.textContent = t("random");
     dom.swipeHint.textContent = t("swipe");
     dom.categoryTitle.textContent = t("categories");
@@ -339,22 +461,14 @@
   function renderDetail() {
     const style = activeStyle();
     const lang = store.lang;
+    const locked = style.isPlusLocked;
     const example = {
       title: `${style.name[lang]} ${store.lang === "zh" ? "原创示例" : "original example"}`,
       artist: "Style Atlas",
       image: style.image
     };
     addRecent(style.id);
-    dom.detailContent.innerHTML = `
-      <div class="detail-hero style-card">${renderCard(style, true)}</div>
-      <section class="detail-section">
-        <h2>${t("memory")}</h2>
-        <p>${escapeHtml(style.memoryAnchor[lang])}</p>
-      </section>
-      <section class="detail-section">
-        <h2>${t("curator")}</h2>
-        <p>${escapeHtml(style.curatorNote[lang])}</p>
-      </section>
+    const gallerySection = `
       <section class="detail-section">
         <h2>${t("exhibitImages")}</h2>
         <div class="gallery-grid" id="galleryGrid">
@@ -364,6 +478,66 @@
           </figure>
         </div>
       </section>
+    `;
+    const exampleSection = example ? `
+      <section class="detail-section">
+        <h2>${t("examples")}</h2>
+        <figure class="example-card">
+          <img src="${escapeHtml(example.image)}" alt="${escapeHtml(example.title)}" loading="lazy">
+          <figcaption>
+            <strong>${escapeHtml(example.title)}</strong>
+            <span>${escapeHtml(example.artist)}</span>
+            ${example.source ? `<a href="${escapeHtml(example.source)}" target="_blank" rel="noreferrer">${t("source")}</a>` : ""}
+          </figcaption>
+        </figure>
+      </section>
+    ` : "";
+    const promptSection = locked ? `
+      <section class="detail-section locked-section">
+        <div class="locked-preview">
+          <h2>${t("prompt")}</h2>
+          <p>${escapeHtml(style.imagePrompts[lang])}</p>
+        </div>
+        <div class="lock-overlay">
+          <span>${t("locked")}</span>
+          <strong>${t("unlockTitle")}</strong>
+          <p>${t("unlockBody")}</p>
+          <button class="copy-btn" type="button" data-action="show-plus">${t("unlockCta")}</button>
+        </div>
+      </section>
+    ` : `
+      <section class="detail-section">
+        <h2>${t("prompt")}</h2>
+        <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
+        <div class="prompt-actions">
+          <button class="copy-btn" type="button" data-action="copy-prompt">${t("copyPrompt")}</button>
+          <button class="copy-btn" type="button" data-action="save-card">${t("saveCard")}</button>
+        </div>
+      </section>
+    `;
+    const archiveSections = locked ? `
+      ${lockedSection(t("curator"), style.curatorNote[lang])}
+      ${lockedSection(t("exhibitImages"), style.name[lang])}
+      <section class="detail-section">
+        <h2>${t("features")}</h2>
+        <div class="feature-grid">${style.visualFeatures[lang].slice(0, 3).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
+      </section>
+      ${lockedSection(t("history"), style.history[lang])}
+      ${lockedSection(t("why"), style.why[lang])}
+      ${lockedSection(t("people"), style.people[lang].join(" / "))}
+      ${lockedSection(t("lookFor"), style.lookFor[lang].slice(0, 2).join(" / "))}
+      ${lockedSection(t("references"), style.references[lang][0])}
+      <section class="detail-section">
+        <h2>${t("useCases")}</h2>
+        <div class="chip-row">${style.useCases[lang].slice(0, 3).map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
+      </section>
+      ${promptSection}
+    ` : `
+      <section class="detail-section">
+        <h2>${t("curator")}</h2>
+        <p>${escapeHtml(style.curatorNote[lang])}</p>
+      </section>
+      ${gallerySection}
       <section class="detail-section">
         <h2>${t("features")}</h2>
         <div class="feature-grid">${style.visualFeatures[lang].map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
@@ -392,33 +566,24 @@
         <h2>${t("useCases")}</h2>
         <div class="chip-row">${style.useCases[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
       </section>
-      ${example ? `
-        <section class="detail-section">
-          <h2>${t("examples")}</h2>
-          <figure class="example-card">
-            <img src="${escapeHtml(example.image)}" alt="${escapeHtml(example.title)}" loading="lazy">
-            <figcaption>
-              <strong>${escapeHtml(example.title)}</strong>
-              <span>${escapeHtml(example.artist)}</span>
-              ${example.source ? `<a href="${escapeHtml(example.source)}" target="_blank" rel="noreferrer">${t("source")}</a>` : ""}
-            </figcaption>
-          </figure>
-        </section>
-      ` : ""}
+      ${exampleSection}
+      ${promptSection}
+    `;
+    dom.detailContent.innerHTML = `
+      <div class="detail-hero style-card">${renderCard(style, true)}</div>
+      ${locked ? `<p class="access-note">${t("freePreview")}</p>` : ""}
       <section class="detail-section">
-        <h2>${t("prompt")}</h2>
-        <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
-        <div class="prompt-actions">
-          <button class="copy-btn" type="button" data-action="copy-prompt">${t("copyPrompt")}</button>
-          <button class="copy-btn" type="button" data-action="save-card">${t("saveCard")}</button>
-        </div>
+        <h2>${t("memory")}</h2>
+        <p>${escapeHtml(style.memoryAnchor[lang])}</p>
       </section>
+      ${archiveSections}
+      ${renderExportPanel()}
       <section class="detail-section">
         <h2>${t("similar")}</h2>
         <div class="result-list">${style.relatedStyles.map((id) => resultCard(styles.find((item) => item.id === id))).join("")}</div>
       </section>
     `;
-    loadWikiGallery(style);
+    if (!locked) loadWikiGallery(style);
   }
 
   async function loadWikiGallery(style) {
@@ -555,6 +720,10 @@
       store.saved = store.saved.filter((item) => item !== id);
       toast(t("removedToast"));
     } else {
+      if (!ACCESS_CONFIG.plusEnabled && store.saved.length >= ACCESS_CONFIG.maxFreeSaved) {
+        showPlus(t("savedLimit"));
+        return;
+      }
       store.saved.push(id);
       toast(t("savedToast"));
     }
@@ -611,6 +780,7 @@
     ctx.fillStyle = "#f4cf76";
     ctx.font = "800 48px sans-serif";
     wrap(ctx, style.name.zh, 68, 1688, 900, 58);
+    drawWatermark(ctx, canvas.width, canvas.height);
     return new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.94));
   }
 
@@ -690,6 +860,7 @@
       ctx.fillText(tag, chipX + 32, chipY + 50);
       chipX += chipWidth + 22;
     });
+    drawWatermark(ctx, canvas.width, canvas.height);
     return new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.94));
   }
 
@@ -809,6 +980,19 @@
     ctx.fillText(line, centered ? x : x, y);
   }
 
+  function drawWatermark(ctx, width, height) {
+    if (!ACCESS_CONFIG.freeExportWatermark || ACCESS_CONFIG.plusEnabled) return;
+    ctx.save();
+    ctx.globalAlpha = 0.82;
+    ctx.fillStyle = "rgba(10, 8, 6, 0.58)";
+    roundRect(ctx, width - 352, height - 92, 292, 50, 25);
+    ctx.fill();
+    ctx.fillStyle = "#fff6dc";
+    ctx.font = "700 24px sans-serif";
+    ctx.fillText("Style Atlas Free", width - 326, height - 58);
+    ctx.restore();
+  }
+
   function toast(message) {
     dom.toast.textContent = message;
     dom.toast.classList.add("show");
@@ -842,6 +1026,10 @@
         moved = false;
         if (action === "save") return toggleSaved();
         if (action === "share") return shareStyle();
+        if (action === "copy-prompt") {
+          const style = activeStyle();
+          return copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
+        }
         if (action === "detail") return setView("detail");
       }
       if (moved) {
@@ -928,6 +1116,9 @@
       if (action === "close-lightbox") return closeImage();
       if (action === "share-lightbox") return shareImage();
       if (action === "save-lightbox") return saveImage();
+      if (action === "show-plus") return showPlus();
+      if (action === "close-plus") return closePlus();
+      if (action === "plus-export") return showPlus(t("highResLocked"));
       if (action === "copy-prompt") {
         const style = activeStyle();
         return copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
@@ -987,8 +1178,9 @@
         search: store.lang === "zh" ? "搜索" : "Search",
         saved: store.lang === "zh" ? "收藏" : "Saved"
       };
-      button.textContent = map[button.dataset.view];
+      button.textContent = button.dataset.view ? map[button.dataset.view] : t("plus");
     });
+    if (!dom.plusModal.hidden) showPlus(dom.plusSubtitle.textContent);
   }
 
   store.activeId = location.hash.slice(1) && styles.some((style) => style.id === location.hash.slice(1))

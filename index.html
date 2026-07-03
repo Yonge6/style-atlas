@@ -28,6 +28,7 @@
           <p id="todayLabel">今日风格</p>
           <button id="randomBtn" class="small-action" type="button">随机</button>
         </div>
+        <p id="positioningCopy" class="positioning-copy">一本装进口袋里的视觉风格图鉴。每天 3 分钟认识一种风格，建立自己的审美词库。</p>
 
         <div id="deckStage" class="deck-stage" aria-live="polite">
           <article id="prevGhost" class="style-card cover-card ghost-card prev" aria-hidden="true"></article>
@@ -83,11 +84,26 @@
         <button class="nav-btn" type="button" data-view="detail">探索</button>
         <button class="nav-btn" type="button" data-view="search">搜索</button>
         <button class="nav-btn" type="button" data-view="saved">收藏</button>
+        <button class="nav-btn plus-nav" type="button" data-action="show-plus">Style Atlas Plus</button>
       </nav>
     </aside>
   </div>
 
   <div id="toast" class="toast" role="status"></div>
+  <div id="plusModal" class="plus-modal" hidden>
+    <div class="plus-panel" role="dialog" aria-modal="true" aria-labelledby="plusTitle">
+      <button class="lightbox-close" type="button" data-action="close-plus">×</button>
+      <p id="plusKicker" class="plus-kicker">Style Atlas Plus</p>
+      <h2 id="plusTitle">Style Atlas Plus</h2>
+      <p id="plusSubtitle" class="plus-subtitle">建立你的私人审美资料库。</p>
+      <ul id="plusBenefits" class="plus-benefits"></ul>
+      <div class="plus-price">
+        <span id="plusLaunchPrice">首发限时 ¥28 / $3.99</span>
+        <small id="plusRegularPrice">正式价 ¥48 / $7.99</small>
+      </div>
+      <button id="plusCta" class="copy-btn plus-cta" type="button" disabled>即将开放</button>
+    </div>
+  </div>
   <div id="lightbox" class="lightbox" hidden>
     <button class="lightbox-close" type="button" data-action="close-lightbox">×</button>
     <img id="lightboxImage" alt="" />
