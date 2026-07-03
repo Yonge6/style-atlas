@@ -203,9 +203,16 @@
   document.addEventListener("error", (event) => {
     const img = event.target;
     if (img instanceof HTMLImageElement && img.src.includes("/assets/styles/") && img.src.endsWith(".webp")) {
-      img.src = img.src.replace(".webp", ".png");
+      img.src = pngFallback(img.src);
     }
   }, true);
+
+  function pngFallback(src) {
+    const file = new URL(src, location.href).pathname.split("/").pop().replace(".webp", ".png");
+    return location.hostname.endsWith("github.io")
+      ? `https://raw.githubusercontent.com/Yonge6/style-atlas/main/assets/styles/${file}`
+      : src.replace(".webp", ".png");
+  }
 
   function catName(id, lang = store.lang) {
     const cat = categories.find((item) => item[0] === id);
@@ -567,8 +574,13 @@
     const image = new Image();
     image.crossOrigin = "anonymous";
     image.src = src;
-    await image.decode();
-    return image;
+    try {
+      await image.decode();
+      return image;
+    } catch (error) {
+      if (!src.endsWith(".webp")) throw error;
+      return loadImage(pngFallback(src));
+    }
   }
 
   async function coverCardBlob(style) {
