@@ -32,6 +32,25 @@
     ["illustration", "插画、出版与商业绘本风格", "Illustration and publishing"]
   ];
 
+  const categoryAliases = {
+    poster: ["高级海报", "科技品牌", "网格排版", "发布会", "品牌视觉", "premium poster", "tech brand", "grid layout", "brand launch"],
+    painting: ["油画", "艺术感", "古典", "光影", "画布质感", "oil painting", "classical", "painterly", "dramatic light"],
+    master: ["大师", "艺术家", "强风格", "名画感", "artist style", "master style", "iconic art"],
+    modern: ["实验", "观念", "抽象", "情绪", "展览", "experimental", "conceptual", "abstract", "emotional"],
+    asian: ["东方", "国风", "水墨", "日式", "传统", "Eastern", "Asian", "ink", "traditional"],
+    folk: ["民俗", "节庆", "地域", "手工", "文旅", "folk", "festival", "regional", "handmade"],
+    animation: ["动画", "漫画", "角色", "短视频封面", "anime", "animation", "comic", "character"],
+    illustration: ["插画", "绘本", "商业插画", "儿童", "说明图", "illustration", "picture book", "editorial", "explainer"]
+  };
+
+  const styleAliases = {
+    "swiss-style": ["高级海报", "科技感", "理性设计", "网格排版", "premium poster", "tech brand", "rational design"],
+    "art-deco": ["复古奢华", "黄金时代", "高级酒店", "电影海报", "luxury retro", "golden age"],
+    "ukiyo-e": ["浮世绘", "海浪", "东方版画", "日式复古", "Japanese woodblock", "wave"],
+    "cinematic-anime": ["日式动画天空", "城市黄昏", "青春电影", "anime sky", "cinematic anime light"],
+    cyberpunk: ["赛博朋克", "霓虹", "未来城市", "科技感", "neon city", "future tech"]
+  };
+
   const rawStyles = [
     ["swiss-style", "Swiss Style", "瑞士国际主义风格", "poster", "ruishi", "grid clarity typography"],
     ["bauhaus", "Bauhaus", "包豪斯风格", "poster", "baohaosi", "geometry primary functional"],
@@ -390,6 +409,7 @@
       visualFeatures: { zh: copy.featuresZh, en: copy.featuresEn },
       useCases: { zh: copy.usesZh, en: copy.usesEn },
       tags: { zh: tagsZh.concat(["高级", "灵感"]), en: tagsEn.concat(["Premium", "Inspiration"]) },
+      searchAliases: (categoryAliases[category] || []).concat(styleAliases[id] || []),
       imagePrompts: {
         zh: `以复刻${zh}视觉语言为目标，提取${copy.featuresZh.join("、")}，控制色彩、构图、线条和材质，让画面像该风格的原创应用案例，高清，完整构图，不复制具体原作`,
         en: `Replicate the visual language of ${en}: extract ${copy.featuresEn.join(", ").toLowerCase()}, control color, composition, line and material, create an original applied case in this style, high resolution, complete composition, not a copy of a specific artwork`
@@ -606,6 +626,7 @@
         <span>#${style.number}</span>
         <div class="card-actions">
           <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" aria-label="${t(saved ? "unfavorite" : "favorite")}">${saved ? "♥" : "♡"}</button>
+          <button class="card-action" type="button" data-action="copy-prompt" aria-label="${t("copyPrompt")}">⧉</button>
           <button class="card-action" type="button" data-action="share" aria-label="${t("share")}">↗</button>
         </div>
       </div>
@@ -670,7 +691,11 @@
   function renderDetail() {
     const style = activeStyle();
     const lang = store.lang;
-    const example = window.STYLE_EXAMPLES?.[style.id]?.curated ? window.STYLE_EXAMPLES[style.id] : null;
+    const example = {
+      title: `${style.name[lang]} ${store.lang === "zh" ? "原创示例" : "original example"}`,
+      artist: "Style Atlas",
+      image: style.image
+    };
     addRecent(style.id);
     dom.detailContent.innerHTML = `
       <div class="detail-hero style-card">${renderCard(style, true)}</div>
@@ -727,7 +752,7 @@
             <figcaption>
               <strong>${escapeHtml(example.title)}</strong>
               <span>${escapeHtml(example.artist)}</span>
-              <a href="${escapeHtml(example.source)}" target="_blank" rel="noreferrer">${t("source")}</a>
+              ${example.source ? `<a href="${escapeHtml(example.source)}" target="_blank" rel="noreferrer">${t("source")}</a>` : ""}
             </figcaption>
           </figure>
         </section>
@@ -810,7 +835,8 @@
         style.summary.zh,
         style.summary.en,
         catName(style.category, "zh"),
-        catName(style.category, "en")
+        catName(style.category, "en"),
+        style.searchAliases.join(" ")
       ].join(" ").toLowerCase();
       return (!store.filter || style.category === store.filter) && (!query || haystack.includes(query));
     });
@@ -1289,7 +1315,7 @@
   }
 
   function renderAll() {
-    dom.langBtn.textContent = store.lang === "zh" ? "EN / 中" : "EN / 中";
+    dom.langBtn.textContent = store.lang === "zh" ? "EN" : "中文";
     renderHome();
     if (store.view === "detail") renderDetail();
     if (store.view === "search") renderSearch();
