@@ -887,11 +887,23 @@
     toast(t("copied"));
   }
 
+  async function coverFile(style) {
+    const response = await fetch(style.image);
+    if (!response.ok) throw new Error("image fetch failed");
+    const blob = await response.blob();
+    return new File([blob], `${style.id}-style-atlas.png`, { type: blob.type || "image/png" });
+  }
+
   async function shareStyle(style = activeStyle()) {
     const url = `${location.origin}${location.pathname}#${style.id}`;
     const payload = { title: style.name[store.lang], text: style.summary[store.lang], url };
     try {
       if (navigator.share) {
+        const file = await coverFile(style);
+        if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+          await navigator.share({ ...payload, files: [file] });
+          return;
+        }
         await navigator.share(payload);
         return;
       }
