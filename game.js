@@ -41,7 +41,7 @@
     ["de-stijl", "De Stijl", "风格派", "poster", "fenggepai", "primary grid abstraction"],
     ["futurism", "Futurism", "未来主义风格", "poster", "weilaizhuyi", "speed motion machine"],
     ["minimalism", "Minimalism", "极简主义风格", "poster", "jijian", "reductive whitespace calm"],
-    ["brutalism", "Brutalism", "粗野主义平面风格", "poster", "cuyeyizhuyi", "raw bold anti polish"],
+    ["brutalism", "Graphic Brutalism", "粗野主义视觉语汇", "poster", "cuyeyizhuyi", "raw bold anti polish"],
     ["memphis", "Memphis", "孟菲斯风格", "poster", "mengfeisi", "playful pattern color"],
     ["editorial-typography", "Editorial Typography", "编辑排版风格", "poster", "bianjipaiban", "magazine hierarchy type"],
     ["new-wave-typography", "New Wave Typography", "新浪潮字体风格", "poster", "xinlangchao", "experimental type movement"],
@@ -106,18 +106,18 @@
     ["byzantine-icon", "Byzantine Icon", "拜占庭圣像风格", "folk", "baizhanting", "icon gold sacred"],
     ["mexican-muralism", "Mexican Muralism", "墨西哥壁画风格", "folk", "moxige", "public mural social"],
     ["aboriginal-dot-painting", "Aboriginal Dot Painting", "澳大利亚原住民点画", "folk", "dianhua", "dot earth map"],
-    ["african-tribal-pattern", "African Tribal Pattern", "非洲部落图案", "folk", "feizhou", "rhythm mask pattern"],
-    ["native-american-art", "Native American Art", "北美原住民艺术", "folk", "beimei", "symbol animal earth"],
+    ["african-tribal-pattern", "West African Textile Pattern", "西非织物纹样", "folk", "feizhou", "rhythm mask pattern"],
+    ["native-american-art", "North American Indigenous Art", "北美原住民艺术", "folk", "beimei", "symbol animal earth"],
     ["russian-lubok", "Russian Lubok", "俄罗斯民间版画", "folk", "eluosi", "folk print bold"],
     ["nordic-folk-art", "Nordic Folk Art", "北欧民俗风格", "folk", "beiou", "floral winter craft"],
     ["celtic-art", "Celtic Art", "凯尔特纹样风格", "folk", "kaierte", "knot manuscript pattern"],
     ["madhubani", "Madhubani", "印度马杜巴尼民间画", "folk", "madubani", "folk line filled"],
     ["chinese-new-year-woodblock", "Chinese New Year Woodblock", "年画风格", "folk", "nianhua", "festive woodblock red"],
-    ["healing-animation", "Healing Animation", "治愈手绘动画语汇", "animation", "zhiyu", "pastoral hand drawn warm"],
-    ["cinematic-anime", "Cinematic Anime", "电影级日系动画光影", "animation", "dianyingriji", "sky city light"],
-    ["classic-disney", "Classic Disney", "经典手绘童话动画", "animation", "tonghua", "musical charm storybook"],
+    ["healing-animation", "Pastoral Hand-drawn Animation", "田园手绘动画语汇", "animation", "zhiyu", "pastoral hand drawn warm"],
+    ["cinematic-anime", "Japanese Animated Film Lighting", "日系动画电影光影", "animation", "dianyingriji", "sky city light"],
+    ["classic-disney", "Golden Age Hand-drawn Animation", "黄金时代手绘动画", "animation", "tonghua", "musical charm storybook"],
     ["warm-3d-animation", "Warm 3D Animation", "温情三维动画语汇", "animation", "sanwei", "soft material expressive"],
-    ["dreamworks-cartoon", "DreamWorks Cartoon", "梦工厂式卡通语汇", "animation", "katong", "bold character comedy"],
+    ["dreamworks-cartoon", "Exaggerated 3D Cartoon Comedy", "夸张三维卡通喜剧语汇", "animation", "katong", "bold character comedy"],
     ["anime", "Anime", "日漫风格", "animation", "riman", "clean line expressive"],
     ["manga", "Manga", "漫画黑白风格", "animation", "manhua", "black white screentone"],
     ["shonen", "Shonen", "少年漫画风格", "animation", "shaonian", "action speed power"],
@@ -132,7 +132,7 @@
     ["botanical-illustration", "Botanical Illustration", "植物科学插画", "illustration", "zhiwu", "precise botanical plate"],
     ["scientific-illustration", "Scientific Illustration", "科学插画风格", "illustration", "kexue", "diagram accuracy detail"],
     ["isometric-illustration", "Isometric Illustration", "等距插画风格", "illustration", "dengju", "isometric system object"],
-    ["flat-illustration", "Flat Illustration", "扁平插画风格", "illustration", "bianping", "flat shapes friendly"]
+    ["flat-illustration", "Flat Vector Illustration", "扁平矢量插画", "illustration", "bianping", "flat shapes friendly"]
   ];
 
   const categoryCopy = {
@@ -219,16 +219,16 @@
     "de-stijl": [["皮特·蒙德里安", "Piet Mondrian"], ["特奥·范·杜斯堡", "Theo van Doesburg"], ["赫里特·里特费尔德", "Gerrit Rietveld"]],
     futurism: [["菲利波·托马索·马里内蒂", "F. T. Marinetti"], ["翁贝托·博乔尼", "Umberto Boccioni"], ["贾科莫·巴拉", "Giacomo Balla"]],
     minimalism: [["唐纳德·贾德", "Donald Judd"], ["阿格尼丝·马丁", "Agnes Martin"], ["索尔·勒维特", "Sol LeWitt"]],
-    brutalism: [["勒·柯布西耶", "Le Corbusier"], ["保罗·兰德", "Paul Rand"], ["彼得·萨维尔", "Peter Saville"]],
+    brutalism: [["勒·柯布西耶", "Le Corbusier"], ["艾莉森与彼得·史密森", "Alison and Peter Smithson"], ["雷纳·班纳姆", "Reyner Banham"]],
     memphis: [["埃托雷·索特萨斯", "Ettore Sottsass"], ["娜塔莉·杜·帕斯奎尔", "Nathalie Du Pasquier"], ["米歇尔·德·卢基", "Michele De Lucchi"]],
     "editorial-typography": [["扬·奇肖尔德", "Jan Tschichold"], ["阿列克谢·布罗多维奇", "Alexey Brodovitch"], ["赫布·卢巴林", "Herb Lubalin"]],
     "new-wave-typography": [["沃尔夫冈·魏因加特", "Wolfgang Weingart"], ["阿普丽尔·格雷曼", "April Greiman"], ["丹·弗里德曼", "Dan Friedman"]],
-    "punk-diy": [["杰米·里德", "Jamie Reid"], ["莱尼·凯伊", "Lenny Kaye"], ["维维安·韦斯特伍德", "Vivienne Westwood"]],
-    grunge: [["大卫·卡森", "David Carson"], ["阿特·钱特里", "Art Chantry"], ["雷·冈", "Ray Gun"]],
+    "punk-diy": [["杰米·里德", "Jamie Reid"], ["吉·沃彻", "Gee Vaucher"], ["温斯顿·史密斯", "Winston Smith"]],
+    grunge: [["大卫·卡森", "David Carson"], ["阿特·钱特里", "Art Chantry"], ["克里斯·阿什沃思", "Chris Ashworth"]],
     "psychedelic-poster": [["维克托·莫斯科索", "Victor Moscoso"], ["韦斯·威尔逊", "Wes Wilson"], ["斯坦利·米勒", "Stanley Mouse"]],
     "pop-art-poster": [["安迪·沃霍尔", "Andy Warhol"], ["罗伊·利希滕斯坦", "Roy Lichtenstein"], ["彼得·布莱克", "Peter Blake"]],
     "corporate-modernism": [["保罗·兰德", "Paul Rand"], ["马西莫·维涅利", "Massimo Vignelli"], ["索尔·巴斯", "Saul Bass"]],
-    "anti-design": [["盖塔诺·佩谢", "Gaetano Pesce"], ["埃托雷·索特萨斯", "Ettore Sottsass"], ["内维尔·布罗迪", "Neville Brody"]],
+    "anti-design": [["Archizoom", "Archizoom"], ["Superstudio", "Superstudio"], ["埃托雷·索特萨斯", "Ettore Sottsass"]],
     "experimental-typography": [["内维尔·布罗迪", "Neville Brody"], ["大卫·卡森", "David Carson"], ["凯瑟琳·麦考伊", "Katherine McCoy"]],
     "kinetic-poster": [["拉斯洛·莫霍利-纳吉", "Laszlo Moholy-Nagy"], ["约瑟夫·穆勒-布罗克曼", "Josef Muller-Brockmann"], ["索尔·巴斯", "Saul Bass"]],
     renaissance: [["列奥纳多·达·芬奇", "Leonardo da Vinci"], ["米开朗基罗", "Michelangelo"], ["拉斐尔", "Raphael"]],
@@ -241,21 +241,21 @@
     "pre-raphaelite": [["但丁·加百列·罗塞蒂", "Dante Gabriel Rossetti"], ["约翰·埃弗里特·米莱", "John Everett Millais"], ["威廉·霍尔曼·亨特", "William Holman Hunt"]],
     impressionism: [["克洛德·莫奈", "Claude Monet"], ["皮埃尔-奥古斯特·雷诺阿", "Pierre-Auguste Renoir"], ["埃德加·德加", "Edgar Degas"]],
     "post-impressionism": [["文森特·梵高", "Vincent van Gogh"], ["保罗·塞尚", "Paul Cezanne"], ["保罗·高更", "Paul Gauguin"]],
-    "van-gogh": [["文森特·梵高", "Vincent van Gogh"], ["西奥·梵高", "Theo van Gogh"], ["保罗·高更", "Paul Gauguin"]],
+    "van-gogh": [["文森特·梵高", "Vincent van Gogh"], ["让-弗朗索瓦·米勒", "Jean-Francois Millet"], ["歌川广重", "Utagawa Hiroshige"]],
     monet: [["克洛德·莫奈", "Claude Monet"], ["卡米耶·毕沙罗", "Camille Pissarro"], ["贝尔特·莫里索", "Berthe Morisot"]],
     renoir: [["皮埃尔-奥古斯特·雷诺阿", "Pierre-Auguste Renoir"], ["克洛德·莫奈", "Claude Monet"], ["埃德加·德加", "Edgar Degas"]],
     cezanne: [["保罗·塞尚", "Paul Cezanne"], ["埃米尔·贝尔纳", "Emile Bernard"], ["巴勃罗·毕加索", "Pablo Picasso"]],
     "picasso-cubism": [["巴勃罗·毕加索", "Pablo Picasso"], ["乔治·布拉克", "Georges Braque"], ["胡安·格里斯", "Juan Gris"]],
     matisse: [["亨利·马蒂斯", "Henri Matisse"], ["安德烈·德兰", "Andre Derain"], ["拉乌尔·杜菲", "Raoul Dufy"]],
-    dali: [["萨尔瓦多·达利", "Salvador Dali"], ["路易斯·布努埃尔", "Luis Bunuel"], ["加拉·达利", "Gala Dali"]],
-    magritte: [["勒内·马格利特", "Rene Magritte"], ["保罗·努热", "Paul Nouge"], ["乔治·德·基里科", "Giorgio de Chirico"]],
+    dali: [["萨尔瓦多·达利", "Salvador Dali"], ["马克斯·恩斯特", "Max Ernst"], ["伊夫·唐吉", "Yves Tanguy"]],
+    magritte: [["勒内·马格利特", "Rene Magritte"], ["乔治·德·基里科", "Giorgio de Chirico"], ["马克斯·恩斯特", "Max Ernst"]],
     "edward-hopper": [["爱德华·霍普", "Edward Hopper"], ["约瑟芬·霍普", "Josephine Hopper"], ["罗伯特·亨利", "Robert Henri"]],
     "gustav-klimt": [["古斯塔夫·克里姆特", "Gustav Klimt"], ["埃贡·席勒", "Egon Schiele"], ["约瑟夫·霍夫曼", "Josef Hoffmann"]],
     kandinsky: [["瓦西里·康定斯基", "Wassily Kandinsky"], ["弗朗茨·马克", "Franz Marc"], ["加布里埃尔·明特", "Gabriele Munter"]],
     mondrian: [["皮特·蒙德里安", "Piet Mondrian"], ["特奥·范·杜斯堡", "Theo van Doesburg"], ["巴特·范德莱克", "Bart van der Leck"]],
-    pollock: [["杰克逊·波洛克", "Jackson Pollock"], ["李·克拉斯纳", "Lee Krasner"], ["克莱门特·格林伯格", "Clement Greenberg"]],
+    pollock: [["杰克逊·波洛克", "Jackson Pollock"], ["李·克拉斯纳", "Lee Krasner"], ["珍妮特·索贝尔", "Janet Sobel"]],
     rothko: [["马克·罗斯科", "Mark Rothko"], ["巴尼特·纽曼", "Barnett Newman"], ["克莱福德·斯蒂尔", "Clyfford Still"]],
-    basquiat: [["让-米歇尔·巴斯奎特", "Jean-Michel Basquiat"], ["凯斯·哈林", "Keith Haring"], ["安迪·沃霍尔", "Andy Warhol"]],
+    basquiat: [["让-米歇尔·巴斯奎特", "Jean-Michel Basquiat"], ["凯斯·哈林", "Keith Haring"], ["A. R. 彭克", "A. R. Penck"]],
     expressionism: [["爱德华·蒙克", "Edvard Munch"], ["埃贡·席勒", "Egon Schiele"], ["奥斯卡·柯柯施卡", "Oskar Kokoschka"]],
     "german-expressionism": [["恩斯特·路德维希·基希纳", "Ernst Ludwig Kirchner"], ["埃米尔·诺尔德", "Emil Nolde"], ["弗朗茨·马克", "Franz Marc"]],
     surrealism: [["安德烈·布勒东", "Andre Breton"], ["萨尔瓦多·达利", "Salvador Dali"], ["马克斯·恩斯特", "Max Ernst"]],
@@ -270,12 +270,12 @@
     gongbi: [["顾恺之", "Gu Kaizhi"], ["宋徽宗", "Emperor Huizong of Song"], ["仇英", "Qiu Ying"]],
     xieyi: [["徐渭", "Xu Wei"], ["八大山人", "Bada Shanren"], ["齐白石", "Qi Baishi"]],
     shanshui: [["范宽", "Fan Kuan"], ["郭熙", "Guo Xi"], ["黄公望", "Huang Gongwang"]],
-    "dunhuang-mural": [["张大千", "Zhang Daqian"], ["常书鸿", "Chang Shuhong"], ["敦煌画工", "Dunhuang mural painters"]],
+    "dunhuang-mural": [["敦煌无名壁画师", "Anonymous Dunhuang mural painters"], ["北魏工匠", "Northern Wei artisans"], ["唐代佛教画师", "Tang dynasty Buddhist painters"]],
     "ukiyo-e": [["葛饰北斋", "Katsushika Hokusai"], ["歌川广重", "Utagawa Hiroshige"], ["喜多川歌麿", "Kitagawa Utamaro"]],
     "sumi-e": [["雪舟等杨", "Sesshu Toyo"], ["狩野元信", "Kano Motonobu"], ["白隐慧鹤", "Hakuin Ekaku"]],
     nihonga: [["横山大观", "Yokoyama Taikan"], ["菱田春草", "Hishida Shunso"], ["上村松园", "Uemura Shoen"]],
     "yamato-e": [["土佐光信", "Tosa Mitsunobu"], ["土佐光起", "Tosa Mitsuoki"], ["俵屋宗达", "Tawaraya Sotatsu"]],
-    "korean-minhwa": [["朝鲜民画画工", "Joseon folk painters"], ["申师任堂", "Shin Saimdang"], ["张承业", "Jang Seung-eop"]],
+    "korean-minhwa": [["朝鲜无名民画师", "Anonymous Joseon folk painters"], ["册架图画师", "Chaekgeori painters"], ["文字图画师", "Munjado painters"]],
     "indian-miniature": [["比萨万", "Basawan"], ["曼苏尔", "Ustad Mansur"], ["尼哈尔·昌德", "Nihal Chand"]],
     "persian-miniature": [["比赫扎德", "Behzad"], ["礼萨·阿巴西", "Reza Abbasi"], ["苏丹·穆罕默德", "Sultan Muhammad"]],
     "islamic-geometric": [["阿尔罕布拉工匠", "Alhambra craftsmen"], ["奥斯曼瓷砖工匠", "Ottoman tile makers"], ["伊斯兰书法家", "Islamic calligraphers"]],
@@ -283,34 +283,34 @@
     "thai-temple-mural": [["泰国寺庙壁画师", "Thai temple muralists"], ["Khrua In Khong", "Khrua In Khong"], ["查克里时期宫廷画师", "Chakri court painters"]],
     "byzantine-icon": [["安德烈·鲁布廖夫", "Andrei Rublev"], ["塞萨洛尼基圣像画师", "Thessaloniki icon painters"], ["拜占庭镶嵌工匠", "Byzantine mosaicists"]],
     "mexican-muralism": [["迭戈·里维拉", "Diego Rivera"], ["何塞·克莱门特·奥罗斯科", "Jose Clemente Orozco"], ["大卫·阿尔法罗·西凯罗斯", "David Alfaro Siqueiros"]],
-    "aboriginal-dot-painting": [["杰弗里·巴登", "Geoffrey Bardon"], ["克利福德·波苏姆", "Clifford Possum Tjapaltjarri"], ["艾米丽·卡梅·金瓦雷耶", "Emily Kame Kngwarreye"]],
-    "african-tribal-pattern": [["约鲁巴工匠", "Yoruba makers"], ["恩德贝莱画师", "Ndebele painters"], ["库巴织工", "Kuba weavers"]],
-    "native-american-art": [["玛丽亚·马丁内斯", "Maria Martinez"], ["纳瓦霍织工", "Navajo weavers"], ["海达雕刻师", "Haida carvers"]],
+    "aboriginal-dot-painting": [["Papunya Tula 艺术家", "Papunya Tula artists"], ["克利福德·波苏姆", "Clifford Possum Tjapaltjarri"], ["艾米丽·卡梅·金瓦雷耶", "Emily Kame Kngwarreye"]],
+    "african-tribal-pattern": [["库巴织工", "Kuba weavers"], ["约鲁巴珠饰工匠", "Yoruba beadworkers"], ["恩德贝莱壁画师", "Ndebele mural painters"]],
+    "native-american-art": [["普韦布洛陶艺传统", "Pueblo pottery traditions"], ["纳瓦霍织工", "Navajo weavers"], ["西北海岸 Formline 艺术家", "Northwest Coast formline artists"]],
     "russian-lubok": [["俄罗斯民间版画师", "Russian lubok printmakers"], ["伊万·比利宾", "Ivan Bilibin"], ["瓦西里·科伦", "Vasily Koren"]],
-    "nordic-folk-art": [["卡尔·拉松", "Carl Larsson"], ["达拉木马工匠", "Dala horse painters"], ["罗斯马林画师", "Rosemaling painters"]],
+    "nordic-folk-art": [["罗斯马林画师", "Rosemaling painters"], ["达拉木马工匠", "Dala horse painters"], ["北欧纺织工匠", "Nordic textile makers"]],
     "celtic-art": [["凯尔斯书抄写员", "Book of Kells scribes"], ["乔治·贝恩", "George Bain"], ["凯尔特金工匠", "Celtic metalworkers"]],
     madhubani: [["西塔·德维", "Sita Devi"], ["甘加·德维", "Ganga Devi"], ["巴乌阿·德维", "Baua Devi"]],
     "chinese-new-year-woodblock": [["天津杨柳青年画艺人", "Yangliuqing printmakers"], ["苏州桃花坞画师", "Taohuawu printmakers"], ["潍坊杨家埠画师", "Yangjiabu printmakers"]],
-    "healing-animation": [["宫崎骏", "Hayao Miyazaki"], ["高畑勋", "Isao Takahata"], ["近藤喜文", "Yoshifumi Kondo"]],
-    "cinematic-anime": [["新海诚", "Makoto Shinkai"], ["田中将贺", "Masayoshi Tanaka"], ["丹治匠", "Takumi Tanji"]],
+    "healing-animation": [["手绘背景美术师", "Hand-painted background artists"], ["角色动画师", "Character animators"], ["动画美术指导", "Animation art directors"]],
+    "cinematic-anime": [["背景美术团队", "Background art teams"], ["合成与摄影团队", "Compositing teams"], ["色彩脚本设计师", "Color script artists"]],
     "classic-disney": [["华特·迪士尼", "Walt Disney"], ["乌布·伊沃克斯", "Ub Iwerks"], ["玛丽·布莱尔", "Mary Blair"]],
-    "warm-3d-animation": [["约翰·拉塞特", "John Lasseter"], ["彼特·道格特", "Pete Docter"], ["布伦达·查普曼", "Brenda Chapman"]],
-    "dreamworks-cartoon": [["杰弗里·卡森伯格", "Jeffrey Katzenberg"], ["克里斯·桑德斯", "Chris Sanders"], ["吉尔·卡尔顿", "Jill Culton"]],
+    "warm-3d-animation": [["角色动画团队", "Character animation teams"], ["故事板艺术家", "Storyboard artists"], ["材质与灯光团队", "Material and lighting teams"]],
+    "dreamworks-cartoon": [["角色设计师", "Character designers"], ["故事艺术家", "Story artists"], ["动画导演", "Animation directors"]],
     anime: [["手冢治虫", "Osamu Tezuka"], ["大友克洋", "Katsuhiro Otomo"], ["庵野秀明", "Hideaki Anno"]],
     manga: [["手冢治虫", "Osamu Tezuka"], ["石之森章太郎", "Shotaro Ishinomori"], ["赤冢不二夫", "Fujio Akatsuka"]],
-    shonen: [["鸟山明", "Akira Toriyama"], ["尾田荣一郎", "Eiichiro Oda"], ["岸本齐史", "Masashi Kishimoto"]],
+    shonen: [["手冢治虫", "Osamu Tezuka"], ["石之森章太郎", "Shotaro Ishinomori"], ["鸟山明", "Akira Toriyama"]],
     shojo: [["萩尾望都", "Moto Hagio"], ["竹宫惠子", "Keiko Takemiya"], ["池田理代子", "Riyoko Ikeda"]],
     "american-comic-book": [["杰克·柯比", "Jack Kirby"], ["斯坦·李", "Stan Lee"], ["威尔·艾斯纳", "Will Eisner"]],
     "ligne-claire": [["埃尔热", "Herge"], ["埃德加·皮埃尔·雅各布", "E. P. Jacobs"], ["雅克·马丁", "Jacques Martin"]],
-    "graphic-novel": [["威尔·艾斯纳", "Will Eisner"], ["阿特·斯皮格尔曼", "Art Spiegelman"], ["艾伦·摩尔", "Alan Moore"]],
-    "noir-illustration": [["爱德华·霍普", "Edward Hopper"], ["弗兰克·米勒", "Frank Miller"], ["罗伯特·麦金尼斯", "Robert McGinnis"]],
+    "graphic-novel": [["威尔·艾斯纳", "Will Eisner"], ["林德·沃德", "Lynd Ward"], ["弗朗斯·马塞雷尔", "Frans Masereel"]],
+    "noir-illustration": [["爱德华·霍普", "Edward Hopper"], ["罗伯特·麦金尼斯", "Robert McGinnis"], ["索尔·巴斯", "Saul Bass"]],
     "childrens-picture-book": [["莫里斯·桑达克", "Maurice Sendak"], ["碧雅翠丝·波特", "Beatrix Potter"], ["埃里克·卡尔", "Eric Carle"]],
     "editorial-illustration": [["索尔·斯坦伯格", "Saul Steinberg"], ["米尔顿·格拉泽", "Milton Glaser"], ["西摩·克瓦斯特", "Seymour Chwast"]],
     "fashion-illustration": [["勒内·格吕奥", "Rene Gruau"], ["安东尼奥·洛佩兹", "Antonio Lopez"], ["大卫·唐顿", "David Downton"]],
     "botanical-illustration": [["玛丽亚·西比拉·梅里安", "Maria Sibylla Merian"], ["皮埃尔-约瑟夫·雷杜德", "Pierre-Joseph Redoute"], ["玛格丽特·米", "Margaret Mee"]],
     "scientific-illustration": [["恩斯特·海克尔", "Ernst Haeckel"], ["圣地亚哥·拉蒙-卡哈尔", "Santiago Ramon y Cajal"], ["约翰·詹姆斯·奥杜邦", "John James Audubon"]],
     "isometric-illustration": [["奥托·纽拉特", "Otto Neurath"], ["格尔德·阿恩茨", "Gerd Arntz"], ["现代信息设计师", "Contemporary information designers"]],
-    "flat-illustration": [["苏珊·卡尔", "Susan Kare"], ["马林·费尔蒙", "Malika Favre"], ["现代产品插画师", "Contemporary product illustrators"]]
+    "flat-illustration": [["苏珊·卡尔", "Susan Kare"], ["奥托·纽拉特", "Otto Neurath"], ["格尔德·阿恩茨", "Gerd Arntz"]]
   };
 
   const categoryHistory = {
@@ -324,6 +324,19 @@
     illustration: ["出版、商业传播和说明图像史", "publishing, commercial communication and explanatory image history"]
   };
 
+  const riskByStyle = {
+    "healing-animation": ["不要写成宫崎骏、吉卜力或任何在世导演/工作室的直接风格；避免复刻具体角色、场景和 IP。", "Do not prompt for Miyazaki, Studio Ghibli or any living director/studio style; avoid copying specific characters, scenes or IP."],
+    "cinematic-anime": ["不要点名复刻在世动画导演或具体电影；只描述天空、城市、逆光、合成摄影等通用视觉语法。", "Do not imitate living anime directors or specific films; describe general sky, city, backlight and compositing language only."],
+    "classic-disney": ["避免 Disney、Mickey、公主城堡和具体角色轮廓；只使用黄金时代手绘动画的通用原则。", "Avoid Disney, Mickey, princess castles and specific character silhouettes; use only general golden-age hand-drawn animation principles."],
+    "warm-3d-animation": ["避免 Pixar 或具体工作室/角色；只描述温情三维角色动画、材质和灯光。", "Avoid Pixar or specific studios/characters; describe warm 3D character animation, materials and lighting only."],
+    "dreamworks-cartoon": ["避免 DreamWorks 或具体角色；只描述夸张表情、喜剧节奏和三维卡通造型。", "Avoid DreamWorks or specific characters; describe exaggerated expression, comedy timing and 3D cartoon forms only."],
+    shonen: ["避免复制具体漫画角色、服装、招式、分镜和标志性文字。", "Avoid copying specific manga characters, costumes, attacks, panel layouts or signature lettering."],
+    basquiat: ["避免复制皇冠、SAMO、特定文字涂鸦和具体作品构图。", "Avoid copying crowns, SAMO, specific graffiti text or exact artwork compositions."],
+    "aboriginal-dot-painting": ["不要复制神圣图像、Dreaming 故事或部族专属符号；只做受点阵节奏启发的原创抽象。", "Do not copy sacred imagery, Dreaming stories or clan-specific symbols; make only original abstraction inspired by dot rhythm."],
+    "african-tribal-pattern": ["避免把非洲视觉混成单一“部落风”；应限定为织物、珠饰或壁画等具体传统。", "Avoid reducing African visuals to one generic tribal style; specify textile, beadwork or mural traditions."],
+    "native-american-art": ["避免混用不同民族的神圣符号和仪式图像；只做公开视觉原则的原创转译。", "Avoid mixing sacred symbols and ceremonial imagery from different nations; create original work from public visual principles only."]
+  };
+
   const styles = rawStyles.map((item, index) => {
     const [id, en, zh, category, pinyin, keywords] = item;
     const copy = categoryCopy[category];
@@ -333,6 +346,7 @@
     const peopleZh = people.map((item) => item[0]);
     const peopleEn = people.map((item) => item[1]);
     const era = categoryHistory[category];
+    const risk = riskByStyle[id];
     return {
       id,
       number: index + 1,
@@ -359,7 +373,12 @@
         zh: `它会形成这种样子，通常是因为创作者需要用${tagsZh.join("、")}回应当时的审美问题：有的要让信息更清楚，有的要摆脱学院规则，有的要把地方记忆变成可传播的图像。复刻时先抓${peopleZh[0]}这类代表人物的核心方法，再把它转译到自己的主题里。`,
         en: `It looks this way because artists and designers used ${tagsEn.join(", ").toLowerCase()} to answer the visual problems of their time: clearer information, freedom from academic rules, or local memory made shareable. To replicate it, start from the core method behind figures such as ${peopleEn[0]}, then translate it into your own subject.`
       },
+      curatorNote: {
+        zh: `把${zh}当作艺术馆里的一件展品来看：先退后一步，看它如何用${tagsZh[0]}建立第一印象；再靠近一点，看${tagsZh[1]}和${tagsZh[2]}如何让画面成立。${peopleZh[0]}、${peopleZh[1]}和${peopleZh[2]}是进入这条线索的三个入口。`,
+        en: `Look at ${en} like an exhibit in a gallery: step back to see how ${tagsEn[0].toLowerCase()} creates the first impression, then move closer to see how ${tagsEn[1].toLowerCase()} and ${tagsEn[2].toLowerCase()} hold the image together. ${peopleEn[0]}, ${peopleEn[1]} and ${peopleEn[2]} are three entry points into the style.`
+      },
       people: { zh: peopleZh, en: peopleEn },
+      wikiTitles: [en, ...peopleEn],
       lookFor: {
         zh: [`第一眼先看${tagsZh[0]}`, `再看${tagsZh[1]}如何组织画面`, `最后看${tagsZh[2]}是否稳定地重复出现`],
         en: [`First notice ${tagsEn[0].toLowerCase()}`, `Then see how ${tagsEn[1].toLowerCase()} organizes the image`, `Finally check whether ${tagsEn[2].toLowerCase()} repeats consistently`]
@@ -376,8 +395,8 @@
         en: `Replicate the visual language of ${en}: extract ${copy.featuresEn.join(", ").toLowerCase()}, control color, composition, line and material, create an original applied case in this style, high resolution, complete composition, not a copy of a specific artwork`
       },
       negativePrompt: {
-        zh: "避免盗用原作、低清晰度文字、杂乱构图、廉价滤镜、直接复制当代工作室完整风格",
-        en: "Avoid copied artwork, low-quality text, cluttered composition, cheap filters, directly copying a contemporary studio style"
+        zh: `避免盗用原作、低清晰度文字、杂乱构图、廉价滤镜、直接复制当代工作室完整风格${risk ? `；${risk[0]}` : ""}`,
+        en: `Avoid copied artwork, low-quality text, cluttered composition, cheap filters, directly copying a contemporary studio style${risk ? `; ${risk[1]}` : ""}`
       },
       relatedStyles: related(index),
       art: palettes[index % palettes.length],
@@ -439,6 +458,8 @@
       features: "视觉特征",
       history: "风格源流",
       why: "形成原因",
+      curator: "策展说明",
+      exhibitImages: "展品图像",
       people: "代表人物",
       lookFor: "识别方法",
       references: "代表作品与案例",
@@ -472,6 +493,8 @@
       features: "Visual features",
       history: "Origins",
       why: "Why It Formed",
+      curator: "Curator Note",
+      exhibitImages: "Exhibit Images",
       people: "Representative Figures",
       lookFor: "How To Recognize It",
       references: "Works And Cases",
@@ -645,13 +668,26 @@
   function renderDetail() {
     const style = activeStyle();
     const lang = store.lang;
-    const example = window.STYLE_EXAMPLES?.[style.id];
+    const example = window.STYLE_EXAMPLES?.[style.id]?.curated ? window.STYLE_EXAMPLES[style.id] : null;
     addRecent(style.id);
     dom.detailContent.innerHTML = `
       <div class="detail-hero style-card">${renderCard(style, true)}</div>
       <section class="detail-section">
         <h2>${t("memory")}</h2>
         <p>${escapeHtml(style.memoryAnchor[lang])}</p>
+      </section>
+      <section class="detail-section">
+        <h2>${t("curator")}</h2>
+        <p>${escapeHtml(style.curatorNote[lang])}</p>
+      </section>
+      <section class="detail-section">
+        <h2>${t("exhibitImages")}</h2>
+        <div class="gallery-grid" id="galleryGrid">
+          <figure class="gallery-item">
+            <img src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy">
+            <figcaption>${escapeHtml(style.name[lang])}</figcaption>
+          </figure>
+        </div>
       </section>
       <section class="detail-section">
         <h2>${t("features")}</h2>
@@ -707,6 +743,37 @@
         <div class="result-list">${style.relatedStyles.map((id) => resultCard(styles.find((item) => item.id === id))).join("")}</div>
       </section>
     `;
+    loadWikiGallery(style);
+  }
+
+  async function loadWikiGallery(style) {
+    const gallery = $("galleryGrid");
+    if (!gallery) return;
+    try {
+      const params = new URLSearchParams({
+        action: "query",
+        format: "json",
+        origin: "*",
+        prop: "pageimages|info",
+        inprop: "url",
+        pithumbsize: "700",
+        titles: style.wikiTitles.join("|")
+      });
+      const response = await fetch(`https://en.wikipedia.org/w/api.php?${params}`);
+      if (!response.ok || style.id !== activeStyle().id) return;
+      const data = await response.json();
+      const pages = Object.values(data.query?.pages || {})
+        .filter((page) => page.thumbnail?.source && page.fullurl)
+        .slice(0, 4);
+      gallery.insertAdjacentHTML("beforeend", pages.map((page) => `
+        <figure class="gallery-item">
+          <img src="${escapeHtml(page.thumbnail.source)}" alt="${escapeHtml(page.title)}" loading="lazy">
+          <figcaption><a href="${escapeHtml(page.fullurl)}" target="_blank" rel="noreferrer">${escapeHtml(page.title)}</a></figcaption>
+        </figure>
+      `).join(""));
+    } catch {
+      // External images are bonus context; the detail page must still work offline.
+    }
   }
 
   function resultCard(style) {
@@ -764,6 +831,7 @@
     document.querySelectorAll(".view").forEach((node) => node.classList.toggle("active", node.id === `${view}View`));
     document.querySelectorAll(".nav-btn").forEach((node) => node.classList.toggle("active", node.dataset.view === view));
     dom.backBtn.classList.toggle("hidden", view === "home");
+    document.querySelector(".topbar").classList.toggle("has-back", view !== "home");
     if (view === "search") {
       renderSearch();
       setTimeout(() => dom.searchInput.focus(), 80);
@@ -890,6 +958,19 @@
     const words = String(textValue).split(/\s+/);
     let line = "";
     for (const word of words) {
+      if (ctx.measureText(word).width > maxWidth) {
+        for (const char of word) {
+          const test = line ? `${line}${char}` : char;
+          if (ctx.measureText(test).width > maxWidth && line) {
+            ctx.fillText(line, x, y);
+            line = char;
+            y += lineHeight;
+          } else {
+            line = test;
+          }
+        }
+        continue;
+      }
       const test = line ? `${line} ${word}` : word;
       if (ctx.measureText(test).width > maxWidth && line) {
         ctx.fillText(line, x, y);
@@ -1021,6 +1102,8 @@
       if (action === "save-card") return saveShareCard();
       if (filter) {
         store.filter = store.filter === filter ? "" : filter;
+        store.query = "";
+        dom.searchInput.value = "";
         setView("search");
         return;
       }
