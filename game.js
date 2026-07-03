@@ -121,12 +121,6 @@
   });
 
   Object.entries(refinedStyles || {}).forEach(([id, data]) => Object.assign(styles.find((style) => style.id === id), data));
-  styles.forEach((style) => {
-    style.isFreeFullAccess = ACCESS_CONFIG.freeFullStyleIds.includes(style.id);
-    style.accessTier = style.isFreeFullAccess ? "free-full" : "plus";
-    style.isPlusLocked = !canViewFullStyle(style);
-    style.exportTier = hasPlusAccess() ? "plus" : "free";
-  });
 
   function hasPlusAccess() {
     return ACCESS_CONFIG.plusEnabled === true;
@@ -143,6 +137,25 @@
   function canExportHighRes() {
     return hasPlusAccess();
   }
+
+  function refreshStyleAccess() {
+    styles.forEach((style) => {
+      style.isFreeFullAccess = ACCESS_CONFIG.freeFullStyleIds.includes(style.id);
+      style.isPlusLocked = isStyleLocked(style);
+      style.accessTier = style.isPlusLocked ? "plus" : (style.isFreeFullAccess ? "free-full" : "plus-unlocked");
+      style.exportTier = hasPlusAccess() ? "plus" : "free";
+    });
+  }
+
+  function setPlusAccessFromNative(value) {
+    ACCESS_CONFIG.plusEnabled = value === true;
+    refreshStyleAccess();
+    if (hasPlusAccess() && !dom.plusModal.hidden) closePlus();
+    renderAll();
+    return hasPlusAccess();
+  }
+
+  refreshStyleAccess();
 
   const text = {
     zh: {
@@ -1385,6 +1398,11 @@
   if (initialHash && styles.some((style) => style.id === initialHash)) store.view = "detail";
   if (screenshotMode) store.view = "screenshots";
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
+  window.StyleAtlasNativeBridge = {
+    setPlusAccess: setPlusAccessFromNative,
+    getPlusAccess: hasPlusAccess
+  };
+  window.StyleAtlasNative = window.StyleAtlasNativeBridge;
   bind();
   renderAll();
   setView(store.view);
