@@ -8,6 +8,17 @@ struct WebViewContainer: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.defaultWebpagePreferences.allowsContentJavaScript = true
+        let runtimeConfigScript = """
+        window.STYLE_ATLAS_RUNTIME_CONFIG = {
+          nativeShell: true,
+          externalGalleryEnabled: false
+        };
+        """
+        config.userContentController.addUserScript(WKUserScript(
+            source: runtimeConfigScript,
+            injectionTime: .atDocumentStart,
+            forMainFrameOnly: true
+        ))
         config.userContentController.add(bridge, name: "styleAtlas")
 
         let webView = WKWebView(frame: .zero, configuration: config)

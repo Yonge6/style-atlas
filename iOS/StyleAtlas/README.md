@@ -132,14 +132,18 @@ V1 should be fully offline:
 - Bundle all web files and WebP covers.
 - Do not depend on GitHub Pages.
 - Keep saved styles local.
+- Disable external Wikipedia gallery requests inside the iOS shell.
 
-The current web app can optionally load Wikipedia gallery images. For iOS V1, disable that before submission or gate it behind a future config such as:
+The iOS shell injects this runtime config at `documentStart`:
 
 ```js
-externalGalleryEnabled = false
+window.STYLE_ATLAS_RUNTIME_CONFIG = {
+  nativeShell: true,
+  externalGalleryEnabled: false
+}
 ```
 
-TODO: add an iOS-only web config injection if external galleries need to be disabled without changing the public GitHub Pages build.
+The GitHub Pages web version does not receive this native config, so it keeps `externalGalleryEnabled=true` and may still show optional Wiki gallery images.
 
 ## App Review State
 

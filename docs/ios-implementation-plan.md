@@ -78,10 +78,19 @@ Requirements:
 - Allow local access to `assets/`, JS, CSS, and image files.
 - Do not use GitHub Pages as the main runtime.
 - Keep the web app functional without network.
-- Existing Wikipedia image requests may remain as optional enhancement only.
+- Existing Wikipedia image requests remain a web-only optional enhancement.
 - Core style covers, data, search, saved styles, and Plus logic must work without network.
 
-If the first iOS release targets a fully offline experience, disable or hide external Wikipedia image loading in the bundled iOS build. If Wikipedia image loading remains enabled, treat it as a non-critical enhancement and disclose external network requests in privacy notes.
+P8.1 adds an iOS-only runtime config injection at `documentStart`:
+
+```js
+window.STYLE_ATLAS_RUNTIME_CONFIG = {
+  nativeShell: true,
+  externalGalleryEnabled: false
+}
+```
+
+V1 iOS therefore defaults to fully offline mode. GitHub Pages keeps `externalGalleryEnabled=true`, so Wiki gallery images remain available on the web as an optional enhancement.
 
 ## 4. Web And Native Communication
 
@@ -254,11 +263,11 @@ If analytics are added later:
 - Update App Privacy responses and privacy policy.
 - Avoid adding analytics to the first release unless there is a clear reason.
 
-If `WKWebView` accesses Wikipedia images:
+If a future `WKWebView` build re-enables Wikipedia images:
 
 - The app may make external network requests to Wikimedia/Wikipedia.
 - Privacy copy should disclose that some optional reference images may load from public web sources.
-- Consider disabling those requests for the first fully offline version.
+- Keep the P8.1 runtime config disabled for the first fully offline version.
 
 ## 9. Offline Strategy
 
@@ -266,7 +275,7 @@ If `WKWebView` accesses Wikipedia images:
 
 - Bundle all 120 WebP/PNG images.
 - Bundle all JS, CSS, data files, and local examples.
-- Disable or close Wikipedia image enhancement.
+- Disable Wikipedia image enhancement through the P8.1 iOS runtime config injection.
 - Lower review risk.
 - Stable behavior in poor network conditions.
 - Best match for the first App Store release.

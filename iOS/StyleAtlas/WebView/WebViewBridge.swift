@@ -23,7 +23,7 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         case "hapticFeedback":
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         case "shareImage", "exportImage":
-            // ponytail: reserved until the web app sends image payloads; Photos/share sheets need a real data contract.
+            // TODO: Reserved until the web app sends image payloads; Photos/share sheets need a real data contract.
             break
         default:
             break
