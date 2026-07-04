@@ -1,6 +1,6 @@
 # 虾子曰 Style Atlas iOS Shell
 
-This is the first iOS scaffold for Xiazishuo Style Atlas. It is not a finished Xcode project yet. The goal is a small native shell that can be dropped into a SwiftUI app: local `WKWebView`, bundled web resources, Native-Web Bridge, and StoreKit 2 Plus entitlement structure.
+This is the first iOS shell for Xiazishuo Style Atlas. It includes a minimal Xcode project, local `WKWebView`, bundled web resources, Native-Web Bridge, and StoreKit 2 Plus entitlement structure.
 
 ## Current Stage
 
@@ -10,7 +10,7 @@ This is the first iOS scaffold for Xiazishuo Style Atlas. It is not a finished X
 - Web can call native `purchasePlus` and `restorePurchases`.
 - Native can inject `window.StyleAtlasNativeBridge.setPlusAccess(true / false)`.
 - No Stripe, external payment, login, backend, AI image generation, or social features.
-- Xcode compile has not been verified in this environment.
+- Simulator build has been verified with Xcode 26.6 and iOS 26.5 Simulator.
 
 ## Create The Xcode Project
 
