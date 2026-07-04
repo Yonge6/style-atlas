@@ -2,3 +2,7 @@ style-atlas-mobile-*.png
 style-atlas-v2-*.png
 style-atlas-v3-*.png
 style-atlas-v4-*.png
+
+# Xcode user state
+*.xcuserstate
+xcuserdata/
