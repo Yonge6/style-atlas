@@ -6,3 +6,7 @@ style-atlas-v4-*.png
 # Xcode user state
 *.xcuserstate
 xcuserdata/
+
+# Local build artifacts
+/build/
+*.xcarchive
