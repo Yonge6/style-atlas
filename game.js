@@ -4,6 +4,10 @@
   const $ = (id) => document.getElementById(id);
   const data = window.STYLE_ATLAS_DATA || {};
   const { categories, categoryAliases, styleAliases, categoryCopy, palettes, peopleByStyle, categoryHistory, riskByStyle, rawStyles, refinedStyles } = data;
+  window.STYLE_ATLAS_RUNTIME_CONFIG = Object.assign({
+    nativeShell: false,
+    externalGalleryEnabled: true
+  }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
   const ACCESS_CONFIG = {
     freeFullStyleLimit: 20,
     maxFreeSaved: 20,
@@ -449,6 +453,10 @@
     return Boolean(window.webkit?.messageHandlers?.styleAtlas);
   }
 
+  function isExternalGalleryEnabled() {
+    return window.STYLE_ATLAS_RUNTIME_CONFIG?.externalGalleryEnabled !== false;
+  }
+
   function showPlus(reasonKey = "plusSubtitle") {
     const native = hasNativeBridge();
     store.plusReasonKey = reasonKey;
@@ -712,6 +720,7 @@
   }
 
   async function loadWikiGallery(style) {
+    if (!isExternalGalleryEnabled()) return;
     const gallery = $("galleryGrid");
     if (!gallery) return;
     try {
@@ -1426,6 +1435,10 @@
     postNativeMessage
   };
   window.StyleAtlasNative = window.StyleAtlasNativeBridge;
+  window.StyleAtlasRuntime = {
+    getConfig: () => window.STYLE_ATLAS_RUNTIME_CONFIG,
+    isExternalGalleryEnabled
+  };
   bind();
   renderAll();
   setView(store.view);
