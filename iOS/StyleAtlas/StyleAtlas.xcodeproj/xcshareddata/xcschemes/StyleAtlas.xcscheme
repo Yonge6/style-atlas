@@ -49,6 +49,9 @@
             ReferencedContainer = "container:StyleAtlas.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <StoreKitConfigurationFileReference
+         identifier = "../Resources/StoreKit/StyleAtlas.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
