@@ -6,7 +6,8 @@
   const { categories, categoryAliases, styleAliases, categoryCopy, palettes, peopleByStyle, categoryHistory, riskByStyle, rawStyles, refinedStyles } = data;
   window.STYLE_ATLAS_RUNTIME_CONFIG = Object.assign({
     nativeShell: false,
-    externalGalleryEnabled: true
+    externalGalleryEnabled: true,
+    submissionMode: "web"
   }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
   const ACCESS_CONFIG = {
     freeFullStyleLimit: 20,
@@ -223,6 +224,8 @@
       unlockPlus: "解锁 Plus",
       restorePurchases: "恢复购买",
       appStoreFootnote: "正式版将在 App Store 内开放",
+      plusFuture: "Plus 将在后续版本开放",
+      plusFutureBody: "首版先提供完整的免费风格浏览、搜索、收藏和离线体验。",
       savedLimit: "你已经收藏了 20 个风格。升级 Plus，建立无限风格灵感库。",
       lockedExpression: "完整风格表达词已收纳在 Plus。",
       highResLocked: "高清无水印导出属于 Plus 预览功能。"
@@ -305,6 +308,8 @@
       unlockPlus: "Unlock Plus",
       restorePurchases: "Restore Purchases",
       appStoreFootnote: "Available later via App Store in-app purchase",
+      plusFuture: "Plus will be available in a future version",
+      plusFutureBody: "The first version focuses on free browsing, search, saved styles, and offline access.",
       savedLimit: "You’ve saved 20 styles. Upgrade to Plus to build an unlimited style library.",
       lockedExpression: "Complete style expression is included in Plus.",
       highResLocked: "HD watermark-free export is a Plus preview feature."
@@ -453,17 +458,31 @@
     return Boolean(window.webkit?.messageHandlers?.styleAtlas);
   }
 
+  function getSubmissionMode() {
+    return window.STYLE_ATLAS_RUNTIME_CONFIG?.submissionMode || "web";
+  }
+
+  function isIapMode() {
+    return getSubmissionMode() === "iap";
+  }
+
+  function isFreeLaunchMode() {
+    return getSubmissionMode() === "freeLaunch";
+  }
+
   function isExternalGalleryEnabled() {
     return window.STYLE_ATLAS_RUNTIME_CONFIG?.externalGalleryEnabled !== false;
   }
 
   function showPlus(reasonKey = "plusSubtitle") {
     const native = hasNativeBridge();
+    const iapReady = isIapMode() && native;
+    const freeLaunch = isFreeLaunchMode();
     store.plusReasonKey = reasonKey;
     dom.plusTitle.textContent = t("plus");
-    dom.plusSubtitle.textContent = t(reasonKey);
+    dom.plusSubtitle.textContent = freeLaunch ? t("plusFuture") : t(reasonKey);
     $("plusKicker").textContent = t("plus");
-    $("plusGentleNote").textContent = t("unlockBody");
+    $("plusGentleNote").textContent = freeLaunch ? t("plusFutureBody") : t("unlockBody");
     dom.plusBenefits.innerHTML = t("plusBenefits").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     dom.freePlanTitle.textContent = t("freePlan");
     dom.plusPlanTitle.textContent = t("plusPlan");
@@ -471,10 +490,12 @@
     dom.plusPlanList.innerHTML = t("plusPlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     dom.plusLaunchPrice.textContent = t("launchPrice");
     dom.plusRegularPrice.textContent = t("regularPrice");
-    dom.plusFootnote.textContent = t("appStoreFootnote");
-    dom.plusCta.textContent = native ? t("unlockPlus") : t("comingSoon");
-    dom.plusCta.disabled = !native;
-    dom.plusRestoreBtn.hidden = !native;
+    dom.plusLaunchPrice.parentElement.hidden = freeLaunch;
+    dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : t("appStoreFootnote");
+    dom.plusCta.hidden = false;
+    dom.plusCta.textContent = iapReady ? t("unlockPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"));
+    dom.plusCta.disabled = !iapReady;
+    dom.plusRestoreBtn.hidden = !iapReady;
     dom.plusRestoreBtn.textContent = t("restorePurchases");
     dom.plusModal.hidden = false;
     document.body.classList.add("drawer-lock");
@@ -827,8 +848,8 @@
         <p>${escapeHtml(t("aboutFree"))}</p>
       </section>
       <section class="detail-section">
-        <h2>${store.lang === "zh" ? "Plus 未来会解锁什么" : "What Plus Will Unlock"}</h2>
-        <p>${escapeHtml(t("aboutPlus"))}</p>
+        <h2>${isFreeLaunchMode() ? (store.lang === "zh" ? "Plus 后续版本计划" : "Future Plus Plan") : (store.lang === "zh" ? "Plus 未来会解锁什么" : "What Plus Will Unlock")}</h2>
+        <p>${escapeHtml(isFreeLaunchMode() ? `${t("plusFutureBody")} ${t("aboutPlus")}` : t("aboutPlus"))}</p>
       </section>
       <section class="detail-section">
         <h2>${escapeHtml(t("safetyTitle"))}</h2>
@@ -847,7 +868,7 @@
         <span>${escapeHtml(t("valueLine"))}</span>
       </section>
       <div class="screenshot-grid">
-        ${t("screenshotSlides").map((slide, index) => {
+        ${screenshotSlides().map((slide, index) => {
           const style = featured[index] || styles[index];
           return `
             <article class="screenshot-card shot-${index + 1}">
@@ -866,6 +887,9 @@
 
   function screenshotMock(index, style, lang) {
     if (index === 5) {
+      if (isFreeLaunchMode()) {
+        return `<div class="shot-list">${styles.slice(8, 12).map((item) => `<span><img src="${item.image}" alt=""><b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
+      }
       return `<div class="shot-paywall"><h2>${escapeHtml(t("plus"))}</h2><p>${escapeHtml(t("plusSubtitle"))}</p><ul>${t("plusPlanItems").slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>`;
     }
     if (index === 2) {
@@ -878,6 +902,16 @@
       return `<div class="shot-export"><img src="${style.image}" alt=""><button>${escapeHtml(t("freeExport"))}</button></div>`;
     }
     return `<div class="shot-card-visual"><img src="${style.image}" alt=""><h2>${escapeHtml(style.name.en)}</h2><p>${escapeHtml(style.name.zh)}</p></div>`;
+  }
+
+  function screenshotSlides() {
+    const slides = t("screenshotSlides").slice();
+    if (isFreeLaunchMode()) {
+      slides[5] = store.lang === "zh"
+        ? ["离线收藏你的风格灵感", "免费图鉴"]
+        : ["Save your style inspiration offline", "Free Atlas"];
+    }
+    return slides;
   }
 
   function setView(view) {
@@ -1340,8 +1374,8 @@
         const img = event.target.closest("img");
         return openImage(img.currentSrc || img.src, img.alt);
       }
-      if (action === "purchase-plus") return postNativeMessage("purchasePlus") || toast(t("comingSoon"));
-      if (action === "restore-purchases") return postNativeMessage("restorePurchases") || toast(t("comingSoon"));
+      if (action === "purchase-plus") return isIapMode() && hasNativeBridge() ? postNativeMessage("purchasePlus") : toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
+      if (action === "restore-purchases") return isIapMode() && hasNativeBridge() ? postNativeMessage("restorePurchases") : toast(t("comingSoon"));
       if (action === "close-lightbox") return closeImage();
       if (action === "share-lightbox") return shareImage();
       if (action === "save-lightbox") return saveImage();
@@ -1437,7 +1471,10 @@
   window.StyleAtlasNative = window.StyleAtlasNativeBridge;
   window.StyleAtlasRuntime = {
     getConfig: () => window.STYLE_ATLAS_RUNTIME_CONFIG,
-    isExternalGalleryEnabled
+    isExternalGalleryEnabled,
+    getSubmissionMode,
+    isFreeLaunchMode,
+    isIapMode
   };
   bind();
   renderAll();

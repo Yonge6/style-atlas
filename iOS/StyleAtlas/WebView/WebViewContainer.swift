@@ -11,7 +11,8 @@ struct WebViewContainer: UIViewRepresentable {
         let runtimeConfigScript = """
         window.STYLE_ATLAS_RUNTIME_CONFIG = {
           nativeShell: true,
-          externalGalleryEnabled: false
+          externalGalleryEnabled: false,
+          submissionMode: "freeLaunch"
         };
         """
         config.userContentController.addUserScript(WKUserScript(

@@ -128,6 +128,48 @@ In Xcode:
 3. Run > Options.
 4. StoreKit Configuration: select `StyleAtlas.storekit`.
 
+## Free Launch Mode
+
+iOS V1 injects this runtime config at document start:
+
+```js
+window.STYLE_ATLAS_RUNTIME_CONFIG = {
+  nativeShell: true,
+  externalGalleryEnabled: false,
+  submissionMode: "freeLaunch"
+}
+```
+
+This keeps the first App Store submission as a free offline atlas:
+
+- no real Plus purchase button is shown
+- Restore Purchases is hidden
+- StoreKit code remains in the app
+- GitHub Pages still defaults to `submissionMode: "web"`
+
+## Switch To IAP Mode Later
+
+When StoreKit is fully verified:
+
+1. Create the App Store Connect IAP product:
+   `xiazishuo_style_atlas_plus_lifetime`
+2. Complete IAP metadata.
+3. Test Sandbox purchase.
+4. Test Restore Purchases.
+5. In `WebView/WebViewContainer.swift`, change:
+
+```js
+submissionMode: "freeLaunch"
+```
+
+to:
+
+```js
+submissionMode: "iap"
+```
+
+6. Update App Store screenshots and description to show Plus.
+
 ## Local Purchase Test
 
 1. Launch the app from Xcode.
