@@ -15,6 +15,7 @@
 		BF0000010000000000000006 /* Store/EntitlementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000106 /* Store/EntitlementManager.swift */; };
 		BF0000010000000000000007 /* Resources/Web in Resources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000107 /* Resources/Web */; };
 		BF0000010000000000000008 /* Resources/StoreKit/StyleAtlas.storekit in Resources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000108 /* Resources/StoreKit/StyleAtlas.storekit */; };
+		BF0000010000000000000009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000110 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		BF0000010000000000000107 /* Resources/Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources/Web; sourceTree = "<group>"; };
 		BF0000010000000000000108 /* Resources/StoreKit/StyleAtlas.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Resources/StoreKit/StyleAtlas.storekit; sourceTree = "<group>"; };
 		BF0000010000000000000109 /* StyleAtlas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StyleAtlas.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF0000010000000000000110 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 				BF0000010000000000000104 /* WebView/WebViewBridge.swift */,
 				BF0000010000000000000105 /* Store/StoreManager.swift */,
 				BF0000010000000000000106 /* Store/EntitlementManager.swift */,
+				BF0000010000000000000110 /* Assets.xcassets */,
 				BF0000010000000000000107 /* Resources/Web */,
 				BF0000010000000000000108 /* Resources/StoreKit/StyleAtlas.storekit */,
 			);
@@ -131,6 +134,7 @@
 			files = (
 				BF0000010000000000000007 /* Resources/Web in Resources */,
 				BF0000010000000000000008 /* Resources/StoreKit/StyleAtlas.storekit in Resources */,
+				BF0000010000000000000009 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,7 +210,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = L855ZVM679;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "虾子曰 Style Atlas";
+				INFOPLIST_KEY_CFBundleDisplayName = "虾子曰艺术风格图鉴";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -229,7 +233,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = L855ZVM679;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "虾子曰 Style Atlas";
+				INFOPLIST_KEY_CFBundleDisplayName = "虾子曰艺术风格图鉴";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

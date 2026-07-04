@@ -147,6 +147,36 @@ This keeps the first App Store submission as a free offline atlas:
 - StoreKit code remains in the app
 - GitHub Pages still defaults to `submissionMode: "web"`
 
+## App Store Assets
+
+Final App Store assets are organized under the repository-level asset folder:
+
+- App Icon: `assets/app-store/final/icon/app-icon-1024.png`
+- App Icon source: `assets/app-store/final/icon/app-icon-source.png`
+- Launch Screen source: `assets/app-store/final/launch/launch-screen.png`
+- Chinese screenshots: `assets/app-store/final/screenshots/zh/`
+- English screenshots: `assets/app-store/final/screenshots/en/`
+- Free launch metadata: `assets/app-store/app-store-metadata-free-v1.md`
+- Privacy page: `privacy.html`
+
+Current iOS V1 submission mode:
+
+```text
+submissionMode="freeLaunch"
+```
+
+The first App Store version does not show a Plus purchase button, does not show Restore Purchases, and does not enable real IAP. It is positioned as a free offline visual style atlas with daily aesthetic learning, search, saved styles, and style card export.
+
+The final app icon is also wired into `Assets.xcassets/AppIcon.appiconset` for Xcode. The supplied launch screen artwork is preserved as a source asset; the current project can continue using the system-generated launch screen for the free launch. To use the custom image later, configure a `LaunchScreen.storyboard` or a SwiftUI launch screen in Xcode and reference `assets/app-store/final/launch/launch-screen.png`.
+
+Screenshot dimensions:
+
+- Chinese screenshots: 6 files, each 852 x 1846
+- English screenshots: 6 files, each 852 x 1846
+- Launch source: 863 x 1822
+
+Before uploading screenshots to App Store Connect, confirm the required screenshot size for the chosen iPhone display set and adapt only if App Store Connect rejects the supplied dimensions.
+
 ## Switch To IAP Mode Later
 
 When StoreKit is fully verified:
@@ -170,7 +200,9 @@ submissionMode: "iap"
 
 6. Update App Store screenshots and description to show Plus.
 
-## Local Purchase Test
+## Future Local Purchase Test
+
+Free launch mode intentionally hides purchase and restore UI. Run this section only after changing `submissionMode` to `iap` for a future Plus-enabled build:
 
 1. Launch the app from Xcode.
 2. Open Plus Paywall in the web UI.
@@ -245,16 +277,17 @@ Free Plus state:
 4. Saving more than 20 styles opens Plus.
 5. Free export includes watermark.
 
-StoreKit local purchase:
+StoreKit local purchase for future IAP mode:
 
-1. Open Plus Paywall.
-2. Tap `Unlock Plus`.
-3. StoreKit local purchase sheet appears.
-4. Successful purchase unlocks locked content.
-5. Export watermark disappears.
-6. Saved style limit is removed.
-7. Restarting the app keeps Plus.
-8. `Restore Purchases` restores Plus.
+1. Switch `submissionMode` to `iap`.
+2. Open Plus Paywall.
+3. Tap `Unlock Plus`.
+4. StoreKit local purchase sheet appears.
+5. Successful purchase unlocks locked content.
+6. Export watermark disappears.
+7. Saved style limit is removed.
+8. Restarting the app keeps Plus.
+9. `Restore Purchases` restores Plus.
 
 Language:
 
@@ -318,8 +351,7 @@ Never add external payment links inside the app.
 - Airplane mode still shows all core content.
 - Search works offline.
 - Saved styles persist locally.
-- Plus purchase unlocks all locked archives.
-- Restore purchase works.
 - Free export has watermark.
-- Plus export removes watermark.
 - App Store screenshots match actual app behavior.
+- Free launch mode hides Plus purchase and Restore Purchases.
+- App Store copy does not claim Plus is currently purchasable.
