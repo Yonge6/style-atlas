@@ -223,6 +223,9 @@
       comingSoon: "即将开放",
       unlockPlus: "解锁 Plus",
       restorePurchases: "恢复购买",
+      oneTimePurchase: "一次购买，永久解锁",
+      priceLoading: "正在载入 App Store 价格…",
+      iapFootnote: "购买由 Apple App Store 安全处理",
       appStoreFootnote: "正式版将在 App Store 内开放",
       plusFuture: "Plus 将在后续版本开放",
       plusFutureBody: "首版先提供完整的免费风格浏览、搜索、收藏和离线体验。",
@@ -307,6 +310,9 @@
       comingSoon: "Coming Soon",
       unlockPlus: "Unlock Plus",
       restorePurchases: "Restore Purchases",
+      oneTimePurchase: "One-time purchase, lifetime access",
+      priceLoading: "Loading App Store price…",
+      iapFootnote: "Purchase securely processed by Apple App Store",
       appStoreFootnote: "Available later via App Store in-app purchase",
       plusFuture: "Plus will be available in a future version",
       plusFutureBody: "The first version focuses on free browsing, search, saved styles, and offline access.",
@@ -488,10 +494,14 @@
     dom.plusPlanTitle.textContent = t("plusPlan");
     dom.freePlanList.innerHTML = t("freePlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     dom.plusPlanList.innerHTML = t("plusPlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
-    dom.plusLaunchPrice.textContent = t("launchPrice");
+    const iapDisplayPrice = window.STYLE_ATLAS_RUNTIME_CONFIG?.iapDisplayPrice;
+    dom.plusLaunchPrice.textContent = iapReady
+      ? `${iapDisplayPrice || t("priceLoading")} · ${t("oneTimePurchase")}`
+      : t("launchPrice");
     dom.plusRegularPrice.textContent = t("regularPrice");
     dom.plusLaunchPrice.parentElement.hidden = freeLaunch;
-    dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : t("appStoreFootnote");
+    dom.plusRegularPrice.hidden = iapReady;
+    dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : (iapReady ? t("iapFootnote") : t("appStoreFootnote"));
     dom.plusCta.hidden = false;
     dom.plusCta.textContent = iapReady ? t("unlockPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"));
     dom.plusCta.disabled = !iapReady;
@@ -557,6 +567,23 @@
     `;
   }
 
+  function renderDeck() {
+    const style = activeStyle();
+    dom.styleDeck.innerHTML = renderDeckCard(style);
+    dom.prevGhost.innerHTML = renderDeckCard(styleByOffset(-1));
+    dom.nextGhost.innerHTML = renderDeckCard(styleByOffset(1));
+    dom.deckStage.classList.remove("dragging", "fly-left", "fly-right");
+    dom.styleDeck.style.removeProperty("--drag-x");
+    dom.styleDeck.style.removeProperty("--drag-rotate");
+    [dom.prevGhost, dom.nextGhost].forEach((card) => {
+      card.style.removeProperty("--ghost-x");
+      card.style.removeProperty("--ghost-rotate");
+      card.style.removeProperty("--ghost-scale");
+      card.style.removeProperty("--ghost-opacity");
+    });
+
+  }
+
   function renderCard(style, compact = false) {
     const lang = store.lang;
     const saved = isSaved(style.id);
@@ -591,12 +618,7 @@
     dom.randomBtn.textContent = t("random");
     dom.swipeHint.textContent = t("swipe");
     dom.categoryTitle.textContent = t("categories");
-    dom.styleDeck.innerHTML = renderDeckCard(style);
-    dom.prevGhost.innerHTML = renderDeckCard(styleByOffset(-1));
-    dom.nextGhost.innerHTML = renderDeckCard(styleByOffset(1));
-    dom.deckStage.classList.remove("dragging", "fly-left", "fly-right");
-    dom.styleDeck.style.removeProperty("--drag-x");
-    dom.styleDeck.style.removeProperty("--drag-rotate");
+    renderDeck();
     dom.categoryChips.innerHTML = categories.map((cat) => {
       const categoryStyles = styles.filter((item) => item.category === cat[0]);
       const preview = categoryStyles.slice(0, 3).map((item) => `<img src="${item.image}" alt="${escapeHtml(item.name[lang])}" loading="lazy">`).join("");
@@ -951,7 +973,7 @@
     const index = styles.findIndex((style) => style.id === store.activeId);
     const next = (index + offset + styles.length) % styles.length;
     store.activeId = styles[next].id;
-    renderHome();
+    renderDeck();
   }
 
   function addRecent(id) {
@@ -972,7 +994,7 @@
       toast(t("savedToast"));
     }
     saveState();
-    renderHome();
+    renderDeck();
     if (store.view === "detail") renderDetail();
     if (store.view === "search") renderSearch();
     if (store.view === "saved") renderSaved();
@@ -1279,7 +1301,7 @@
     dom.backBtn.addEventListener("click", () => setView("home"));
     dom.randomBtn.addEventListener("click", () => {
       store.activeId = styles[Math.floor(Math.random() * styles.length)].id;
-      renderHome();
+      renderDeck();
     });
     dom.prevBtn.addEventListener("click", () => setActiveByOffset(-1));
     dom.nextBtn.addEventListener("click", () => setActiveByOffset(1));
@@ -1306,27 +1328,100 @@
     let moved = false;
     let dragFrame = 0;
     let dragX = 0;
+    let dragY = 0;
+    let lastX = 0;
+    let lastTime = 0;
+    let velocityX = 0;
+    let gestureAxis = "";
+    let animating = false;
+
+    function resetGhost(card) {
+      card.style.removeProperty("--ghost-x");
+      card.style.removeProperty("--ghost-rotate");
+      card.style.removeProperty("--ghost-scale");
+      card.style.removeProperty("--ghost-opacity");
+    }
 
     function paintDrag() {
       dragFrame = 0;
       dom.styleDeck.style.setProperty("--drag-x", `${dragX}px`);
-      dom.styleDeck.style.setProperty("--drag-rotate", `${dragX / 13}deg`);
+      dom.styleDeck.style.setProperty("--drag-rotate", `${dragX / 18}deg`);
+      const progress = Math.min(1, Math.abs(dragX) / Math.max(72, dom.styleDeck.clientWidth * 0.28));
+      const target = dragX < 0 ? dom.nextGhost : dom.prevGhost;
+      const other = dragX < 0 ? dom.prevGhost : dom.nextGhost;
+      const side = dragX < 0 ? 1 : -1;
+      target.style.setProperty("--ghost-x", `${side * 46 * (1 - progress)}px`);
+      target.style.setProperty("--ghost-rotate", `${side * 7 * (1 - progress)}deg`);
+      target.style.setProperty("--ghost-scale", String(0.91 + 0.09 * progress));
+      target.style.setProperty("--ghost-opacity", String(0.48 + 0.52 * progress));
+      resetGhost(other);
     }
 
-    function resetDrag() {
+    function cancelDragFrame() {
       if (dragFrame) cancelAnimationFrame(dragFrame);
       dragFrame = 0;
+    }
+
+    function settleBack() {
+      cancelDragFrame();
       dom.deckStage.classList.remove("dragging");
-      dom.styleDeck.style.removeProperty("--drag-x");
-      dom.styleDeck.style.removeProperty("--drag-rotate");
+      requestAnimationFrame(() => {
+        dom.styleDeck.style.setProperty("--drag-x", "0px");
+        dom.styleDeck.style.setProperty("--drag-rotate", "0deg");
+        resetGhost(dom.prevGhost);
+        resetGhost(dom.nextGhost);
+      });
+      setTimeout(() => {
+        dom.styleDeck.style.removeProperty("--drag-x");
+        dom.styleDeck.style.removeProperty("--drag-rotate");
+      }, 340);
+    }
+
+    function completeSwipe(direction) {
+      if (animating) return;
+      animating = true;
+      if (dragFrame) paintDrag();
+      dom.deckStage.classList.remove("dragging");
+      requestAnimationFrame(() => {
+        dom.deckStage.classList.add(direction > 0 ? "fly-left" : "fly-right");
+        postNativeMessage("hapticFeedback");
+      });
+      setTimeout(() => {
+        setActiveByOffset(direction);
+        animating = false;
+      }, 320);
+    }
+
+    function finishGesture(cancelled = false) {
+      if (!dragging) return;
+      dragging = false;
+      const horizontal = gestureAxis === "x" || Math.abs(dragX) > Math.abs(dragY);
+      const distanceThreshold = Math.min(64, dom.styleDeck.clientWidth * 0.16);
+      const shouldChange = horizontal && (Math.abs(dragX) >= distanceThreshold || Math.abs(velocityX) >= 0.38);
+      if (shouldChange) {
+        completeSwipe(dragX < 0 || (dragX === 0 && velocityX < 0) ? 1 : -1);
+        return;
+      }
+      if (!cancelled && dragY < -80 && Math.abs(dragY) > Math.abs(dragX)) {
+        settleBack();
+        setView("detail");
+        return;
+      }
+      settleBack();
     }
 
     dom.styleDeck.addEventListener("pointerdown", (event) => {
-      if (event.target.closest("button")) return;
+      if (event.target.closest("button") || animating) return;
       dragging = true;
       moved = false;
       startX = event.clientX;
       startY = event.clientY;
+      lastX = startX;
+      lastTime = event.timeStamp;
+      dragX = 0;
+      dragY = 0;
+      velocityX = 0;
+      gestureAxis = "";
       dom.styleDeck.setPointerCapture(event.pointerId);
       dom.deckStage.classList.add("dragging");
     });
@@ -1336,27 +1431,26 @@
       const dx = event.clientX - startX;
       const dy = event.clientY - startY;
       if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
-      dragX = Math.max(-130, Math.min(130, dx));
+      dragY = dy;
+      if (!gestureAxis && Math.max(Math.abs(dx), Math.abs(dy)) > 7) gestureAxis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+      if (gestureAxis === "y") return;
+      event.preventDefault();
+      const elapsed = Math.max(1, event.timeStamp - lastTime);
+      const sampleVelocity = (event.clientX - lastX) / elapsed;
+      velocityX = velocityX * 0.65 + sampleVelocity * 0.35;
+      lastX = event.clientX;
+      lastTime = event.timeStamp;
+      dragX = Math.max(-180, Math.min(180, dx));
       if (!dragFrame) dragFrame = requestAnimationFrame(paintDrag);
-    });
+    }, { passive: false });
 
-    dom.styleDeck.addEventListener("pointerup", (event) => {
+    dom.styleDeck.addEventListener("pointerup", () => {
       if (!dragging) return;
-      dragging = false;
-      const dx = event.clientX - startX;
-      const dy = event.clientY - startY;
-      resetDrag();
-      if (Math.abs(dx) > 84 && Math.abs(dx) > Math.abs(dy)) {
-        dom.deckStage.classList.add(dx < 0 ? "fly-left" : "fly-right");
-        setTimeout(() => setActiveByOffset(dx < 0 ? 1 : -1), 210);
-        return;
-      }
-      if (dy < -80 && Math.abs(dy) > Math.abs(dx)) setView("detail");
+      finishGesture();
     });
 
     dom.styleDeck.addEventListener("pointercancel", () => {
-      dragging = false;
-      resetDrag();
+      finishGesture(true);
     });
 
     document.body.addEventListener("click", (event) => {
@@ -1465,6 +1559,11 @@
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
   window.StyleAtlasNativeBridge = {
     setPlusAccess: setPlusAccessFromNative,
+    setProductPrice(value) {
+      window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice = String(value || "");
+      if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
+      return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice;
+    },
     getPlusAccess: hasPlusAccess,
     postNativeMessage
   };
