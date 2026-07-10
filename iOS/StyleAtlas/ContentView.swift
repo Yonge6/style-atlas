@@ -14,7 +14,11 @@ struct ContentView: View {
     }
 
     var body: some View {
-        WebViewContainer(bridge: bridge, hasPlus: entitlementManager.hasPlus)
+        WebViewContainer(
+            bridge: bridge,
+            hasPlus: entitlementManager.hasPlus,
+            productDisplayPrice: storeManager.plusProduct?.displayPrice
+        )
             .ignoresSafeArea()
             .task {
                 await storeManager.start()

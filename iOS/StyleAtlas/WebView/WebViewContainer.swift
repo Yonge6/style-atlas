@@ -4,6 +4,7 @@ import WebKit
 struct WebViewContainer: UIViewRepresentable {
     @ObservedObject var bridge: WebViewBridge
     let hasPlus: Bool
+    let productDisplayPrice: String?
 
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
@@ -12,7 +13,7 @@ struct WebViewContainer: UIViewRepresentable {
         window.STYLE_ATLAS_RUNTIME_CONFIG = {
           nativeShell: true,
           externalGalleryEnabled: false,
-          submissionMode: "freeLaunch"
+          submissionMode: "iap"
         };
         """
         config.userContentController.addUserScript(WKUserScript(
@@ -38,24 +39,30 @@ struct WebViewContainer: UIViewRepresentable {
     }
 
     func updateUIView(_ webView: WKWebView, context: Context) {
+        context.coordinator.hasPlus = hasPlus
+        context.coordinator.productDisplayPrice = productDisplayPrice
         bridge.injectPlusAccess(hasPlus)
+        bridge.injectProductPrice(productDisplayPrice)
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(bridge: bridge, hasPlus: hasPlus)
+        Coordinator(bridge: bridge, hasPlus: hasPlus, productDisplayPrice: productDisplayPrice)
     }
 
     final class Coordinator: NSObject, WKNavigationDelegate {
         private let bridge: WebViewBridge
-        private let hasPlus: Bool
+        var hasPlus: Bool
+        var productDisplayPrice: String?
 
-        init(bridge: WebViewBridge, hasPlus: Bool) {
+        init(bridge: WebViewBridge, hasPlus: Bool, productDisplayPrice: String?) {
             self.bridge = bridge
             self.hasPlus = hasPlus
+            self.productDisplayPrice = productDisplayPrice
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             bridge.injectPlusAccess(hasPlus)
+            bridge.injectProductPrice(productDisplayPrice)
         }
     }
 }

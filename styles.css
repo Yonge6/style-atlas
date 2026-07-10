@@ -273,8 +273,16 @@ main {
 .deck-stage .style-card {
   position: absolute;
   inset: 0;
-  transition: transform 260ms cubic-bezier(.2, .8, .2, 1), opacity 220ms ease, filter 220ms ease;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transition: transform 320ms cubic-bezier(.22, .82, .24, 1), opacity 260ms ease, filter 260ms ease;
   will-change: transform;
+}
+
+.deck-stage .cover-image {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .live-card {
@@ -284,7 +292,7 @@ main {
 
 .ghost-card {
   z-index: 1;
-  opacity: 0.48;
+  opacity: var(--ghost-opacity, 0.48);
   filter: saturate(0.78) brightness(0.78);
   pointer-events: none;
 }
@@ -294,11 +302,11 @@ main {
 }
 
 .ghost-card.prev {
-  transform: translateX(-46px) rotate(-7deg) scale(0.91);
+  transform: translateX(var(--ghost-x, -46px)) rotate(var(--ghost-rotate, -7deg)) scale(var(--ghost-scale, 0.91));
 }
 
 .ghost-card.next {
-  transform: translateX(46px) rotate(7deg) scale(0.91);
+  transform: translateX(var(--ghost-x, 46px)) rotate(var(--ghost-rotate, 7deg)) scale(var(--ghost-scale, 0.91));
 }
 
 .deck-stage.dragging .style-card {
@@ -307,17 +315,17 @@ main {
 }
 
 .deck-stage.dragging .ghost-card {
-  opacity: 0.66;
+  opacity: var(--ghost-opacity, 0.66);
   filter: saturate(0.95) brightness(0.88);
 }
 
 .deck-stage.fly-left .live-card {
-  transform: translateX(-420px) rotate(-14deg);
+  transform: translate3d(-115%, 0, 0) rotate(-12deg);
   opacity: 0;
 }
 
 .deck-stage.fly-right .live-card {
-  transform: translateX(420px) rotate(14deg);
+  transform: translate3d(115%, 0, 0) rotate(12deg);
   opacity: 0;
 }
 

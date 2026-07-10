@@ -6,9 +6,10 @@ This is the first iOS shell for Xiazishuo Style Atlas. It includes a minimal Xco
 
 - SwiftUI shell files are provided.
 - `WKWebView` loads bundled `Resources/Web/index.html`.
-- StoreKit 2 non-consumable product structure is provided.
+- StoreKit 2 non-consumable purchase and restore flow is enabled for the 1.1 build.
 - Web can call native `purchasePlus` and `restorePurchases`.
 - Native can inject `window.StyleAtlasNativeBridge.setPlusAccess(true / false)`.
+- Native injects the localized StoreKit price into the Plus paywall.
 - No Stripe, external payment, login, backend, AI image generation, or social features.
 - Simulator build has been verified with Xcode 26.6 and iOS 26.5 Simulator.
 
@@ -128,23 +129,23 @@ In Xcode:
 3. Run > Options.
 4. StoreKit Configuration: select `StyleAtlas.storekit`.
 
-## Free Launch Mode
+## Runtime Mode
 
-iOS V1 injects this runtime config at document start:
+iOS 1.0 shipped in `freeLaunch` mode. The current 1.1 development build injects this runtime config at document start:
 
 ```js
 window.STYLE_ATLAS_RUNTIME_CONFIG = {
   nativeShell: true,
   externalGalleryEnabled: false,
-  submissionMode: "freeLaunch"
+  submissionMode: "iap"
 }
 ```
 
-This keeps the first App Store submission as a free offline atlas:
+This enables the native StoreKit 2 flow while keeping the web version unchanged:
 
-- no real Plus purchase button is shown
-- Restore Purchases is hidden
-- StoreKit code remains in the app
+- the native app shows Unlock Plus and Restore Purchases
+- the web version cannot initiate a purchase
+- Plus is a non-consumable lifetime entitlement
 - GitHub Pages still defaults to `submissionMode: "web"`
 
 ## App Store Assets
@@ -159,13 +160,13 @@ Final App Store assets are organized under the repository-level asset folder:
 - Free launch metadata: `assets/app-store/app-store-metadata-free-v1.md`
 - Privacy page: `privacy.html`
 
-Current iOS V1 submission mode:
+The 1.0 App Store release used:
 
 ```text
 submissionMode="freeLaunch"
 ```
 
-The first App Store version does not show a Plus purchase button, does not show Restore Purchases, and does not enable real IAP. It is positioned as a free offline visual style atlas with daily aesthetic learning, search, saved styles, and style card export.
+The current 1.1 development build uses `submissionMode="iap"`. It must not be submitted until the matching App Store Connect product, Sandbox purchase, Restore Purchases, and IAP review metadata are complete.
 
 The final app icon is also wired into `Assets.xcassets/AppIcon.appiconset` for Xcode. The supplied launch screen artwork is preserved as a source asset; the current project can continue using the system-generated launch screen for the free launch. To use the custom image later, configure a `LaunchScreen.storyboard` or a SwiftUI launch screen in Xcode and reference `assets/app-store/final/launch/launch-screen.png`.
 
@@ -177,32 +178,21 @@ Screenshot dimensions:
 
 Before uploading screenshots to App Store Connect, confirm the required screenshot size for the chosen iPhone display set and adapt only if App Store Connect rejects the supplied dimensions.
 
-## Switch To IAP Mode Later
+## IAP Release Checklist
 
-When StoreKit is fully verified:
+Before shipping the 1.1 IAP update:
 
 1. Create the App Store Connect IAP product:
    `xiazishuo_style_atlas_plus_lifetime`
 2. Complete IAP metadata.
 3. Test Sandbox purchase.
 4. Test Restore Purchases.
-5. In `WebView/WebViewContainer.swift`, change:
+5. Confirm `WebView/WebViewContainer.swift` remains in `submissionMode: "iap"`.
+6. Update the App Store description and review notes to disclose the non-consumable Plus purchase.
 
-```js
-submissionMode: "freeLaunch"
-```
+## Local Purchase Test
 
-to:
-
-```js
-submissionMode: "iap"
-```
-
-6. Update App Store screenshots and description to show Plus.
-
-## Future Local Purchase Test
-
-Free launch mode intentionally hides purchase and restore UI. Run this section only after changing `submissionMode` to `iap` for a future Plus-enabled build:
+The shared Xcode scheme selects `StyleAtlas.storekit` for local StoreKit testing:
 
 1. Launch the app from Xcode.
 2. Open Plus Paywall in the web UI.

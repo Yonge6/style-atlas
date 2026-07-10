@@ -34,4 +34,10 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         let js = "window.StyleAtlasNativeBridge?.setPlusAccess(\(hasPlus ? "true" : "false"))"
         webView?.evaluateJavaScript(js)
     }
+
+    func injectProductPrice(_ price: String?) {
+        guard let data = try? JSONEncoder().encode(price ?? ""),
+              let value = String(data: data, encoding: .utf8) else { return }
+        webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setProductPrice(\(value))")
+    }
 }
