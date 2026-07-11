@@ -225,6 +225,15 @@
       restorePurchases: "恢复购买",
       oneTimePurchase: "一次购买，永久解锁",
       priceLoading: "正在载入 App Store 价格…",
+      purchaseLoading: "正在连接 App Store…",
+      purchaseSuccess: "Plus 已解锁",
+      purchasePending: "购买正在等待处理",
+      purchaseCancelled: "已取消购买",
+      purchaseUnavailable: "暂时无法载入 Plus，请稍后重试。",
+      purchaseFailed: "购买未完成，请稍后重试。",
+      restoreLoading: "正在恢复购买…",
+      restoreSuccess: "购买已恢复",
+      restoreNone: "没有找到可恢复的购买",
       iapFootnote: "购买由 Apple App Store 安全处理",
       appStoreFootnote: "正式版将在 App Store 内开放",
       plusFuture: "Plus 将在后续版本开放",
@@ -312,6 +321,15 @@
       restorePurchases: "Restore Purchases",
       oneTimePurchase: "One-time purchase, lifetime access",
       priceLoading: "Loading App Store price…",
+      purchaseLoading: "Connecting to the App Store…",
+      purchaseSuccess: "Plus unlocked",
+      purchasePending: "Purchase is pending",
+      purchaseCancelled: "Purchase cancelled",
+      purchaseUnavailable: "Plus is temporarily unavailable. Please try again.",
+      purchaseFailed: "Purchase was not completed. Please try again.",
+      restoreLoading: "Restoring purchases…",
+      restoreSuccess: "Purchase restored",
+      restoreNone: "No purchase was found to restore",
       iapFootnote: "Purchase securely processed by Apple App Store",
       appStoreFootnote: "Available later via App Store in-app purchase",
       plusFuture: "Plus will be available in a future version",
@@ -503,10 +521,15 @@
     dom.plusRegularPrice.hidden = iapReady;
     dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : (iapReady ? t("iapFootnote") : t("appStoreFootnote"));
     dom.plusCta.hidden = false;
-    dom.plusCta.textContent = iapReady ? t("unlockPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"));
-    dom.plusCta.disabled = !iapReady;
+    const storeAction = window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction || "idle";
+    const isStoreBusy = storeAction === "purchasing" || storeAction === "restoring";
+    dom.plusCta.textContent = storeAction === "purchasing"
+      ? t("purchaseLoading")
+      : (iapReady ? t("unlockPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon")));
+    dom.plusCta.disabled = !iapReady || isStoreBusy;
     dom.plusRestoreBtn.hidden = !iapReady;
-    dom.plusRestoreBtn.textContent = t("restorePurchases");
+    dom.plusRestoreBtn.textContent = storeAction === "restoring" ? t("restoreLoading") : t("restorePurchases");
+    dom.plusRestoreBtn.disabled = isStoreBusy;
     dom.plusModal.hidden = false;
     document.body.classList.add("drawer-lock");
     setDrawer(false);
@@ -516,6 +539,24 @@
     dom.plusModal.hidden = true;
     store.plusReasonKey = "";
     document.body.classList.remove("drawer-lock");
+  }
+
+  function setStoreActionFromNative(status, message = "") {
+    const normalized = String(status || "idle");
+    window.STYLE_ATLAS_RUNTIME_CONFIG.storeAction = normalized;
+    const statusKeys = {
+      purchased: "purchaseSuccess",
+      pending: "purchasePending",
+      cancelled: "purchaseCancelled",
+      unavailable: "purchaseUnavailable",
+      failed: "purchaseFailed",
+      restored: "restoreSuccess",
+      nothingToRestore: "restoreNone"
+    };
+    const key = statusKeys[normalized];
+    if (key) toast(message || t(key));
+    if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
+    return normalized;
   }
 
   function lockedSection(title, preview) {
@@ -1468,8 +1509,18 @@
         const img = event.target.closest("img");
         return openImage(img.currentSrc || img.src, img.alt);
       }
-      if (action === "purchase-plus") return isIapMode() && hasNativeBridge() ? postNativeMessage("purchasePlus") : toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
-      if (action === "restore-purchases") return isIapMode() && hasNativeBridge() ? postNativeMessage("restorePurchases") : toast(t("comingSoon"));
+      if (action === "purchase-plus") {
+        if (!isIapMode() || !hasNativeBridge()) return toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
+        setStoreActionFromNative("purchasing");
+        if (!postNativeMessage("purchasePlus")) setStoreActionFromNative("unavailable");
+        return;
+      }
+      if (action === "restore-purchases") {
+        if (!isIapMode() || !hasNativeBridge()) return toast(t("comingSoon"));
+        setStoreActionFromNative("restoring");
+        if (!postNativeMessage("restorePurchases")) setStoreActionFromNative("failed");
+        return;
+      }
       if (action === "close-lightbox") return closeImage();
       if (action === "share-lightbox") return shareImage();
       if (action === "save-lightbox") return saveImage();
@@ -1564,6 +1615,7 @@
       if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
       return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice;
     },
+    setStoreAction: setStoreActionFromNative,
     getPlusAccess: hasPlusAccess,
     postNativeMessage
   };

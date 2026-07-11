@@ -1,6 +1,16 @@
 import Foundation
 import StoreKit
 
+enum StoreActionResult {
+    case purchased
+    case pending
+    case cancelled
+    case restored
+    case nothingToRestore
+    case unavailable(String)
+    case failed(String)
+}
+
 @MainActor
 final class StoreManager: ObservableObject {
     static let plusProductID = "xiazishuo_style_atlas_plus_lifetime"
@@ -25,34 +35,44 @@ final class StoreManager: ObservableObject {
         listenForTransactions()
     }
 
-    func loadProducts() async {
+    @discardableResult
+    func loadProducts() async -> Bool {
         do {
             plusProduct = try await Product.products(for: [Self.plusProductID]).first
+            if plusProduct == nil {
+                lastError = "The Plus product is not available from the App Store."
+                return false
+            }
+            lastError = nil
+            return true
         } catch {
             lastError = error.localizedDescription
+            return false
         }
     }
 
-    func purchasePlus() async {
+    func purchasePlus() async -> StoreActionResult {
         guard let product = plusProduct else {
-            await loadProducts()
-            guard let product = plusProduct else { return }
-            await purchase(product)
-            return
+            guard await loadProducts(), let product = plusProduct else {
+                return .unavailable(lastError ?? "The Plus product is not available from the App Store.")
+            }
+            return await purchase(product)
         }
-        await purchase(product)
+        return await purchase(product)
     }
 
-    func restorePurchases() async {
+    func restorePurchases() async -> StoreActionResult {
         do {
             try await AppStore.sync()
             await refreshEntitlements()
+            return entitlementManager.hasPlus ? .restored : .nothingToRestore
         } catch {
             lastError = error.localizedDescription
+            return .failed(error.localizedDescription)
         }
     }
 
-    private func purchase(_ product: Product) async {
+    private func purchase(_ product: Product) async -> StoreActionResult {
         do {
             let result = try await product.purchase()
             switch result {
@@ -60,18 +80,23 @@ final class StoreManager: ObservableObject {
                 if case .verified(let transaction) = verification {
                     entitlementManager.hasPlus = transaction.productID == Self.plusProductID
                     await transaction.finish()
+                    return entitlementManager.hasPlus ? .purchased : .failed("The completed purchase did not match Style Atlas Plus.")
                 } else {
                     lastError = "Unverified transaction"
+                    return .failed("The App Store could not verify this purchase.")
                 }
             case .userCancelled:
-                break
+                return .cancelled
             case .pending:
                 lastError = "Purchase pending"
+                return .pending
             @unknown default:
                 lastError = "Unknown purchase result"
+                return .failed("The App Store returned an unknown purchase result.")
             }
         } catch {
             lastError = error.localizedDescription
+            return .failed(error.localizedDescription)
         }
     }
 
