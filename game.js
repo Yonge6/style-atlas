@@ -545,11 +545,13 @@
     const normalized = String(status || "idle");
     window.STYLE_ATLAS_RUNTIME_CONFIG.storeAction = normalized;
     const statusKeys = {
+      purchasing: "purchaseLoading",
       purchased: "purchaseSuccess",
       pending: "purchasePending",
       cancelled: "purchaseCancelled",
       unavailable: "purchaseUnavailable",
       failed: "purchaseFailed",
+      restoring: "restoreLoading",
       restored: "restoreSuccess",
       nothingToRestore: "restoreNone"
     };

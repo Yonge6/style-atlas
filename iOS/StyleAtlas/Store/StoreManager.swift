@@ -11,6 +11,14 @@ enum StoreActionResult {
     case failed(String)
 }
 
+private struct StoreTimeoutError: LocalizedError {
+    let operation: String
+
+    var errorDescription: String? {
+        "\(operation) timed out. Please try again."
+    }
+}
+
 @MainActor
 final class StoreManager: ObservableObject {
     static let plusProductID = "xiazishuo_style_atlas_plus_lifetime"
@@ -38,7 +46,9 @@ final class StoreManager: ObservableObject {
     @discardableResult
     func loadProducts() async -> Bool {
         do {
-            plusProduct = try await Product.products(for: [Self.plusProductID]).first
+            plusProduct = try await withTimeout(operation: "Loading Plus product") {
+                try await Product.products(for: [Self.plusProductID]).first
+            }
             if plusProduct == nil {
                 lastError = "The Plus product is not available from the App Store."
                 return false
@@ -74,7 +84,9 @@ final class StoreManager: ObservableObject {
 
     private func purchase(_ product: Product) async -> StoreActionResult {
         do {
-            let result = try await product.purchase()
+            let result = try await withTimeout(operation: "Starting Plus purchase") {
+                try await product.purchase()
+            }
             switch result {
             case .success(let verification):
                 if case .verified(let transaction) = verification {
@@ -128,6 +140,28 @@ final class StoreManager: ObservableObject {
                 }
                 await transaction.finish()
             }
+        }
+    }
+
+    private func withTimeout<T>(
+        seconds: UInt64 = 10,
+        operation: String,
+        task: @escaping @Sendable () async throws -> T
+    ) async throws -> T {
+        try await withThrowingTaskGroup(of: T.self) { group in
+            group.addTask {
+                try await task()
+            }
+            group.addTask {
+                try await Task.sleep(nanoseconds: seconds * 1_000_000_000)
+                throw StoreTimeoutError(operation: operation)
+            }
+
+            guard let result = try await group.next() else {
+                throw StoreTimeoutError(operation: operation)
+            }
+            group.cancelAll()
+            return result
         }
     }
 }
