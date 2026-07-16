@@ -7,7 +7,8 @@
   window.STYLE_ATLAS_RUNTIME_CONFIG = Object.assign({
     nativeShell: false,
     externalGalleryEnabled: true,
-    submissionMode: "web"
+    submissionMode: "web",
+    publicBaseURL: "https://yonge6.github.io/style-atlas/"
   }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
   const ACCESS_CONFIG = {
     freeFullStyleLimit: 20,
@@ -37,10 +38,28 @@
       "childrens-picture-book"
     ]
   };
-  const readLang = () => (["zh", "en"].includes(localStorage.getItem("styleAtlasLang")) ? localStorage.getItem("styleAtlasLang") : (navigator.language.startsWith("zh") ? "zh" : "en"));
+  const readStorage = (key, fallback = null) => {
+    try {
+      return localStorage.getItem(key) ?? fallback;
+    } catch {
+      return fallback;
+    }
+  };
+  const writeStorage = (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  const readLang = () => {
+    const stored = readStorage("styleAtlasLang");
+    return ["zh", "en"].includes(stored) ? stored : (navigator.language.startsWith("zh") ? "zh" : "en");
+  };
   const readArray = (key) => {
     try {
-      const value = JSON.parse(localStorage.getItem(key) || "[]");
+      const value = JSON.parse(readStorage(key, "[]"));
       return Array.isArray(value) ? value : [];
     } catch {
       return [];
@@ -52,8 +71,13 @@
     recent: readArray("styleAtlasRecent"),
     activeId: null,
     view: "home",
+    backView: "home",
     query: "",
-    filter: ""
+    filter: "",
+    exportRatio: "9:16",
+    drawerOpen: false,
+    drawerReturnFocus: null,
+    overlayReturnFocus: null
   };
 
   const styles = rawStyles.map((item, index) => {
@@ -126,6 +150,9 @@
   });
 
   Object.entries(refinedStyles || {}).forEach(([id, data]) => Object.assign(styles.find((style) => style.id === id), data));
+  const validStyleIds = new Set(styles.map((style) => style.id));
+  store.saved = [...new Set(store.saved.filter((id) => validStyleIds.has(id)))];
+  store.recent = [...new Set(store.recent.filter((id) => validStyleIds.has(id)))].slice(0, 12);
 
   function hasPlusAccess() {
     return ACCESS_CONFIG.plusEnabled === true;
@@ -201,7 +228,22 @@
       savedToast: "已收藏",
       removedToast: "已取消收藏",
       shared: "链接已复制",
-      cardSaved: "分享卡片已下载"
+      cardSaved: "分享卡片已保存",
+      saveFailed: "保存失败，请稍后重试",
+      shareFailed: "分享失败，请稍后重试",
+      copyFailed: "复制失败，请长按手动复制",
+      savedEmpty: "还没有收藏。先从今日风格或搜索里保存喜欢的风格。",
+      styleCount: (n) => `${n} 种风格`,
+      previousStyle: "上一个风格",
+      nextStyle: "下一个风格",
+      openStyle: "查看风格详情",
+      closeMenu: "关闭菜单",
+      openMenu: "打开菜单",
+      closePreview: "关闭图片预览",
+      imagePreview: "图片预览",
+      exportStarted: "正在准备图片…",
+      exportComplete: "图片已准备好",
+      lockedPreview: "完整内容包含深入源流、识别方法、案例与风格表达词。"
       ,
       plus: "虾子曰 Style Atlas Plus",
       unlockTitle: "解锁完整风格档案",
@@ -210,14 +252,14 @@
       locked: "Plus",
       freePreview: "免费预览",
       exportOptions: "保存导出",
-      freeExport: "普通清晰度 · 9:16 · 带水印",
+      freeExport: "普通清晰度 · 带水印",
       plusExport: "高清无水印 · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "建立你的私人审美资料库。",
-      plusBenefits: ["解锁全部 120 个风格完整档案", "无限收藏", "高清无水印保存", "多比例导出", "离线查看", "后续小更新"],
+      plusBenefits: ["解锁全部 120 个风格完整档案", "无限收藏", "高清无水印保存", "多比例导出", "完整风格表达词", "后续小更新"],
       freePlan: "免费版",
       plusPlan: "Plus",
       freePlanItems: ["每日推荐", "浏览全部 120 个风格封面", "查看 20 个完整风格档案", "收藏最多 20 个", "普通清晰度带水印保存"],
-      plusPlanItems: ["解锁全部 120 个完整风格档案", "无限收藏", "高清无水印保存", "多比例导出", "离线查看", "后续小更新"],
+      plusPlanItems: ["解锁全部 120 个完整风格档案", "无限收藏", "高清无水印保存", "多比例导出", "完整风格表达词", "后续小更新"],
       launchPrice: "首发限时 ¥28 / $3.99",
       regularPrice: "正式价 ¥48 / $7.99",
       comingSoon: "即将开放",
@@ -225,6 +267,16 @@
       restorePurchases: "恢复购买",
       oneTimePurchase: "一次购买，永久解锁",
       priceLoading: "正在载入 App Store 价格…",
+      purchaseLoading: "正在连接 App Store…",
+      purchaseSuccess: "Plus 已解锁",
+      purchasePending: "购买正在等待处理",
+      purchaseCancelled: "已取消购买",
+      purchaseUnavailable: "暂时无法载入 Plus，请稍后重试。",
+      purchaseFailed: "购买未完成，请稍后重试。",
+      restoreLoading: "正在恢复购买…",
+      restoreSuccess: "购买已恢复",
+      restoreNone: "没有找到可恢复的购买",
+      exportFailed: "图片导出失败，请重试",
       iapFootnote: "购买由 Apple App Store 安全处理",
       appStoreFootnote: "正式版将在 App Store 内开放",
       plusFuture: "Plus 将在后续版本开放",
@@ -238,7 +290,7 @@
       aboutBody: "虾子曰 Style Atlas 不是一个 AI 生成工具，而是一本帮助你建立审美词库的视觉风格图鉴。它把海报、绘画、插画、动画、民俗、数字艺术等 120 种视觉语言整理成可学习、可收藏、可表达的风格卡片。\n\n每天认识一种风格，慢慢你会更清楚地知道：什么好看，为什么好看，以及如何把脑海中的视觉感受准确表达出来。",
       aboutFor: "适合设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
       aboutFree: "免费版可以查看每日推荐、浏览全部风格封面、搜索风格、收藏 20 个风格，并学习 20 个完整风格档案。",
-      aboutPlus: "Plus 未来会解锁全部完整风格档案、无限收藏、高清无水印保存、多比例导出和离线查看。",
+      aboutPlus: "Plus 未来会解锁全部完整风格档案、无限收藏、高清无水印保存、多比例导出和完整风格表达词。",
       safetyTitle: "版权与风格安全说明",
       safetyBody: "Style Atlas 鼓励学习视觉语言，而不是复制具体作品、具体角色或当代创作者的完整可识别风格。历史艺术流派可以作为学习对象，涉及当代工作室、IP 或在世创作者时，我们更建议使用通用视觉特征来表达。",
       screenshotsTitle: "App Store Screenshot Kit",
@@ -289,7 +341,22 @@
       savedToast: "Saved",
       removedToast: "Removed",
       shared: "Link copied",
-      cardSaved: "Share card downloaded",
+      cardSaved: "Share card saved",
+      saveFailed: "Could not save. Please try again.",
+      shareFailed: "Could not share. Please try again.",
+      copyFailed: "Could not copy. Please press and hold to copy.",
+      savedEmpty: "Nothing saved yet. Start from Today's Pick or Search.",
+      styleCount: (n) => `${n} styles`,
+      previousStyle: "Previous style",
+      nextStyle: "Next style",
+      openStyle: "Open style details",
+      closeMenu: "Close menu",
+      openMenu: "Open menu",
+      closePreview: "Close image preview",
+      imagePreview: "Image preview",
+      exportStarted: "Preparing image…",
+      exportComplete: "Image is ready",
+      lockedPreview: "The full archive includes deeper origins, recognition methods, cases and style expression.",
       plus: "Xiazishuo Style Atlas Plus",
       unlockTitle: "Unlock the full style archive",
       unlockBody: "The free version helps you discover styles. Plus helps you build a complete taste archive.",
@@ -297,14 +364,14 @@
       locked: "Plus",
       freePreview: "Free preview",
       exportOptions: "Export",
-      freeExport: "Standard clarity · 9:16 · watermarked",
+      freeExport: "Standard clarity · watermarked",
       plusExport: "HD watermark-free · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "Build your private taste archive.",
-      plusBenefits: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Offline viewing", "Future minor updates"],
+      plusBenefits: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Complete style expression", "Future minor updates"],
       freePlan: "Free",
       plusPlan: "Plus",
       freePlanItems: ["Daily pick", "Browse all 120 style covers", "View 20 full style archives", "Save up to 20 styles", "Standard watermarked export"],
-      plusPlanItems: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Offline viewing", "Future minor updates"],
+      plusPlanItems: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Complete style expression", "Future minor updates"],
       launchPrice: "Launch offer ¥28 / $3.99",
       regularPrice: "Regular ¥48 / $7.99",
       comingSoon: "Coming Soon",
@@ -312,6 +379,16 @@
       restorePurchases: "Restore Purchases",
       oneTimePurchase: "One-time purchase, lifetime access",
       priceLoading: "Loading App Store price…",
+      purchaseLoading: "Connecting to the App Store…",
+      purchaseSuccess: "Plus unlocked",
+      purchasePending: "Purchase is pending",
+      purchaseCancelled: "Purchase cancelled",
+      purchaseUnavailable: "Plus is temporarily unavailable. Please try again.",
+      purchaseFailed: "Purchase was not completed. Please try again.",
+      restoreLoading: "Restoring purchases…",
+      restoreSuccess: "Purchase restored",
+      restoreNone: "No purchase was found to restore",
+      exportFailed: "Image export failed. Please try again.",
       iapFootnote: "Purchase securely processed by Apple App Store",
       appStoreFootnote: "Available later via App Store in-app purchase",
       plusFuture: "Plus will be available in a future version",
@@ -325,7 +402,7 @@
       aboutBody: "Xiazishuo Style Atlas is not just an AI image tool. It is a visual style atlas that helps you build your taste vocabulary. It turns 120 visual languages across posters, painting, illustration, animation, folk art and digital aesthetics into learnable, saveable and expressible style cards.\n\nLearn one style a day, and you will gradually understand what looks good, why it works, and how to express the visual feeling in your mind more clearly.",
       aboutFor: "For designers, AI creators, brand builders, content creators, design students and art lovers.",
       aboutFree: "The free version includes the daily pick, all style covers, search, 20 saved styles and 20 full style archives.",
-      aboutPlus: "Plus will unlock all full archives, unlimited saved styles, HD watermark-free export, multi-ratio export and offline viewing.",
+      aboutPlus: "Plus will unlock all full archives, unlimited saved styles, HD watermark-free export, multi-ratio export and complete style expression.",
       safetyTitle: "Copyright And Style Safety",
       safetyBody: "Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
       screenshotsTitle: "App Store Screenshot Kit",
@@ -341,6 +418,7 @@
   };
 
   const dom = {
+    appShell: $("appShell"),
     backBtn: $("backBtn"),
     langBtn: $("langBtn"),
     searchOpenBtn: $("searchOpenBtn"),
@@ -350,7 +428,11 @@
     drawerBackdrop: $("drawerBackdrop"),
     lightbox: $("lightbox"),
     lightboxImage: $("lightboxImage"),
+    lightboxCloseBtn: $("lightboxCloseBtn"),
+    saveLightboxBtn: $("saveLightboxBtn"),
+    shareLightboxBtn: $("shareLightboxBtn"),
     deckStage: $("deckStage"),
+    deckAnnouncement: $("deckAnnouncement"),
     prevGhost: $("prevGhost"),
     nextGhost: $("nextGhost"),
     todayLabel: $("todayLabel"),
@@ -386,7 +468,8 @@
     plusRegularPrice: $("plusRegularPrice"),
     plusFootnote: $("plusFootnote"),
     plusCta: $("plusCta"),
-    plusRestoreBtn: $("plusRestoreBtn")
+    plusRestoreBtn: $("plusRestoreBtn"),
+    plusCloseBtn: $("plusCloseBtn")
   };
 
   document.addEventListener("error", (event) => {
@@ -413,7 +496,8 @@
   }
 
   function dailyIndex() {
-    const date = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     let hash = 0;
     for (const char of date) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
     return hash % styles.length;
@@ -433,9 +517,12 @@
   }
 
   function saveState() {
-    localStorage.setItem("styleAtlasLang", store.lang);
-    localStorage.setItem("styleAtlasSaved", JSON.stringify(store.saved));
-    localStorage.setItem("styleAtlasRecent", JSON.stringify(store.recent));
+    const ok = [
+      writeStorage("styleAtlasLang", store.lang),
+      writeStorage("styleAtlasSaved", JSON.stringify(store.saved)),
+      writeStorage("styleAtlasRecent", JSON.stringify(store.recent))
+    ].every(Boolean);
+    if (!ok) toast(store.lang === "zh" ? "本地存储不可用，收藏可能无法保留。" : "Local storage is unavailable. Saved styles may not persist.");
   }
 
   function escapeHtml(value) {
@@ -480,7 +567,35 @@
     return window.STYLE_ATLAS_RUNTIME_CONFIG?.externalGalleryEnabled !== false;
   }
 
+  function focusableElements(container) {
+    return [...container.querySelectorAll("button:not([disabled]):not([hidden]), a[href], input:not([disabled]), [tabindex]:not([tabindex='-1'])")]
+      .filter((node) => !node.closest("[inert]") && node.offsetParent !== null);
+  }
+
+  function openOverlay(container, focusTarget, returnFocus = null) {
+    store.overlayReturnFocus = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    store.overlayScrollY = window.scrollY;
+    document.body.style.top = `-${store.overlayScrollY}px`;
+    dom.appShell.inert = true;
+    container.hidden = false;
+    document.body.classList.add("drawer-lock");
+    requestAnimationFrame(() => (focusTarget || focusableElements(container)[0])?.focus());
+  }
+
+  function closeOverlay(container) {
+    container.hidden = true;
+    dom.appShell.inert = false;
+    document.body.classList.remove("drawer-lock");
+    document.body.style.removeProperty("top");
+    window.scrollTo(0, store.overlayScrollY || 0);
+    const returnFocus = store.overlayReturnFocus;
+    store.overlayReturnFocus = null;
+    requestAnimationFrame(() => returnFocus?.focus());
+  }
+
   function showPlus(reasonKey = "plusSubtitle") {
+    const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const returnFocus = activeElement?.closest("#drawer") ? dom.drawerBtn : activeElement;
     const native = hasNativeBridge();
     const iapReady = isIapMode() && native;
     const freeLaunch = isFreeLaunchMode();
@@ -503,19 +618,49 @@
     dom.plusRegularPrice.hidden = iapReady;
     dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : (iapReady ? t("iapFootnote") : t("appStoreFootnote"));
     dom.plusCta.hidden = false;
-    dom.plusCta.textContent = iapReady ? t("unlockPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"));
-    dom.plusCta.disabled = !iapReady;
-    dom.plusRestoreBtn.hidden = !iapReady;
-    dom.plusRestoreBtn.textContent = t("restorePurchases");
-    dom.plusModal.hidden = false;
-    document.body.classList.add("drawer-lock");
-    setDrawer(false);
+    const storeAction = window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction || "idle";
+    const isStoreBusy = ["purchasing", "restoring", "pending"].includes(storeAction);
+    dom.plusCta.textContent = hasPlusAccess()
+      ? t("purchaseSuccess")
+      : (storeAction === "purchasing"
+        ? t("purchaseLoading")
+        : (storeAction === "pending"
+          ? t("purchasePending")
+          : (iapReady ? t("unlockPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon")))));
+    dom.plusCta.disabled = hasPlusAccess() || !iapReady || isStoreBusy;
+    dom.plusRestoreBtn.hidden = !iapReady || hasPlusAccess();
+    dom.plusRestoreBtn.textContent = storeAction === "restoring" ? t("restoreLoading") : t("restorePurchases");
+    dom.plusRestoreBtn.disabled = isStoreBusy;
+    if (store.drawerOpen) setDrawer(false, false);
+    if (dom.plusModal.hidden) openOverlay(dom.plusModal, dom.plusCloseBtn, returnFocus);
   }
 
   function closePlus() {
-    dom.plusModal.hidden = true;
+    if (dom.plusModal.hidden) return;
     store.plusReasonKey = "";
-    document.body.classList.remove("drawer-lock");
+    closeOverlay(dom.plusModal);
+  }
+
+  function setStoreActionFromNative(status, message = "") {
+    const normalized = String(status || "idle");
+    window.STYLE_ATLAS_RUNTIME_CONFIG.storeAction = normalized;
+    const statusKeys = {
+      purchasing: "purchaseLoading",
+      purchased: "purchaseSuccess",
+      pending: "purchasePending",
+      cancelled: "purchaseCancelled",
+      unavailable: "purchaseUnavailable",
+      failed: "purchaseFailed",
+      restoring: "restoreLoading",
+      restored: "restoreSuccess",
+      nothingToRestore: "restoreNone",
+      exportComplete: "exportComplete",
+      exportFailed: "exportFailed"
+    };
+    const key = statusKeys[normalized];
+    if (key) toast(message || t(key));
+    if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
+    return normalized;
   }
 
   function lockedSection(title, preview) {
@@ -523,7 +668,7 @@
       <section class="detail-section locked-section">
         <div class="locked-preview">
           <h2>${escapeHtml(title)}</h2>
-          <p>${escapeHtml(preview)}</p>
+          <p>${escapeHtml(t("lockedPreview"))}</p>
         </div>
         <div class="lock-overlay">
           <span>${t("locked")}</span>
@@ -541,7 +686,12 @@
       <section class="detail-section export-section">
         <h2>${t("exportOptions")}</h2>
         <button class="copy-btn" type="button" data-action="save-card">${t("freeExport")}</button>
-        <button class="copy-btn ${highResReady ? "plus-export-ready" : "locked-export"}" type="button" data-action="plus-export">${t("plusExport")}</button>
+        ${highResReady ? `
+          <p>${t("plusExport")}</p>
+          <div class="export-ratios" role="group" aria-label="${t("plusExport")}">
+            ${["9:16", "4:5", "1:1", "16:9"].map((ratio) => `<button class="copy-btn plus-export-ready" type="button" data-action="export-ratio" data-ratio="${ratio}">${ratio}</button>`).join("")}
+          </div>
+        ` : `<button class="copy-btn locked-export" type="button" data-action="plus-export">${t("plusExport")}</button>`}
       </section>
     `;
   }
@@ -572,7 +722,7 @@
     dom.styleDeck.innerHTML = renderDeckCard(style);
     dom.prevGhost.innerHTML = renderDeckCard(styleByOffset(-1));
     dom.nextGhost.innerHTML = renderDeckCard(styleByOffset(1));
-    dom.deckStage.classList.remove("dragging", "fly-left", "fly-right");
+    dom.deckStage.classList.remove("dragging", "fly-left", "fly-right", "is-animating");
     dom.styleDeck.style.removeProperty("--drag-x");
     dom.styleDeck.style.removeProperty("--drag-rotate");
     [dom.prevGhost, dom.nextGhost].forEach((card) => {
@@ -581,7 +731,8 @@
       card.style.removeProperty("--ghost-scale");
       card.style.removeProperty("--ghost-opacity");
     });
-
+    dom.styleDeck.setAttribute("aria-label", `${style.name[store.lang]}，${style.summary[store.lang]}`);
+    dom.deckAnnouncement.textContent = `${style.number} / ${styles.length} · ${style.name[store.lang]}`;
   }
 
   function renderCard(style, compact = false) {
@@ -626,7 +777,7 @@
         <button class="category-card" type="button" data-filter="${cat[0]}">
           <span class="category-copy">
             <strong>${escapeHtml(catName(cat[0]))}</strong>
-            <small>${categoryStyles.length} styles</small>
+            <small>${escapeHtml(t("styleCount", categoryStyles.length))}</small>
           </span>
           <span class="category-stack">${preview}</span>
         </button>
@@ -649,7 +800,9 @@
         <h2>${t("exhibitImages")}</h2>
         <div class="gallery-grid" id="galleryGrid">
           <figure class="gallery-item">
-            <img src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy" data-action="open-image">
+            <button class="gallery-open" type="button" data-action="open-image" aria-label="${escapeHtml(t("imagePreview"))}：${escapeHtml(style.name[lang])}">
+              <img src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy">
+            </button>
             <figcaption>${escapeHtml(style.name[lang])}</figcaption>
           </figure>
         </div>
@@ -672,7 +825,7 @@
       <section class="detail-section locked-section">
         <div class="locked-preview">
           <h2>${t("prompt")}</h2>
-          <p>${escapeHtml(style.imagePrompts[lang])}</p>
+          <p>${escapeHtml(t("lockedPreview"))}</p>
         </div>
         <div class="lock-overlay">
           <span>${t("locked")}</span>
@@ -784,7 +937,9 @@
         .slice(0, 4);
       gallery.insertAdjacentHTML("beforeend", pages.map((page) => `
         <figure class="gallery-item">
-          <img src="${escapeHtml(page.thumbnail.source)}" alt="${escapeHtml(page.title)}" loading="lazy" data-action="open-image">
+          <button class="gallery-open" type="button" data-action="open-image" aria-label="${escapeHtml(t("imagePreview"))}：${escapeHtml(page.title)}">
+            <img src="${escapeHtml(page.thumbnail.source)}" alt="${escapeHtml(page.title)}" loading="lazy">
+          </button>
           <figcaption><a href="${escapeHtml(page.fullurl)}" target="_blank" rel="noreferrer">${escapeHtml(page.title)}</a></figcaption>
         </figure>
       `).join(""));
@@ -797,11 +952,13 @@
     const lang = store.lang;
     return `
       <article class="result-card" data-style="${style.id}">
-        <img class="thumb" src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy">
-        <div>
-          <h3>${escapeHtml(style.name[lang])}</h3>
-          <p>${escapeHtml(style.summary[lang])}</p>
-        </div>
+        <button class="result-open" type="button" data-action="open-style" data-id="${style.id}" aria-label="${escapeHtml(t("openStyle"))}：${escapeHtml(style.name[lang])}">
+          <img class="thumb" src="${style.image}" alt="" loading="lazy">
+          <span>
+            <h3>${escapeHtml(style.name[lang])}</h3>
+            <p>${escapeHtml(style.summary[lang])}</p>
+          </span>
+        </button>
         <button class="card-action ${isSaved(style.id) ? "saved" : ""}" type="button" data-action="save-row" data-id="${style.id}" aria-label="${t("favorite")}">${isSaved(style.id) ? "♥" : "♡"}</button>
       </article>
     `;
@@ -811,7 +968,7 @@
     const lang = store.lang;
     dom.searchLabel.textContent = t("search");
     dom.searchInput.placeholder = lang === "zh" ? "瑞士、Ukiyo-e、海报、复古..." : "Swiss, Ukiyo-e, poster, retro...";
-    dom.filterChips.innerHTML = categories.map((cat) => `<button class="chip ${store.filter === cat[0] ? "active" : ""}" type="button" data-filter="${cat[0]}">${escapeHtml(catName(cat[0]))}</button>`).join("");
+    dom.filterChips.innerHTML = categories.map((cat) => `<button class="chip ${store.filter === cat[0] ? "active" : ""}" type="button" data-filter="${cat[0]}" aria-pressed="${store.filter === cat[0]}">${escapeHtml(catName(cat[0]))}</button>`).join("");
 
     const query = store.query.trim().toLowerCase();
     const score = (style) => {
@@ -846,7 +1003,8 @@
     const savedStyles = store.saved.map((id) => styles.find((style) => style.id === id)).filter(Boolean);
     dom.savedCount.textContent = t("saved", savedStyles.length);
     dom.copyListBtn.textContent = t("copyList");
-    dom.savedList.innerHTML = savedStyles.length ? savedStyles.map(resultCard).join("") : `<p class="empty">${t("empty")}</p>`;
+    dom.copyListBtn.disabled = savedStyles.length === 0;
+    dom.savedList.innerHTML = savedStyles.length ? savedStyles.map(resultCard).join("") : `<p class="empty">${t("savedEmpty")}</p>`;
   }
 
   function renderAbout() {
@@ -936,14 +1094,24 @@
     return slides;
   }
 
+  function openDetail(id = store.activeId, sourceView = store.view) {
+    if (id && validStyleIds.has(id)) store.activeId = id;
+    store.backView = sourceView === "detail" ? "home" : sourceView;
+    setView("detail");
+  }
+
   function setView(view) {
+    if (view === "detail" && !store.backView) store.backView = "home";
     if (view === "screenshots") renderScreenshots();
     if (view === "about") renderAbout();
     if (view === "detail") renderDetail();
-    setDrawer(false);
+    if (store.drawerOpen) setDrawer(false, false);
     store.view = view;
     document.querySelectorAll(".view").forEach((node) => node.classList.toggle("active", node.id === `${view}View`));
     document.querySelectorAll(".nav-btn").forEach((node) => node.classList.toggle("active", node.dataset.view === view));
+    document.querySelectorAll(".nav-btn").forEach((node) => {
+      if (node.dataset.view) node.setAttribute("aria-current", node.dataset.view === view ? "page" : "false");
+    });
     dom.backBtn.classList.toggle("hidden", view === "home");
     document.querySelector(".topbar").classList.toggle("has-back", view !== "home");
     if (view === "search") {
@@ -951,21 +1119,31 @@
       setTimeout(() => dom.searchInput.focus(), 80);
     }
     if (view === "saved") renderSaved();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
 
-  function setDrawer(open) {
+  function setDrawer(open, restoreFocus = true) {
+    if (store.drawerOpen === open) return;
+    store.drawerOpen = open;
     if (open) {
       store.drawerScrollY = window.scrollY;
       document.body.style.top = `-${store.drawerScrollY}px`;
+      store.drawerReturnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : dom.drawerBtn;
     }
     dom.drawer.classList.toggle("open", open);
     dom.drawer.setAttribute("aria-hidden", String(!open));
+    dom.drawer.inert = !open;
+    dom.drawerBtn.setAttribute("aria-expanded", String(open));
+    dom.drawerBtn.setAttribute("aria-label", t(open ? "closeMenu" : "openMenu"));
     dom.drawerBackdrop.hidden = !open;
     document.body.classList.toggle("drawer-open", open);
+    if (open) requestAnimationFrame(() => dom.drawerCloseBtn.focus());
     if (!open) {
       document.body.style.removeProperty("top");
       window.scrollTo(0, store.drawerScrollY || 0);
+      const returnFocus = store.drawerReturnFocus;
+      store.drawerReturnFocus = null;
+      if (restoreFocus) requestAnimationFrame(() => returnFocus?.focus());
     }
   }
 
@@ -1001,8 +1179,26 @@
   }
 
   async function copyText(value) {
-    await navigator.clipboard.writeText(value);
-    toast(t("copied"));
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        const input = document.createElement("textarea");
+        input.value = value;
+        input.setAttribute("readonly", "");
+        input.style.position = "fixed";
+        input.style.opacity = "0";
+        document.body.append(input);
+        input.select();
+        if (!document.execCommand("copy")) throw new Error("copy failed");
+        input.remove();
+      }
+      toast(t("copied"));
+      return true;
+    } catch {
+      toast(t("copyFailed"));
+      return false;
+    }
   }
 
   async function copyStyleExpression(style = activeStyle()) {
@@ -1026,17 +1222,24 @@
     }
   }
 
-  async function coverCardBlob(style) {
+  async function coverCardBlob(style, ratio = "9:16") {
+    const sizes = {
+      "9:16": [1080, 1920],
+      "4:5": [1200, 1500],
+      "1:1": [1440, 1440],
+      "16:9": [1920, 1080]
+    };
+    const [canvasWidth, canvasHeight] = sizes[ratio] || sizes["9:16"];
     const canvas = document.createElement("canvas");
-    canvas.width = 1080;
-    canvas.height = 1800;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
     const ctx = canvas.getContext("2d");
     const image = await loadImage(style.image);
     const scale = Math.max(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
     const width = image.naturalWidth * scale;
     const height = image.naturalHeight * scale;
     ctx.drawImage(image, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
-    const shade = ctx.createLinearGradient(0, 850, 0, 1800);
+    const shade = ctx.createLinearGradient(0, canvas.height * 0.46, 0, canvas.height);
     shade.addColorStop(0, "rgba(0,0,0,0)");
     shade.addColorStop(0.52, "rgba(0,0,0,0.42)");
     shade.addColorStop(1, "rgba(0,0,0,0.82)");
@@ -1049,16 +1252,18 @@
     ctx.font = "700 34px sans-serif";
     ctx.fillText(`#${style.number}`, 85, 108);
     ctx.fillStyle = "rgba(255, 246, 220, 0.82)";
-    ctx.font = "700 30px sans-serif";
+    ctx.font = `700 ${Math.max(24, Math.min(34, canvas.width * 0.028))}px sans-serif`;
     ctx.textAlign = "right";
     ctx.fillText(t("productName"), canvas.width - 64, 108);
     ctx.textAlign = "left";
     ctx.fillStyle = "#fff6dc";
-    ctx.font = "700 126px Georgia";
-    wrap(ctx, style.name.en, 64, 1540, 940, 124);
+    const titleSize = Math.max(72, Math.min(126, canvas.width * 0.1, canvas.height * 0.12));
+    ctx.font = `700 ${titleSize}px Georgia`;
+    wrap(ctx, style.name.en, 64, canvas.height - titleSize * 1.55, canvas.width - 128, titleSize * 0.98);
     ctx.fillStyle = "#f4cf76";
-    ctx.font = "800 48px sans-serif";
-    wrap(ctx, style.name.zh, 68, 1688, 900, 58);
+    const subtitleSize = Math.max(34, Math.min(52, canvas.width * 0.043));
+    ctx.font = `800 ${subtitleSize}px sans-serif`;
+    wrap(ctx, style.name.zh, 68, canvas.height - 72, canvas.width - 136, subtitleSize * 1.18);
     drawWatermark(ctx, canvas.width, canvas.height);
     return new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.94));
   }
@@ -1163,39 +1368,60 @@
   function openImage(src, alt) {
     dom.lightboxImage.src = src;
     dom.lightboxImage.alt = alt || "";
-    dom.lightbox.hidden = false;
+    dom.lightbox.setAttribute("aria-label", `${t("imagePreview")}：${alt || ""}`);
+    dom.lightboxCloseBtn.setAttribute("aria-label", t("closePreview"));
+    dom.saveLightboxBtn.textContent = t("saveCard");
+    dom.shareLightboxBtn.textContent = t("share");
     dom.lightbox.dataset.src = src;
-    document.body.classList.add("drawer-lock");
+    openOverlay(dom.lightbox, dom.lightboxCloseBtn);
   }
 
   function closeImage() {
-    dom.lightbox.hidden = true;
+    if (dom.lightbox.hidden) return;
     dom.lightboxImage.removeAttribute("src");
     delete dom.lightbox.dataset.src;
-    document.body.classList.remove("drawer-lock");
+    closeOverlay(dom.lightbox);
   }
 
   async function shareImage(src = dom.lightbox.dataset.src) {
     if (!src) return;
-    const file = await imageFile(src, "style-atlas-image.png");
-    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
-      await navigator.share({ title: activeStyle().name[store.lang], files: [file] });
-      return;
+    try {
+      const file = await imageFile(src, "style-atlas-image.png");
+      if (hasNativeBridge()) {
+        const dataURL = await blobToDataURL(file);
+        if (postNativeMessage("shareImage", { dataURL, filename: file.name })) return;
+      }
+      if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+        await navigator.share({ title: activeStyle().name[store.lang], files: [file] });
+        return;
+      }
+      await copyText(src);
+    } catch {
+      toast(t("shareFailed"));
     }
-    await navigator.clipboard.writeText(src);
-    toast(t("shared"));
   }
 
-  function saveImage(src = dom.lightbox.dataset.src) {
+  async function saveImage(src = dom.lightbox.dataset.src) {
     if (!src) return;
-    const link = document.createElement("a");
-    link.href = src;
-    link.download = "style-atlas-image.png";
-    link.click();
+    try {
+      const file = await imageFile(src, "style-atlas-image.png");
+      if (hasNativeBridge()) {
+        const dataURL = await blobToDataURL(file);
+        if (postNativeMessage("exportImage", { dataURL, filename: file.name })) {
+          toast(t("exportStarted"));
+          return;
+        }
+      }
+      downloadBlob(file, file.name);
+      toast(t("cardSaved"));
+    } catch {
+      toast(t("saveFailed"));
+    }
   }
 
   async function shareStyle(style = activeStyle()) {
-    const url = `${location.origin}${location.pathname}#${style.id}`;
+    const publicBase = new URL(window.STYLE_ATLAS_RUNTIME_CONFIG.publicBaseURL, "https://yonge6.github.io/style-atlas/");
+    const url = `${publicBase.href.replace(/#.*$/, "").replace(/\/?$/, "/")}#${style.id}`;
     const payload = { title: style.name[store.lang], text: style.summary[store.lang], url };
     try {
       if (navigator.share) {
@@ -1207,22 +1433,49 @@
         await navigator.share(payload);
         return;
       }
-      await navigator.clipboard.writeText(`${payload.title}\n${payload.text}\n${payload.url}`);
-      toast(t("shared"));
-    } catch {
-      await navigator.clipboard.writeText(url).catch(() => {});
-      toast(t("shared"));
+      await copyText(`${payload.title}\n${payload.text}\n${payload.url}`);
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+      const copied = await copyText(url);
+      if (!copied) toast(t("shareFailed"));
     }
   }
 
-  async function saveShareCard(style = activeStyle()) {
-    const blob = await (store.view === "detail" ? detailCardBlob(style) : coverCardBlob(style));
+  async function saveShareCard(style = activeStyle(), ratio = null) {
+    try {
+      toast(t("exportStarted"));
+      const blob = ratio
+        ? await coverCardBlob(style, ratio)
+        : await (store.view === "detail" ? detailCardBlob(style) : coverCardBlob(style));
+      const filename = `${style.id}-style-atlas${ratio ? `-${ratio.replace(":", "x")}` : ""}.png`;
+      if (hasNativeBridge()) {
+        const dataURL = await blobToDataURL(blob);
+        if (postNativeMessage("exportImage", { dataURL, filename })) return;
+      }
+      downloadBlob(blob, filename);
+      toast(t("cardSaved"));
+    } catch {
+      toast(t("saveFailed"));
+    }
+  }
+
+  function blobToDataURL(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error || new Error("file read failed"));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function downloadBlob(blob, filename) {
     const link = document.createElement("a");
-    link.download = `${style.id}-style-atlas.png`;
+    link.download = filename;
     link.href = URL.createObjectURL(blob);
+    document.body.append(link);
     link.click();
+    link.remove();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-    toast(t("cardSaved"));
   }
 
   function roundRect(ctx, x, y, width, height, radius) {
@@ -1298,13 +1551,14 @@
     dom.drawerBtn.addEventListener("click", () => setDrawer(true));
     dom.drawerCloseBtn.addEventListener("click", () => setDrawer(false));
     dom.drawerBackdrop.addEventListener("click", () => setDrawer(false));
-    dom.backBtn.addEventListener("click", () => setView("home"));
+    dom.backBtn.addEventListener("click", () => setView(store.view === "detail" ? store.backView : "home"));
     dom.randomBtn.addEventListener("click", () => {
+      if (animating || dragging) return;
       store.activeId = styles[Math.floor(Math.random() * styles.length)].id;
       renderDeck();
     });
-    dom.prevBtn.addEventListener("click", () => setActiveByOffset(-1));
-    dom.nextBtn.addEventListener("click", () => setActiveByOffset(1));
+    dom.prevBtn.addEventListener("click", () => completeSwipe(-1));
+    dom.nextBtn.addEventListener("click", () => completeSwipe(1));
     dom.styleDeck.addEventListener("click", (event) => {
       const action = event.target.closest("[data-action]")?.dataset.action;
       if (action) {
@@ -1313,13 +1567,13 @@
         if (action === "save") return toggleSaved();
         if (action === "share") return shareStyle();
         if (action === "copy-prompt") return copyStyleExpression();
-        if (action === "detail") return setView("detail");
+        if (action === "detail") return openDetail(store.activeId, "home");
       }
       if (moved) {
         moved = false;
         return;
       }
-      setView("detail");
+      openDetail(store.activeId, "home");
     });
 
     let startX = 0;
@@ -1334,6 +1588,8 @@
     let velocityX = 0;
     let gestureAxis = "";
     let animating = false;
+    let settleTimer = 0;
+    let swipeTimer = 0;
 
     function resetGhost(card) {
       card.style.removeProperty("--ghost-x");
@@ -1362,7 +1618,15 @@
       dragFrame = 0;
     }
 
+    function clearGestureTimers() {
+      clearTimeout(settleTimer);
+      clearTimeout(swipeTimer);
+      settleTimer = 0;
+      swipeTimer = 0;
+    }
+
     function settleBack() {
+      clearGestureTimers();
       cancelDragFrame();
       dom.deckStage.classList.remove("dragging");
       requestAnimationFrame(() => {
@@ -1371,40 +1635,51 @@
         resetGhost(dom.prevGhost);
         resetGhost(dom.nextGhost);
       });
-      setTimeout(() => {
+      settleTimer = setTimeout(() => {
         dom.styleDeck.style.removeProperty("--drag-x");
         dom.styleDeck.style.removeProperty("--drag-rotate");
-      }, 340);
+      }, 280);
     }
 
     function completeSwipe(direction) {
-      if (animating) return;
+      if (animating || dragging) return;
+      clearGestureTimers();
       animating = true;
       if (dragFrame) paintDrag();
       dom.deckStage.classList.remove("dragging");
+      dom.deckStage.classList.add("is-animating");
+      let completed = false;
+      const finish = () => {
+        if (completed) return;
+        completed = true;
+        dom.styleDeck.removeEventListener("transitionend", onTransitionEnd);
+        setActiveByOffset(direction);
+        animating = false;
+      };
+      const onTransitionEnd = (event) => {
+        if (event.target === dom.styleDeck && event.propertyName === "transform") finish();
+      };
+      dom.styleDeck.addEventListener("transitionend", onTransitionEnd);
       requestAnimationFrame(() => {
         dom.deckStage.classList.add(direction > 0 ? "fly-left" : "fly-right");
         postNativeMessage("hapticFeedback");
       });
-      setTimeout(() => {
-        setActiveByOffset(direction);
-        animating = false;
-      }, 320);
+      swipeTimer = setTimeout(finish, 360);
     }
 
     function finishGesture(cancelled = false) {
       if (!dragging) return;
       dragging = false;
-      const horizontal = gestureAxis === "x" || Math.abs(dragX) > Math.abs(dragY);
-      const distanceThreshold = Math.min(64, dom.styleDeck.clientWidth * 0.16);
-      const shouldChange = horizontal && (Math.abs(dragX) >= distanceThreshold || Math.abs(velocityX) >= 0.38);
-      if (shouldChange) {
-        completeSwipe(dragX < 0 || (dragX === 0 && velocityX < 0) ? 1 : -1);
+      if (cancelled) {
+        settleBack();
         return;
       }
-      if (!cancelled && dragY < -80 && Math.abs(dragY) > Math.abs(dragX)) {
-        settleBack();
-        setView("detail");
+      const horizontal = gestureAxis === "x" || Math.abs(dragX) > Math.abs(dragY);
+      const distanceThreshold = Math.min(64, dom.styleDeck.clientWidth * 0.16);
+      const velocityIsFresh = performance.now() - lastTime < 90;
+      const shouldChange = horizontal && (Math.abs(dragX) >= distanceThreshold || (velocityIsFresh && Math.abs(velocityX) >= 0.42));
+      if (shouldChange) {
+        completeSwipe(dragX < 0 || (dragX === 0 && velocityX < 0) ? 1 : -1);
         return;
       }
       settleBack();
@@ -1412,12 +1687,13 @@
 
     dom.styleDeck.addEventListener("pointerdown", (event) => {
       if (event.target.closest("button") || animating) return;
+      clearGestureTimers();
       dragging = true;
       moved = false;
       startX = event.clientX;
       startY = event.clientY;
       lastX = startX;
-      lastTime = event.timeStamp;
+      lastTime = performance.now();
       dragX = 0;
       dragY = 0;
       velocityX = 0;
@@ -1435,11 +1711,12 @@
       if (!gestureAxis && Math.max(Math.abs(dx), Math.abs(dy)) > 7) gestureAxis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
       if (gestureAxis === "y") return;
       event.preventDefault();
-      const elapsed = Math.max(1, event.timeStamp - lastTime);
+      const now = performance.now();
+      const elapsed = Math.max(1, now - lastTime);
       const sampleVelocity = (event.clientX - lastX) / elapsed;
       velocityX = velocityX * 0.65 + sampleVelocity * 0.35;
       lastX = event.clientX;
-      lastTime = event.timeStamp;
+      lastTime = now;
       dragX = Math.max(-180, Math.min(180, dx));
       if (!dragFrame) dragFrame = requestAnimationFrame(paintDrag);
     }, { passive: false });
@@ -1453,10 +1730,24 @@
       finishGesture(true);
     });
 
+    dom.styleDeck.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        completeSwipe(-1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        completeSwipe(1);
+      } else if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openDetail(store.activeId, "home");
+      }
+    });
+
     document.body.addEventListener("click", (event) => {
       const row = event.target.closest("[data-style]");
       const action = event.target.closest("[data-action]")?.dataset.action;
       const id = event.target.closest("[data-id]")?.dataset.id;
+      const ratio = event.target.closest("[data-ratio]")?.dataset.ratio;
       const filter = event.target.closest("[data-filter]")?.dataset.filter;
       if (action === "save-row" && id) {
         event.stopPropagation();
@@ -1465,30 +1756,51 @@
       if (action === "save") return toggleSaved();
       if (action === "share") return shareStyle();
       if (action === "open-image") {
-        const img = event.target.closest("img");
+        const img = event.target.closest("[data-action='open-image']")?.querySelector("img") || event.target.closest("img");
+        if (!img) return;
         return openImage(img.currentSrc || img.src, img.alt);
       }
-      if (action === "purchase-plus") return isIapMode() && hasNativeBridge() ? postNativeMessage("purchasePlus") : toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
-      if (action === "restore-purchases") return isIapMode() && hasNativeBridge() ? postNativeMessage("restorePurchases") : toast(t("comingSoon"));
+      if (action === "open-style" && id) return openDetail(id, store.view);
+      if (action === "purchase-plus") {
+        if (!isIapMode() || !hasNativeBridge()) return toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
+        setStoreActionFromNative("purchasing");
+        if (!postNativeMessage("purchasePlus")) setStoreActionFromNative("unavailable");
+        return;
+      }
+      if (action === "restore-purchases") {
+        if (!isIapMode() || !hasNativeBridge()) return toast(t("comingSoon"));
+        setStoreActionFromNative("restoring");
+        if (!postNativeMessage("restorePurchases")) setStoreActionFromNative("failed");
+        return;
+      }
       if (action === "close-lightbox") return closeImage();
       if (action === "share-lightbox") return shareImage();
       if (action === "save-lightbox") return saveImage();
       if (action === "show-plus") return showPlus();
       if (action === "close-plus") return closePlus();
       if (action === "plus-export") return canExportHighRes() ? saveShareCard() : showPlus("highResLocked");
+      if (action === "export-ratio" && ratio) return canExportHighRes() ? saveShareCard(activeStyle(), ratio) : showPlus("highResLocked");
       if (action === "copy-prompt") return copyStyleExpression();
       if (action === "save-card") return saveShareCard();
       if (filter) {
         store.filter = store.filter === filter ? "" : filter;
-        store.query = "";
-        dom.searchInput.value = "";
+        if (store.view !== "search") {
+          store.query = "";
+          dom.searchInput.value = "";
+        }
         setView("search");
         return;
       }
       if (row) {
-        store.activeId = row.dataset.style;
-        setView("detail");
+        openDetail(row.dataset.style, store.view);
       }
+    });
+
+    dom.plusModal.addEventListener("click", (event) => {
+      if (event.target === dom.plusModal) closePlus();
+    });
+    dom.lightbox.addEventListener("click", (event) => {
+      if (event.target === dom.lightbox) closeImage();
     });
 
     document.querySelectorAll(".nav-btn").forEach((button) => {
@@ -1498,7 +1810,6 @@
           return;
         }
         setView(button.dataset.view);
-        setDrawer(false);
       });
     });
 
@@ -1515,6 +1826,29 @@
       const list = store.saved.map((id) => styles.find((style) => style.id === id)).filter(Boolean).map((style) => `${style.name.en} / ${style.name.zh}`).join("\n");
       copyText(list || t("productName"));
     });
+    document.addEventListener("keydown", (event) => {
+      const overlay = !dom.plusModal.hidden ? dom.plusModal : (!dom.lightbox.hidden ? dom.lightbox : (store.drawerOpen ? dom.drawer : null));
+      if (!overlay) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        if (!dom.plusModal.hidden) closePlus();
+        else if (!dom.lightbox.hidden) closeImage();
+        else setDrawer(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = focusableElements(overlay);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
     window.addEventListener("hashchange", () => {
       const id = location.hash.slice(1);
       if (id === "screenshots") {
@@ -1522,13 +1856,23 @@
         return;
       }
       if (!styles.some((style) => style.id === id)) return;
-      store.activeId = id;
-      setView("detail");
+      openDetail(id, "home");
     });
   }
 
   function renderAll() {
     dom.langBtn.textContent = store.lang === "zh" ? "EN" : "中文";
+    dom.langBtn.setAttribute("aria-label", store.lang === "zh" ? "Switch to English" : "切换为中文");
+    dom.searchOpenBtn.setAttribute("aria-label", t("search"));
+    dom.drawerBtn.setAttribute("aria-label", t(store.drawerOpen ? "closeMenu" : "openMenu"));
+    dom.drawerCloseBtn.setAttribute("aria-label", t("closeMenu"));
+    dom.backBtn.setAttribute("aria-label", store.lang === "zh" ? "返回" : "Back");
+    dom.prevBtn.setAttribute("aria-label", t("previousStyle"));
+    dom.nextBtn.setAttribute("aria-label", t("nextStyle"));
+    dom.clearSearchBtn.setAttribute("aria-label", store.lang === "zh" ? "清除搜索" : "Clear search");
+    dom.styleDeck.setAttribute("aria-label", t("openStyle"));
+    dom.lightboxCloseBtn.setAttribute("aria-label", t("closePreview"));
+    dom.plusCloseBtn.setAttribute("aria-label", store.lang === "zh" ? "关闭 Plus" : "Close Plus");
     renderHome();
     if (store.view === "detail") renderDetail();
     if (store.view === "search") renderSearch();
@@ -1558,12 +1902,16 @@
   if (screenshotMode) store.view = "screenshots";
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
   window.StyleAtlasNativeBridge = {
-    setPlusAccess: setPlusAccessFromNative,
+    setPlusAccess(value) {
+      if (window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell !== true) return false;
+      return setPlusAccessFromNative(value);
+    },
     setProductPrice(value) {
       window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice = String(value || "");
       if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
       return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice;
     },
+    setStoreAction: setStoreActionFromNative,
     getPlusAccess: hasPlusAccess,
     postNativeMessage
   };
