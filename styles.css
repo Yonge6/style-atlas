@@ -1,7 +1,7 @@
 :root {
   color-scheme: dark;
   --page-pad: clamp(10px, 4vw, 18px);
-  --topbar-content-height: 70px;
+  --topbar-content-height: 64px;
   --topbar-height: calc(var(--topbar-content-height) + env(safe-area-inset-top));
   --bg: #080806;
   --panel: #15130f;
@@ -36,6 +36,11 @@ body {
     var(--bg);
   color: var(--text);
   overscroll-behavior-y: none;
+}
+
+html {
+  touch-action: pan-x pan-y;
+  -webkit-text-size-adjust: 100%;
 }
 
 body.drawer-open,
@@ -105,8 +110,9 @@ button:disabled {
   width: 100vw;
   max-width: none;
   min-height: var(--topbar-height);
-  padding: env(safe-area-inset-top) max(var(--page-pad), env(safe-area-inset-left), calc((100vw - 430px) / 2 + var(--page-pad))) 0 max(var(--page-pad), env(safe-area-inset-right), calc((100vw - 430px) / 2 + var(--page-pad)));
-  background: linear-gradient(180deg, rgba(8, 8, 6, 0.98), rgba(8, 8, 6, 0.76));
+  padding: env(safe-area-inset-top) max(var(--page-pad), env(safe-area-inset-left), calc((100vw - 430px) / 2 + var(--page-pad))) 4px max(var(--page-pad), env(safe-area-inset-right), calc((100vw - 430px) / 2 + var(--page-pad)));
+  border-bottom: 1px solid rgba(243, 212, 134, 0.1);
+  background: rgba(8, 8, 6, 0.96);
   backdrop-filter: blur(18px);
 }
 
@@ -116,6 +122,7 @@ main {
 
 .brand {
   min-width: 0;
+  transform: translateY(-2px);
 }
 
 .brand strong {
@@ -142,6 +149,7 @@ main {
   flex: 0 0 auto;
   align-items: center;
   gap: 6px;
+  transform: translateY(-2px);
 }
 
 .icon-btn,
@@ -177,6 +185,10 @@ main {
 
 #backBtn:not(.hidden) + .brand {
   min-width: 0;
+}
+
+#backBtn:not(.hidden) {
+  transform: translateY(-2px);
 }
 
 .topbar.has-back {
@@ -278,8 +290,8 @@ main {
   aspect-ratio: 3 / 5;
   height: auto;
   margin: 0;
-  perspective: 1000px;
-  contain: layout paint;
+  contain: layout paint style;
+  isolation: isolate;
 }
 
 .style-card {
@@ -296,14 +308,17 @@ main {
   box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45);
   touch-action: pan-y;
   cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .deck-stage .style-card {
   position: absolute;
   inset: 0;
+  height: 100%;
+  min-height: 0;
   backface-visibility: hidden;
-  transform-style: preserve-3d;
-  transition: transform 260ms cubic-bezier(.22, .82, .24, 1), opacity 220ms ease, filter 220ms ease;
+  transition: transform 220ms cubic-bezier(.2, .82, .22, 1), opacity 180ms ease;
   will-change: transform;
 }
 
@@ -315,13 +330,12 @@ main {
 
 .live-card {
   z-index: 3;
-  transform: translate3d(var(--drag-x, 0px), 0, 0) rotate(var(--drag-rotate, 0deg));
+  transform: translate3d(var(--drag-x, 0px), 0, 0);
 }
 
 .ghost-card {
   z-index: 1;
-  opacity: var(--ghost-opacity, 0.48);
-  filter: saturate(0.78) brightness(0.78);
+  opacity: var(--ghost-opacity, 0.72);
   pointer-events: none;
 }
 
@@ -330,11 +344,11 @@ main {
 }
 
 .ghost-card.prev {
-  transform: translateX(var(--ghost-x, -46px)) rotate(var(--ghost-rotate, -7deg)) scale(var(--ghost-scale, 0.91));
+  transform: translate3d(var(--ghost-x, -22px), 0, 0) scale(var(--ghost-scale, 0.965));
 }
 
 .ghost-card.next {
-  transform: translateX(var(--ghost-x, 46px)) rotate(var(--ghost-rotate, 7deg)) scale(var(--ghost-scale, 0.91));
+  transform: translate3d(var(--ghost-x, 22px), 0, 0) scale(var(--ghost-scale, 0.965));
 }
 
 .deck-stage.dragging .style-card {
@@ -343,8 +357,7 @@ main {
 }
 
 .deck-stage.dragging .ghost-card {
-  opacity: var(--ghost-opacity, 0.66);
-  filter: saturate(0.95) brightness(0.88);
+  opacity: var(--ghost-opacity, 0.78);
 }
 
 .deck-stage.is-animating {
@@ -352,24 +365,24 @@ main {
 }
 
 .deck-stage.fly-left .live-card {
-  transform: translate3d(-115%, 0, 0) rotate(-12deg);
+  transform: translate3d(-104%, 0, 0);
   opacity: 0;
 }
 
 .deck-stage.fly-right .live-card {
-  transform: translate3d(115%, 0, 0) rotate(12deg);
+  transform: translate3d(104%, 0, 0);
   opacity: 0;
 }
 
 .deck-stage.fly-left .next {
   z-index: 2;
-  transform: translateX(0) rotate(0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
   opacity: 1;
 }
 
 .deck-stage.fly-right .prev {
   z-index: 2;
-  transform: translateX(0) rotate(0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
   opacity: 1;
 }
 
@@ -639,11 +652,18 @@ main {
 }
 
 .deck-controls {
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 46px;
+  gap: 12px;
   margin: 12px 0 24px;
   color: var(--muted);
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 12px;
+}
+
+.random-control {
+  justify-self: center;
+  min-width: 78px;
 }
 
 .arrow-btn {
