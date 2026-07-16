@@ -13,7 +13,8 @@ struct WebViewContainer: UIViewRepresentable {
         window.STYLE_ATLAS_RUNTIME_CONFIG = {
           nativeShell: true,
           externalGalleryEnabled: false,
-          submissionMode: "iap"
+          submissionMode: "iap",
+          publicBaseURL: "https://yonge6.github.io/style-atlas/"
         };
         """
         config.userContentController.addUserScript(WKUserScript(
@@ -26,6 +27,11 @@ struct WebViewContainer: UIViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
         webView.allowsBackForwardNavigationGestures = false
+        webView.isOpaque = false
+        webView.backgroundColor = UIColor(red: 8 / 255, green: 8 / 255, blue: 6 / 255, alpha: 1)
+        webView.scrollView.backgroundColor = webView.backgroundColor
+        webView.scrollView.keyboardDismissMode = .interactive
+        webView.scrollView.contentInsetAdjustmentBehavior = .never
         bridge.webView = webView
 
         guard let url = Bundle.main.resourceURL?.appendingPathComponent("Web/index.html"),

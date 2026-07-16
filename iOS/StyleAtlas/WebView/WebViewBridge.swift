@@ -29,8 +29,11 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         case "hapticFeedback":
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         case "shareImage", "exportImage":
-            // TODO: Reserved until the web app sends image payloads; Photos/share sheets need a real data contract.
-            break
+            guard let payload = body["payload"] as? [String: Any] else {
+                injectStoreAction("exportFailed", message: "Missing image payload.")
+                return
+            }
+            presentImageActivity(payload: payload)
         default:
             break
         }
@@ -74,5 +77,64 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
               let messageData = try? JSONEncoder().encode(message),
               let messageValue = String(data: messageData, encoding: .utf8) else { return }
         webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setStoreAction(\(statusValue), \(messageValue))")
+    }
+
+    private func presentImageActivity(payload: [String: Any]) {
+        guard let dataURL = payload["dataURL"] as? String,
+              let commaIndex = dataURL.firstIndex(of: ","),
+              let data = Data(base64Encoded: String(dataURL[dataURL.index(after: commaIndex)...])),
+              let webView else {
+            injectStoreAction("exportFailed", message: "The image could not be prepared.")
+            return
+        }
+
+        let requestedName = (payload["filename"] as? String) ?? "style-atlas.png"
+        let safeName = requestedName.replacingOccurrences(of: "/", with: "-")
+        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(safeName)
+
+        do {
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            injectStoreAction("exportFailed", message: error.localizedDescription)
+            return
+        }
+
+        let activity = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+        activity.popoverPresentationController?.sourceView = webView
+        activity.popoverPresentationController?.sourceRect = CGRect(
+            x: webView.bounds.midX,
+            y: webView.bounds.midY,
+            width: 1,
+            height: 1
+        )
+        activity.completionWithItemsHandler = { [weak self] _, completed, _, error in
+            Task { @MainActor in
+                try? FileManager.default.removeItem(at: fileURL)
+                if let error {
+                    self?.injectStoreAction("exportFailed", message: error.localizedDescription)
+                } else if completed {
+                    self?.injectStoreAction("exportComplete")
+                }
+            }
+        }
+
+        guard let presenter = topViewController(from: webView.window?.rootViewController) else {
+            injectStoreAction("exportFailed", message: "No presentation context is available.")
+            return
+        }
+        presenter.present(activity, animated: true)
+    }
+
+    private func topViewController(from root: UIViewController?) -> UIViewController? {
+        if let presented = root?.presentedViewController {
+            return topViewController(from: presented)
+        }
+        if let navigation = root as? UINavigationController {
+            return topViewController(from: navigation.visibleViewController)
+        }
+        if let tab = root as? UITabBarController {
+            return topViewController(from: tab.selectedViewController)
+        }
+        return root
     }
 }

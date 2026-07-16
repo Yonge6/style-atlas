@@ -28,6 +28,7 @@ final class StoreManager: ObservableObject {
 
     private let entitlementManager: EntitlementManager
     private var updatesTask: Task<Void, Never>?
+    private var storeOperationInFlight = false
 
     init(entitlementManager: EntitlementManager) {
         self.entitlementManager = entitlementManager
@@ -38,9 +39,9 @@ final class StoreManager: ObservableObject {
     }
 
     func start() async {
-        await loadProducts()
-        await refreshEntitlements()
         listenForTransactions()
+        await refreshEntitlements()
+        await loadProducts()
     }
 
     @discardableResult
@@ -62,6 +63,11 @@ final class StoreManager: ObservableObject {
     }
 
     func purchasePlus() async -> StoreActionResult {
+        guard !storeOperationInFlight else {
+            return .unavailable("Another App Store operation is already in progress.")
+        }
+        storeOperationInFlight = true
+        defer { storeOperationInFlight = false }
         guard let product = plusProduct else {
             guard await loadProducts(), let product = plusProduct else {
                 return .unavailable(lastError ?? "The Plus product is not available from the App Store.")
@@ -72,6 +78,11 @@ final class StoreManager: ObservableObject {
     }
 
     func restorePurchases() async -> StoreActionResult {
+        guard !storeOperationInFlight else {
+            return .unavailable("Another App Store operation is already in progress.")
+        }
+        storeOperationInFlight = true
+        defer { storeOperationInFlight = false }
         do {
             try await AppStore.sync()
             await refreshEntitlements()
@@ -84,9 +95,7 @@ final class StoreManager: ObservableObject {
 
     private func purchase(_ product: Product) async -> StoreActionResult {
         do {
-            let result = try await withTimeout(operation: "Starting Plus purchase") {
-                try await product.purchase()
-            }
+            let result = try await product.purchase()
             switch result {
             case .success(let verification):
                 if case .verified(let transaction) = verification {
@@ -119,7 +128,8 @@ final class StoreManager: ObservableObject {
                 lastError = "Unverified entitlement"
                 continue
             }
-            if transaction.productID == Self.plusProductID {
+            if transaction.productID == Self.plusProductID,
+               transaction.revocationDate == nil {
                 hasPlus = true
             }
         }
@@ -135,10 +145,8 @@ final class StoreManager: ObservableObject {
                     await MainActor.run { self.lastError = "Unverified transaction update" }
                     continue
                 }
-                if transaction.productID == Self.plusProductID {
-                    await MainActor.run { self.entitlementManager.hasPlus = true }
-                }
                 await transaction.finish()
+                await self.refreshEntitlements()
             }
         }
     }

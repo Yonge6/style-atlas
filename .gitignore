@@ -10,3 +10,8 @@ xcuserdata/
 # Local build artifacts
 /build/
 *.xcarchive
+
+# Local test artifacts
+/node_modules/
+/test-results/
+/playwright-report/

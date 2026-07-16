@@ -8,17 +8,17 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="app-shell">
+  <div id="appShell" class="app-shell">
     <header class="topbar">
-      <button id="backBtn" class="icon-btn hidden" type="button" aria-label="Back">‹</button>
+      <button id="backBtn" class="icon-btn hidden" type="button" aria-label="返回">‹</button>
       <div class="brand">
         <strong>虾子曰 Style Atlas</strong>
         <span>风格图鉴</span>
       </div>
       <div class="top-actions">
-        <button id="searchOpenBtn" class="icon-btn" type="button" aria-label="Search">⌕</button>
+        <button id="searchOpenBtn" class="icon-btn" type="button" aria-label="搜索">⌕</button>
         <button id="langBtn" class="lang-toggle" type="button">EN｜中文</button>
-        <button id="drawerBtn" class="icon-btn" type="button" aria-label="Menu">☰</button>
+        <button id="drawerBtn" class="icon-btn" type="button" aria-label="菜单" aria-controls="drawer" aria-expanded="false">☰</button>
       </div>
     </header>
 
@@ -30,16 +30,17 @@
         </div>
         <p id="positioningCopy" class="positioning-copy">一本装进口袋里的视觉风格图鉴。每天 3 分钟认识一种风格，建立自己的审美词库。</p>
 
-        <div id="deckStage" class="deck-stage" aria-live="polite">
+        <div id="deckStage" class="deck-stage">
           <article id="prevGhost" class="style-card cover-card ghost-card prev" aria-hidden="true"></article>
           <article id="nextGhost" class="style-card cover-card ghost-card next" aria-hidden="true"></article>
-          <article id="styleDeck" class="style-card cover-card live-card" tabindex="0"></article>
+          <article id="styleDeck" class="style-card cover-card live-card" tabindex="0" role="group" aria-label="今日风格卡片"></article>
         </div>
+        <p id="deckAnnouncement" class="sr-only" role="status" aria-live="polite"></p>
 
         <div class="deck-controls">
-          <button id="prevBtn" class="arrow-btn" type="button">←</button>
+          <button id="prevBtn" class="arrow-btn" type="button" aria-label="上一个风格">←</button>
           <span id="swipeHint">左右滑动探索</span>
-          <button id="nextBtn" class="arrow-btn" type="button">→</button>
+          <button id="nextBtn" class="arrow-btn" type="button" aria-label="下一个风格">→</button>
         </div>
 
         <section class="category-strip" aria-label="Categories">
@@ -56,8 +57,8 @@
         <div class="search-panel">
           <label for="searchInput" id="searchLabel">搜索风格</label>
           <div class="search-box">
-            <input id="searchInput" autocomplete="off" placeholder="瑞士、Ukiyo-e、海报、复古..." />
-            <button id="clearSearchBtn" type="button">×</button>
+            <input id="searchInput" type="search" enterkeyhint="search" autocomplete="off" placeholder="瑞士、Ukiyo-e、海报、复古..." />
+            <button id="clearSearchBtn" type="button" aria-label="清除搜索">×</button>
           </div>
           <div id="filterChips" class="chip-row filters"></div>
         </div>
@@ -82,10 +83,10 @@
     </main>
 
     <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
-    <aside id="drawer" class="drawer" aria-label="Navigation" aria-hidden="true">
+    <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="导航" aria-hidden="true" inert>
       <div class="drawer-head">
         <strong>虾子曰 Style Atlas</strong>
-        <button id="drawerCloseBtn" class="icon-btn" type="button" aria-label="Close">×</button>
+        <button id="drawerCloseBtn" class="icon-btn" type="button" aria-label="关闭菜单">×</button>
       </div>
       <nav class="drawer-nav">
         <button class="nav-btn active" type="button" data-view="home">今日</button>
@@ -98,10 +99,10 @@
     </aside>
   </div>
 
-  <div id="toast" class="toast" role="status"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <div id="plusModal" class="plus-modal" hidden>
     <div class="plus-panel" role="dialog" aria-modal="true" aria-labelledby="plusTitle">
-      <button class="lightbox-close" type="button" data-action="close-plus">×</button>
+      <button id="plusCloseBtn" class="lightbox-close" type="button" data-action="close-plus" aria-label="关闭 Plus">×</button>
       <p id="plusKicker" class="plus-kicker">虾子曰 Style Atlas Plus</p>
       <h2 id="plusTitle">虾子曰 Style Atlas Plus</h2>
       <p id="plusSubtitle" class="plus-subtitle">建立你的私人审美资料库。</p>
@@ -126,12 +127,12 @@
       <button id="plusRestoreBtn" class="copy-btn plus-restore" type="button" data-action="restore-purchases" hidden>恢复购买</button>
     </div>
   </div>
-  <div id="lightbox" class="lightbox" hidden>
-    <button class="lightbox-close" type="button" data-action="close-lightbox">×</button>
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="图片预览" hidden>
+    <button id="lightboxCloseBtn" class="lightbox-close" type="button" data-action="close-lightbox" aria-label="关闭图片预览">×</button>
     <img id="lightboxImage" alt="" />
     <div class="lightbox-actions">
-      <button class="copy-btn" type="button" data-action="save-lightbox">保存</button>
-      <button class="copy-btn" type="button" data-action="share-lightbox">分享</button>
+      <button id="saveLightboxBtn" class="copy-btn" type="button" data-action="save-lightbox">保存</button>
+      <button id="shareLightboxBtn" class="copy-btn" type="button" data-action="share-lightbox">分享</button>
     </div>
   </div>
   <script src="./data-core.js"></script>
