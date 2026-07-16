@@ -242,6 +242,7 @@
       closePreview: "关闭图片预览",
       imagePreview: "图片预览",
       exportStarted: "正在准备图片…",
+      exportSharing: "正在打开系统分享…",
       exportComplete: "图片已准备好",
       lockedPreview: "完整内容包含深入源流、识别方法、案例与风格表达词。"
       ,
@@ -286,6 +287,10 @@
       exportPayloadMissing: "图片数据不完整，请重新生成后再试。",
       exportWriteFailed: "图片保存失败，请稍后重试。",
       presentationUnavailable: "暂时无法打开系统分享面板。",
+      exportInProgress: "已有图片任务正在进行，请稍候。",
+      canvasUnavailable: "当前设备无法创建导出画布。",
+      imageDecodeFailed: "图片读取失败，请重新打开后再试。",
+      blobCreationFailed: "无法创建导出图片，请重试。",
       unknown: "操作失败，请稍后重试。",
       iapFootnote: "购买由 Apple App Store 安全处理",
       appStoreFootnote: "正式版将在 App Store 内开放",
@@ -365,6 +370,7 @@
       closePreview: "Close image preview",
       imagePreview: "Image preview",
       exportStarted: "Preparing image…",
+      exportSharing: "Opening the system share sheet…",
       exportComplete: "Image is ready",
       lockedPreview: "The full archive includes deeper origins, recognition methods, cases and style expression.",
       plus: "Xiazishuo Style Atlas Plus",
@@ -408,6 +414,10 @@
       exportPayloadMissing: "The image data is incomplete. Generate it again and retry.",
       exportWriteFailed: "The image could not be saved. Please try again.",
       presentationUnavailable: "The system share sheet is temporarily unavailable.",
+      exportInProgress: "Another image task is already in progress.",
+      canvasUnavailable: "This device cannot create the export canvas.",
+      imageDecodeFailed: "The image could not be read. Reopen it and try again.",
+      blobCreationFailed: "The export image could not be created. Please try again.",
       unknown: "The operation could not be completed. Please try again.",
       iapFootnote: "Purchase securely processed by Apple App Store",
       appStoreFootnote: "Available later via App Store in-app purchase",
@@ -491,18 +501,221 @@
     plusCloseBtn: $("plusCloseBtn")
   };
 
-  document.addEventListener("error", (event) => {
-    const img = event.target;
-    if (img instanceof HTMLImageElement && img.src.includes("/assets/styles/") && img.src.endsWith(".webp")) {
-      img.src = pngFallback(img.src);
-    }
-  }, true);
-
   function pngFallback(src) {
     const file = new URL(src, location.href).pathname.split("/").pop().replace(".webp", ".png");
     return location.hostname.endsWith("github.io")
       ? `https://raw.githubusercontent.com/Yonge6/style-atlas/main/assets/styles/${file}`
       : src.replace(".webp", ".png");
+  }
+
+  function performanceError(code, message = code) {
+    const error = new Error(message);
+    error.code = code;
+    return error;
+  }
+
+  const imagePipeline = (() => {
+    const maxEntries = 7;
+    const entries = new Map();
+
+    function touch(key, entry) {
+      entries.delete(key);
+      entries.set(key, entry);
+      while (entries.size > maxEntries) entries.delete(entries.keys().next().value);
+    }
+
+    function decodeSource(src, priority, fallbackUsed = false) {
+      const image = new Image();
+      image.crossOrigin = "anonymous";
+      image.decoding = "async";
+      if ("fetchPriority" in image) image.fetchPriority = priority;
+      image.src = src;
+      const decoded = typeof image.decode === "function"
+        ? image.decode()
+        : new Promise((resolve, reject) => {
+          image.addEventListener("load", resolve, { once: true });
+          image.addEventListener("error", reject, { once: true });
+        });
+      return decoded.then(() => image).catch((error) => {
+        if (!fallbackUsed && /\.webp(?:\?|$)/i.test(src)) {
+          return decodeSource(pngFallback(src), priority, true);
+        }
+        throw performanceError("imageDecodeFailed", error?.message || "Image decode failed");
+      });
+    }
+
+    function preload(src, { priority = "low" } = {}) {
+      const key = new URL(src, location.href).href;
+      const existing = entries.get(key);
+      if (existing) {
+        touch(key, existing);
+        return existing.promise;
+      }
+      const entry = { promise: null };
+      entry.promise = decodeSource(src, priority).catch((error) => {
+        entries.delete(key);
+        throw error;
+      });
+      touch(key, entry);
+      return entry.promise;
+    }
+
+    return {
+      preload,
+      decode: preload,
+      has(src) {
+        return entries.has(new URL(src, location.href).href);
+      },
+      evict(src) {
+        entries.delete(new URL(src, location.href).href);
+      },
+      clear() {
+        entries.clear();
+      },
+      size() {
+        return entries.size;
+      },
+      maxEntries
+    };
+  })();
+
+  const lazyImageObserver = "IntersectionObserver" in window
+    ? new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const image = entry.target;
+        observer.unobserve(image);
+        if (image.dataset.src) {
+          image.src = image.dataset.src;
+          delete image.dataset.src;
+        }
+      });
+    }, { rootMargin: "240px 0px" })
+    : null;
+
+  function setImageState(image, state) {
+    image.dataset.imageState = state;
+    const slot = image.closest(".image-slot");
+    if (!slot) return;
+    slot.classList.toggle("image-loading", state === "loading");
+    slot.classList.toggle("image-loaded", state === "loaded");
+    slot.classList.toggle("image-failed", state === "failed");
+  }
+
+  function prepareImage(image) {
+    if (!(image instanceof HTMLImageElement) || image.dataset.imagePrepared === "true") return;
+    image.dataset.imagePrepared = "true";
+    setImageState(image, "loading");
+    image.addEventListener("load", () => setImageState(image, "loaded"));
+    image.addEventListener("error", () => {
+      const currentSource = image.currentSrc || image.src || image.dataset.src || "";
+      if (image.dataset.fallbackAttempted !== "true" && /\.webp(?:\?|$)/i.test(currentSource)) {
+        image.dataset.fallbackAttempted = "true";
+        image.src = pngFallback(currentSource);
+        delete image.dataset.src;
+        return;
+      }
+      setImageState(image, "failed");
+      image.removeAttribute("src");
+      delete image.dataset.src;
+    });
+    if (image.dataset.src) {
+      if (lazyImageObserver) lazyImageObserver.observe(image);
+      else {
+        image.src = image.dataset.src;
+        delete image.dataset.src;
+      }
+    } else if (image.complete) {
+      setImageState(image, image.naturalWidth > 0 ? "loaded" : "loading");
+    }
+  }
+
+  function prepareImages(root = document) {
+    if (root instanceof HTMLImageElement) prepareImage(root);
+    root.querySelectorAll?.("img.image-managed").forEach(prepareImage);
+  }
+
+  function releasePreparedImages(root) {
+    if (!lazyImageObserver || !root) return;
+    root.querySelectorAll?.("img.image-managed").forEach((image) => lazyImageObserver.unobserve(image));
+  }
+
+  function imageMarkup(src, alt, className = "", { eager = false, priority = "low" } = {}) {
+    const sourceAttribute = eager ? `src="${escapeHtml(src)}"` : `data-src="${escapeHtml(src)}"`;
+    return `<img class="image-managed ${className}" ${sourceAttribute} alt="${escapeHtml(alt)}" loading="${eager ? "eager" : "lazy"}" decoding="async" fetchpriority="${priority}">`;
+  }
+
+  const wikiRequestState = {
+    controller: null,
+    timer: 0,
+    token: 0,
+    activeStyleId: "",
+    abortedCount: 0
+  };
+
+  function abortWikiGallery() {
+    clearTimeout(wikiRequestState.timer);
+    wikiRequestState.timer = 0;
+    if (wikiRequestState.controller && !wikiRequestState.controller.signal.aborted) {
+      wikiRequestState.controller.abort();
+      wikiRequestState.abortedCount += 1;
+    }
+    wikiRequestState.controller = null;
+    wikiRequestState.activeStyleId = "";
+  }
+
+  const exportState = { status: "idle", operationId: 0 };
+  const NATIVE_EXPORT_PENDING = Symbol("native-export-pending");
+
+  function updateExportControls() {
+    const busy = exportState.status === "preparing" || exportState.status === "sharing";
+    document.querySelectorAll("[data-export-control]").forEach((button) => {
+      button.disabled = busy;
+      button.setAttribute("aria-busy", String(busy));
+    });
+    const status = $("exportStatus");
+    if (status) {
+      status.textContent = exportState.status === "preparing"
+        ? t("exportStarted")
+        : (exportState.status === "sharing" ? t("exportSharing") : "");
+    }
+  }
+
+  function setExportState(status) {
+    exportState.status = status;
+    updateExportControls();
+  }
+
+  function finishExportState(status = "completed") {
+    setExportState(status);
+    setExportState("idle");
+  }
+
+  async function runExportOperation(task, fallbackKey = "saveFailed") {
+    if (exportState.status !== "idle") {
+      toast(t("exportInProgress"));
+      return false;
+    }
+    exportState.operationId += 1;
+    setExportState("preparing");
+    toast(t("exportStarted"));
+    try {
+      const result = await task();
+      if (result === NATIVE_EXPORT_PENDING) {
+        setExportState("sharing");
+        return true;
+      }
+      finishExportState("completed");
+      return true;
+    } catch (error) {
+      finishExportState("failed");
+      if (error?.name === "AbortError") return false;
+      const knownCode = ["exportInProgress", "canvasUnavailable", "imageDecodeFailed", "blobCreationFailed"].includes(error?.code)
+        ? error.code
+        : fallbackKey;
+      toast(t(knownCode));
+      return false;
+    }
   }
 
   function catName(id, lang = store.lang) {
@@ -680,7 +893,8 @@
       restored: "restoreSuccess",
       nothingToRestore: "restoreNone",
       exportComplete: "exportComplete",
-      exportFailed: "exportFailed"
+      exportFailed: "exportFailed",
+      exportCancelled: ""
     };
     const knownErrorCodes = new Set([
       "operationInProgress",
@@ -694,6 +908,10 @@
       "exportPayloadMissing",
       "exportWriteFailed",
       "presentationUnavailable",
+      "exportInProgress",
+      "canvasUnavailable",
+      "imageDecodeFailed",
+      "blobCreationFailed",
       "unknown"
     ]);
     const fallbackErrorKeys = {
@@ -705,7 +923,17 @@
     const key = knownErrorCodes.has(normalizedErrorCode)
       ? normalizedErrorCode
       : (normalizedErrorCode ? "unknown" : (statusKeys[normalized] || fallbackErrorKeys[normalized]));
-    if (key && normalized !== "idle") toast(t(key));
+    if (normalized === "exportComplete") {
+      toast(t("exportComplete"));
+      finishExportState("completed");
+    } else if (normalized === "exportFailed") {
+      toast(t(key || "exportFailed"));
+      finishExportState("failed");
+    } else if (normalized === "exportCancelled") {
+      finishExportState("idle");
+    } else if (key && normalized !== "idle") {
+      toast(t(key));
+    }
     if (normalized === "pending") {
       setStoreActionFromNative.pendingTimer = setTimeout(() => {
         if (window.STYLE_ATLAS_RUNTIME_CONFIG.storeAction === "pending") {
@@ -739,13 +967,14 @@
     return `
       <section class="detail-section export-section">
         <h2>${t("exportOptions")}</h2>
-        <button class="copy-btn" type="button" data-action="save-card">${t("freeExport")}</button>
+        <p id="exportStatus" class="export-status" role="status" aria-live="polite"></p>
+        <button class="copy-btn" type="button" data-action="save-card" data-export-control>${t("freeExport")}</button>
         ${highResReady ? `
           <p>${t("plusExport")}</p>
           <div class="export-ratios" role="group" aria-label="${t("plusExport")}">
-            ${["9:16", "4:5", "1:1", "16:9"].map((ratio) => `<button class="copy-btn plus-export-ready" type="button" data-action="export-ratio" data-ratio="${ratio}">${ratio}</button>`).join("")}
+            ${["9:16", "4:5", "1:1", "16:9"].map((ratio) => `<button class="copy-btn plus-export-ready" type="button" data-action="export-ratio" data-ratio="${ratio}" data-export-control>${ratio}</button>`).join("")}
           </div>
-        ` : `<button class="copy-btn locked-export" type="button" data-action="plus-export">${t("plusExport")}</button>`}
+        ` : `<button class="copy-btn locked-export" type="button" data-action="plus-export" data-export-control>${t("plusExport")}</button>`}
       </section>
     `;
   }
@@ -754,14 +983,14 @@
     const lang = store.lang;
     const saved = isSaved(style.id);
     return `
-      <img class="cover-image" src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="eager" decoding="async" fetchpriority="${active ? "high" : "low"}">
+      ${imageMarkup(style.image, style.name[lang], "cover-image", { eager: true, priority: active ? "high" : "low" })}
       <div class="cover-shade"></div>
       <div class="cover-top">
         <span>#${style.number}</span>
         <div class="card-actions">
-          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" aria-label="${t(saved ? "unfavorite" : "favorite")}">${saved ? "♥" : "♡"}</button>
+          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" data-id="${style.id}" aria-label="${t(saved ? "unfavorite" : "favorite")}">${saved ? "♥" : "♡"}</button>
           <button class="card-action" type="button" data-action="copy-prompt" aria-label="${t("copyPrompt")}">⧉</button>
-          <button class="card-action" type="button" data-action="share" aria-label="${t("share")}">↗</button>
+          <button class="card-action" type="button" data-action="share" data-export-control aria-label="${t("share")}">↗</button>
         </div>
       </div>
       <div class="cover-title">
@@ -773,9 +1002,17 @@
 
   function renderDeck() {
     const style = activeStyle();
+    releasePreparedImages(dom.deckStage);
     dom.styleDeck.innerHTML = renderDeckCard(style, true);
     dom.prevGhost.innerHTML = renderDeckCard(styleByOffset(-1));
     dom.nextGhost.innerHTML = renderDeckCard(styleByOffset(1));
+    [dom.styleDeck, dom.prevGhost, dom.nextGhost].forEach((card) => {
+      card.classList.add("image-slot");
+      card.dataset.imageLabel = card === dom.styleDeck ? style.name[store.lang] : card.querySelector("img")?.alt || "";
+    });
+    prepareImages(dom.deckStage);
+    imagePipeline.preload(style.image, { priority: "high" }).catch(() => null);
+    [-1, 1, -2, 2].forEach((offset) => imagePipeline.preload(styleByOffset(offset).image, { priority: "low" }).catch(() => null));
     dom.deckStage.classList.remove("dragging", "fly-left", "fly-right", "is-animating");
     dom.styleDeck.style.removeProperty("--drag-x");
     [dom.prevGhost, dom.nextGhost].forEach((card) => {
@@ -794,12 +1031,12 @@
       <div class="badge-row">
         <div class="badge">#${style.number} · ${escapeHtml(catName(style.category))}<br>${escapeHtml(style.subtitle[lang])}</div>
         <div class="card-actions">
-          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" aria-label="${t(saved ? "unfavorite" : "favorite")}">${saved ? "♥" : "♡"}</button>
-          <button class="card-action" type="button" data-action="share" aria-label="${t("share")}">↗</button>
+          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" data-id="${style.id}" aria-label="${t(saved ? "unfavorite" : "favorite")}">${saved ? "♥" : "♡"}</button>
+          <button class="card-action" type="button" data-action="share" data-export-control aria-label="${t("share")}">↗</button>
         </div>
       </div>
-      <div class="visual">
-        <img src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy">
+      <div class="visual image-slot" data-image-label="${escapeHtml(style.name[lang])}">
+        ${imageMarkup(style.image, style.name[lang], "", { eager: compact, priority: compact ? "high" : "low" })}
         <p class="visual-title">${escapeHtml(style.name.en)}</p>
       </div>
       <h1>${escapeHtml(style.name.en)}</h1>
@@ -821,22 +1058,26 @@
     dom.randomBtn.textContent = t("random");
     dom.categoryTitle.textContent = t("categories");
     renderDeck();
+    releasePreparedImages(dom.categoryChips);
     dom.categoryChips.innerHTML = categories.map((cat) => {
       const categoryStyles = styles.filter((item) => item.category === cat[0]);
-      const preview = categoryStyles.slice(0, 3).map((item) => `<img src="${item.image}" alt="${escapeHtml(item.name[lang])}" loading="lazy">`).join("");
+      const preview = categoryStyles.slice(0, 3).map((item) => imageMarkup(item.image, item.name[lang])).join("");
       return `
         <button class="category-card" type="button" data-filter="${cat[0]}">
           <span class="category-copy">
             <strong>${escapeHtml(catName(cat[0]))}</strong>
             <small>${escapeHtml(t("styleCount", categoryStyles.length))}</small>
           </span>
-          <span class="category-stack">${preview}</span>
+          <span class="category-stack image-slot" data-image-label="${escapeHtml(catName(cat[0]))}">${preview}</span>
         </button>
       `;
     }).join("");
+    prepareImages(dom.categoryChips);
   }
 
   function renderDetail() {
+    abortWikiGallery();
+    releasePreparedImages(dom.detailContent);
     const style = activeStyle();
     const lang = store.lang;
     const locked = isStyleLocked(style);
@@ -850,9 +1091,9 @@
       <section class="detail-section">
         <h2>${t("exhibitImages")}</h2>
         <div class="gallery-grid" id="galleryGrid">
-          <figure class="gallery-item">
+          <figure class="gallery-item image-slot" data-image-label="${escapeHtml(style.name[lang])}">
             <button class="gallery-open" type="button" data-action="open-image" aria-label="${escapeHtml(t("imagePreview"))}：${escapeHtml(style.name[lang])}">
-              <img src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="lazy">
+              ${imageMarkup(style.image, style.name[lang])}
             </button>
             <figcaption>${escapeHtml(style.name[lang])}</figcaption>
           </figure>
@@ -862,8 +1103,8 @@
     const exampleSection = example ? `
       <section class="detail-section">
         <h2>${t("examples")}</h2>
-        <figure class="example-card">
-          <img src="${escapeHtml(example.image)}" alt="${escapeHtml(example.title)}" loading="lazy">
+        <figure class="example-card image-slot" data-image-label="${escapeHtml(example.title)}">
+          ${imageMarkup(example.image, example.title)}
           <figcaption>
             <strong>${escapeHtml(example.title)}</strong>
             <span>${escapeHtml(example.artist)}</span>
@@ -891,7 +1132,7 @@
         <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
         <div class="prompt-actions">
           <button class="copy-btn" type="button" data-action="copy-prompt">${t("copyPrompt")}</button>
-          <button class="copy-btn" type="button" data-action="save-card">${t("saveCard")}</button>
+          <button class="copy-btn" type="button" data-action="save-card" data-export-control>${t("saveCard")}</button>
         </div>
       </section>
     `;
@@ -963,6 +1204,8 @@
         <div class="result-list">${style.relatedStyles.map((id) => resultCard(styles.find((item) => item.id === id))).join("")}</div>
       </section>
     `;
+    prepareImages(dom.detailContent);
+    updateExportControls();
     if (!locked) loadWikiGallery(style);
   }
 
@@ -970,6 +1213,12 @@
     if (!isExternalGalleryEnabled()) return;
     const gallery = $("galleryGrid");
     if (!gallery) return;
+    abortWikiGallery();
+    const controller = new AbortController();
+    const token = ++wikiRequestState.token;
+    wikiRequestState.controller = controller;
+    wikiRequestState.activeStyleId = style.id;
+    wikiRequestState.timer = setTimeout(() => controller.abort(), 8000);
     try {
       const params = new URLSearchParams({
         action: "query",
@@ -980,22 +1229,32 @@
         pithumbsize: "700",
         titles: style.wikiTitles.join("|")
       });
-      const response = await fetch(`https://en.wikipedia.org/w/api.php?${params}`);
-      if (!response.ok || style.id !== activeStyle().id) return;
+      const response = await fetch(`https://en.wikipedia.org/w/api.php?${params}`, { signal: controller.signal });
+      if (!response.ok || controller.signal.aborted || token !== wikiRequestState.token || style.id !== activeStyle().id) return;
       const data = await response.json();
+      if (controller.signal.aborted || token !== wikiRequestState.token || style.id !== activeStyle().id || !gallery.isConnected) return;
       const pages = Object.values(data.query?.pages || {})
         .filter((page) => page.thumbnail?.source && page.fullurl)
         .slice(0, 4);
       gallery.insertAdjacentHTML("beforeend", pages.map((page) => `
-        <figure class="gallery-item">
+        <figure class="gallery-item image-slot" data-image-label="${escapeHtml(page.title)}">
           <button class="gallery-open" type="button" data-action="open-image" aria-label="${escapeHtml(t("imagePreview"))}：${escapeHtml(page.title)}">
-            <img src="${escapeHtml(page.thumbnail.source)}" alt="${escapeHtml(page.title)}" loading="lazy">
+            ${imageMarkup(page.thumbnail.source, page.title)}
           </button>
           <figcaption><a href="${escapeHtml(page.fullurl)}" target="_blank" rel="noreferrer">${escapeHtml(page.title)}</a></figcaption>
         </figure>
       `).join(""));
-    } catch {
+      prepareImages(gallery);
+    } catch (error) {
+      if (error?.name === "AbortError") return;
       // External images are bonus context; the detail page must still work offline.
+    } finally {
+      if (token === wikiRequestState.token) {
+        clearTimeout(wikiRequestState.timer);
+        wikiRequestState.timer = 0;
+        wikiRequestState.controller = null;
+        wikiRequestState.activeStyleId = "";
+      }
     }
   }
 
@@ -1004,7 +1263,7 @@
     return `
       <article class="result-card" data-style="${style.id}">
         <button class="result-open" type="button" data-action="open-style" data-id="${style.id}" aria-label="${escapeHtml(t("openStyle"))}：${escapeHtml(style.name[lang])}">
-          <img class="thumb" src="${style.image}" alt="" loading="lazy">
+          <span class="thumb-slot image-slot" data-image-label="${escapeHtml(style.name[lang])}">${imageMarkup(style.image, "", "thumb")}</span>
           <span>
             <h3>${escapeHtml(style.name[lang])}</h3>
             <p>${escapeHtml(style.summary[lang])}</p>
@@ -1046,8 +1305,10 @@
       return (!store.filter || style.category === store.filter) && (!query || haystack.includes(query));
     }).sort((a, b) => score(a) - score(b));
 
+    releasePreparedImages(dom.searchResults);
     dom.searchResults.classList.toggle("gallery-grid", !query && !store.filter);
     dom.searchResults.innerHTML = results.length ? results.map(resultCard).join("") : `<p class="empty">${t("empty")}</p>`;
+    prepareImages(dom.searchResults);
   }
 
   function renderSaved() {
@@ -1055,7 +1316,9 @@
     dom.savedCount.textContent = t("saved", savedStyles.length);
     dom.copyListBtn.textContent = t("copyList");
     dom.copyListBtn.disabled = savedStyles.length === 0;
+    releasePreparedImages(dom.savedList);
     dom.savedList.innerHTML = savedStyles.length ? savedStyles.map(resultCard).join("") : `<p class="empty">${t("savedEmpty")}</p>`;
+    prepareImages(dom.savedList);
   }
 
   function renderAbout() {
@@ -1092,6 +1355,7 @@
   function renderScreenshots() {
     const lang = store.lang;
     const featured = [styles[38], styles[0], styles[2], styles[60], styles[35], styles[99]].filter(Boolean);
+    releasePreparedImages(dom.screenshotsContent);
     dom.screenshotsContent.innerHTML = `
       <section class="screenshot-head">
         <p>${escapeHtml(t("productName"))}</p>
@@ -1114,12 +1378,13 @@
         }).join("")}
       </div>
     `;
+    prepareImages(dom.screenshotsContent);
   }
 
   function screenshotMock(index, style, lang) {
     if (index === 5) {
       if (isFreeLaunchMode()) {
-        return `<div class="shot-list">${styles.slice(8, 12).map((item) => `<span><img src="${item.image}" alt=""><b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
+        return `<div class="shot-list">${styles.slice(8, 12).map((item) => `<span class="image-slot" data-image-label="${escapeHtml(item.name[lang])}">${imageMarkup(item.image, item.name[lang])}<b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
       }
       return `<div class="shot-paywall"><h2>${escapeHtml(t("plus"))}</h2><p>${escapeHtml(t("plusSubtitle"))}</p><ul>${t("plusPlanItems").slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>`;
     }
@@ -1127,12 +1392,12 @@
       return `<div class="shot-panel"><h3>${escapeHtml(style.name[lang])}</h3><p>${escapeHtml(style.history[lang]).slice(0, 90)}...</p><p>${escapeHtml(style.why[lang]).slice(0, 72)}...</p></div>`;
     }
     if (index === 3) {
-      return `<div class="shot-list">${styles.slice(0, 4).map((item) => `<span><img src="${item.image}" alt=""><b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
+      return `<div class="shot-list">${styles.slice(0, 4).map((item) => `<span class="image-slot" data-image-label="${escapeHtml(item.name[lang])}">${imageMarkup(item.image, item.name[lang])}<b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
     }
     if (index === 4) {
-      return `<div class="shot-export"><img src="${style.image}" alt=""><button>${escapeHtml(t("freeExport"))}</button></div>`;
+      return `<div class="shot-export image-slot" data-image-label="${escapeHtml(style.name[lang])}">${imageMarkup(style.image, style.name[lang])}<button>${escapeHtml(t("freeExport"))}</button></div>`;
     }
-    return `<div class="shot-card-visual"><img src="${style.image}" alt=""><h2>${escapeHtml(style.name.en)}</h2><p>${escapeHtml(style.name.zh)}</p></div>`;
+    return `<div class="shot-card-visual image-slot" data-image-label="${escapeHtml(style.name[lang])}">${imageMarkup(style.image, style.name[lang])}<h2>${escapeHtml(style.name.en)}</h2><p>${escapeHtml(style.name.zh)}</p></div>`;
   }
 
   function screenshotSlides() {
@@ -1151,11 +1416,12 @@
     setView("detail");
   }
 
-  function setView(view) {
+  function setView(view, shouldRender = true) {
+    if (store.view === "detail" && view !== "detail") abortWikiGallery();
     if (view === "detail" && !store.backView) store.backView = "home";
-    if (view === "screenshots") renderScreenshots();
-    if (view === "about") renderAbout();
-    if (view === "detail") renderDetail();
+    if (shouldRender && view === "screenshots") renderScreenshots();
+    if (shouldRender && view === "about") renderAbout();
+    if (shouldRender && view === "detail") renderDetail();
     if (store.drawerOpen) setDrawer(false, false);
     store.view = view;
     document.querySelectorAll(".view").forEach((node) => node.classList.toggle("active", node.id === `${view}View`));
@@ -1166,10 +1432,10 @@
     dom.backBtn.classList.toggle("hidden", view === "home");
     document.querySelector(".topbar").classList.toggle("has-back", view !== "home");
     if (view === "search") {
-      renderSearch();
+      if (shouldRender) renderSearch();
       setTimeout(() => dom.searchInput.focus(), 80);
     }
-    if (view === "saved") renderSaved();
+    if (shouldRender && view === "saved") renderSaved();
     window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
 
@@ -1216,6 +1482,26 @@
     saveState();
   }
 
+  function updateSavedButtons(id) {
+    const saved = isSaved(id);
+    document.querySelectorAll(`[data-id="${id}"][data-action="save"], [data-id="${id}"][data-action="save-row"]`).forEach((button) => {
+      button.classList.toggle("saved", saved);
+      button.textContent = saved ? "♥" : "♡";
+      button.setAttribute("aria-label", t(saved ? "unfavorite" : "favorite"));
+    });
+  }
+
+  function updateSavedCount() {
+    dom.savedCount.textContent = t("saved", store.saved.length);
+    dom.copyListBtn.disabled = store.saved.length === 0;
+  }
+
+  function syncSavedState(id) {
+    updateSavedButtons(id);
+    updateSavedCount();
+    if (store.view === "saved") renderSaved();
+  }
+
   function toggleSaved(id = activeStyle().id) {
     if (isSaved(id)) {
       store.saved = store.saved.filter((item) => item !== id);
@@ -1229,10 +1515,7 @@
       toast(t("savedToast"));
     }
     saveState();
-    renderDeck();
-    if (store.view === "detail") renderDetail();
-    if (store.view === "search") renderSearch();
-    if (store.view === "saved") renderSaved();
+    syncSavedState(id);
   }
 
   async function copyText(value) {
@@ -1267,16 +1550,27 @@
   }
 
   async function loadImage(src) {
-    const image = new Image();
-    image.crossOrigin = "anonymous";
-    image.src = src;
-    try {
-      await image.decode();
-      return image;
-    } catch (error) {
-      if (!src.endsWith(".webp")) throw error;
-      return loadImage(pngFallback(src));
-    }
+    return imagePipeline.preload(src, { priority: "high" });
+  }
+
+  function canvasContext(canvas) {
+    const context = canvas.getContext("2d");
+    if (!context) throw performanceError("canvasUnavailable", "2D canvas context is unavailable");
+    return context;
+  }
+
+  function canvasBlob(canvas) {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) resolve(blob);
+        else reject(performanceError("blobCreationFailed", "Canvas returned a null blob"));
+      }, "image/png", 0.94);
+    });
+  }
+
+  function releaseCanvas(canvas) {
+    canvas.width = 0;
+    canvas.height = 0;
   }
 
   async function coverCardBlob(style, ratio = "9:16") {
@@ -1290,7 +1584,8 @@
     const canvas = document.createElement("canvas");
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
-    const ctx = canvas.getContext("2d");
+    try {
+    const ctx = canvasContext(canvas);
     const image = await loadImage(style.image);
     const scale = Math.max(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
     const width = image.naturalWidth * scale;
@@ -1322,14 +1617,18 @@
     ctx.font = `800 ${subtitleSize}px sans-serif`;
     wrap(ctx, style.name.zh, 68, canvas.height - 72, canvas.width - 136, subtitleSize * 1.18);
     drawWatermark(ctx, canvas.width, canvas.height);
-    return new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.94));
+    return await canvasBlob(canvas);
+    } finally {
+      releaseCanvas(canvas);
+    }
   }
 
   async function detailCardBlob(style) {
     const canvas = document.createElement("canvas");
     canvas.width = 1080;
     canvas.height = 2500;
-    const ctx = canvas.getContext("2d");
+    try {
+    const ctx = canvasContext(canvas);
     ctx.fillStyle = "#ead397";
     roundRect(ctx, 0, 0, 1080, 2500, 48);
     ctx.fill();
@@ -1407,7 +1706,10 @@
       chipX += chipWidth + 22;
     });
     drawWatermark(ctx, canvas.width, canvas.height);
-    return new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.94));
+    return await canvasBlob(canvas);
+    } finally {
+      releaseCanvas(canvas);
+    }
   }
 
   async function coverFile(style) {
@@ -1442,47 +1744,46 @@
 
   async function shareImage(src = dom.lightbox.dataset.src) {
     if (!src) return;
-    try {
+    return runExportOperation(async () => {
       const file = await imageFile(src, "style-atlas-image.png");
       if (hasNativeBridge()) {
         const dataURL = await blobToDataURL(file);
-        if (postNativeMessage("shareImage", { dataURL, filename: file.name })) return;
+        if (postNativeMessage("shareImage", { dataURL, filename: file.name })) return NATIVE_EXPORT_PENDING;
       }
       if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
         await navigator.share({ title: activeStyle().name[store.lang], files: [file] });
         return;
       }
       await copyText(src);
-    } catch {
-      toast(t("shareFailed"));
-    }
+    }, "shareFailed");
   }
 
   async function saveImage(src = dom.lightbox.dataset.src) {
     if (!src) return;
-    try {
+    return runExportOperation(async () => {
       const file = await imageFile(src, "style-atlas-image.png");
       if (hasNativeBridge()) {
         const dataURL = await blobToDataURL(file);
         if (postNativeMessage("exportImage", { dataURL, filename: file.name })) {
-          toast(t("exportStarted"));
-          return;
+          return NATIVE_EXPORT_PENDING;
         }
       }
       downloadBlob(file, file.name);
       toast(t("cardSaved"));
-    } catch {
-      toast(t("saveFailed"));
-    }
+    }, "saveFailed");
   }
 
   async function shareStyle(style = activeStyle()) {
     const publicBase = new URL(window.STYLE_ATLAS_RUNTIME_CONFIG.publicBaseURL, "https://yonge6.github.io/style-atlas/");
     const url = `${publicBase.href.replace(/#.*$/, "").replace(/\/?$/, "/")}#${style.id}`;
     const payload = { title: style.name[store.lang], text: style.summary[store.lang], url };
-    try {
+    return runExportOperation(async () => {
+      const file = await coverFile(style);
+      if (hasNativeBridge()) {
+        const dataURL = await blobToDataURL(file);
+        if (postNativeMessage("shareImage", { dataURL, filename: file.name })) return NATIVE_EXPORT_PENDING;
+      }
       if (navigator.share) {
-        const file = await coverFile(style);
         if (!navigator.canShare || navigator.canShare({ files: [file] })) {
           await navigator.share({ ...payload, files: [file] });
           return;
@@ -1491,29 +1792,22 @@
         return;
       }
       await copyText(`${payload.title}\n${payload.text}\n${payload.url}`);
-    } catch (error) {
-      if (error?.name === "AbortError") return;
-      const copied = await copyText(url);
-      if (!copied) toast(t("shareFailed"));
-    }
+    }, "shareFailed");
   }
 
   async function saveShareCard(style = activeStyle(), ratio = null) {
-    try {
-      toast(t("exportStarted"));
+    return runExportOperation(async () => {
       const blob = ratio
         ? await coverCardBlob(style, ratio)
         : await (store.view === "detail" ? detailCardBlob(style) : coverCardBlob(style));
       const filename = `${style.id}-style-atlas${ratio ? `-${ratio.replace(":", "x")}` : ""}.png`;
       if (hasNativeBridge()) {
         const dataURL = await blobToDataURL(blob);
-        if (postNativeMessage("exportImage", { dataURL, filename })) return;
+        if (postNativeMessage("exportImage", { dataURL, filename })) return NATIVE_EXPORT_PENDING;
       }
       downloadBlob(blob, filename);
       toast(t("cardSaved"));
-    } catch {
-      toast(t("saveFailed"));
-    }
+    }, "saveFailed");
   }
 
   function blobToDataURL(blob) {
@@ -1993,7 +2287,17 @@
     isFreeLaunchMode,
     isIapMode
   };
+  window.StyleAtlasPerformance = {
+    imagePipeline,
+    prepareImages,
+    getWikiState: () => ({
+      activeStyleId: wikiRequestState.activeStyleId,
+      abortedCount: wikiRequestState.abortedCount,
+      inFlight: Boolean(wikiRequestState.controller)
+    }),
+    getExportState: () => ({ ...exportState })
+  };
   bind();
   renderAll();
-  setView(store.view);
+  setView(store.view, false);
 })();
