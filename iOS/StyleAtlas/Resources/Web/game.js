@@ -441,7 +441,6 @@
     styleDeck: $("styleDeck"),
     prevBtn: $("prevBtn"),
     nextBtn: $("nextBtn"),
-    swipeHint: $("swipeHint"),
     categoryTitle: $("categoryTitle"),
     categoryChips: $("categoryChips"),
     detailContent: $("detailContent"),
@@ -696,11 +695,11 @@
     `;
   }
 
-  function renderDeckCard(style) {
+  function renderDeckCard(style, active = false) {
     const lang = store.lang;
     const saved = isSaved(style.id);
     return `
-      <img class="cover-image" src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="eager">
+      <img class="cover-image" src="${style.image}" alt="${escapeHtml(style.name[lang])}" loading="eager" decoding="async" fetchpriority="${active ? "high" : "low"}">
       <div class="cover-shade"></div>
       <div class="cover-top">
         <span>#${style.number}</span>
@@ -719,15 +718,13 @@
 
   function renderDeck() {
     const style = activeStyle();
-    dom.styleDeck.innerHTML = renderDeckCard(style);
+    dom.styleDeck.innerHTML = renderDeckCard(style, true);
     dom.prevGhost.innerHTML = renderDeckCard(styleByOffset(-1));
     dom.nextGhost.innerHTML = renderDeckCard(styleByOffset(1));
     dom.deckStage.classList.remove("dragging", "fly-left", "fly-right", "is-animating");
     dom.styleDeck.style.removeProperty("--drag-x");
-    dom.styleDeck.style.removeProperty("--drag-rotate");
     [dom.prevGhost, dom.nextGhost].forEach((card) => {
       card.style.removeProperty("--ghost-x");
-      card.style.removeProperty("--ghost-rotate");
       card.style.removeProperty("--ghost-scale");
       card.style.removeProperty("--ghost-opacity");
     });
@@ -767,7 +764,6 @@
     document.querySelector(".brand span").textContent = t("brandSubtitle");
     document.querySelector(".drawer-head strong").textContent = t("brandTitle");
     dom.randomBtn.textContent = t("random");
-    dom.swipeHint.textContent = t("swipe");
     dom.categoryTitle.textContent = t("categories");
     renderDeck();
     dom.categoryChips.innerHTML = categories.map((cat) => {
@@ -1593,7 +1589,6 @@
 
     function resetGhost(card) {
       card.style.removeProperty("--ghost-x");
-      card.style.removeProperty("--ghost-rotate");
       card.style.removeProperty("--ghost-scale");
       card.style.removeProperty("--ghost-opacity");
     }
@@ -1601,15 +1596,13 @@
     function paintDrag() {
       dragFrame = 0;
       dom.styleDeck.style.setProperty("--drag-x", `${dragX}px`);
-      dom.styleDeck.style.setProperty("--drag-rotate", `${dragX / 18}deg`);
-      const progress = Math.min(1, Math.abs(dragX) / Math.max(72, dom.styleDeck.clientWidth * 0.28));
+      const progress = Math.min(1, Math.abs(dragX) / Math.max(96, dom.styleDeck.clientWidth * 0.42));
       const target = dragX < 0 ? dom.nextGhost : dom.prevGhost;
       const other = dragX < 0 ? dom.prevGhost : dom.nextGhost;
       const side = dragX < 0 ? 1 : -1;
-      target.style.setProperty("--ghost-x", `${side * 46 * (1 - progress)}px`);
-      target.style.setProperty("--ghost-rotate", `${side * 7 * (1 - progress)}deg`);
-      target.style.setProperty("--ghost-scale", String(0.91 + 0.09 * progress));
-      target.style.setProperty("--ghost-opacity", String(0.48 + 0.52 * progress));
+      target.style.setProperty("--ghost-x", `${side * 22 * (1 - progress)}px`);
+      target.style.setProperty("--ghost-scale", String(0.965 + 0.035 * progress));
+      target.style.setProperty("--ghost-opacity", String(0.72 + 0.28 * progress));
       resetGhost(other);
     }
 
@@ -1631,14 +1624,12 @@
       dom.deckStage.classList.remove("dragging");
       requestAnimationFrame(() => {
         dom.styleDeck.style.setProperty("--drag-x", "0px");
-        dom.styleDeck.style.setProperty("--drag-rotate", "0deg");
         resetGhost(dom.prevGhost);
         resetGhost(dom.nextGhost);
       });
       settleTimer = setTimeout(() => {
         dom.styleDeck.style.removeProperty("--drag-x");
-        dom.styleDeck.style.removeProperty("--drag-rotate");
-      }, 280);
+      }, 240);
     }
 
     function completeSwipe(direction) {
@@ -1664,7 +1655,7 @@
         dom.deckStage.classList.add(direction > 0 ? "fly-left" : "fly-right");
         postNativeMessage("hapticFeedback");
       });
-      swipeTimer = setTimeout(finish, 360);
+      swipeTimer = setTimeout(finish, 280);
     }
 
     function finishGesture(cancelled = false) {
@@ -1675,9 +1666,9 @@
         return;
       }
       const horizontal = gestureAxis === "x" || Math.abs(dragX) > Math.abs(dragY);
-      const distanceThreshold = Math.min(64, dom.styleDeck.clientWidth * 0.16);
-      const velocityIsFresh = performance.now() - lastTime < 90;
-      const shouldChange = horizontal && (Math.abs(dragX) >= distanceThreshold || (velocityIsFresh && Math.abs(velocityX) >= 0.42));
+      const distanceThreshold = Math.min(72, dom.styleDeck.clientWidth * 0.18);
+      const velocityIsFresh = performance.now() - lastTime < 100;
+      const shouldChange = horizontal && (Math.abs(dragX) >= distanceThreshold || (velocityIsFresh && Math.abs(velocityX) >= 0.36));
       if (shouldChange) {
         completeSwipe(dragX < 0 || (dragX === 0 && velocityX < 0) ? 1 : -1);
         return;
@@ -1704,8 +1695,10 @@
 
     dom.styleDeck.addEventListener("pointermove", (event) => {
       if (!dragging) return;
-      const dx = event.clientX - startX;
-      const dy = event.clientY - startY;
+      const coalesced = event.getCoalescedEvents ? event.getCoalescedEvents() : [];
+      const point = coalesced[coalesced.length - 1] || event;
+      const dx = point.clientX - startX;
+      const dy = point.clientY - startY;
       if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
       dragY = dy;
       if (!gestureAxis && Math.max(Math.abs(dx), Math.abs(dy)) > 7) gestureAxis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
@@ -1713,11 +1706,11 @@
       event.preventDefault();
       const now = performance.now();
       const elapsed = Math.max(1, now - lastTime);
-      const sampleVelocity = (event.clientX - lastX) / elapsed;
-      velocityX = velocityX * 0.65 + sampleVelocity * 0.35;
-      lastX = event.clientX;
+      const sampleVelocity = (point.clientX - lastX) / elapsed;
+      velocityX = velocityX * 0.58 + sampleVelocity * 0.42;
+      lastX = point.clientX;
       lastTime = now;
-      dragX = Math.max(-180, Math.min(180, dx));
+      dragX = Math.max(-dom.styleDeck.clientWidth, Math.min(dom.styleDeck.clientWidth, dx));
       if (!dragFrame) dragFrame = requestAnimationFrame(paintDrag);
     }, { passive: false });
 
@@ -1729,6 +1722,9 @@
     dom.styleDeck.addEventListener("pointercancel", () => {
       finishGesture(true);
     });
+
+    document.addEventListener("gesturestart", (event) => event.preventDefault(), { passive: false });
+    document.addEventListener("gesturechange", (event) => event.preventDefault(), { passive: false });
 
     dom.styleDeck.addEventListener("keydown", (event) => {
       if (event.key === "ArrowLeft") {

@@ -32,6 +32,10 @@ struct WebViewContainer: UIViewRepresentable {
         webView.scrollView.backgroundColor = webView.backgroundColor
         webView.scrollView.keyboardDismissMode = .interactive
         webView.scrollView.contentInsetAdjustmentBehavior = .never
+        webView.scrollView.delaysContentTouches = false
+        webView.scrollView.canCancelContentTouches = true
+        webView.scrollView.pinchGestureRecognizer?.isEnabled = false
+        webView.allowsLinkPreview = false
         bridge.webView = webView
 
         guard let url = Bundle.main.resourceURL?.appendingPathComponent("Web/index.html"),

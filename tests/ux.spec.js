@@ -8,6 +8,10 @@ test("core mobile flows remain stable", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.locator(".brand strong")).toContainText("Style Atlas");
+  await expect(page.locator("meta[name='viewport']")).toHaveAttribute("content", /maximum-scale=1/);
+  await expect(page.locator("#randomBtn")).toHaveText("随机");
+  await expect(page.locator(".deck-controls #randomBtn")).toHaveCount(1);
+  await expect(page.locator("#swipeHint")).toHaveCount(0);
   const initialNumber = await page.locator("#styleDeck .cover-top > span").textContent();
 
   const deck = page.locator("#styleDeck");
@@ -90,12 +94,15 @@ test("compact viewport does not overflow", async ({ page }) => {
     topbar: document.querySelector(".topbar").getBoundingClientRect().toJSON(),
     search: document.querySelector("#searchOpenBtn").getBoundingClientRect().toJSON(),
     lang: document.querySelector("#langBtn").getBoundingClientRect().toJSON(),
-    drawer: document.querySelector("#drawerBtn").getBoundingClientRect().toJSON()
+    drawer: document.querySelector("#drawerBtn").getBoundingClientRect().toJSON(),
+    deck: document.querySelector("#deckStage").getBoundingClientRect().toJSON()
   }));
   expect(metrics.body).toBeLessThanOrEqual(metrics.viewport);
   expect(metrics.topbar.right).toBeLessThanOrEqual(metrics.viewport + 0.5);
   expect(metrics.search.height).toBe(metrics.lang.height);
   expect(metrics.lang.height).toBe(metrics.drawer.height);
+  expect(metrics.topbar.bottom - metrics.search.bottom).toBeGreaterThanOrEqual(8);
+  expect(Math.abs(metrics.deck.height - metrics.deck.width * 5 / 3)).toBeLessThan(1);
 });
 
 test("saved styles persist and the free limit opens Plus", async ({ page }) => {
