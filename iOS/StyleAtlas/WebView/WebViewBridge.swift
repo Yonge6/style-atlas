@@ -1,3 +1,4 @@
+import OSLog
 import UIKit
 import WebKit
 
@@ -6,6 +7,15 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
     weak var webView: WKWebView?
     var storeManager: StoreManager
 
+    private let bridgeLogger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "com.xiazishuo.styleatlas",
+        category: "bridge"
+    )
+    private let exportLogger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "com.xiazishuo.styleatlas",
+        category: "export"
+    )
+
     init(storeManager: StoreManager) {
         self.storeManager = storeManager
     }
@@ -13,8 +23,12 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == "styleAtlas",
               let body = message.body as? [String: Any],
-              let type = body["type"] as? String else { return }
+              let type = body["type"] as? String else {
+            bridgeLogger.error("operation=receive status=ignored errorCode=\(StoreErrorCode.unknown.rawValue, privacy: .public)")
+            return
+        }
 
+        bridgeLogger.info("operation=\(type, privacy: .public) status=received")
         switch type {
         case "purchasePlus":
             Task {
@@ -30,16 +44,21 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         case "shareImage", "exportImage":
             guard let payload = body["payload"] as? [String: Any] else {
-                injectStoreAction("exportFailed", message: "Missing image payload.")
+                injectStoreAction(
+                    "exportFailed",
+                    errorCode: .exportPayloadMissing,
+                    debugMessage: "Image action message did not include a payload dictionary."
+                )
                 return
             }
             presentImageActivity(payload: payload)
         default:
-            break
+            bridgeLogger.notice("operation=\(type, privacy: .public) status=unsupported")
         }
     }
 
     func injectPlusAccess(_ hasPlus: Bool) {
+        bridgeLogger.info("operation=setPlusAccess status=injecting entitlement=\(hasPlus, privacy: .public)")
         let js = "window.StyleAtlasNativeBridge?.setPlusAccess(\(hasPlus ? "true" : "false"))"
         webView?.evaluateJavaScript(js)
     }
@@ -47,7 +66,17 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
     func injectProductPrice(_ price: String?) {
         guard let data = try? JSONEncoder().encode(price ?? ""),
               let value = String(data: data, encoding: .utf8) else { return }
+        bridgeLogger.info("operation=setProductPrice status=injecting product=\(StoreManager.plusProductID, privacy: .public)")
         webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setProductPrice(\(value))")
+    }
+
+    func refreshAfterForeground() async {
+        bridgeLogger.info("operation=foregroundRefresh status=started")
+        await storeManager.refreshEntitlements()
+        injectPlusAccess(storeManager.entitlementManagerHasPlus)
+        if !storeManager.isOperationInFlight {
+            injectStoreAction("idle")
+        }
     }
 
     private func injectStoreResult(_ result: StoreActionResult) {
@@ -63,20 +92,35 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
             injectPlusAccess(true)
             injectStoreAction("restored")
         case .nothingToRestore:
-            injectStoreAction("nothingToRestore")
-        case .unavailable(let message):
-            injectStoreAction("unavailable", message: message)
-        case .failed(let message):
-            injectStoreAction("failed", message: message)
+            injectStoreAction("nothingToRestore", errorCode: .noPurchaseToRestore)
+        case .unavailable(let code, let debugMessage):
+            injectStoreAction("unavailable", errorCode: code, debugMessage: debugMessage)
+        case .failed(let code, let debugMessage):
+            injectStoreAction("failed", errorCode: code, debugMessage: debugMessage)
         }
     }
 
-    private func injectStoreAction(_ status: String, message: String = "") {
-        guard let statusData = try? JSONEncoder().encode(status),
-              let statusValue = String(data: statusData, encoding: .utf8),
-              let messageData = try? JSONEncoder().encode(message),
-              let messageValue = String(data: messageData, encoding: .utf8) else { return }
-        webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setStoreAction(\(statusValue), \(messageValue))")
+    private func injectStoreAction(
+        _ status: String,
+        errorCode: StoreErrorCode? = nil,
+        debugMessage: String? = nil
+    ) {
+#if DEBUG
+        if let debugMessage {
+            bridgeLogger.debug(
+                "operation=setStoreAction debug=\(debugMessage, privacy: .private)"
+            )
+        }
+#endif
+        guard let statusValue = jsonString(status),
+              let errorCodeValue = jsonString(errorCode?.rawValue ?? ""),
+              let debugValue = jsonString("") else { return }
+        bridgeLogger.info(
+            "operation=setStoreAction status=\(status, privacy: .public) errorCode=\(errorCode?.rawValue ?? "none", privacy: .public)"
+        )
+        webView?.evaluateJavaScript(
+            "window.StyleAtlasNativeBridge?.setStoreAction(\(statusValue), \(errorCodeValue), \(debugValue))"
+        )
     }
 
     private func presentImageActivity(payload: [String: Any]) {
@@ -84,7 +128,8 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
               let commaIndex = dataURL.firstIndex(of: ","),
               let data = Data(base64Encoded: String(dataURL[dataURL.index(after: commaIndex)...])),
               let webView else {
-            injectStoreAction("exportFailed", message: "The image could not be prepared.")
+            exportLogger.error("operation=prepare status=failed errorCode=\(StoreErrorCode.exportPayloadMissing.rawValue, privacy: .public)")
+            injectStoreAction("exportFailed", errorCode: .exportPayloadMissing)
             return
         }
 
@@ -95,7 +140,12 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         do {
             try data.write(to: fileURL, options: .atomic)
         } catch {
-            injectStoreAction("exportFailed", message: error.localizedDescription)
+            exportLogger.error("operation=write status=failed errorCode=\(StoreErrorCode.exportWriteFailed.rawValue, privacy: .public)")
+            injectStoreAction(
+                "exportFailed",
+                errorCode: .exportWriteFailed,
+                debugMessage: error.localizedDescription
+            )
             return
         }
 
@@ -111,17 +161,28 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
             Task { @MainActor in
                 try? FileManager.default.removeItem(at: fileURL)
                 if let error {
-                    self?.injectStoreAction("exportFailed", message: error.localizedDescription)
+                    self?.exportLogger.error(
+                        "operation=present status=failed errorCode=\(StoreErrorCode.presentationUnavailable.rawValue, privacy: .public)"
+                    )
+                    self?.injectStoreAction(
+                        "exportFailed",
+                        errorCode: .presentationUnavailable,
+                        debugMessage: error.localizedDescription
+                    )
                 } else if completed {
+                    self?.exportLogger.info("operation=present status=completed")
                     self?.injectStoreAction("exportComplete")
                 }
             }
         }
 
         guard let presenter = topViewController(from: webView.window?.rootViewController) else {
-            injectStoreAction("exportFailed", message: "No presentation context is available.")
+            exportLogger.error("operation=present status=failed errorCode=\(StoreErrorCode.presentationUnavailable.rawValue, privacy: .public)")
+            injectStoreAction("exportFailed", errorCode: .presentationUnavailable)
+            try? FileManager.default.removeItem(at: fileURL)
             return
         }
+        exportLogger.info("operation=present status=started")
         presenter.present(activity, animated: true)
     }
 
@@ -136,5 +197,10 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
             return topViewController(from: tab.selectedViewController)
         }
         return root
+    }
+
+    private func jsonString(_ value: String) -> String? {
+        guard let data = try? JSONEncoder().encode(value) else { return nil }
+        return String(data: data, encoding: .utf8)
     }
 }

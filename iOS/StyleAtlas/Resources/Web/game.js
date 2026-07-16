@@ -192,10 +192,10 @@
   const text = {
     zh: {
       today: "今日风格",
-      brandTitle: "虾子曰 Style Atlas",
+      brandTitle: "虾子曰艺术风格图鉴",
       brandSubtitle: "风格图鉴",
-      productName: "虾子曰 Style Atlas",
-      positioning: "虾子曰 Style Atlas 是一本装进口袋里的视觉风格图鉴。\n每天 3 分钟认识一种风格，建立自己的审美词库。",
+      productName: "虾子曰艺术风格图鉴",
+      positioning: "虾子曰艺术风格图鉴是一本装进口袋里的视觉风格图鉴。\n每天 3 分钟认识一种风格，建立自己的审美词库。",
       valueLine: "不是替你生成图片，而是帮你知道什么好看、为什么好看、怎么表达好看。",
       random: "随机",
       swipe: "左右滑动探索",
@@ -245,7 +245,7 @@
       exportComplete: "图片已准备好",
       lockedPreview: "完整内容包含深入源流、识别方法、案例与风格表达词。"
       ,
-      plus: "虾子曰 Style Atlas Plus",
+      plus: "虾子曰艺术风格图鉴 Plus",
       unlockTitle: "解锁完整风格档案",
       unlockBody: "免费版可以先认识风格，Plus 帮你建立完整审美资料库。",
       unlockCta: "了解 Plus",
@@ -260,8 +260,7 @@
       plusPlan: "Plus",
       freePlanItems: ["每日推荐", "浏览全部 120 个风格封面", "查看 20 个完整风格档案", "收藏最多 20 个", "普通清晰度带水印保存"],
       plusPlanItems: ["解锁全部 120 个完整风格档案", "无限收藏", "高清无水印保存", "多比例导出", "完整风格表达词", "后续小更新"],
-      launchPrice: "首发限时 ¥28 / $3.99",
-      regularPrice: "正式价 ¥48 / $7.99",
+      appStorePrice: "价格以 App Store 显示为准",
       comingSoon: "即将开放",
       unlockPlus: "解锁 Plus",
       restorePurchases: "恢复购买",
@@ -277,6 +276,17 @@
       restoreSuccess: "购买已恢复",
       restoreNone: "没有找到可恢复的购买",
       exportFailed: "图片导出失败，请重试",
+      operationInProgress: "已有 App Store 操作正在进行，请稍候。",
+      productUnavailable: "暂时无法获取 Plus 商品，请稍后再试。",
+      productLoadTimeout: "连接 App Store 超时，请检查网络后重试。",
+      purchaseVerificationFailed: "购买验证失败，请稍后重试或联系支持。",
+      restoreFailed: "恢复购买失败，请检查网络后重试。",
+      noPurchaseToRestore: "没有找到可恢复的购买记录。",
+      transactionUnverified: "App Store 交易验证失败，请稍后重试。",
+      exportPayloadMissing: "图片数据不完整，请重新生成后再试。",
+      exportWriteFailed: "图片保存失败，请稍后重试。",
+      presentationUnavailable: "暂时无法打开系统分享面板。",
+      unknown: "操作失败，请稍后重试。",
       iapFootnote: "购买由 Apple App Store 安全处理",
       appStoreFootnote: "正式版将在 App Store 内开放",
       plusFuture: "Plus 将在后续版本开放",
@@ -286,13 +296,13 @@
       highResLocked: "高清无水印导出属于 Plus 预览功能。"
       ,
       about: "关于",
-      aboutTitle: "关于虾子曰 Style Atlas",
-      aboutBody: "虾子曰 Style Atlas 不是一个 AI 生成工具，而是一本帮助你建立审美词库的视觉风格图鉴。它把海报、绘画、插画、动画、民俗、数字艺术等 120 种视觉语言整理成可学习、可收藏、可表达的风格卡片。\n\n每天认识一种风格，慢慢你会更清楚地知道：什么好看，为什么好看，以及如何把脑海中的视觉感受准确表达出来。",
+      aboutTitle: "关于虾子曰艺术风格图鉴",
+      aboutBody: "虾子曰艺术风格图鉴不是一个 AI 生成工具，而是一本帮助你建立审美词库的视觉风格图鉴。它把海报、绘画、插画、动画、民俗、数字艺术等 120 种视觉语言整理成可学习、可收藏、可表达的风格卡片。\n\n每天认识一种风格，慢慢你会更清楚地知道：什么好看，为什么好看，以及如何把脑海中的视觉感受准确表达出来。",
       aboutFor: "适合设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
       aboutFree: "免费版可以查看每日推荐、浏览全部风格封面、搜索风格、收藏 20 个风格，并学习 20 个完整风格档案。",
       aboutPlus: "Plus 未来会解锁全部完整风格档案、无限收藏、高清无水印保存、多比例导出和完整风格表达词。",
       safetyTitle: "版权与风格安全说明",
-      safetyBody: "Style Atlas 鼓励学习视觉语言，而不是复制具体作品、具体角色或当代创作者的完整可识别风格。历史艺术流派可以作为学习对象，涉及当代工作室、IP 或在世创作者时，我们更建议使用通用视觉特征来表达。",
+      safetyBody: "虾子曰艺术风格图鉴鼓励学习视觉语言，而不是复制具体作品、具体角色或当代创作者的完整可识别风格。历史艺术流派可以作为学习对象，涉及当代工作室、IP 或在世创作者时，我们更建议使用通用视觉特征来表达。",
       screenshotsTitle: "App Store Screenshot Kit",
       screenshotSlides: [
         ["每天 3 分钟提升审美", "今日风格"],
@@ -300,7 +310,7 @@
         ["看懂风格为什么好看", "深度档案"],
         ["建立你的审美资料库", "风格收藏"],
         ["保存好看的风格卡片", "高清导出"],
-        ["解锁完整风格档案", "Style Atlas Plus"]
+        ["解锁完整风格档案", "虾子曰艺术风格图鉴 Plus"]
       ]
     },
     en: {
@@ -372,8 +382,7 @@
       plusPlan: "Plus",
       freePlanItems: ["Daily pick", "Browse all 120 style covers", "View 20 full style archives", "Save up to 20 styles", "Standard watermarked export"],
       plusPlanItems: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Complete style expression", "Future minor updates"],
-      launchPrice: "Launch offer ¥28 / $3.99",
-      regularPrice: "Regular ¥48 / $7.99",
+      appStorePrice: "Price shown in the App Store",
       comingSoon: "Coming Soon",
       unlockPlus: "Unlock Plus",
       restorePurchases: "Restore Purchases",
@@ -389,6 +398,17 @@
       restoreSuccess: "Purchase restored",
       restoreNone: "No purchase was found to restore",
       exportFailed: "Image export failed. Please try again.",
+      operationInProgress: "Another App Store operation is in progress. Please wait.",
+      productUnavailable: "Plus is temporarily unavailable. Please try again later.",
+      productLoadTimeout: "The App Store connection timed out. Check your network and try again.",
+      purchaseVerificationFailed: "The purchase could not be verified. Please try again or contact support.",
+      restoreFailed: "Purchases could not be restored. Check your network and try again.",
+      noPurchaseToRestore: "No restorable purchase was found.",
+      transactionUnverified: "The App Store transaction could not be verified. Please try again.",
+      exportPayloadMissing: "The image data is incomplete. Generate it again and retry.",
+      exportWriteFailed: "The image could not be saved. Please try again.",
+      presentationUnavailable: "The system share sheet is temporarily unavailable.",
+      unknown: "The operation could not be completed. Please try again.",
       iapFootnote: "Purchase securely processed by Apple App Store",
       appStoreFootnote: "Available later via App Store in-app purchase",
       plusFuture: "Plus will be available in a future version",
@@ -404,15 +424,15 @@
       aboutFree: "The free version includes the daily pick, all style covers, search, 20 saved styles and 20 full style archives.",
       aboutPlus: "Plus will unlock all full archives, unlimited saved styles, HD watermark-free export, multi-ratio export and complete style expression.",
       safetyTitle: "Copyright And Style Safety",
-      safetyBody: "Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
+      safetyBody: "Xiazishuo Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
       screenshotsTitle: "App Store Screenshot Kit",
       screenshotSlides: [
         ["Learn one visual style a day", "Today's Pick"],
-        ["120 global visual styles", "Style Atlas"],
+        ["120 global visual styles", "Xiazishuo Style Atlas"],
         ["Understand why each style works", "Deep Archive"],
         ["Build your taste archive", "Saved Styles"],
         ["Save beautiful style cards", "Export"],
-        ["Unlock the full style archive", "Style Atlas Plus"]
+        ["Unlock the full style archive", "Xiazishuo Style Atlas Plus"]
       ]
     }
   };
@@ -572,7 +592,11 @@
   }
 
   function openOverlay(container, focusTarget, returnFocus = null) {
-    store.overlayReturnFocus = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    const intendedReturnFocus = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    if (container !== dom.plusModal && !dom.plusModal.hidden) closePlus(false);
+    if (container !== dom.lightbox && !dom.lightbox.hidden) closeImage(false);
+    if (store.drawerOpen) setDrawer(false, false);
+    store.overlayReturnFocus = intendedReturnFocus;
     store.overlayScrollY = window.scrollY;
     document.body.style.top = `-${store.overlayScrollY}px`;
     dom.appShell.inert = true;
@@ -581,7 +605,7 @@
     requestAnimationFrame(() => (focusTarget || focusableElements(container)[0])?.focus());
   }
 
-  function closeOverlay(container) {
+  function closeOverlay(container, restoreFocus = true) {
     container.hidden = true;
     dom.appShell.inert = false;
     document.body.classList.remove("drawer-lock");
@@ -589,7 +613,7 @@
     window.scrollTo(0, store.overlayScrollY || 0);
     const returnFocus = store.overlayReturnFocus;
     store.overlayReturnFocus = null;
-    requestAnimationFrame(() => returnFocus?.focus());
+    if (restoreFocus) requestAnimationFrame(() => returnFocus?.focus());
   }
 
   function showPlus(reasonKey = "plusSubtitle") {
@@ -611,10 +635,10 @@
     const iapDisplayPrice = window.STYLE_ATLAS_RUNTIME_CONFIG?.iapDisplayPrice;
     dom.plusLaunchPrice.textContent = iapReady
       ? `${iapDisplayPrice || t("priceLoading")} · ${t("oneTimePurchase")}`
-      : t("launchPrice");
-    dom.plusRegularPrice.textContent = t("regularPrice");
+      : t("appStorePrice");
+    dom.plusRegularPrice.textContent = "";
     dom.plusLaunchPrice.parentElement.hidden = freeLaunch;
-    dom.plusRegularPrice.hidden = iapReady;
+    dom.plusRegularPrice.hidden = true;
     dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : (iapReady ? t("iapFootnote") : t("appStoreFootnote"));
     dom.plusCta.hidden = false;
     const storeAction = window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction || "idle";
@@ -630,19 +654,21 @@
     dom.plusRestoreBtn.hidden = !iapReady || hasPlusAccess();
     dom.plusRestoreBtn.textContent = storeAction === "restoring" ? t("restoreLoading") : t("restorePurchases");
     dom.plusRestoreBtn.disabled = isStoreBusy;
-    if (store.drawerOpen) setDrawer(false, false);
     if (dom.plusModal.hidden) openOverlay(dom.plusModal, dom.plusCloseBtn, returnFocus);
   }
 
-  function closePlus() {
+  function closePlus(restoreFocus = true) {
     if (dom.plusModal.hidden) return;
     store.plusReasonKey = "";
-    closeOverlay(dom.plusModal);
+    closeOverlay(dom.plusModal, restoreFocus);
   }
 
-  function setStoreActionFromNative(status, message = "") {
+  function setStoreActionFromNative(status, errorCode = "", debugMessage = "") {
     const normalized = String(status || "idle");
+    const normalizedErrorCode = String(errorCode || "");
+    clearTimeout(setStoreActionFromNative.pendingTimer);
     window.STYLE_ATLAS_RUNTIME_CONFIG.storeAction = normalized;
+    window.STYLE_ATLAS_RUNTIME_CONFIG.storeErrorCode = normalizedErrorCode;
     const statusKeys = {
       purchasing: "purchaseLoading",
       purchased: "purchaseSuccess",
@@ -656,8 +682,37 @@
       exportComplete: "exportComplete",
       exportFailed: "exportFailed"
     };
-    const key = statusKeys[normalized];
-    if (key) toast(message || t(key));
+    const knownErrorCodes = new Set([
+      "operationInProgress",
+      "productUnavailable",
+      "productLoadTimeout",
+      "purchaseVerificationFailed",
+      "purchaseFailed",
+      "restoreFailed",
+      "noPurchaseToRestore",
+      "transactionUnverified",
+      "exportPayloadMissing",
+      "exportWriteFailed",
+      "presentationUnavailable",
+      "unknown"
+    ]);
+    const fallbackErrorKeys = {
+      unavailable: "productUnavailable",
+      failed: "purchaseFailed",
+      nothingToRestore: "noPurchaseToRestore",
+      exportFailed: "exportWriteFailed"
+    };
+    const key = knownErrorCodes.has(normalizedErrorCode)
+      ? normalizedErrorCode
+      : (normalizedErrorCode ? "unknown" : (statusKeys[normalized] || fallbackErrorKeys[normalized]));
+    if (key && normalized !== "idle") toast(t(key));
+    if (normalized === "pending") {
+      setStoreActionFromNative.pendingTimer = setTimeout(() => {
+        if (window.STYLE_ATLAS_RUNTIME_CONFIG.storeAction === "pending") {
+          setStoreActionFromNative("idle");
+        }
+      }, 30000);
+    }
     if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
     return normalized;
   }
@@ -787,7 +842,7 @@
     const locked = isStyleLocked(style);
     const example = {
       title: `${style.name[lang]} ${store.lang === "zh" ? "原创示例" : "original example"}`,
-      artist: "Style Atlas",
+      artist: t("productName"),
       image: style.image
     };
     addRecent(style.id);
@@ -1120,6 +1175,10 @@
 
   function setDrawer(open, restoreFocus = true) {
     if (store.drawerOpen === open) return;
+    if (open) {
+      if (!dom.plusModal.hidden) closePlus(false);
+      if (!dom.lightbox.hidden) closeImage(false);
+    }
     store.drawerOpen = open;
     if (open) {
       store.drawerScrollY = window.scrollY;
@@ -1133,6 +1192,8 @@
     dom.drawerBtn.setAttribute("aria-label", t(open ? "closeMenu" : "openMenu"));
     dom.drawerBackdrop.hidden = !open;
     document.body.classList.toggle("drawer-open", open);
+    document.querySelector("main").inert = open;
+    document.querySelector(".topbar").inert = open;
     if (open) requestAnimationFrame(() => dom.drawerCloseBtn.focus());
     if (!open) {
       document.body.style.removeProperty("top");
@@ -1372,11 +1433,11 @@
     openOverlay(dom.lightbox, dom.lightboxCloseBtn);
   }
 
-  function closeImage() {
+  function closeImage(restoreFocus = true) {
     if (dom.lightbox.hidden) return;
     dom.lightboxImage.removeAttribute("src");
     delete dom.lightbox.dataset.src;
-    closeOverlay(dom.lightbox);
+    closeOverlay(dom.lightbox, restoreFocus);
   }
 
   async function shareImage(src = dom.lightbox.dataset.src) {
@@ -1515,7 +1576,7 @@
 
   function drawWatermark(ctx, width, height) {
     if (!ACCESS_CONFIG.freeExportWatermark || hasPlusAccess()) return;
-    const watermark = store.lang === "zh" ? "虾子曰 Style Atlas Free" : "Xiazishuo Style Atlas Free";
+    const watermark = store.lang === "zh" ? "虾子曰艺术风格图鉴 Free" : "Xiazishuo Style Atlas Free";
     ctx.save();
     ctx.globalAlpha = 0.82;
     ctx.fillStyle = "rgba(10, 8, 6, 0.58)";
@@ -1543,11 +1604,19 @@
       renderAll();
     });
 
-    dom.searchOpenBtn.addEventListener("click", () => setView("search"));
+    dom.searchOpenBtn.addEventListener("click", () => {
+      store.viewReturnFocus = dom.searchOpenBtn;
+      setView("search");
+    });
     dom.drawerBtn.addEventListener("click", () => setDrawer(true));
     dom.drawerCloseBtn.addEventListener("click", () => setDrawer(false));
     dom.drawerBackdrop.addEventListener("click", () => setDrawer(false));
-    dom.backBtn.addEventListener("click", () => setView(store.view === "detail" ? store.backView : "home"));
+    dom.backBtn.addEventListener("click", () => {
+      const returnFocus = store.view === "search" ? store.viewReturnFocus : null;
+      setView(store.view === "detail" ? store.backView : "home");
+      store.viewReturnFocus = null;
+      if (returnFocus) requestAnimationFrame(() => returnFocus.focus());
+    });
     dom.randomBtn.addEventListener("click", () => {
       if (animating || dragging) return;
       store.activeId = styles[Math.floor(Math.random() * styles.length)].id;
@@ -1759,14 +1828,16 @@
       if (action === "open-style" && id) return openDetail(id, store.view);
       if (action === "purchase-plus") {
         if (!isIapMode() || !hasNativeBridge()) return toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
+        if (["purchasing", "restoring", "pending"].includes(window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction)) return;
         setStoreActionFromNative("purchasing");
-        if (!postNativeMessage("purchasePlus")) setStoreActionFromNative("unavailable");
+        if (!postNativeMessage("purchasePlus")) setStoreActionFromNative("unavailable", "productUnavailable");
         return;
       }
       if (action === "restore-purchases") {
         if (!isIapMode() || !hasNativeBridge()) return toast(t("comingSoon"));
+        if (["purchasing", "restoring", "pending"].includes(window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction)) return;
         setStoreActionFromNative("restoring");
-        if (!postNativeMessage("restorePurchases")) setStoreActionFromNative("failed");
+        if (!postNativeMessage("restorePurchases")) setStoreActionFromNative("failed", "restoreFailed");
         return;
       }
       if (action === "close-lightbox") return closeImage();
@@ -1857,6 +1928,9 @@
   }
 
   function renderAll() {
+    document.title = t("productName");
+    dom.appShell.setAttribute("aria-label", t("productName"));
+    dom.drawer.setAttribute("aria-label", `${t("productName")} · ${store.lang === "zh" ? "导航" : "Navigation"}`);
     dom.langBtn.textContent = store.lang === "zh" ? "EN" : "中文";
     dom.langBtn.setAttribute("aria-label", store.lang === "zh" ? "Switch to English" : "切换为中文");
     dom.searchOpenBtn.setAttribute("aria-label", t("search"));

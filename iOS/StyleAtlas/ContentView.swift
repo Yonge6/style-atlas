@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var entitlementManager: EntitlementManager
     @StateObject private var storeManager: StoreManager
     @StateObject private var bridge: WebViewBridge
@@ -25,6 +26,12 @@ struct ContentView: View {
             }
             .onChange(of: entitlementManager.hasPlus) { hasPlus in
                 bridge.injectPlusAccess(hasPlus)
+            }
+            .onChange(of: scenePhase) { phase in
+                guard phase == .active else { return }
+                Task {
+                    await bridge.refreshAfterForeground()
+                }
             }
     }
 }

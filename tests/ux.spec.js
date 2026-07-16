@@ -2,12 +2,38 @@ const { test, expect } = require("@playwright/test");
 
 test.use({ viewport: { width: 390, height: 844 }, locale: "zh-CN" });
 
+async function installNativeMock(page) {
+  await page.addInitScript(() => {
+    window.__nativeMessages = [];
+    window.webkit = {
+      messageHandlers: {
+        styleAtlas: {
+          postMessage(message) {
+            window.__nativeMessages.push(message);
+          }
+        }
+      }
+    };
+    window.STYLE_ATLAS_RUNTIME_CONFIG = {
+      nativeShell: true,
+      externalGalleryEnabled: false,
+      submissionMode: "iap"
+    };
+  });
+}
+
+async function openPlus(page) {
+  await page.locator("#drawerBtn").click();
+  await page.locator("[data-action='show-plus']").click();
+  await expect(page.locator("#plusModal")).toBeVisible();
+}
+
 test("core mobile flows remain stable", async ({ page }) => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
 
-  await expect(page.locator(".brand strong")).toContainText("Style Atlas");
+  await expect(page.locator(".brand strong")).toHaveText("虾子曰艺术风格图鉴");
   await expect(page.locator("meta[name='viewport']")).toHaveAttribute("content", /maximum-scale=1/);
   await expect(page.locator("#randomBtn")).toHaveText("随机");
   await expect(page.locator(".deck-controls #randomBtn")).toHaveCount(1);
@@ -46,43 +72,192 @@ test("core mobile flows remain stable", async ({ page }) => {
   await page.keyboard.press("Escape");
   await expect(page.locator("#drawer")).toHaveAttribute("aria-hidden", "true");
   await expect(page.locator("#drawerBtn")).toBeFocused();
-  await page.locator("#langBtn").click();
-  await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  await expect(page.locator("#searchInput")).toHaveValue("Swiss");
-
   expect(errors).toEqual([]);
 });
 
-test("native paywall posts purchase and restore messages", async ({ page }) => {
+test("Chinese brand is exact across product surfaces", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveTitle("虾子曰艺术风格图鉴");
+  await expect(page.locator("#appShell")).toHaveAttribute("aria-label", "虾子曰艺术风格图鉴");
+  await expect(page.locator(".brand strong")).toHaveText("虾子曰艺术风格图鉴");
+  await page.locator("#drawerBtn").click();
+  await expect(page.locator(".drawer-head strong")).toHaveText("虾子曰艺术风格图鉴");
+  await expect(page.locator(".plus-nav")).toHaveText("虾子曰艺术风格图鉴 Plus");
+  await page.locator("[data-view='about']").click();
+  await expect(page.locator("#aboutContent")).toContainText("关于虾子曰艺术风格图鉴");
+  await page.goto("/#screenshots");
+  await expect(page.locator("#screenshotsContent")).toContainText("虾子曰艺术风格图鉴");
+  expect(await page.locator("body").innerText()).not.toContain("虾子曰 Style Atlas");
+});
+
+test("English brand is exact across product surfaces", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#langBtn").click();
+  await expect(page).toHaveTitle("Xiazishuo Style Atlas");
+  await expect(page.locator("#appShell")).toHaveAttribute("aria-label", "Xiazishuo Style Atlas");
+  await expect(page.locator(".brand strong")).toHaveText("Xiazishuo Style Atlas");
+  await page.locator("#drawerBtn").click();
+  await expect(page.locator(".drawer-head strong")).toHaveText("Xiazishuo Style Atlas");
+  await expect(page.locator(".plus-nav")).toHaveText("Xiazishuo Style Atlas Plus");
+  await page.locator("[data-view='about']").click();
+  await expect(page.locator("#aboutContent")).toContainText("About Xiazishuo Style Atlas");
+});
+
+test("Chinese purchase failure never exposes Native English debug text", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.evaluate(() => {
+    window.StyleAtlasNativeBridge.setStoreAction(
+      "failed",
+      "purchaseFailed",
+      "SKErrorDomain raw native English failure"
+    );
+  });
+  await expect(page.locator("#toast")).toHaveText("购买未完成，请稍后重试。");
+  await expect(page.locator("#toast")).not.toContainText("SKErrorDomain");
+});
+
+for (const [errorCode, expected] of [
+  ["productUnavailable", "暂时无法获取 Plus 商品，请稍后再试。"],
+  ["productLoadTimeout", "连接 App Store 超时，请检查网络后重试。"],
+  ["purchaseVerificationFailed", "购买验证失败，请稍后重试或联系支持。"],
+  ["restoreFailed", "恢复购买失败，请检查网络后重试。"]
+]) {
+  test(`${errorCode} uses localized Web copy`, async ({ page }) => {
+    await installNativeMock(page);
+    await page.goto("/");
+    await page.evaluate((code) => {
+      window.StyleAtlasNativeBridge.setStoreAction("failed", code, "Native debug only");
+    }, errorCode);
+    await expect(page.locator("#toast")).toHaveText(expected);
+    await expect(page.locator("#toast")).not.toContainText("Native debug only");
+  });
+}
+
+test("unknown Native errors use a generic localized message", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.evaluate(() => {
+    window.StyleAtlasNativeBridge.setStoreAction("failed", "futureUnknownCode", "Sensitive technical details");
+  });
+  await expect(page.locator("#toast")).toHaveText("操作失败，请稍后重试。");
+});
+
+test("localStorage exceptions do not break the app", async ({ page }) => {
   await page.addInitScript(() => {
-    window.__nativeMessages = [];
-    window.webkit = {
-      messageHandlers: {
-        styleAtlas: {
-          postMessage(message) {
-            window.__nativeMessages.push(message);
-          }
-        }
-      }
+    Storage.prototype.getItem = () => {
+      throw new Error("storage read blocked");
     };
-    window.STYLE_ATLAS_RUNTIME_CONFIG = {
-      nativeShell: true,
-      externalGalleryEnabled: false,
-      submissionMode: "iap"
+    Storage.prototype.setItem = () => {
+      throw new Error("storage write blocked");
     };
   });
   await page.goto("/");
+  await expect(page.locator(".brand strong")).toHaveText("虾子曰艺术风格图鉴");
+  await page.locator("#searchOpenBtn").click();
+  await page.locator("#searchInput").fill("Swiss");
+  await expect(page.locator("#searchResults .result-card")).toHaveCount(1);
+});
+
+test("corrupted storage JSON recovers to empty arrays", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("styleAtlasSaved", "{broken");
+    localStorage.setItem("styleAtlasRecent", "not-json");
+  });
+  await page.goto("/");
   await page.locator("#drawerBtn").click();
-  await page.locator("[data-action='show-plus']").click();
-  await expect(page.locator("#plusModal")).toBeVisible();
-  await expect(page.locator("#plusCta")).toBeEnabled();
+  await page.locator("[data-view='saved']").click();
+  await expect(page.locator("#savedCount")).toHaveText("已收藏 0 个风格");
+  await expect(page.locator("#savedList .result-card")).toHaveCount(0);
+});
+
+test("saved storage removes invalid IDs and duplicates", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("styleAtlasSaved", JSON.stringify(["swiss-style", "missing-style", "swiss-style"]));
+  });
+  await page.goto("/");
+  await page.locator("#drawerBtn").click();
+  await page.locator("[data-view='saved']").click();
+  await expect(page.locator("#savedCount")).toHaveText("已收藏 1 个风格");
+  await expect(page.locator("#savedList .result-card")).toHaveCount(1);
+});
+
+test("rapid purchase taps post only one Native message", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await openPlus(page);
+  await page.evaluate(() => {
+    const button = document.querySelector("#plusCta");
+    button.click();
+    button.click();
+  });
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.filter((item) => item.type === "purchasePlus").length)).toBe(1);
+  await expect(page.locator("#plusCta")).toBeDisabled();
+});
+
+test("Plus modal traps Tab focus", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await openPlus(page);
+  await expect(page.locator("#plusCloseBtn")).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(page.locator("#plusRestoreBtn")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#plusCloseBtn")).toBeFocused();
+});
+
+test("Plus modal Escape closes and restores trigger focus", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await openPlus(page);
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#plusModal")).toBeHidden();
+  await expect(page.locator("#drawerBtn")).toBeFocused();
+});
+
+test("image preview Escape closes and restores image trigger focus", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const trigger = page.locator("#galleryGrid [data-action='open-image']").first();
+  await trigger.click();
+  await expect(page.locator("#lightbox")).toBeVisible();
+  await expect(page.locator("#lightboxCloseBtn")).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#lightbox")).toBeHidden();
+  await expect(trigger).toBeFocused();
+});
+
+test("pending purchase keeps purchase controls disabled", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await openPlus(page);
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("pending"));
+  await expect(page.locator("#plusCta")).toBeDisabled();
+  await expect(page.locator("#plusCta")).toHaveText("购买正在等待处理");
+  await expect(page.locator("#plusRestoreBtn")).toBeDisabled();
+});
+
+test("restoring state disables restore and purchase controls", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await openPlus(page);
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("restoring"));
+  await expect(page.locator("#plusRestoreBtn")).toBeDisabled();
+  await expect(page.locator("#plusRestoreBtn")).toHaveText("正在恢复购买…");
+  await expect(page.locator("#plusCta")).toBeDisabled();
+});
+
+test("native paywall uses StoreKit display price and posts purchase and restore", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrice("¥1.00"));
+  await openPlus(page);
+  await expect(page.locator("#plusLaunchPrice")).toContainText("¥1.00");
+  await expect(page.locator("#plusLaunchPrice")).not.toContainText("¥28");
   await page.locator("#plusCta").click();
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("purchasePlus");
   await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
   await page.locator("#plusRestoreBtn").click();
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("restorePurchases");
-  await page.locator("#plusCloseBtn").click();
-  await expect(page.locator("#drawerBtn")).toBeFocused();
 });
 
 test("compact viewport does not overflow", async ({ page }) => {
@@ -131,37 +306,24 @@ test("saved styles persist and the free limit opens Plus", async ({ page }) => {
   await expect(page.locator("#plusModal")).toBeVisible();
 });
 
-test("native entitlement unlocks archives and exports the requested ratio", async ({ page }) => {
-  await page.addInitScript(() => {
-    window.__nativeMessages = [];
-    window.webkit = {
-      messageHandlers: {
-        styleAtlas: {
-          postMessage(message) {
-            window.__nativeMessages.push(message);
-          }
-        }
-      }
-    };
-    window.STYLE_ATLAS_RUNTIME_CONFIG = {
-      nativeShell: true,
-      externalGalleryEnabled: false,
-      submissionMode: "iap"
-    };
-  });
-
+test("native entitlement true and false update locked UI", async ({ page }) => {
+  await installNativeMock(page);
   await page.goto("/#baroque");
   await expect(page.locator(".locked-section").first()).toBeVisible();
   await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   await expect(page.locator(".locked-section")).toHaveCount(0);
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(false));
+  await expect(page.locator(".locked-section").first()).toBeVisible();
+});
 
+test("Plus export uses the requested ratio without a free watermark", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#baroque");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   await page.locator("[data-action='export-ratio'][data-ratio='1:1']").click();
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("exportImage");
   const dataURL = await page.evaluate(() => window.__nativeMessages.at(-1).payload.dataURL);
   const png = Buffer.from(dataURL.split(",")[1], "base64");
   expect(png.readUInt32BE(16)).toBe(1440);
   expect(png.readUInt32BE(20)).toBe(1440);
-
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(false));
-  await expect(page.locator(".locked-section").first()).toBeVisible();
 });

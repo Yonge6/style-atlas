@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <title>虾子曰 Style Atlas｜风格图鉴</title>
+  <title>虾子曰艺术风格图鉴</title>
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div id="appShell" class="app-shell">
+  <div id="appShell" class="app-shell" aria-label="虾子曰艺术风格图鉴">
     <header class="topbar">
       <button id="backBtn" class="icon-btn hidden" type="button" aria-label="返回">‹</button>
       <div class="brand">
-        <strong>虾子曰 Style Atlas</strong>
+        <strong>虾子曰艺术风格图鉴</strong>
         <span>风格图鉴</span>
       </div>
       <div class="top-actions">
@@ -82,9 +82,9 @@
     </main>
 
     <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
-    <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="导航" aria-hidden="true" inert>
+    <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="虾子曰艺术风格图鉴导航" aria-hidden="true" inert>
       <div class="drawer-head">
-        <strong>虾子曰 Style Atlas</strong>
+        <strong>虾子曰艺术风格图鉴</strong>
         <button id="drawerCloseBtn" class="icon-btn" type="button" aria-label="关闭菜单">×</button>
       </div>
       <nav class="drawer-nav">
@@ -93,7 +93,7 @@
         <button class="nav-btn" type="button" data-view="search">搜索</button>
         <button class="nav-btn" type="button" data-view="saved">收藏</button>
         <button class="nav-btn" type="button" data-view="about">关于</button>
-        <button class="nav-btn plus-nav" type="button" data-action="show-plus">虾子曰 Style Atlas Plus</button>
+        <button class="nav-btn plus-nav" type="button" data-action="show-plus">虾子曰艺术风格图鉴 Plus</button>
       </nav>
     </aside>
   </div>
@@ -102,8 +102,8 @@
   <div id="plusModal" class="plus-modal" hidden>
     <div class="plus-panel" role="dialog" aria-modal="true" aria-labelledby="plusTitle">
       <button id="plusCloseBtn" class="lightbox-close" type="button" data-action="close-plus" aria-label="关闭 Plus">×</button>
-      <p id="plusKicker" class="plus-kicker">虾子曰 Style Atlas Plus</p>
-      <h2 id="plusTitle">虾子曰 Style Atlas Plus</h2>
+      <p id="plusKicker" class="plus-kicker">虾子曰艺术风格图鉴 Plus</p>
+      <h2 id="plusTitle">虾子曰艺术风格图鉴 Plus</h2>
       <p id="plusSubtitle" class="plus-subtitle">建立你的私人审美资料库。</p>
       <p id="plusGentleNote" class="plus-subtitle plus-note">免费版可以先认识风格，Plus 帮你建立完整审美资料库。</p>
       <ul id="plusBenefits" class="plus-benefits"></ul>
@@ -118,8 +118,8 @@
         </div>
       </div>
       <div class="plus-price">
-        <span id="plusLaunchPrice">首发限时 ¥28 / $3.99</span>
-        <small id="plusRegularPrice">正式价 ¥48 / $7.99</small>
+        <span id="plusLaunchPrice">价格以 App Store 显示为准</span>
+        <small id="plusRegularPrice" hidden></small>
       </div>
       <p id="plusFootnote" class="plus-footnote">正式版将在 App Store 内开放</p>
       <button id="plusCta" class="copy-btn plus-cta" type="button" data-action="purchase-plus" disabled>即将开放</button>

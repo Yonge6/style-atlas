@@ -1578,15 +1578,16 @@ main {
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .plus-panel h2 {
   margin: 0;
+  padding-right: 0;
   color: #fff5d4;
-  font-size: 32px;
-  line-height: 1;
+  font-size: 24px;
+  line-height: 1.15;
 }
 
 .plus-subtitle {
