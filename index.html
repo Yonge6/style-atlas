@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>虾子曰艺术风格图鉴</title>
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <div id="appShell" class="app-shell" aria-label="虾子曰艺术风格图鉴">
-    <header class="topbar">
+    <header class="topbar" aria-label="虾子曰艺术风格图鉴顶部导航">
       <button id="backBtn" class="icon-btn hidden" type="button" aria-label="返回">‹</button>
       <div class="brand">
         <strong>虾子曰艺术风格图鉴</strong>
@@ -22,8 +22,9 @@
       </div>
     </header>
 
-    <main>
-      <section id="homeView" class="view active" aria-label="Today">
+    <main id="mainContent">
+      <section id="homeView" class="view active" aria-labelledby="homeViewTitle" aria-hidden="false">
+        <h1 id="homeViewTitle" class="sr-only">今日风格</h1>
         <div class="section-head">
           <p id="todayLabel">今日风格</p>
         </div>
@@ -32,9 +33,9 @@
         <div id="deckStage" class="deck-stage">
           <article id="prevGhost" class="style-card cover-card ghost-card prev" aria-hidden="true"></article>
           <article id="nextGhost" class="style-card cover-card ghost-card next" aria-hidden="true"></article>
-          <article id="styleDeck" class="style-card cover-card live-card" tabindex="0" role="group" aria-label="今日风格卡片"></article>
+          <article id="styleDeck" class="style-card cover-card live-card" tabindex="0" role="group" aria-roledescription="风格卡片" aria-label="今日风格卡片" aria-keyshortcuts="ArrowLeft ArrowRight Enter Space"></article>
         </div>
-        <p id="deckAnnouncement" class="sr-only" role="status" aria-live="polite"></p>
+        <p id="deckAnnouncement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
 
         <div class="deck-controls">
           <button id="prevBtn" class="arrow-btn" type="button" aria-label="上一个风格">←</button>
@@ -42,49 +43,53 @@
           <button id="nextBtn" class="arrow-btn" type="button" aria-label="下一个风格">→</button>
         </div>
 
-        <section class="category-strip" aria-label="Categories">
+        <section class="category-strip" aria-labelledby="categoryTitle">
           <h2 id="categoryTitle">分类</h2>
           <div id="categoryChips" class="category-cards"></div>
         </section>
       </section>
 
-      <section id="detailView" class="view" aria-label="Style detail">
+      <section id="detailView" class="view" aria-label="风格详情" aria-hidden="true" inert>
         <article id="detailContent" class="detail"></article>
       </section>
 
-      <section id="searchView" class="view" aria-label="Search">
+      <section id="searchView" class="view" aria-labelledby="searchViewTitle" aria-hidden="true" inert>
+        <h1 id="searchViewTitle" class="sr-only">搜索风格</h1>
         <div class="search-panel">
           <label for="searchInput" id="searchLabel">搜索风格</label>
           <div class="search-box">
-            <input id="searchInput" type="search" enterkeyhint="search" autocomplete="off" placeholder="瑞士、Ukiyo-e、海报、复古..." />
+            <input id="searchInput" type="search" aria-labelledby="searchLabel" enterkeyhint="search" autocomplete="off" placeholder="瑞士、Ukiyo-e、海报、复古..." />
             <button id="clearSearchBtn" type="button" aria-label="清除搜索">×</button>
           </div>
           <div id="filterChips" class="chip-row filters"></div>
         </div>
-        <div id="searchResults" class="result-list"></div>
+        <h2 id="searchResultsTitle" class="sr-only">120 个搜索结果</h2>
+        <div id="searchResults" class="result-list" role="region" aria-labelledby="searchResultsTitle"></div>
       </section>
 
-      <section id="savedView" class="view" aria-label="Saved">
+      <section id="savedView" class="view" aria-labelledby="savedViewTitle" aria-hidden="true" inert>
+        <h1 id="savedViewTitle" class="sr-only">收藏</h1>
         <div class="saved-head">
           <p id="savedCount">已收藏 0 个风格</p>
           <button id="copyListBtn" class="small-action" type="button">复制清单</button>
         </div>
-        <div id="savedList" class="result-list"></div>
+        <h2 id="savedResultsTitle" class="sr-only">已收藏风格列表</h2>
+        <div id="savedList" class="result-list" role="region" aria-labelledby="savedResultsTitle"></div>
       </section>
 
-      <section id="aboutView" class="view" aria-label="About">
+      <section id="aboutView" class="view" aria-label="关于" aria-hidden="true" inert>
         <article id="aboutContent" class="detail"></article>
       </section>
 
-      <section id="screenshotsView" class="view" aria-label="App Store Screenshot Kit">
+      <section id="screenshotsView" class="view" aria-label="App Store Screenshot Kit" aria-hidden="true" inert>
         <article id="screenshotsContent" class="screenshot-kit"></article>
       </section>
     </main>
 
     <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
-    <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="虾子曰艺术风格图鉴导航" aria-hidden="true" inert>
+    <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true" inert>
       <div class="drawer-head">
-        <strong>虾子曰艺术风格图鉴</strong>
+        <strong id="drawerTitle">虾子曰艺术风格图鉴</strong>
         <button id="drawerCloseBtn" class="icon-btn" type="button" aria-label="关闭菜单">×</button>
       </div>
       <nav class="drawer-nav">
@@ -100,8 +105,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <div id="plusModal" class="plus-modal" hidden>
-    <div class="plus-panel" role="dialog" aria-modal="true" aria-labelledby="plusTitle">
-      <button id="plusCloseBtn" class="lightbox-close" type="button" data-action="close-plus" aria-label="关闭 Plus">×</button>
+    <div id="plusPanel" class="plus-panel" role="dialog" aria-modal="true" aria-labelledby="plusTitle" aria-describedby="plusSubtitle plusGentleNote" tabindex="-1">
       <p id="plusKicker" class="plus-kicker">虾子曰艺术风格图鉴 Plus</p>
       <h2 id="plusTitle">虾子曰艺术风格图鉴 Plus</h2>
       <p id="plusSubtitle" class="plus-subtitle">建立你的私人审美资料库。</p>
@@ -124,15 +128,18 @@
       <p id="plusFootnote" class="plus-footnote">正式版将在 App Store 内开放</p>
       <button id="plusCta" class="copy-btn plus-cta" type="button" data-action="purchase-plus" disabled>即将开放</button>
       <button id="plusRestoreBtn" class="copy-btn plus-restore" type="button" data-action="restore-purchases" hidden>恢复购买</button>
+      <button id="plusCloseBtn" class="lightbox-close" type="button" data-action="close-plus" aria-label="关闭 Plus">×</button>
     </div>
   </div>
-  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="图片预览" hidden>
-    <button id="lightboxCloseBtn" class="lightbox-close" type="button" data-action="close-lightbox" aria-label="关闭图片预览">×</button>
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" aria-describedby="lightboxDescription" tabindex="-1" hidden>
+    <h2 id="lightboxTitle" class="sr-only">图片预览</h2>
+    <p id="lightboxDescription" class="sr-only"></p>
     <img id="lightboxImage" alt="" />
     <div class="lightbox-actions">
       <button id="saveLightboxBtn" class="copy-btn" type="button" data-action="save-lightbox" data-export-control>保存</button>
       <button id="shareLightboxBtn" class="copy-btn" type="button" data-action="share-lightbox" data-export-control>分享</button>
     </div>
+    <button id="lightboxCloseBtn" class="lightbox-close" type="button" data-action="close-lightbox" aria-label="关闭图片预览">×</button>
   </div>
   <script src="./data-core.js"></script>
   <script src="./data-styles.js"></script>

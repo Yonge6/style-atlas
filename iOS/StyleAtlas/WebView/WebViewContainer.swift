@@ -34,7 +34,7 @@ struct WebViewContainer: UIViewRepresentable {
         webView.scrollView.contentInsetAdjustmentBehavior = .never
         webView.scrollView.delaysContentTouches = false
         webView.scrollView.canCancelContentTouches = true
-        webView.scrollView.pinchGestureRecognizer?.isEnabled = false
+        webView.scrollView.pinchGestureRecognizer?.isEnabled = true
         webView.allowsLinkPreview = false
         bridge.webView = webView
 

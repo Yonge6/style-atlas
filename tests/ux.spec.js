@@ -34,7 +34,7 @@ test("core mobile flows remain stable", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.locator(".brand strong")).toHaveText("虾子曰艺术风格图鉴");
-  await expect(page.locator("meta[name='viewport']")).toHaveAttribute("content", /maximum-scale=1/);
+  await expect(page.locator("meta[name='viewport']")).not.toHaveAttribute("content", /maximum-scale=1/);
   await expect(page.locator("#randomBtn")).toHaveText("随机");
   await expect(page.locator(".deck-controls #randomBtn")).toHaveCount(1);
   await expect(page.locator("#swipeHint")).toHaveCount(0);
@@ -199,11 +199,13 @@ test("Plus modal traps Tab focus", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
   await openPlus(page);
-  await expect(page.locator("#plusCloseBtn")).toBeFocused();
-  await page.keyboard.press("Shift+Tab");
-  await expect(page.locator("#plusRestoreBtn")).toBeFocused();
+  await expect(page.locator("#plusPanel")).toBeFocused();
   await page.keyboard.press("Tab");
+  await expect(page.locator("#plusCta")).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
   await expect(page.locator("#plusCloseBtn")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#plusCta")).toBeFocused();
 });
 
 test("Plus modal Escape closes and restores trigger focus", async ({ page }) => {
@@ -220,7 +222,7 @@ test("image preview Escape closes and restores image trigger focus", async ({ pa
   const trigger = page.locator("#galleryGrid [data-action='open-image']").first();
   await trigger.click();
   await expect(page.locator("#lightbox")).toBeVisible();
-  await expect(page.locator("#lightboxCloseBtn")).toBeFocused();
+  await expect(page.locator("#lightbox")).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(page.locator("#lightbox")).toBeHidden();
   await expect(trigger).toBeFocused();
@@ -514,4 +516,260 @@ test("all 120 saved styles render in a scrollable list", async ({ page }) => {
   await page.locator("[data-view='saved']").click();
   await expect(page.locator("#savedList .result-card")).toHaveCount(120);
   expect(await page.locator("#savedView").evaluate((node) => node.scrollHeight > window.innerHeight)).toBe(true);
+});
+
+test("viewport permits user scaling and does not opt out", async ({ page }) => {
+  await page.goto("/");
+  const content = await page.locator("meta[name='viewport']").getAttribute("content");
+  expect(content).not.toContain("maximum-scale=1");
+  expect(content).not.toContain("user-scalable=no");
+  expect(content).toContain("viewport-fit=cover");
+});
+
+test("core navigation remains operable at 200 percent visual zoom", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => { document.documentElement.style.zoom = "2"; });
+  await page.locator("#searchOpenBtn").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#searchView")).toHaveClass(/active/);
+  await expect(page.locator("#searchInput")).toBeFocused();
+});
+
+for (const viewport of [
+  { width: 320, height: 700 },
+  { width: 430, height: 932 }
+]) {
+  test(`${viewport.width}px header controls do not overlap`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    const boxes = await page.locator(".topbar > *, .top-actions > *").evaluateAll((nodes) => nodes.map((node) => {
+      const rect = node.getBoundingClientRect();
+      return { id: node.id || node.className, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
+    }));
+    const actions = boxes.filter((box) => ["searchOpenBtn", "langBtn", "drawerBtn"].includes(box.id));
+    for (let index = 1; index < actions.length; index += 1) {
+      expect(actions[index].left).toBeGreaterThanOrEqual(actions[index - 1].right - 0.5);
+    }
+    expect(Math.max(...actions.map((box) => box.right))).toBeLessThanOrEqual(viewport.width + 0.5);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(viewport.width);
+  });
+}
+
+test("core interactive controls meet the 44 by 44 target", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  const selectors = ["#searchOpenBtn", "#langBtn", "#drawerBtn", "#prevBtn", "#nextBtn", "#randomBtn", "#styleDeck .card-action"];
+  for (const selector of selectors) {
+    const boxes = await page.locator(selector).evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().toJSON()));
+    expect(boxes.length).toBeGreaterThan(0);
+    boxes.forEach((box) => {
+      expect(box.width).toBeGreaterThanOrEqual(44);
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    });
+  }
+  await openPlus(page);
+  for (const selector of ["#plusCta", "#plusRestoreBtn", "#plusCloseBtn"]) {
+    const box = await page.locator(selector).boundingBox();
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+});
+
+test("saved controls expose pressed state and style-specific labels", async ({ page }) => {
+  await page.goto("/");
+  const save = page.locator("#styleDeck [data-action='save']");
+  await expect(save).toHaveAttribute("aria-pressed", "false");
+  await expect(save).toHaveAttribute("aria-label", /收藏.+/);
+  await save.click();
+  await expect(save).toHaveAttribute("aria-pressed", "true");
+  await expect(save).toHaveAttribute("aria-label", /取消收藏.+已收藏/);
+});
+
+test("Plus uses a named modal dialog with a description", async ({ page }) => {
+  await page.goto("/");
+  await openPlus(page);
+  const dialog = page.locator("#plusPanel");
+  await expect(dialog).toHaveAttribute("role", "dialog");
+  await expect(dialog).toHaveAttribute("aria-modal", "true");
+  await expect(dialog).toHaveAttribute("aria-labelledby", "plusTitle");
+  await expect(dialog).toHaveAttribute("aria-describedby", /plusSubtitle/);
+  await expect(dialog).toBeFocused();
+});
+
+test("image preview uses a named modal dialog with coordinated description", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("#galleryGrid [data-action='open-image']").first().click();
+  await expect(page.locator("#lightbox")).toHaveAttribute("role", "dialog");
+  await expect(page.locator("#lightbox")).toHaveAttribute("aria-modal", "true");
+  await expect(page.locator("#lightbox")).toHaveAttribute("aria-labelledby", "lightboxTitle");
+  await expect(page.locator("#lightboxDescription")).toContainText(/瑞士/);
+  await expect(page.locator("#lightbox")).toBeFocused();
+});
+
+test("drawer makes the full background inert and restores it on close", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#drawerBtn").click();
+  await expect(page.locator("main")).toHaveAttribute("inert", "");
+  await expect(page.locator(".topbar")).toHaveAttribute("inert", "");
+  await expect(page.locator("#drawerCloseBtn")).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("main")).not.toHaveAttribute("inert", "");
+  await expect(page.locator(".topbar")).not.toHaveAttribute("inert", "");
+});
+
+test("inactive views are hidden from focus and the accessibility tree", async ({ page }) => {
+  await page.goto("/");
+  for (const selector of ["#detailView", "#searchView", "#savedView", "#aboutView", "#screenshotsView"]) {
+    await expect(page.locator(selector)).toHaveAttribute("aria-hidden", "true");
+    await expect(page.locator(selector)).toHaveAttribute("inert", "");
+  }
+  await page.locator("#searchOpenBtn").click();
+  await expect(page.locator("#searchView")).toHaveAttribute("aria-hidden", "false");
+  await expect(page.locator("#searchView")).not.toHaveAttribute("inert", "");
+  await expect(page.locator("#homeView")).toHaveAttribute("inert", "");
+});
+
+test("home style card has a readable role description and natural label", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#styleDeck")).toHaveAttribute("aria-roledescription", "风格卡片");
+  await expect(page.locator("#styleDeck")).toHaveAttribute("aria-label", /查看.+风格详情/);
+  await expect(page.locator("#styleDeck .cover-image")).toHaveAttribute("alt", "");
+  await expect(page.locator("#styleDeck .cover-image")).toHaveAttribute("aria-hidden", "true");
+});
+
+test("style changes update a concise live announcement without internal numbering", async ({ page }) => {
+  await page.goto("/");
+  const before = await page.locator("#deckAnnouncement").textContent();
+  await page.locator("#nextBtn").click();
+  await expect(page.locator("#deckAnnouncement")).not.toHaveText(before);
+  const announcement = await page.locator("#deckAnnouncement").textContent();
+  expect(announcement).toContain("已切换到");
+  expect(announcement).not.toMatch(/\d+\s*\/\s*120/);
+});
+
+test("category preview images are decorative", async ({ page }) => {
+  await page.goto("/");
+  const images = page.locator("#categoryChips .category-stack img");
+  await expect(images).toHaveCount(27);
+  expect(await images.evaluateAll((nodes) => nodes.every((image) => image.alt === "" && image.getAttribute("aria-hidden") === "true"))).toBe(true);
+});
+
+test("reduced motion uses automatic scrolling and skips card fly animation", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  expect(await page.evaluate(() => window.StyleAtlasAccessibility.prefersReducedMotion())).toBe(true);
+  const before = await page.locator("#styleDeck .cover-top > span").textContent();
+  await page.locator("#nextBtn").click();
+  await expect(page.locator("#styleDeck .cover-top > span")).not.toHaveText(before);
+  await expect(page.locator("#deckStage")).not.toHaveClass(/fly-left|fly-right|is-animating/);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe("auto");
+});
+
+test("Escape closes only the topmost available layer", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.locator("#drawerBtn").click();
+  await page.locator("[data-action='show-plus']").click();
+  await expect(page.locator("#plusModal")).toBeVisible();
+  await expect(page.locator("#drawer")).toHaveAttribute("aria-hidden", "true");
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#plusModal")).toBeHidden();
+  await expect(page.locator("#drawer")).toHaveAttribute("aria-hidden", "true");
+});
+
+test("search input and results region have explicit accessible names", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#searchOpenBtn").click();
+  await expect(page.locator("#searchInput")).toHaveAttribute("aria-labelledby", "searchLabel");
+  await expect(page.locator("#searchResults")).toHaveAttribute("role", "region");
+  await expect(page.locator("#searchResults")).toHaveAttribute("aria-labelledby", "searchResultsTitle");
+  await expect(page.locator("#searchResultsTitle")).toContainText("120");
+});
+
+test("search result opens with external keyboard activation", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#searchOpenBtn").click();
+  await page.locator("#searchInput").fill("Swiss");
+  await page.locator("#searchResults .result-open").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#detailView")).toHaveClass(/active/);
+  await expect(page.locator("#detailContent h1")).toBeFocused();
+});
+
+test("export ratio is operable with Space on an external keyboard", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#baroque");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
+  const ratio = page.locator("[data-action='export-ratio'][data-ratio='4:5']");
+  await ratio.focus();
+  await page.keyboard.press("Space");
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.filter((item) => item.type === "exportImage").length)).toBe(1);
+});
+
+test("focus-visible treatment is present and visible", async ({ page }) => {
+  await page.goto("/");
+  await page.keyboard.press("Tab");
+  const focused = page.locator(":focus");
+  const style = await focused.evaluate((node) => {
+    const computed = getComputedStyle(node);
+    return { width: computed.outlineWidth, style: computed.outlineStyle, color: computed.outlineColor };
+  });
+  expect(parseFloat(style.width)).toBeGreaterThanOrEqual(2);
+  expect(style.style).not.toBe("none");
+  expect(style.color).not.toBe("rgba(0, 0, 0, 0)");
+});
+
+test("Plus actions remain within the panel at 150 percent text size", async ({ page }) => {
+  await installNativeMock(page);
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.goto("/");
+  await page.evaluate(() => { document.documentElement.style.fontSize = "150%"; });
+  await openPlus(page);
+  const metrics = await page.locator("#plusPanel").evaluate((panel) => ({
+    clientWidth: panel.clientWidth,
+    scrollWidth: panel.scrollWidth,
+    cta: panel.querySelector("#plusCta").getBoundingClientRect().toJSON(),
+    panel: panel.getBoundingClientRect().toJSON()
+  }));
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1);
+  expect(metrics.cta.left).toBeGreaterThanOrEqual(metrics.panel.left);
+  expect(metrics.cta.right).toBeLessThanOrEqual(metrics.panel.right + 0.5);
+});
+
+test("safe area environment variables cover header overlays and page bottom", async ({ page }) => {
+  await page.goto("/");
+  const css = await page.evaluate(async () => (await fetch("styles.css")).text());
+  for (const inset of ["top", "right", "bottom", "left"]) {
+    expect(css).toContain(`env(safe-area-inset-${inset})`);
+  }
+});
+
+for (const [view, open] of [
+  ["home", async (page) => page.goto("/")],
+  ["search", async (page) => { await page.goto("/"); await page.locator("#searchOpenBtn").click(); }],
+  ["saved", async (page) => { await page.goto("/"); await page.locator("#drawerBtn").click(); await page.locator("[data-view='saved']").click(); }],
+  ["about", async (page) => { await page.goto("/"); await page.locator("#drawerBtn").click(); await page.locator("[data-view='about']").click(); }],
+  ["detail", async (page) => page.goto("/#swiss-style")]
+]) {
+  test(`${view} view exposes exactly one primary heading`, async ({ page }) => {
+    await open(page);
+    await expect(page.locator(".view.active h1")).toHaveCount(1);
+  });
+}
+
+test("hidden dialogs cannot retain keyboard focus", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#plusModal")).toBeHidden();
+  await expect(page.locator("#lightbox")).toBeHidden();
+  expect(await page.evaluate(() => !document.activeElement.closest("#plusModal, #lightbox"))).toBe(true);
+});
+
+test("accessibility diagnostics are absent by default and opt-in by query", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#a11yDebugPanel")).toHaveCount(0);
+  await page.goto("/?debug=a11y");
+  await expect(page.locator("#a11yDebugPanel")).toBeVisible();
+  await expect(page.locator("#a11yDebugPanel")).toContainText("View");
+  await expect(page.locator("#a11yDebugPanel")).toContainText("Decode");
+  await expect(page.locator("#a11yDebugPanel")).toHaveAttribute("aria-hidden", "true");
 });
