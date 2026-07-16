@@ -207,6 +207,15 @@
       favorite: "收藏",
       unfavorite: "已收藏",
       share: "分享",
+      saveStyle: (name) => `收藏 ${name}`,
+      unsaveStyle: (name) => `取消收藏 ${name}，已收藏`,
+      shareStyle: (name) => `分享 ${name}`,
+      copyStyle: (name) => `复制 ${name} 风格表达词`,
+      styleCardRole: "风格卡片",
+      styleCardLabel: (name, summary) => `${name}。${summary}。查看 ${name} 风格详情`,
+      styleChanged: (name, summary) => `已切换到 ${name}。${summary}`,
+      searchResults: (n) => `${n} 个搜索结果`,
+      savedResults: (n) => `${n} 个已收藏风格`,
       saveCard: "保存卡片",
       copyPrompt: "复制表达词",
       features: "视觉特征",
@@ -335,6 +344,15 @@
       favorite: "Save",
       unfavorite: "Saved",
       share: "Share",
+      saveStyle: (name) => `Save ${name}`,
+      unsaveStyle: (name) => `Remove ${name} from saved styles, saved`,
+      shareStyle: (name) => `Share ${name}`,
+      copyStyle: (name) => `Copy ${name} style expression`,
+      styleCardRole: "Style card",
+      styleCardLabel: (name, summary) => `${name}. ${summary}. View ${name} style details`,
+      styleChanged: (name, summary) => `Now showing ${name}. ${summary}`,
+      searchResults: (n) => `${n} search results`,
+      savedResults: (n) => `${n} saved styles`,
       saveCard: "Save card",
       copyPrompt: "Copy expression",
       features: "Visual features",
@@ -458,6 +476,8 @@
     drawerBackdrop: $("drawerBackdrop"),
     lightbox: $("lightbox"),
     lightboxImage: $("lightboxImage"),
+    lightboxTitle: $("lightboxTitle"),
+    lightboxDescription: $("lightboxDescription"),
     lightboxCloseBtn: $("lightboxCloseBtn"),
     saveLightboxBtn: $("saveLightboxBtn"),
     shareLightboxBtn: $("shareLightboxBtn"),
@@ -481,11 +501,14 @@
     clearSearchBtn: $("clearSearchBtn"),
     filterChips: $("filterChips"),
     searchResults: $("searchResults"),
+    searchResultsTitle: $("searchResultsTitle"),
     savedCount: $("savedCount"),
     copyListBtn: $("copyListBtn"),
     savedList: $("savedList"),
+    savedResultsTitle: $("savedResultsTitle"),
     toast: $("toast"),
     plusModal: $("plusModal"),
+    plusPanel: $("plusPanel"),
     plusTitle: $("plusTitle"),
     plusSubtitle: $("plusSubtitle"),
     plusBenefits: $("plusBenefits"),
@@ -640,9 +663,10 @@
     root.querySelectorAll?.("img.image-managed").forEach((image) => lazyImageObserver.unobserve(image));
   }
 
-  function imageMarkup(src, alt, className = "", { eager = false, priority = "low" } = {}) {
+  function imageMarkup(src, alt, className = "", { eager = false, priority = "low", decorative = false } = {}) {
     const sourceAttribute = eager ? `src="${escapeHtml(src)}"` : `data-src="${escapeHtml(src)}"`;
-    return `<img class="image-managed ${className}" ${sourceAttribute} alt="${escapeHtml(alt)}" loading="${eager ? "eager" : "lazy"}" decoding="async" fetchpriority="${priority}">`;
+    const accessibleImage = decorative ? 'alt="" aria-hidden="true"' : `alt="${escapeHtml(alt)}"`;
+    return `<img class="image-managed ${className}" ${sourceAttribute} ${accessibleImage} loading="${eager ? "eager" : "lazy"}" decoding="async" fetchpriority="${priority}">`;
   }
 
   const wikiRequestState = {
@@ -684,6 +708,7 @@
   function setExportState(status) {
     exportState.status = status;
     updateExportControls();
+    updateAccessibilityDebug();
   }
 
   function finishExportState(status = "completed") {
@@ -772,6 +797,37 @@
     return typeof value === "function" ? value(...args) : value;
   }
 
+  function prefersReducedMotion() {
+    return matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function accessibleStyleName(style) {
+    return style?.name?.[store.lang] || "";
+  }
+
+  function savedLabel(style, saved = isSaved(style.id)) {
+    return t(saved ? "unsaveStyle" : "saveStyle", accessibleStyleName(style));
+  }
+
+  function updateAccessibilityDebug() {
+    const panel = $("a11yDebugPanel");
+    if (!panel) return;
+    const focus = document.activeElement;
+    const overlay = !dom.plusModal.hidden
+      ? "Plus"
+      : (!dom.lightbox.hidden ? "Lightbox" : (store.drawerOpen ? "Drawer" : "None"));
+    panel.textContent = [
+      `View: ${store.view}`,
+      `Focus: ${focus?.id || focus?.tagName || "None"}`,
+      `Overlay: ${overlay}`,
+      `Reduced Motion: ${prefersReducedMotion()}`,
+      `Viewport: ${window.innerWidth} x ${window.innerHeight}`,
+      `Safe Area: CSS env()`,
+      `Decoded Images: ${imagePipeline.size()} / ${imagePipeline.maxEntries}`,
+      `Export: ${exportState.status}`
+    ].join("\n");
+  }
+
   function postNativeMessage(type, payload = {}) {
     const handler = window.webkit?.messageHandlers?.styleAtlas;
     if (!handler) return false;
@@ -815,7 +871,10 @@
     dom.appShell.inert = true;
     container.hidden = false;
     document.body.classList.add("drawer-lock");
-    requestAnimationFrame(() => (focusTarget || focusableElements(container)[0])?.focus());
+    requestAnimationFrame(() => {
+      (focusTarget || focusableElements(container)[0])?.focus();
+      updateAccessibilityDebug();
+    });
   }
 
   function closeOverlay(container, restoreFocus = true) {
@@ -826,7 +885,11 @@
     window.scrollTo(0, store.overlayScrollY || 0);
     const returnFocus = store.overlayReturnFocus;
     store.overlayReturnFocus = null;
-    if (restoreFocus) requestAnimationFrame(() => returnFocus?.focus());
+    if (restoreFocus) requestAnimationFrame(() => {
+      returnFocus?.focus();
+      updateAccessibilityDebug();
+    });
+    else updateAccessibilityDebug();
   }
 
   function showPlus(reasonKey = "plusSubtitle") {
@@ -867,7 +930,7 @@
     dom.plusRestoreBtn.hidden = !iapReady || hasPlusAccess();
     dom.plusRestoreBtn.textContent = storeAction === "restoring" ? t("restoreLoading") : t("restorePurchases");
     dom.plusRestoreBtn.disabled = isStoreBusy;
-    if (dom.plusModal.hidden) openOverlay(dom.plusModal, dom.plusCloseBtn, returnFocus);
+    if (dom.plusModal.hidden) openOverlay(dom.plusModal, dom.plusPanel, returnFocus);
   }
 
   function closePlus(restoreFocus = true) {
@@ -983,18 +1046,18 @@
     const lang = store.lang;
     const saved = isSaved(style.id);
     return `
-      ${imageMarkup(style.image, style.name[lang], "cover-image", { eager: true, priority: active ? "high" : "low" })}
+      ${imageMarkup(style.image, "", "cover-image", { eager: true, priority: active ? "high" : "low", decorative: true })}
       <div class="cover-shade"></div>
       <div class="cover-top">
         <span>#${style.number}</span>
         <div class="card-actions">
-          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" data-id="${style.id}" aria-label="${t(saved ? "unfavorite" : "favorite")}">${saved ? "♥" : "♡"}</button>
-          <button class="card-action" type="button" data-action="copy-prompt" aria-label="${t("copyPrompt")}">⧉</button>
-          <button class="card-action" type="button" data-action="share" data-export-control aria-label="${t("share")}">↗</button>
+          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" data-id="${style.id}" aria-pressed="${saved}" aria-label="${escapeHtml(savedLabel(style, saved))}">${saved ? "♥" : "♡"}</button>
+          <button class="card-action" type="button" data-action="copy-prompt" aria-label="${escapeHtml(t("copyStyle", style.name[lang]))}">⧉</button>
+          <button class="card-action" type="button" data-action="share" data-export-control aria-label="${escapeHtml(t("shareStyle", style.name[lang]))}">↗</button>
         </div>
       </div>
       <div class="cover-title">
-        <h1>${escapeHtml(style.name.en)}</h1>
+        <h2>${escapeHtml(style.name.en)}</h2>
         <p>${escapeHtml(style.name.zh)}</p>
       </div>
     `;
@@ -1020,8 +1083,10 @@
       card.style.removeProperty("--ghost-scale");
       card.style.removeProperty("--ghost-opacity");
     });
-    dom.styleDeck.setAttribute("aria-label", `${style.name[store.lang]}，${style.summary[store.lang]}`);
-    dom.deckAnnouncement.textContent = `${style.number} / ${styles.length} · ${style.name[store.lang]}`;
+    dom.styleDeck.setAttribute("aria-roledescription", t("styleCardRole"));
+    dom.styleDeck.setAttribute("aria-label", t("styleCardLabel", style.name[store.lang], style.summary[store.lang]));
+    dom.deckAnnouncement.textContent = t("styleChanged", style.name[store.lang], style.summary[store.lang]);
+    updateAccessibilityDebug();
   }
 
   function renderCard(style, compact = false) {
@@ -1031,8 +1096,8 @@
       <div class="badge-row">
         <div class="badge">#${style.number} · ${escapeHtml(catName(style.category))}<br>${escapeHtml(style.subtitle[lang])}</div>
         <div class="card-actions">
-          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" data-id="${style.id}" aria-label="${t(saved ? "unfavorite" : "favorite")}">${saved ? "♥" : "♡"}</button>
-          <button class="card-action" type="button" data-action="share" data-export-control aria-label="${t("share")}">↗</button>
+          <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" data-id="${style.id}" aria-pressed="${saved}" aria-label="${escapeHtml(savedLabel(style, saved))}">${saved ? "♥" : "♡"}</button>
+          <button class="card-action" type="button" data-action="share" data-export-control aria-label="${escapeHtml(t("shareStyle", style.name[lang]))}">↗</button>
         </div>
       </div>
       <div class="visual image-slot" data-image-label="${escapeHtml(style.name[lang])}">
@@ -1061,7 +1126,7 @@
     releasePreparedImages(dom.categoryChips);
     dom.categoryChips.innerHTML = categories.map((cat) => {
       const categoryStyles = styles.filter((item) => item.category === cat[0]);
-      const preview = categoryStyles.slice(0, 3).map((item) => imageMarkup(item.image, item.name[lang])).join("");
+      const preview = categoryStyles.slice(0, 3).map((item) => imageMarkup(item.image, "", "", { decorative: true })).join("");
       return `
         <button class="category-card" type="button" data-filter="${cat[0]}">
           <span class="category-copy">
@@ -1260,16 +1325,17 @@
 
   function resultCard(style) {
     const lang = store.lang;
+    const saved = isSaved(style.id);
     return `
       <article class="result-card" data-style="${style.id}">
         <button class="result-open" type="button" data-action="open-style" data-id="${style.id}" aria-label="${escapeHtml(t("openStyle"))}：${escapeHtml(style.name[lang])}">
-          <span class="thumb-slot image-slot" data-image-label="${escapeHtml(style.name[lang])}">${imageMarkup(style.image, "", "thumb")}</span>
+          <span class="thumb-slot image-slot" data-image-label="${escapeHtml(style.name[lang])}">${imageMarkup(style.image, "", "thumb", { decorative: true })}</span>
           <span>
             <h3>${escapeHtml(style.name[lang])}</h3>
             <p>${escapeHtml(style.summary[lang])}</p>
           </span>
         </button>
-        <button class="card-action ${isSaved(style.id) ? "saved" : ""}" type="button" data-action="save-row" data-id="${style.id}" aria-label="${t("favorite")}">${isSaved(style.id) ? "♥" : "♡"}</button>
+        <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save-row" data-id="${style.id}" aria-pressed="${saved}" aria-label="${escapeHtml(savedLabel(style, saved))}">${saved ? "♥" : "♡"}</button>
       </article>
     `;
   }
@@ -1308,12 +1374,14 @@
     releasePreparedImages(dom.searchResults);
     dom.searchResults.classList.toggle("gallery-grid", !query && !store.filter);
     dom.searchResults.innerHTML = results.length ? results.map(resultCard).join("") : `<p class="empty">${t("empty")}</p>`;
+    dom.searchResultsTitle.textContent = t("searchResults", results.length);
     prepareImages(dom.searchResults);
   }
 
   function renderSaved() {
     const savedStyles = store.saved.map((id) => styles.find((style) => style.id === id)).filter(Boolean);
     dom.savedCount.textContent = t("saved", savedStyles.length);
+    dom.savedResultsTitle.textContent = t("savedResults", savedStyles.length);
     dom.copyListBtn.textContent = t("copyList");
     dom.copyListBtn.disabled = savedStyles.length === 0;
     releasePreparedImages(dom.savedList);
@@ -1384,7 +1452,7 @@
   function screenshotMock(index, style, lang) {
     if (index === 5) {
       if (isFreeLaunchMode()) {
-        return `<div class="shot-list">${styles.slice(8, 12).map((item) => `<span class="image-slot" data-image-label="${escapeHtml(item.name[lang])}">${imageMarkup(item.image, item.name[lang])}<b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
+        return `<div class="shot-list">${styles.slice(8, 12).map((item) => `<span class="image-slot" data-image-label="${escapeHtml(item.name[lang])}">${imageMarkup(item.image, "", "", { decorative: true })}<b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
       }
       return `<div class="shot-paywall"><h2>${escapeHtml(t("plus"))}</h2><p>${escapeHtml(t("plusSubtitle"))}</p><ul>${t("plusPlanItems").slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>`;
     }
@@ -1392,12 +1460,12 @@
       return `<div class="shot-panel"><h3>${escapeHtml(style.name[lang])}</h3><p>${escapeHtml(style.history[lang]).slice(0, 90)}...</p><p>${escapeHtml(style.why[lang]).slice(0, 72)}...</p></div>`;
     }
     if (index === 3) {
-      return `<div class="shot-list">${styles.slice(0, 4).map((item) => `<span class="image-slot" data-image-label="${escapeHtml(item.name[lang])}">${imageMarkup(item.image, item.name[lang])}<b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
+      return `<div class="shot-list">${styles.slice(0, 4).map((item) => `<span class="image-slot" data-image-label="${escapeHtml(item.name[lang])}">${imageMarkup(item.image, "", "", { decorative: true })}<b>${escapeHtml(item.name[lang])}</b></span>`).join("")}</div>`;
     }
     if (index === 4) {
-      return `<div class="shot-export image-slot" data-image-label="${escapeHtml(style.name[lang])}">${imageMarkup(style.image, style.name[lang])}<button>${escapeHtml(t("freeExport"))}</button></div>`;
+      return `<div class="shot-export image-slot" data-image-label="${escapeHtml(style.name[lang])}">${imageMarkup(style.image, "", "", { decorative: true })}<button>${escapeHtml(t("freeExport"))}</button></div>`;
     }
-    return `<div class="shot-card-visual image-slot" data-image-label="${escapeHtml(style.name[lang])}">${imageMarkup(style.image, style.name[lang])}<h2>${escapeHtml(style.name.en)}</h2><p>${escapeHtml(style.name.zh)}</p></div>`;
+    return `<div class="shot-card-visual image-slot" data-image-label="${escapeHtml(style.name[lang])}">${imageMarkup(style.image, "", "", { decorative: true })}<h2>${escapeHtml(style.name.en)}</h2><p>${escapeHtml(style.name.zh)}</p></div>`;
   }
 
   function screenshotSlides() {
@@ -1424,7 +1492,12 @@
     if (shouldRender && view === "detail") renderDetail();
     if (store.drawerOpen) setDrawer(false, false);
     store.view = view;
-    document.querySelectorAll(".view").forEach((node) => node.classList.toggle("active", node.id === `${view}View`));
+    document.querySelectorAll(".view").forEach((node) => {
+      const active = node.id === `${view}View`;
+      node.classList.toggle("active", active);
+      node.setAttribute("aria-hidden", String(!active));
+      node.inert = !active;
+    });
     document.querySelectorAll(".nav-btn").forEach((node) => node.classList.toggle("active", node.dataset.view === view));
     document.querySelectorAll(".nav-btn").forEach((node) => {
       if (node.dataset.view) node.setAttribute("aria-current", node.dataset.view === view ? "page" : "false");
@@ -1433,10 +1506,24 @@
     document.querySelector(".topbar").classList.toggle("has-back", view !== "home");
     if (view === "search") {
       if (shouldRender) renderSearch();
-      setTimeout(() => dom.searchInput.focus(), 80);
+      const focusBeforeSearch = document.activeElement;
+      setTimeout(() => {
+        if (store.view !== "search") return;
+        if (document.activeElement === focusBeforeSearch || document.activeElement === document.body) {
+          dom.searchInput.focus();
+        }
+      }, 80);
     }
     if (shouldRender && view === "saved") renderSaved();
-    window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    if (view === "detail") {
+      const heading = dom.detailContent.querySelector("h1");
+      if (heading) {
+        heading.tabIndex = -1;
+        requestAnimationFrame(() => heading.focus({ preventScroll: true }));
+      }
+    }
+    window.scrollTo({ top: 0, behavior: "auto" });
+    updateAccessibilityDebug();
   }
 
   function setDrawer(open, restoreFocus = true) {
@@ -1460,13 +1547,20 @@
     document.body.classList.toggle("drawer-open", open);
     document.querySelector("main").inert = open;
     document.querySelector(".topbar").inert = open;
-    if (open) requestAnimationFrame(() => dom.drawerCloseBtn.focus());
+    if (open) requestAnimationFrame(() => {
+      dom.drawerCloseBtn.focus();
+      updateAccessibilityDebug();
+    });
     if (!open) {
       document.body.style.removeProperty("top");
       window.scrollTo(0, store.drawerScrollY || 0);
       const returnFocus = store.drawerReturnFocus;
       store.drawerReturnFocus = null;
-      if (restoreFocus) requestAnimationFrame(() => returnFocus?.focus());
+      if (restoreFocus) requestAnimationFrame(() => {
+        returnFocus?.focus();
+        updateAccessibilityDebug();
+      });
+      else updateAccessibilityDebug();
     }
   }
 
@@ -1484,10 +1578,12 @@
 
   function updateSavedButtons(id) {
     const saved = isSaved(id);
+    const style = styles.find((item) => item.id === id);
     document.querySelectorAll(`[data-id="${id}"][data-action="save"], [data-id="${id}"][data-action="save-row"]`).forEach((button) => {
       button.classList.toggle("saved", saved);
       button.textContent = saved ? "♥" : "♡";
-      button.setAttribute("aria-label", t(saved ? "unfavorite" : "favorite"));
+      button.setAttribute("aria-pressed", String(saved));
+      button.setAttribute("aria-label", style ? savedLabel(style, saved) : t(saved ? "unfavorite" : "favorite"));
     });
   }
 
@@ -1503,6 +1599,7 @@
   }
 
   function toggleSaved(id = activeStyle().id) {
+    const scrollPosition = window.scrollY;
     if (isSaved(id)) {
       store.saved = store.saved.filter((item) => item !== id);
       toast(t("removedToast"));
@@ -1516,6 +1613,7 @@
     }
     saveState();
     syncSavedState(id);
+    if (store.view === "detail") window.scrollTo(0, scrollPosition);
   }
 
   async function copyText(value) {
@@ -1727,12 +1825,13 @@
   function openImage(src, alt) {
     dom.lightboxImage.src = src;
     dom.lightboxImage.alt = alt || "";
-    dom.lightbox.setAttribute("aria-label", `${t("imagePreview")}：${alt || ""}`);
+    dom.lightboxTitle.textContent = t("imagePreview");
+    dom.lightboxDescription.textContent = alt || activeStyle().name[store.lang];
     dom.lightboxCloseBtn.setAttribute("aria-label", t("closePreview"));
     dom.saveLightboxBtn.textContent = t("saveCard");
     dom.shareLightboxBtn.textContent = t("share");
     dom.lightbox.dataset.src = src;
-    openOverlay(dom.lightbox, dom.lightboxCloseBtn);
+    openOverlay(dom.lightbox, dom.lightbox);
   }
 
   function closeImage(restoreFocus = true) {
@@ -1985,6 +2084,12 @@
       clearGestureTimers();
       cancelDragFrame();
       dom.deckStage.classList.remove("dragging");
+      if (prefersReducedMotion()) {
+        dom.styleDeck.style.removeProperty("--drag-x");
+        resetGhost(dom.prevGhost);
+        resetGhost(dom.nextGhost);
+        return;
+      }
       requestAnimationFrame(() => {
         dom.styleDeck.style.setProperty("--drag-x", "0px");
         resetGhost(dom.prevGhost);
@@ -1998,6 +2103,15 @@
     function completeSwipe(direction) {
       if (animating || dragging) return;
       clearGestureTimers();
+      if (prefersReducedMotion()) {
+        dom.deckStage.classList.remove("dragging", "fly-left", "fly-right", "is-animating");
+        dom.styleDeck.style.removeProperty("--drag-x");
+        resetGhost(dom.prevGhost);
+        resetGhost(dom.nextGhost);
+        setActiveByOffset(direction);
+        postNativeMessage("hapticFeedback");
+        return;
+      }
       animating = true;
       if (dragFrame) paintDrag();
       dom.deckStage.classList.remove("dragging");
@@ -2031,7 +2145,7 @@
       const horizontal = gestureAxis === "x" || Math.abs(dragX) > Math.abs(dragY);
       const distanceThreshold = Math.min(72, dom.styleDeck.clientWidth * 0.18);
       const velocityIsFresh = performance.now() - lastTime < 100;
-      const shouldChange = horizontal && (Math.abs(dragX) >= distanceThreshold || (velocityIsFresh && Math.abs(velocityX) >= 0.36));
+      const shouldChange = horizontal && (Math.abs(dragX) >= distanceThreshold || (!prefersReducedMotion() && velocityIsFresh && Math.abs(velocityX) >= 0.36));
       if (shouldChange) {
         completeSwipe(dragX < 0 || (dragX === 0 && velocityX < 0) ? 1 : -1);
         return;
@@ -2085,9 +2199,6 @@
     dom.styleDeck.addEventListener("pointercancel", () => {
       finishGesture(true);
     });
-
-    document.addEventListener("gesturestart", (event) => event.preventDefault(), { passive: false });
-    document.addEventListener("gesturechange", (event) => event.preventDefault(), { passive: false });
 
     dom.styleDeck.addEventListener("keydown", (event) => {
       if (event.key === "ArrowLeft") {
@@ -2202,7 +2313,11 @@
       if (!focusable.length) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      const dialog = overlay.matches?.("[role='dialog']") ? overlay : overlay.querySelector("[role='dialog']");
+      if (document.activeElement === dialog) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last.focus();
       } else if (!event.shiftKey && document.activeElement === last) {
@@ -2224,7 +2339,10 @@
   function renderAll() {
     document.title = t("productName");
     dom.appShell.setAttribute("aria-label", t("productName"));
-    dom.drawer.setAttribute("aria-label", `${t("productName")} · ${store.lang === "zh" ? "导航" : "Navigation"}`);
+    $("drawerTitle").textContent = `${t("productName")} · ${store.lang === "zh" ? "导航" : "Navigation"}`;
+    $("homeViewTitle").textContent = t("today");
+    $("searchViewTitle").textContent = t("search");
+    $("savedViewTitle").textContent = store.lang === "zh" ? "收藏" : "Saved styles";
     dom.langBtn.textContent = store.lang === "zh" ? "EN" : "中文";
     dom.langBtn.setAttribute("aria-label", store.lang === "zh" ? "Switch to English" : "切换为中文");
     dom.searchOpenBtn.setAttribute("aria-label", t("search"));
@@ -2234,7 +2352,7 @@
     dom.prevBtn.setAttribute("aria-label", t("previousStyle"));
     dom.nextBtn.setAttribute("aria-label", t("nextStyle"));
     dom.clearSearchBtn.setAttribute("aria-label", store.lang === "zh" ? "清除搜索" : "Clear search");
-    dom.styleDeck.setAttribute("aria-label", t("openStyle"));
+    dom.styleDeck.setAttribute("aria-roledescription", t("styleCardRole"));
     dom.lightboxCloseBtn.setAttribute("aria-label", t("closePreview"));
     dom.plusCloseBtn.setAttribute("aria-label", store.lang === "zh" ? "关闭 Plus" : "Close Plus");
     renderHome();
@@ -2297,7 +2415,27 @@
     }),
     getExportState: () => ({ ...exportState })
   };
+  window.StyleAtlasAccessibility = {
+    prefersReducedMotion,
+    getState: () => ({
+      view: store.view,
+      focus: document.activeElement?.id || document.activeElement?.tagName || "",
+      overlay: !dom.plusModal.hidden ? "plus" : (!dom.lightbox.hidden ? "lightbox" : (store.drawerOpen ? "drawer" : "none")),
+      viewport: { width: window.innerWidth, height: window.innerHeight }
+    })
+  };
+  if (new URLSearchParams(location.search).get("debug") === "a11y") {
+    const panel = document.createElement("pre");
+    panel.id = "a11yDebugPanel";
+    panel.className = "a11y-debug-panel";
+    panel.setAttribute("aria-hidden", "true");
+    document.body.append(panel);
+    document.addEventListener("focusin", updateAccessibilityDebug);
+    window.addEventListener("resize", updateAccessibilityDebug);
+    matchMedia("(prefers-reduced-motion: reduce)").addEventListener?.("change", updateAccessibilityDebug);
+  }
   bind();
   renderAll();
   setView(store.view, false);
+  updateAccessibilityDebug();
 })();
