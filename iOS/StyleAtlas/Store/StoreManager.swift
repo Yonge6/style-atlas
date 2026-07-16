@@ -14,6 +14,10 @@ enum StoreErrorCode: String {
     case exportPayloadMissing
     case exportWriteFailed
     case presentationUnavailable
+    case exportInProgress
+    case canvasUnavailable
+    case imageDecodeFailed
+    case blobCreationFailed
     case unknown
 }
 

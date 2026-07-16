@@ -319,7 +319,11 @@ main {
   min-height: 0;
   backface-visibility: hidden;
   transition: transform 220ms cubic-bezier(.2, .82, .22, 1), opacity 180ms ease;
-  will-change: transform;
+}
+
+.deck-stage.dragging .style-card,
+.deck-stage.is-animating .style-card {
+  will-change: transform, opacity;
 }
 
 .deck-stage .cover-image {
@@ -425,6 +429,47 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.image-slot {
+  position: relative;
+  background-color: #11100c;
+}
+
+.image-managed {
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.image-loaded > .image-managed,
+.image-loaded .image-managed,
+.image-managed[data-image-state="loaded"] {
+  opacity: 1;
+}
+
+.image-slot.image-failed::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background:
+    linear-gradient(145deg, rgba(217, 170, 69, 0.13), transparent 58%),
+    repeating-linear-gradient(90deg, rgba(243, 212, 134, 0.055) 0 1px, transparent 1px 42px),
+    #11100c;
+  color: #d8c694;
+  content: attr(data-image-label);
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.cover-card.image-failed::after {
+  z-index: 1;
+  font-size: 18px;
 }
 
 .cover-shade {
@@ -998,6 +1043,17 @@ main {
   gap: 10px;
 }
 
+.export-status {
+  min-height: 20px;
+  color: var(--gold-2) !important;
+  font-size: 12px !important;
+}
+
+[data-export-control][disabled] {
+  cursor: wait;
+  opacity: 0.52;
+}
+
 .export-section .copy-btn {
   width: 100%;
   min-height: 44px;
@@ -1348,6 +1404,8 @@ main {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.055);
+  content-visibility: auto;
+  contain-intrinsic-size: 118px;
 }
 
 .result-open {
@@ -1372,6 +1430,30 @@ main {
 .gallery-grid .result-open {
   display: block;
   width: 100%;
+}
+
+.thumb-slot {
+  display: block;
+  width: 78px;
+  height: 78px;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.thumb-slot .thumb {
+  display: block;
+}
+
+.gallery-grid .thumb-slot {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 9px;
+}
+
+.gallery-grid .thumb-slot .thumb {
+  height: 100%;
+  margin-bottom: 0;
 }
 
 .gallery-grid .thumb {
@@ -1426,6 +1508,24 @@ main {
   color: var(--muted);
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   text-align: center;
+}
+
+.category-card,
+.gallery-item,
+.screenshot-card {
+  content-visibility: auto;
+}
+
+.category-card {
+  contain-intrinsic-size: 116px;
+}
+
+.gallery-item {
+  contain-intrinsic-size: 220px 290px;
+}
+
+.screenshot-card {
+  contain-intrinsic-size: 390px 694px;
 }
 
 .drawer-backdrop {

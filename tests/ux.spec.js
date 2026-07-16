@@ -327,3 +327,191 @@ test("Plus export uses the requested ratio without a free watermark", async ({ p
   expect(png.readUInt32BE(16)).toBe(1440);
   expect(png.readUInt32BE(20)).toBe(1440);
 });
+
+test("home image request budget stays below fifteen style covers", async ({ page }) => {
+  const requested = new Set();
+  page.on("request", (request) => {
+    if (/\/assets\/styles\/[^/]+\.(webp|png)(?:\?|$)/.test(request.url())) requested.add(request.url());
+  });
+  await page.goto("/");
+  await page.waitForTimeout(500);
+  expect(requested.size).toBeLessThanOrEqual(15);
+  expect(requested.size).toBeLessThan(120);
+});
+
+test("current deck image is high priority and adjacent cards are decoded", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#styleDeck .cover-image")).toHaveAttribute("loading", "eager");
+  await expect(page.locator("#styleDeck .cover-image")).toHaveAttribute("decoding", "async");
+  await expect(page.locator("#styleDeck .cover-image")).toHaveAttribute("fetchpriority", "high");
+  await expect.poll(() => page.locator("#prevGhost .cover-image, #nextGhost .cover-image").evaluateAll((images) =>
+    images.length === 2 && images.every((image) => image.complete && image.naturalWidth > 0)
+  )).toBe(true);
+});
+
+test("ten continuous deck swipes never leave a blank live card", async ({ page }) => {
+  await page.goto("/");
+  for (let index = 0; index < 10; index += 1) {
+    await page.locator("#nextBtn").click();
+    await expect.poll(() => page.locator("#styleDeck .cover-image").evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+  }
+});
+
+test("offscreen search result images use lazy low-priority loading", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#searchOpenBtn").click();
+  const image = page.locator("#searchResults .result-card .thumb").last();
+  await expect(image).toHaveAttribute("loading", "lazy");
+  await expect(image).toHaveAttribute("decoding", "async");
+  await expect(image).toHaveAttribute("fetchpriority", "low");
+});
+
+test("concurrent decode requests reuse one pipeline promise", async ({ page }) => {
+  await page.goto("/");
+  const result = await page.evaluate(async () => {
+    const pipeline = window.StyleAtlasPerformance.imagePipeline;
+    pipeline.clear();
+    const first = pipeline.preload("assets/styles/swiss-style.webp", { priority: "low" });
+    const second = pipeline.preload("assets/styles/swiss-style.webp", { priority: "low" });
+    const samePromise = first === second;
+    await Promise.all([first, second]);
+    return { samePromise, size: pipeline.size() };
+  });
+  expect(result).toEqual({ samePromise: true, size: 1 });
+});
+
+test("image decode cache never retains more than seven entries", async ({ page }) => {
+  await page.goto("/");
+  const size = await page.evaluate(async () => {
+    const pipeline = window.StyleAtlasPerformance.imagePipeline;
+    pipeline.clear();
+    const sources = window.STYLE_ATLAS_DATA.rawStyles.slice(0, 12).map((item) => `assets/styles/${item[0]}.webp`);
+    await Promise.all(sources.map((source) => pipeline.preload(source, { priority: "low" }).catch(() => null)));
+    return pipeline.size();
+  });
+  expect(size).toBeLessThanOrEqual(7);
+});
+
+test("WebP fallback runs once and failed PNG becomes a stable placeholder", async ({ page }) => {
+  const requests = [];
+  page.on("request", (request) => {
+    if (request.url().includes("missing-performance-image")) requests.push(request.url());
+  });
+  await page.goto("/");
+  await page.evaluate(() => {
+    const slot = document.createElement("span");
+    slot.className = "image-slot";
+    slot.dataset.imageLabel = "Missing image";
+    slot.innerHTML = '<img id="missingPerformanceImage" class="image-managed" src="assets/styles/missing-performance-image.webp" alt="Missing image" loading="eager" decoding="async">';
+    document.body.append(slot);
+    window.StyleAtlasPerformance.prepareImages(slot);
+  });
+  await expect.poll(() => page.locator("#missingPerformanceImage").getAttribute("data-image-state")).toBe("failed");
+  expect(requests.filter((url) => url.endsWith("missing-performance-image.webp")).length).toBe(1);
+  expect(requests.filter((url) => url.endsWith("missing-performance-image.png")).length).toBe(1);
+  await expect(page.locator("#missingPerformanceImage").locator("xpath=..")).toHaveClass(/image-failed/);
+});
+
+test("saving in detail does not rebuild detail content or change scroll", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.STYLE_ATLAS_RUNTIME_CONFIG = { externalGalleryEnabled: false };
+  });
+  await page.goto("/#swiss-style");
+  await page.waitForTimeout(350);
+  await page.evaluate(() => {
+    document.querySelector("#detailContent").dataset.identity = "preserve-me";
+    window.scrollTo(0, 500);
+  });
+  const before = await page.evaluate(() => window.scrollY);
+  await page.evaluate(() => document.querySelector("#detailContent [data-action='save']").click());
+  await expect(page.locator("#detailContent")).toHaveAttribute("data-identity", "preserve-me");
+  expect(await page.evaluate(() => window.scrollY)).toBe(before);
+});
+
+test("switching detail aborts the previous Wiki request", async ({ page }) => {
+  let requestIndex = 0;
+  await page.route("**/w/api.php?**", async (route) => {
+    requestIndex += 1;
+    const title = requestIndex === 1 ? "STALE" : "FRESH";
+    await new Promise((resolve) => setTimeout(resolve, requestIndex === 1 ? 300 : 10));
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ query: { pages: { 1: { title, fullurl: "https://example.com", thumbnail: { source: "assets/styles/swiss-style.webp" } } } } })
+    });
+  });
+  await page.goto("/#swiss-style");
+  await expect.poll(() => page.evaluate(() => window.StyleAtlasPerformance.getWikiState().activeStyleId)).toBe("swiss-style");
+  await page.locator("#detailContent [data-action='open-style']").first().click();
+  await expect.poll(() => page.evaluate(() => window.StyleAtlasPerformance.getWikiState().abortedCount)).toBeGreaterThanOrEqual(1);
+  await page.waitForTimeout(450);
+  await expect(page.locator("#galleryGrid")).not.toContainText("STALE");
+});
+
+test("rapid multi-ratio export posts only one Native image message", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#baroque");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
+  await page.evaluate(() => {
+    document.querySelectorAll("[data-action='export-ratio']").forEach((button) => button.click());
+  });
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.filter((item) => item.type === "exportImage").length)).toBe(1);
+});
+
+test("preparing export disables every export control", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#baroque");
+  await page.evaluate(() => {
+    window.StyleAtlasNativeBridge.setPlusAccess(true);
+    const original = HTMLCanvasElement.prototype.toBlob;
+    HTMLCanvasElement.prototype.toBlob = function delayed(callback, ...args) {
+      setTimeout(() => original.call(this, callback, ...args), 250);
+    };
+  });
+  await page.locator("[data-action='export-ratio'][data-ratio='9:16']").click();
+  await expect.poll(() => page.locator("[data-export-control]").evaluateAll((buttons) => buttons.length > 0 && buttons.every((button) => button.disabled))).toBe(true);
+  await expect(page.locator("#exportStatus")).toContainText("正在准备图片");
+});
+
+test("null canvas blob shows localized failure and restores controls", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#baroque");
+  await page.evaluate(() => {
+    window.StyleAtlasNativeBridge.setPlusAccess(true);
+    HTMLCanvasElement.prototype.toBlob = function nullBlob(callback) { callback(null); };
+  });
+  await page.locator("[data-action='export-ratio'][data-ratio='1:1']").click();
+  await expect(page.locator("#toast")).toHaveText("无法创建导出图片，请重试。");
+  await expect.poll(() => page.locator("[data-export-control]").evaluateAll((buttons) => buttons.every((button) => !button.disabled))).toBe(true);
+});
+
+for (const [ratio, width, height] of [
+  ["9:16", 1080, 1920],
+  ["4:5", 1200, 1500],
+  ["16:9", 1920, 1080]
+]) {
+  test(`${ratio} export keeps ${width} x ${height} pixels`, async ({ page }) => {
+    await installNativeMock(page);
+    await page.goto("/#baroque");
+    await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
+    await page.locator(`[data-action='export-ratio'][data-ratio='${ratio}']`).click();
+    await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("exportImage");
+    const dataURL = await page.evaluate(() => window.__nativeMessages.at(-1).payload.dataURL);
+    const png = Buffer.from(dataURL.split(",")[1], "base64");
+    expect(png.readUInt32BE(16)).toBe(width);
+    expect(png.readUInt32BE(20)).toBe(height);
+  });
+}
+
+test("all 120 saved styles render in a scrollable list", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.evaluate(() => {
+    localStorage.setItem("styleAtlasSaved", JSON.stringify(window.STYLE_ATLAS_DATA.rawStyles.map((item) => item[0])));
+  });
+  await page.reload();
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
+  await page.locator("#drawerBtn").click();
+  await page.locator("[data-view='saved']").click();
+  await expect(page.locator("#savedList .result-card")).toHaveCount(120);
+  expect(await page.locator("#savedView").evaluate((node) => node.scrollHeight > window.innerHeight)).toBe(true);
+});

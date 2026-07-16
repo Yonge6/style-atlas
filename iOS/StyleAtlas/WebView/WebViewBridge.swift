@@ -15,9 +15,29 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         subsystem: Bundle.main.bundleIdentifier ?? "com.xiazishuo.styleatlas",
         category: "export"
     )
+    private var exportOperationInFlight = false
+    private var activeExportFileURL: URL?
+    private var terminationObserver: NSObjectProtocol?
 
     init(storeManager: StoreManager) {
         self.storeManager = storeManager
+        super.init()
+        terminationObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.willTerminateNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in self?.resetExportOperation(removeFile: true) }
+        }
+    }
+
+    deinit {
+        if let terminationObserver {
+            NotificationCenter.default.removeObserver(terminationObserver)
+        }
+        if let activeExportFileURL {
+            try? FileManager.default.removeItem(at: activeExportFileURL)
+        }
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
@@ -43,12 +63,19 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         case "hapticFeedback":
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         case "shareImage", "exportImage":
+            guard !exportOperationInFlight else {
+                exportLogger.notice("operation=prepare status=blocked errorCode=\(StoreErrorCode.exportInProgress.rawValue, privacy: .public)")
+                injectStoreAction("exportFailed", errorCode: .exportInProgress)
+                return
+            }
+            exportOperationInFlight = true
             guard let payload = body["payload"] as? [String: Any] else {
                 injectStoreAction(
                     "exportFailed",
                     errorCode: .exportPayloadMissing,
                     debugMessage: "Image action message did not include a payload dictionary."
                 )
+                resetExportOperation(removeFile: true)
                 return
             }
             presentImageActivity(payload: payload)
@@ -130,12 +157,18 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
               let webView else {
             exportLogger.error("operation=prepare status=failed errorCode=\(StoreErrorCode.exportPayloadMissing.rawValue, privacy: .public)")
             injectStoreAction("exportFailed", errorCode: .exportPayloadMissing)
+            resetExportOperation(removeFile: true)
             return
         }
 
         let requestedName = (payload["filename"] as? String) ?? "style-atlas.png"
-        let safeName = requestedName.replacingOccurrences(of: "/", with: "-")
-        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(safeName)
+        let requestedExtension = (requestedName as NSString).pathExtension.lowercased()
+        let safeExtension = ["png", "jpg", "jpeg", "webp"].contains(requestedExtension) ? requestedExtension : "png"
+        let fileURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension(safeExtension)
+        activeExportFileURL = fileURL
+        exportLogger.info("operation=prepare status=decoded bytes=\(data.count, privacy: .public)")
 
         do {
             try data.write(to: fileURL, options: .atomic)
@@ -146,6 +179,7 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
                 errorCode: .exportWriteFailed,
                 debugMessage: error.localizedDescription
             )
+            resetExportOperation(removeFile: true)
             return
         }
 
@@ -159,7 +193,6 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         )
         activity.completionWithItemsHandler = { [weak self] _, completed, _, error in
             Task { @MainActor in
-                try? FileManager.default.removeItem(at: fileURL)
                 if let error {
                     self?.exportLogger.error(
                         "operation=present status=failed errorCode=\(StoreErrorCode.presentationUnavailable.rawValue, privacy: .public)"
@@ -172,18 +205,30 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
                 } else if completed {
                     self?.exportLogger.info("operation=present status=completed")
                     self?.injectStoreAction("exportComplete")
+                } else {
+                    self?.exportLogger.info("operation=present status=cancelled")
+                    self?.injectStoreAction("exportCancelled")
                 }
+                self?.resetExportOperation(removeFile: true)
             }
         }
 
         guard let presenter = topViewController(from: webView.window?.rootViewController) else {
             exportLogger.error("operation=present status=failed errorCode=\(StoreErrorCode.presentationUnavailable.rawValue, privacy: .public)")
             injectStoreAction("exportFailed", errorCode: .presentationUnavailable)
-            try? FileManager.default.removeItem(at: fileURL)
+            resetExportOperation(removeFile: true)
             return
         }
         exportLogger.info("operation=present status=started")
         presenter.present(activity, animated: true)
+    }
+
+    private func resetExportOperation(removeFile: Bool) {
+        if removeFile, let activeExportFileURL {
+            try? FileManager.default.removeItem(at: activeExportFileURL)
+        }
+        activeExportFileURL = nil
+        exportOperationInFlight = false
     }
 
     private func topViewController(from root: UIViewController?) -> UIViewController? {
