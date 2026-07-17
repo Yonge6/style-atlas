@@ -1049,10 +1049,16 @@ main {
 .example-card img {
   display: block;
   width: 100%;
-  max-height: 360px;
-  object-fit: cover;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
   border-radius: 10px;
   background: #111;
+}
+
+.example-open {
+  overflow: hidden;
+  cursor: zoom-in;
 }
 
 .example-card figcaption {
@@ -1078,6 +1084,20 @@ main {
 .prompt-actions {
   gap: 8px;
   margin-top: 10px;
+}
+
+.overview-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin: 4px 0 12px;
+}
+
+.overview-actions .copy-btn {
+  min-height: 44px;
+  border-color: rgba(67, 50, 18, 0.22);
+  background: rgba(255, 255, 255, 0.28);
+  color: #302716;
+  font-weight: 800;
 }
 
 .locked-section {
