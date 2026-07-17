@@ -194,6 +194,8 @@
       today: "今日推荐",
       brandTitle: "虾子曰艺术风格图鉴",
       brandSubtitle: "风格图鉴",
+      headerBrandTitle: "虾子曰",
+      headerBrandSubtitle: "艺术风格图鉴",
       productName: "虾子曰艺术风格图鉴",
       positioning: "虾子曰艺术风格图鉴是一本装进口袋里的视觉风格图鉴。\n每天 3 分钟认识一种风格，建立自己的审美词库。",
       valueLine: "不是替你生成图片，而是帮你知道什么好看、为什么好看、怎么表达好看。",
@@ -331,6 +333,8 @@
       today: "Today's Pick",
       brandTitle: "Xiazishuo Style Atlas",
       brandSubtitle: "Style Atlas",
+      headerBrandTitle: "Xiazishuo",
+      headerBrandSubtitle: "Style Atlas",
       productName: "Xiazishuo Style Atlas",
       positioning: "Xiazishuo Style Atlas is a pocket visual style atlas.\nLearn one visual style a day and build your own taste vocabulary.",
       valueLine: "Not just generating images — but helping you understand what looks good, why it works, and how to express it.",
@@ -1127,8 +1131,8 @@
     const lang = store.lang;
     dom.todayLabel.textContent = t("today");
     dom.positioningCopy.textContent = `${t("positioning")}\n${t("valueLine")}`;
-    document.querySelector(".brand strong").textContent = t("brandTitle");
-    document.querySelector(".brand span").textContent = t("brandSubtitle");
+    document.querySelector(".brand-primary").textContent = t("headerBrandTitle");
+    document.querySelector(".brand-secondary").textContent = t("headerBrandSubtitle");
     document.querySelector(".drawer-head strong").textContent = t("brandTitle");
     dom.randomBtn.textContent = t("random");
     dom.categoryTitle.textContent = t("categories");
