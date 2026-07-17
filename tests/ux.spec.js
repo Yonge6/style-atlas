@@ -1,4 +1,6 @@
 const { test, expect } = require("@playwright/test");
+const path = require("node:path");
+const { pathToFileURL } = require("node:url");
 
 test.use({ viewport: { width: 390, height: 844 }, locale: "zh-CN" });
 
@@ -149,6 +151,37 @@ test("detail view supports a left-edge touch gesture to return", async ({ page }
   ]);
   await expect(page.locator("#homeView")).toHaveClass(/active/);
   await expect(page.locator("#detailView")).not.toHaveClass(/edge-back-dragging|edge-back-settling/);
+});
+
+test("native file mode requests a clean bundled image before canvas export", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__nativeMessages = [];
+    window.webkit = {
+      messageHandlers: {
+        styleAtlas: {
+          postMessage(message) {
+            window.__nativeMessages.push(message);
+            if (message.type !== "readBundledAsset") return;
+            const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1500"><rect width="900" height="1500" fill="#8b5a2b"/></svg>';
+            const dataURL = `data:image/svg+xml;base64,${btoa(svg)}`;
+            setTimeout(() => window.StyleAtlasNativeBridge?.resolveBundledAsset(message.payload.requestId, dataURL, ""));
+          }
+        }
+      }
+    };
+    window.STYLE_ATLAS_RUNTIME_CONFIG = {
+      nativeShell: true,
+      externalGalleryEnabled: false,
+      submissionMode: "iap"
+    };
+  });
+  const localIndex = pathToFileURL(path.resolve(__dirname, "..", "index.html")).href;
+  await page.goto(localIndex);
+  await page.locator("#styleDeck [data-action='share']").click();
+  await expect.poll(async () => page.evaluate(() => window.__nativeMessages.map((message) => message.type))).toContain("shareImage");
+  const messages = await page.evaluate(() => window.__nativeMessages);
+  expect(messages.filter((message) => message.type === "readBundledAsset")).toHaveLength(1);
+  expect(messages.filter((message) => message.type === "shareImage")).toHaveLength(1);
 });
 
 test("Chinese brand is exact across product surfaces", async ({ page }) => {

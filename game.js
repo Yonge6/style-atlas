@@ -693,6 +693,8 @@
 
   const exportState = { status: "idle", operationId: 0 };
   const NATIVE_EXPORT_PENDING = Symbol("native-export-pending");
+  const nativeAssetRequests = new Map();
+  let nativeAssetRequestSequence = 0;
 
   function updateExportControls() {
     const busy = exportState.status === "preparing" || exportState.status === "sharing";
@@ -736,6 +738,7 @@
       finishExportState("completed");
       return true;
     } catch (error) {
+      console.error("Style Atlas export failed", error);
       finishExportState("failed");
       if (error?.name === "AbortError") return false;
       const knownCode = ["exportInProgress", "canvasUnavailable", "imageDecodeFailed", "blobCreationFailed"].includes(error?.code)
@@ -1656,7 +1659,53 @@
     await copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
   }
 
+  function requestBundledImageFromNative(src) {
+    const filename = decodeURIComponent(new URL(src, location.href).pathname.split("/").pop() || "");
+    const requestId = `asset-${Date.now()}-${++nativeAssetRequestSequence}`;
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        nativeAssetRequests.delete(requestId);
+        reject(performanceError("imageDecodeFailed", "Bundled image request timed out"));
+      }, 8000);
+      nativeAssetRequests.set(requestId, { resolve, reject, timer });
+      if (!postNativeMessage("readBundledAsset", { requestId, filename })) {
+        clearTimeout(timer);
+        nativeAssetRequests.delete(requestId);
+        reject(performanceError("imageDecodeFailed", "Native asset bridge is unavailable"));
+      }
+    });
+  }
+
+  function resolveBundledAssetFromNative(requestId, dataURL = "", errorCode = "") {
+    const pending = nativeAssetRequests.get(String(requestId));
+    if (!pending) return false;
+    clearTimeout(pending.timer);
+    nativeAssetRequests.delete(String(requestId));
+    if (errorCode || !String(dataURL).startsWith("data:image/")) {
+      pending.reject(performanceError("imageDecodeFailed", errorCode || "Bundled image data is invalid"));
+      return false;
+    }
+    pending.resolve(String(dataURL));
+    return true;
+  }
+
   async function loadImage(src) {
+    if (hasNativeBridge() && location.protocol === "file:") {
+      const dataURL = await requestBundledImageFromNative(src);
+      const image = new Image();
+      image.decoding = "async";
+      image.src = dataURL;
+      try {
+        if (typeof image.decode === "function") await image.decode();
+        else await new Promise((resolve, reject) => {
+          image.addEventListener("load", resolve, { once: true });
+          image.addEventListener("error", reject, { once: true });
+        });
+        return image;
+      } catch (error) {
+        throw performanceError("imageDecodeFailed", error?.message || "Bundled image decode failed");
+      }
+    }
     return imagePipeline.preload(src, { priority: "high" });
   }
 
@@ -2582,6 +2631,7 @@
       return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice;
     },
     setStoreAction: setStoreActionFromNative,
+    resolveBundledAsset: resolveBundledAssetFromNative,
     getPlusAccess: hasPlusAccess,
     postNativeMessage
   };

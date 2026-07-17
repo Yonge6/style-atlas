@@ -62,6 +62,12 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
             }
         case "hapticFeedback":
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        case "readBundledAsset":
+            guard let payload = body["payload"] as? [String: Any] else {
+                resolveBundledAsset(requestID: "", dataURL: "", errorCode: "imageDecodeFailed")
+                return
+            }
+            sendBundledAsset(payload: payload)
         case "shareImage", "exportImage":
             guard !exportOperationInFlight else {
                 exportLogger.notice("operation=prepare status=blocked errorCode=\(StoreErrorCode.exportInProgress.rawValue, privacy: .public)")
@@ -221,6 +227,46 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         }
         exportLogger.info("operation=present status=started")
         presenter.present(activity, animated: true)
+    }
+
+    private func sendBundledAsset(payload: [String: Any]) {
+        guard let requestID = payload["requestId"] as? String,
+              let filename = payload["filename"] as? String,
+              filename == (filename as NSString).lastPathComponent,
+              filename.range(of: #"^[a-z0-9-]+\.(webp|png)$"#, options: .regularExpression) != nil else {
+            resolveBundledAsset(
+                requestID: payload["requestId"] as? String ?? "",
+                dataURL: "",
+                errorCode: "imageDecodeFailed"
+            )
+            return
+        }
+
+        let file = filename as NSString
+        guard let url = Bundle.main.url(
+            forResource: file.deletingPathExtension,
+            withExtension: file.pathExtension,
+            subdirectory: "Web/assets/styles"
+        ), let data = try? Data(contentsOf: url) else {
+            resolveBundledAsset(requestID: requestID, dataURL: "", errorCode: "imageDecodeFailed")
+            return
+        }
+
+        let mimeType = file.pathExtension.lowercased() == "png" ? "image/png" : "image/webp"
+        resolveBundledAsset(
+            requestID: requestID,
+            dataURL: "data:\(mimeType);base64,\(data.base64EncodedString())",
+            errorCode: ""
+        )
+    }
+
+    private func resolveBundledAsset(requestID: String, dataURL: String, errorCode: String) {
+        guard let requestValue = jsonString(requestID),
+              let dataValue = jsonString(dataURL),
+              let errorValue = jsonString(errorCode) else { return }
+        webView?.evaluateJavaScript(
+            "window.StyleAtlasNativeBridge?.resolveBundledAsset(\(requestValue), \(dataValue), \(errorValue))"
+        )
     }
 
     private func resetExportOperation(removeFile: Bool) {
