@@ -1087,17 +1087,34 @@ main {
 }
 
 .overview-actions {
-  display: flex;
-  justify-content: flex-start;
-  margin: 4px 0 12px;
+  position: absolute;
+  z-index: 3;
+  right: 16px;
+  bottom: 16px;
 }
 
-.overview-actions .copy-btn {
-  min-height: 44px;
-  border-color: rgba(67, 50, 18, 0.22);
-  background: rgba(255, 255, 255, 0.28);
-  color: #302716;
-  font-weight: 800;
+.overview-copy-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(67, 50, 18, 0.24);
+  border-radius: 12px;
+  background: rgba(22, 17, 10, 0.88);
+  color: #f4cf76;
+  box-shadow: 0 8px 22px rgba(42, 31, 12, 0.16);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 21px;
+  line-height: 1;
+}
+
+.overview-copy-btn:active {
+  transform: scale(0.96);
+}
+
+.detail-hero > .chip-row {
+  padding-right: 54px;
 }
 
 .locked-section {
