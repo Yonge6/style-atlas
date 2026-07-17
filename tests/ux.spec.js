@@ -878,6 +878,29 @@ test("Plus actions remain within the panel at 150 percent text size", async ({ p
   expect(metrics.cta.right).toBeLessThanOrEqual(metrics.panel.right + 0.5);
 });
 
+test("Plus close control stays at the panel top-right and purchase is the primary action", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrice("¥1.00"));
+  await openPlus(page);
+  const layout = await page.locator("#plusPanel").evaluate((panel) => {
+    const panelBox = panel.getBoundingClientRect();
+    const closeBox = panel.querySelector("#plusCloseBtn").getBoundingClientRect();
+    const cta = panel.querySelector("#plusCta");
+    const style = getComputedStyle(cta);
+    return {
+      closeTop: closeBox.top - panelBox.top,
+      closeRight: panelBox.right - closeBox.right,
+      ctaBackground: style.backgroundColor,
+      ctaHeight: cta.getBoundingClientRect().height
+    };
+  });
+  expect(layout.closeTop).toBeLessThanOrEqual(24);
+  expect(layout.closeRight).toBeLessThanOrEqual(24);
+  expect(layout.ctaBackground).toBe("rgb(221, 180, 85)");
+  expect(layout.ctaHeight).toBeGreaterThanOrEqual(50);
+});
+
 test("safe area environment variables cover header overlays and page bottom", async ({ page }) => {
   await page.goto("/");
   const css = await page.evaluate(async () => (await fetch("styles.css")).text());
