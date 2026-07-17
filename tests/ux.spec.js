@@ -63,6 +63,7 @@ test("core mobile flows remain stable", async ({ page }) => {
   await expect(page.locator(".brand strong")).toHaveText("虾子曰艺术风格图鉴");
   await expect(page.locator("meta[name='viewport']")).not.toHaveAttribute("content", /maximum-scale=1/);
   await expect(page.locator("#randomBtn")).toHaveText("随机");
+  await expect(page.locator("#todayLabel")).toHaveText("今日推荐");
   await expect(page.locator(".deck-controls #randomBtn")).toHaveCount(1);
   await expect(page.locator("#swipeHint")).toHaveCount(0);
   const initialNumber = await page.locator("#styleDeck .cover-top > span").textContent();
@@ -122,12 +123,12 @@ test("iOS-style touch swipe changes cards while vertical touch does not", async 
   await expect(page.locator("#deckStage")).not.toHaveClass(/dragging|is-animating/);
 });
 
-test("home introduction follows the card and random uses a card transition", async ({ page }) => {
+test("home introduction follows the card controls and random uses a card transition", async ({ page }) => {
   await page.goto("/");
   const order = await page.locator("#homeView").evaluate((home) => {
-    const deck = home.querySelector("#deckStage");
+    const controls = home.querySelector(".deck-controls");
     const copy = home.querySelector("#positioningCopy");
-    return Boolean(deck.compareDocumentPosition(copy) & Node.DOCUMENT_POSITION_FOLLOWING);
+    return Boolean(controls.compareDocumentPosition(copy) & Node.DOCUMENT_POSITION_FOLLOWING);
   });
   expect(order).toBe(true);
 
@@ -151,6 +152,17 @@ test("detail view supports a left-edge touch gesture to return", async ({ page }
   ]);
   await expect(page.locator("#homeView")).toHaveClass(/active/);
   await expect(page.locator("#detailView")).not.toHaveClass(/edge-back-dragging|edge-back-settling/);
+});
+
+test("detail edge back accepts a short fast gesture from the wider edge zone", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#styleDeck").click({ position: { x: 180, y: 260 } });
+  await expect(page.locator("#detailView")).toHaveClass(/active/);
+  await dispatchTouchGesture(page, "#detailView", [
+    { x: 42, y: 410 },
+    { x: 68, y: 411 }
+  ]);
+  await expect(page.locator("#homeView")).toHaveClass(/active/);
 });
 
 test("native file mode requests a clean bundled image before canvas export", async ({ page }) => {
@@ -191,6 +203,7 @@ test("Chinese brand is exact across product surfaces", async ({ page }) => {
   await expect(page.locator(".brand strong")).toHaveText("虾子曰艺术风格图鉴");
   await page.locator("#drawerBtn").click();
   await expect(page.locator(".drawer-head strong")).toHaveText("虾子曰艺术风格图鉴");
+  await expect(page.locator(".drawer-nav [data-view='detail']")).toHaveCount(0);
   await expect(page.locator(".plus-nav")).toHaveText("虾子曰艺术风格图鉴 Plus");
   await page.locator("[data-view='about']").click();
   await expect(page.locator("#aboutContent")).toContainText("关于虾子曰艺术风格图鉴");

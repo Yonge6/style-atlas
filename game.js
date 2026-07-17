@@ -191,7 +191,7 @@
 
   const text = {
     zh: {
-      today: "今日风格",
+      today: "今日推荐",
       brandTitle: "虾子曰艺术风格图鉴",
       brandSubtitle: "风格图鉴",
       productName: "虾子曰艺术风格图鉴",
@@ -319,7 +319,7 @@
       safetyBody: "虾子曰艺术风格图鉴鼓励学习视觉语言，而不是复制具体作品、具体角色或当代创作者的完整可识别风格。历史艺术流派可以作为学习对象，涉及当代工作室、IP 或在世创作者时，我们更建议使用通用视觉特征来表达。",
       screenshotsTitle: "App Store Screenshot Kit",
       screenshotSlides: [
-        ["每天 3 分钟提升审美", "今日风格"],
+        ["每天 3 分钟提升审美", "今日推荐"],
         ["120 种全球视觉风格", "风格图鉴"],
         ["看懂风格为什么好看", "深度档案"],
         ["建立你的审美资料库", "风格收藏"],
@@ -1084,8 +1084,12 @@
     [-1, 1, -2, 2].forEach((offset) => imagePipeline.preload(styleByOffset(offset).image, { priority: "low" }).catch(() => null));
     dom.deckStage.classList.remove("dragging", "fly-left", "fly-right", "is-animating", "random-out", "random-in");
     dom.styleDeck.style.removeProperty("--drag-x");
+    dom.styleDeck.style.removeProperty("--drag-y");
+    dom.styleDeck.style.removeProperty("--drag-rotate");
     [dom.prevGhost, dom.nextGhost].forEach((card) => {
       card.style.removeProperty("--ghost-x");
+      card.style.removeProperty("--ghost-y");
+      card.style.removeProperty("--ghost-rotate");
       card.style.removeProperty("--ghost-scale");
       card.style.removeProperty("--ghost-opacity");
     });
@@ -2109,18 +2113,26 @@
 
     function resetGhost(card) {
       card.style.removeProperty("--ghost-x");
+      card.style.removeProperty("--ghost-y");
+      card.style.removeProperty("--ghost-rotate");
       card.style.removeProperty("--ghost-scale");
       card.style.removeProperty("--ghost-opacity");
     }
 
     function paintDrag() {
       dragFrame = 0;
+      const width = Math.max(1, dom.styleDeck.clientWidth);
+      const signedProgress = Math.max(-1, Math.min(1, dragX / width));
       dom.styleDeck.style.setProperty("--drag-x", `${dragX}px`);
-      const progress = Math.min(1, Math.abs(dragX) / Math.max(96, dom.styleDeck.clientWidth * 0.42));
+      dom.styleDeck.style.setProperty("--drag-y", `${Math.abs(signedProgress) * 8}px`);
+      dom.styleDeck.style.setProperty("--drag-rotate", `${signedProgress * 7.5}deg`);
+      const progress = Math.min(1, Math.abs(dragX) / Math.max(96, width * 0.42));
       const target = dragX < 0 ? dom.nextGhost : dom.prevGhost;
       const other = dragX < 0 ? dom.prevGhost : dom.nextGhost;
       const side = dragX < 0 ? 1 : -1;
-      target.style.setProperty("--ghost-x", `${side * 22 * (1 - progress)}px`);
+      target.style.setProperty("--ghost-x", `${side * 18 * (1 - progress)}px`);
+      target.style.setProperty("--ghost-y", `${5 * (1 - progress)}px`);
+      target.style.setProperty("--ghost-rotate", `${side * 2.4 * (1 - progress)}deg`);
       target.style.setProperty("--ghost-scale", String(0.965 + 0.035 * progress));
       target.style.setProperty("--ghost-opacity", String(0.72 + 0.28 * progress));
       resetGhost(other);
@@ -2180,17 +2192,23 @@
       dom.deckStage.classList.remove("dragging");
       if (prefersReducedMotion()) {
         dom.styleDeck.style.removeProperty("--drag-x");
+        dom.styleDeck.style.removeProperty("--drag-y");
+        dom.styleDeck.style.removeProperty("--drag-rotate");
         resetGhost(dom.prevGhost);
         resetGhost(dom.nextGhost);
         return;
       }
       requestAnimationFrame(() => {
         dom.styleDeck.style.setProperty("--drag-x", "0px");
+        dom.styleDeck.style.setProperty("--drag-y", "0px");
+        dom.styleDeck.style.setProperty("--drag-rotate", "0deg");
         resetGhost(dom.prevGhost);
         resetGhost(dom.nextGhost);
       });
       settleTimer = setTimeout(() => {
         dom.styleDeck.style.removeProperty("--drag-x");
+        dom.styleDeck.style.removeProperty("--drag-y");
+        dom.styleDeck.style.removeProperty("--drag-rotate");
       }, 240);
     }
 
@@ -2200,6 +2218,8 @@
       if (prefersReducedMotion()) {
         dom.deckStage.classList.remove("dragging", "fly-left", "fly-right", "is-animating");
         dom.styleDeck.style.removeProperty("--drag-x");
+        dom.styleDeck.style.removeProperty("--drag-y");
+        dom.styleDeck.style.removeProperty("--drag-rotate");
         resetGhost(dom.prevGhost);
         resetGhost(dom.nextGhost);
         setActiveByOffset(direction);
@@ -2364,6 +2384,9 @@
     let edgeBackStartX = 0;
     let edgeBackStartY = 0;
     let edgeBackX = 0;
+    let edgeBackLastX = 0;
+    let edgeBackLastTime = 0;
+    let edgeBackVelocity = 0;
 
     function resetEdgeBack(animated = true) {
       detailView.classList.toggle("edge-back-settling", animated && !prefersReducedMotion());
@@ -2377,42 +2400,55 @@
       }, animated ? 190 : 0);
     }
 
-    detailView.addEventListener("touchstart", (event) => {
+    dom.appShell.addEventListener("touchstart", (event) => {
       if (store.view !== "detail" || event.touches.length !== 1 || !dom.plusModal.hidden || !dom.lightbox.hidden) return;
       const touch = event.touches[0];
-      if (touch.clientX > 28) return;
+      const shellLeft = dom.appShell.getBoundingClientRect().left;
+      if (touch.clientX - shellLeft > 48) return;
       edgeBackTracking = true;
       edgeBackActive = false;
       edgeBackStartX = touch.clientX;
       edgeBackStartY = touch.clientY;
       edgeBackX = 0;
+      edgeBackLastX = touch.clientX;
+      edgeBackLastTime = performance.now();
+      edgeBackVelocity = 0;
     }, { passive: true });
 
-    detailView.addEventListener("touchmove", (event) => {
+    dom.appShell.addEventListener("touchmove", (event) => {
       if (!edgeBackTracking || event.touches.length !== 1) return;
       const touch = event.touches[0];
       const dx = Math.max(0, touch.clientX - edgeBackStartX);
       const dy = touch.clientY - edgeBackStartY;
       if (!edgeBackActive) {
-        if (Math.abs(dy) > 9 && Math.abs(dy) > dx * 1.08) {
+        if (Math.abs(dy) > 14 && Math.abs(dy) > dx * 1.15) {
           edgeBackTracking = false;
           return;
         }
-        if (dx <= 8 || dx <= Math.abs(dy) * 1.08) return;
+        if (dx <= 5 || dx <= Math.abs(dy) * 0.92) return;
         edgeBackActive = true;
         detailView.classList.remove("edge-back-settling");
         detailView.classList.add("edge-back-dragging");
       }
       if (event.cancelable) event.preventDefault();
+      const now = performance.now();
+      const elapsed = Math.max(1, now - edgeBackLastTime);
+      const sampleVelocity = (touch.clientX - edgeBackLastX) / elapsed;
+      edgeBackVelocity = edgeBackVelocity * 0.55 + sampleVelocity * 0.45;
+      edgeBackLastX = touch.clientX;
+      edgeBackLastTime = now;
       edgeBackX = Math.min(window.innerWidth, dx);
       const progress = Math.min(1, edgeBackX / Math.max(160, window.innerWidth * 0.7));
       detailView.style.setProperty("--edge-back-x", `${edgeBackX}px`);
       detailView.style.setProperty("--edge-back-opacity", String(1 - progress * 0.18));
     }, { passive: false });
 
-    detailView.addEventListener("touchend", () => {
+    dom.appShell.addEventListener("touchend", () => {
       if (!edgeBackTracking) return;
-      const shouldReturn = edgeBackActive && edgeBackX >= Math.min(96, window.innerWidth * 0.24);
+      const velocityIsFresh = performance.now() - edgeBackLastTime < 150;
+      const enoughDistance = edgeBackX >= Math.min(72, window.innerWidth * 0.18);
+      const fastFlick = edgeBackX >= 20 && velocityIsFresh && edgeBackVelocity >= 0.28;
+      const shouldReturn = edgeBackActive && (enoughDistance || fastFlick);
       edgeBackTracking = false;
       edgeBackActive = false;
       if (!shouldReturn) {
@@ -2430,7 +2466,7 @@
       setTimeout(navigateBack, 180);
     });
 
-    detailView.addEventListener("touchcancel", () => {
+    dom.appShell.addEventListener("touchcancel", () => {
       if (!edgeBackTracking) return;
       edgeBackTracking = false;
       edgeBackActive = false;
@@ -2599,7 +2635,6 @@
     document.querySelectorAll(".nav-btn").forEach((button) => {
       const map = {
         home: store.lang === "zh" ? "今日" : "Today",
-        detail: store.lang === "zh" ? "探索" : "Explore",
         search: store.lang === "zh" ? "搜索" : "Search",
         saved: store.lang === "zh" ? "收藏" : "Saved",
         about: t("about"),

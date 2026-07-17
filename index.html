@@ -24,24 +24,24 @@
 
     <main id="mainContent">
       <section id="homeView" class="view active" aria-labelledby="homeViewTitle" aria-hidden="false">
-        <h1 id="homeViewTitle" class="sr-only">今日风格</h1>
+        <h1 id="homeViewTitle" class="sr-only">今日推荐</h1>
         <div class="section-head">
-          <p id="todayLabel">今日风格</p>
+          <p id="todayLabel">今日推荐</p>
         </div>
 
         <div id="deckStage" class="deck-stage">
           <article id="prevGhost" class="style-card cover-card ghost-card prev" aria-hidden="true"></article>
           <article id="nextGhost" class="style-card cover-card ghost-card next" aria-hidden="true"></article>
-          <article id="styleDeck" class="style-card cover-card live-card" tabindex="0" role="group" aria-roledescription="风格卡片" aria-label="今日风格卡片" aria-keyshortcuts="ArrowLeft ArrowRight Enter Space"></article>
+          <article id="styleDeck" class="style-card cover-card live-card" tabindex="0" role="group" aria-roledescription="风格卡片" aria-label="今日推荐卡片" aria-keyshortcuts="ArrowLeft ArrowRight Enter Space"></article>
         </div>
         <p id="deckAnnouncement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
-        <p id="positioningCopy" class="positioning-copy">一本装进口袋里的视觉风格图鉴。每天 3 分钟认识一种风格，建立自己的审美词库。</p>
 
         <div class="deck-controls">
           <button id="prevBtn" class="arrow-btn" type="button" aria-label="上一个风格">←</button>
           <button id="randomBtn" class="small-action random-control" type="button">随机</button>
           <button id="nextBtn" class="arrow-btn" type="button" aria-label="下一个风格">→</button>
         </div>
+        <p id="positioningCopy" class="positioning-copy">一本装进口袋里的视觉风格图鉴。每天 3 分钟认识一种风格，建立自己的审美词库。</p>
 
         <section class="category-strip" aria-labelledby="categoryTitle">
           <h2 id="categoryTitle">分类</h2>
@@ -94,7 +94,6 @@
       </div>
       <nav class="drawer-nav">
         <button class="nav-btn active" type="button" data-view="home">今日</button>
-        <button class="nav-btn" type="button" data-view="detail">探索</button>
         <button class="nav-btn" type="button" data-view="search">搜索</button>
         <button class="nav-btn" type="button" data-view="saved">收藏</button>
         <button class="nav-btn" type="button" data-view="about">关于</button>
