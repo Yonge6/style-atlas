@@ -6,6 +6,7 @@
 - Build：9
 - Install source：TestFlight
 - Source base：`584a9748b192fa4be59e27eaf05eadfc12fe7ef3`
+- Release candidate commit：`ae08b58`
 - Device：NOT TESTED
 - iOS：NOT TESTED
 - Tester：NOT TESTED
@@ -13,10 +14,10 @@
 
 ## Upload Status
 
-- Archive：PENDING
-- App Store Connect upload：PENDING
-- Last uploader status：NOT UPLOADED
-- Processing completion：NOT UPLOADED
+- Archive：SUCCEEDED
+- App Store Connect upload：SUCCEEDED on 2026-07-18 at approximately 07:14 CST
+- Last uploader status：`Uploaded StyleAtlas` / `EXPORT SUCCEEDED`
+- Processing completion：NOT VERIFIED; App Store Connect browser session requires sign-in
 - TestFlight installation：NOT TESTED
 
 Build 9 supersedes Build 8 before App Review submission. It includes the refreshed App Icon, the latest synchronized offline Web resources, full-size public example previews, style-overview copy, refined detail share cards, and pure-image Plus export. Build 8 remains valid upload history and was not marked failed. All TestFlight-specific checks below remain unchecked until Build 9 is processed and installed from TestFlight.
