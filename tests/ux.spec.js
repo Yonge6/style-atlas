@@ -541,6 +541,25 @@ test("detail share card omits the metadata row and style tags", async ({ page })
   tags.forEach((tag) => expect(canvasText).not.toContain(tag));
 });
 
+test("home share card omits the top style number and product name", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  const styleNumber = await page.locator("#styleDeck .cover-top > span").textContent();
+  await page.evaluate(() => {
+    window.__canvasText = [];
+    const original = CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText = function captureText(value, ...args) {
+      window.__canvasText.push(String(value));
+      return original.call(this, value, ...args);
+    };
+  });
+  await page.locator("#styleDeck [data-action='share']").click();
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("shareImage");
+  const canvasText = await page.evaluate(() => window.__canvasText);
+  expect(canvasText).not.toContain(styleNumber);
+  expect(canvasText.filter((value) => value === "虾子曰艺术风格图鉴")).toHaveLength(1);
+});
+
 test("detail overview uses a bottom-right icon copy control and hides free preview label", async ({ page }) => {
   await page.goto("/#baroque");
   const copy = page.locator(".detail-hero .overview-copy-btn");

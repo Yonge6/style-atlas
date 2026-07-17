@@ -1,11 +1,11 @@
-# TestFlight Validation｜虾子曰艺术风格图鉴 1.2 Build 8
+# TestFlight Validation｜虾子曰艺术风格图鉴 1.2 Build 9
 
 ## Build
 
 - Version：1.2
-- Build：8
+- Build：9
 - Install source：TestFlight
-- Commit：`bc7fb6d183cffe0f2e60f0319eabd776ca174876`
+- Source base：`584a9748b192fa4be59e27eaf05eadfc12fe7ef3`
 - Device：NOT TESTED
 - iOS：NOT TESTED
 - Tester：NOT TESTED
@@ -13,13 +13,13 @@
 
 ## Upload Status
 
-- Archive：SUCCEEDED
-- App Store Connect upload：SUCCEEDED on 2026-07-17 at 21:10 China Standard Time
-- Last uploader status：`Uploaded package is processing`; `Upload succeeded`
-- Processing completion：NOT CONFIRMED
+- Archive：PENDING
+- App Store Connect upload：PENDING
+- Last uploader status：NOT UPLOADED
+- Processing completion：NOT UPLOADED
 - TestFlight installation：NOT TESTED
 
-Build 8 includes the post-Build-7 native swipe deduplication and Plus modal action refinements. All TestFlight-specific checks below remain unchecked until Build 8 is processed and installed from TestFlight.
+Build 9 supersedes Build 8 before App Review submission. It includes the refreshed App Icon, the latest synchronized offline Web resources, full-size public example previews, style-overview copy, refined detail share cards, and pure-image Plus export. Build 8 remains valid upload history and was not marked failed. All TestFlight-specific checks below remain unchecked until Build 9 is processed and installed from TestFlight.
 
 ## Installation
 

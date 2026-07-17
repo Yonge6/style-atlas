@@ -1769,25 +1769,22 @@
     shade.addColorStop(1, "rgba(0,0,0,0.82)");
     ctx.fillStyle = shade;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgba(22, 18, 12, 0.82)";
-    roundRect(ctx, 52, 62, 150, 70, 30);
-    ctx.fill();
-    ctx.fillStyle = "#f4cf76";
-    ctx.font = "700 34px sans-serif";
-    ctx.fillText(`#${style.number}`, 85, 108);
-    ctx.fillStyle = "rgba(255, 246, 220, 0.82)";
-    ctx.font = `700 ${Math.max(24, Math.min(34, canvas.width * 0.028))}px sans-serif`;
-    ctx.textAlign = "right";
-    ctx.fillText(t("productName"), canvas.width - 64, 108);
-    ctx.textAlign = "left";
     ctx.fillStyle = "#fff6dc";
     const titleSize = Math.max(72, Math.min(126, canvas.width * 0.1, canvas.height * 0.12));
     ctx.font = `700 ${titleSize}px Georgia`;
-    wrap(ctx, style.name.en, 64, canvas.height - titleSize * 1.55, canvas.width - 128, titleSize * 0.98);
+    const titleLineHeight = titleSize * 0.92;
+    const titleLines = wrappedLines(ctx, style.name.en, canvas.width - 128);
     ctx.fillStyle = "#f4cf76";
     const subtitleSize = Math.max(34, Math.min(52, canvas.width * 0.043));
+    const subtitleY = canvas.height - 72;
+    const titleLastY = subtitleY - subtitleSize * 1.55;
+    const titleFirstY = titleLastY - Math.max(0, titleLines.length - 1) * titleLineHeight;
+    ctx.fillStyle = "#fff6dc";
+    ctx.font = `700 ${titleSize}px Georgia`;
+    titleLines.forEach((line, index) => ctx.fillText(line, 64, titleFirstY + index * titleLineHeight));
+    ctx.fillStyle = "#f4cf76";
     ctx.font = `800 ${subtitleSize}px sans-serif`;
-    wrap(ctx, style.name.zh, 68, canvas.height - 72, canvas.width - 136, subtitleSize * 1.18);
+    wrap(ctx, style.name.zh, 68, subtitleY, canvas.width - 136, subtitleSize * 1.18);
     drawWatermark(ctx, canvas.width, canvas.height);
     return await canvasBlob(canvas);
     } finally {
@@ -2010,17 +2007,17 @@
     ctx.closePath();
   }
 
-  function wrap(ctx, textValue, x, y, maxWidth, lineHeight, centered = false) {
+  function wrappedLines(ctx, textValue, maxWidth) {
     const words = String(textValue).split(/\s+/);
+    const lines = [];
     let line = "";
     for (const word of words) {
       if (ctx.measureText(word).width > maxWidth) {
         for (const char of word) {
           const test = line ? `${line}${char}` : char;
           if (ctx.measureText(test).width > maxWidth && line) {
-            ctx.fillText(line, x, y);
+            lines.push(line);
             line = char;
-            y += lineHeight;
           } else {
             line = test;
           }
@@ -2029,15 +2026,20 @@
       }
       const test = line ? `${line} ${word}` : word;
       if (ctx.measureText(test).width > maxWidth && line) {
-        ctx.fillText(line, x, y);
+        lines.push(line);
         line = word;
-        y += lineHeight;
       } else {
         line = test;
       }
     }
-    ctx.fillText(line, centered ? x : x, y);
-    return y;
+    if (line) lines.push(line);
+    return lines.length ? lines : [""];
+  }
+
+  function wrap(ctx, textValue, x, y, maxWidth, lineHeight, centered = false) {
+    const lines = wrappedLines(ctx, textValue, maxWidth);
+    lines.forEach((line, index) => ctx.fillText(line, centered ? x : x, y + index * lineHeight));
+    return y + Math.max(0, lines.length - 1) * lineHeight;
   }
 
   function drawWatermark(ctx, width, height) {
@@ -2047,10 +2049,10 @@
     ctx.globalAlpha = 0.62;
     ctx.textAlign = "right";
     ctx.fillStyle = "#493816";
-    ctx.font = "700 23px sans-serif";
+    ctx.font = "700 20px sans-serif";
     const textWidth = ctx.measureText(watermark).width;
     const textX = width - 60;
-    const textY = height - 54;
+    const textY = height - 24;
     ctx.fillRect(textX - textWidth - 54, textY - 8, 34, 2);
     ctx.beginPath();
     ctx.arc(textX - textWidth - 9, textY - 9, 4, 0, Math.PI * 2);
