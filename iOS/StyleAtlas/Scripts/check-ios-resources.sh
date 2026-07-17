@@ -15,6 +15,7 @@ required_web_files=(
   "data-styles.js"
   "data-refined.js"
   "examples.js"
+  "assets/brand/app-icon.png"
 )
 
 for file in "${required_web_files[@]}"; do

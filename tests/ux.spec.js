@@ -60,7 +60,9 @@ test("core mobile flows remain stable", async ({ page }) => {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
 
-  await expect(page.locator(".brand strong")).toHaveText("虾子曰艺术风格图鉴");
+  await expect(page.locator(".brand-primary")).toHaveText("虾子曰");
+  await expect(page.locator(".brand-secondary")).toHaveText("艺术风格图鉴");
+  await expect(page.locator(".brand-icon")).toBeVisible();
   await expect(page.locator("meta[name='viewport']")).not.toHaveAttribute("content", /maximum-scale=1/);
   await expect(page.locator("#randomBtn")).toHaveText("随机");
   await expect(page.locator("#todayLabel")).toHaveText("今日推荐");
@@ -220,7 +222,8 @@ test("Chinese brand is exact across product surfaces", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("虾子曰艺术风格图鉴");
   await expect(page.locator("#appShell")).toHaveAttribute("aria-label", "虾子曰艺术风格图鉴");
-  await expect(page.locator(".brand strong")).toHaveText("虾子曰艺术风格图鉴");
+  await expect(page.locator(".brand-primary")).toHaveText("虾子曰");
+  await expect(page.locator(".brand-secondary")).toHaveText("艺术风格图鉴");
   await page.locator("#drawerBtn").click();
   await expect(page.locator(".drawer-head strong")).toHaveText("虾子曰艺术风格图鉴");
   await expect(page.locator(".drawer-nav [data-view='detail']")).toHaveCount(0);
@@ -237,7 +240,8 @@ test("English brand is exact across product surfaces", async ({ page }) => {
   await page.locator("#langBtn").click();
   await expect(page).toHaveTitle("Xiazishuo Style Atlas");
   await expect(page.locator("#appShell")).toHaveAttribute("aria-label", "Xiazishuo Style Atlas");
-  await expect(page.locator(".brand strong")).toHaveText("Xiazishuo Style Atlas");
+  await expect(page.locator(".brand-primary")).toHaveText("Xiazishuo");
+  await expect(page.locator(".brand-secondary")).toHaveText("Style Atlas");
   await page.locator("#drawerBtn").click();
   await expect(page.locator(".drawer-head strong")).toHaveText("Xiazishuo Style Atlas");
   await expect(page.locator(".plus-nav")).toHaveText("Xiazishuo Style Atlas Plus");
@@ -295,7 +299,8 @@ test("localStorage exceptions do not break the app", async ({ page }) => {
     };
   });
   await page.goto("/");
-  await expect(page.locator(".brand strong")).toHaveText("虾子曰艺术风格图鉴");
+  await expect(page.locator(".brand-primary")).toHaveText("虾子曰");
+  await expect(page.locator(".brand-secondary")).toHaveText("艺术风格图鉴");
   await page.locator("#searchOpenBtn").click();
   await page.locator("#searchInput").fill("Swiss");
   await expect(page.locator("#searchResults .result-card")).toHaveCount(1);
