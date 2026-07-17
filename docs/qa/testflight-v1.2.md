@@ -5,7 +5,7 @@
 - Version：1.2
 - Build：7
 - Install source：TestFlight
-- Commit：pending final release commit
+- Commit：`e9246715c75c0ce49ae9879d72356535c8cb590c`
 - Device：NOT TESTED
 - iOS：NOT TESTED
 - Tester：NOT TESTED
@@ -15,7 +15,7 @@
 
 - Archive：SUCCEEDED
 - App Store Connect upload：SUCCESS
-- Last uploader status：Processing
+- Last uploader status：Build 7 upload succeeded; Processing
 - Processing completion：NOT CONFIRMED
 - TestFlight installation：NOT TESTED
 
