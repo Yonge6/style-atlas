@@ -220,6 +220,7 @@
       savedResults: (n) => `${n} 个已收藏风格`,
       saveCard: "保存卡片",
       copyPrompt: "复制表达词",
+      copyOverview: "复制风格介绍",
       features: "视觉特征",
       history: "风格源流",
       why: "形成原因",
@@ -359,6 +360,7 @@
       savedResults: (n) => `${n} saved styles`,
       saveCard: "Save card",
       copyPrompt: "Copy expression",
+      copyOverview: "Copy style overview",
       features: "Visual features",
       history: "Origins",
       why: "Why It Formed",
@@ -1121,6 +1123,7 @@
       <h1>${escapeHtml(style.name.en)}</h1>
       <p class="zh-name">${escapeHtml(style.name.zh)}</p>
       <p class="summary">${escapeHtml(style.summary[lang])}</p>
+      ${compact ? `<div class="overview-actions"><button class="copy-btn" type="button" data-action="copy-overview">${t("copyOverview")}</button></div>` : ""}
       <div class="chip-row">${style.tags[lang].slice(0, compact ? 3 : 5).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>
       ${compact ? "" : `<div class="card-footer"><span>← ${t("swipe")} →</span><button type="button" data-action="detail">${t("detail")}</button></div>`}
     `;
@@ -1183,7 +1186,9 @@
       <section class="detail-section">
         <h2>${t("examples")}</h2>
         <figure class="example-card image-slot" data-image-label="${escapeHtml(example.title)}">
-          ${imageMarkup(example.image, example.title)}
+          <button class="gallery-open example-open" type="button" data-action="open-image" aria-label="${escapeHtml(t("imagePreview"))}：${escapeHtml(example.title)}">
+            ${imageMarkup(example.image, example.title)}
+          </button>
           <figcaption>
             <strong>${escapeHtml(example.title)}</strong>
             <span>${escapeHtml(example.artist)}</span>
@@ -1667,6 +1672,10 @@
     await copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
   }
 
+  async function copyStyleOverview(style = activeStyle()) {
+    await copyText(`${style.name.en}\n${style.name.zh}\n\n${style.summary[store.lang]}`);
+  }
+
   function requestBundledImageFromNative(src) {
     const filename = decodeURIComponent(new URL(src, location.href).pathname.split("/").pop() || "");
     const requestId = `asset-${Date.now()}-${++nativeAssetRequestSequence}`;
@@ -1787,90 +1796,85 @@
     }
   }
 
+  async function pureImageBlob(style, ratio = "9:16") {
+    const sizes = {
+      "9:16": [1080, 1920],
+      "4:5": [1200, 1500],
+      "1:1": [1440, 1440],
+      "16:9": [1920, 1080]
+    };
+    const [canvasWidth, canvasHeight] = sizes[ratio] || sizes["9:16"];
+    const canvas = document.createElement("canvas");
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    try {
+      const ctx = canvasContext(canvas);
+      const image = await loadImage(style.image);
+      const scale = Math.max(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
+      const width = image.naturalWidth * scale;
+      const height = image.naturalHeight * scale;
+      ctx.fillStyle = "#0d0c09";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+      return await canvasBlob(canvas);
+    } finally {
+      releaseCanvas(canvas);
+    }
+  }
+
   async function detailCardBlob(style) {
     const canvas = document.createElement("canvas");
     canvas.width = 1080;
-    canvas.height = 2500;
+    canvas.height = 2400;
     try {
-    const ctx = canvasContext(canvas);
-    ctx.fillStyle = "#ead397";
-    roundRect(ctx, 0, 0, 1080, 2500, 48);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(27, 20, 8, .08)";
-    ctx.lineWidth = 2;
-    for (let x = 48; x < 1080; x += 92) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, 2500);
-      ctx.stroke();
-    }
-    const shine = ctx.createLinearGradient(0, 0, 1080, 700);
-    shine.addColorStop(0, "rgba(255,255,255,0)");
-    shine.addColorStop(0.58, "rgba(255,255,255,0.2)");
-    shine.addColorStop(0.66, "rgba(255,255,255,0)");
-    ctx.fillStyle = shine;
-    ctx.fillRect(0, 0, 1080, 2500);
-    ctx.fillStyle = "rgba(22, 18, 12, 0.92)";
-    roundRect(ctx, 52, 50, 590, 148, 16);
-    ctx.fill();
-    ctx.fillStyle = "#f4cf76";
-    ctx.font = "800 28px sans-serif";
-    wrap(ctx, `#${style.number} · ${catName(style.category)} ${style.subtitle[store.lang]}`, 78, 88, 520, 38);
-    ctx.fillStyle = "#5b4518";
-    ctx.font = "800 28px sans-serif";
-    ctx.textAlign = "right";
-    ctx.fillText(t("productName"), 1020, 208);
-    ctx.textAlign = "left";
-    ctx.fillStyle = "#17130d";
-    roundRect(ctx, 760, 50, 110, 110, 18);
-    ctx.fill();
-    roundRect(ctx, 900, 50, 110, 110, 18);
-    ctx.fill();
-    ctx.fillStyle = "#fff6dc";
-    ctx.font = "700 50px sans-serif";
-    ctx.fillText(isSaved(style.id) ? "♥" : "♡", 797, 122);
-    ctx.fillText("↗", 938, 122);
-    const image = await loadImage(style.image);
-    const x = 52;
-    const y = 230;
-    const width = 976;
-    const height = 1627;
-    ctx.save();
-    roundRect(ctx, x, y, width, height, 18);
-    ctx.clip();
-    const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
-    const imageWidth = image.naturalWidth * scale;
-    const imageHeight = image.naturalHeight * scale;
-    ctx.fillStyle = "#111";
-    ctx.fillRect(x, y, width, height);
-    ctx.drawImage(image, x + (width - imageWidth) / 2, y + (height - imageHeight) / 2, imageWidth, imageHeight);
-    ctx.restore();
-    ctx.fillStyle = "#14100a";
-    ctx.font = "700 124px Georgia";
-    wrap(ctx, style.name.en, 52, 2010, 980, 124);
-    ctx.fillStyle = "#57451e";
-    ctx.font = "800 52px sans-serif";
-    wrap(ctx, style.name.zh, 56, 2142, 920, 64);
-    ctx.fillStyle = "#3f3422";
-    ctx.font = "42px sans-serif";
-    wrap(ctx, style.summary[store.lang], 56, 2260, 920, 60);
-    let chipX = 56;
-    const chipY = 2388;
-    ctx.font = "700 32px sans-serif";
-    style.tags[store.lang].slice(0, 3).forEach((tag) => {
-      const chipWidth = Math.min(250, ctx.measureText(tag).width + 64);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.36)";
-      roundRect(ctx, chipX, chipY, chipWidth, 78, 39);
-      ctx.fill();
-      ctx.strokeStyle = "rgba(22, 18, 12, 0.14)";
+      const ctx = canvasContext(canvas);
+      ctx.fillStyle = "#ead397";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(27, 20, 8, .07)";
       ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.fillStyle = "#302716";
-      ctx.fillText(tag, chipX + 32, chipY + 50);
-      chipX += chipWidth + 22;
-    });
-    drawWatermark(ctx, canvas.width, canvas.height);
-    return await canvasBlob(canvas);
+      for (let x = 54; x < canvas.width; x += 92) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      const shine = ctx.createLinearGradient(0, 0, canvas.width, 760);
+      shine.addColorStop(0, "rgba(255,255,255,0)");
+      shine.addColorStop(0.58, "rgba(255,255,255,0.2)");
+      shine.addColorStop(0.68, "rgba(255,255,255,0)");
+      ctx.fillStyle = shine;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const image = await loadImage(style.image);
+      const x = 64;
+      const y = 64;
+      const width = 952;
+      const height = 1556;
+      ctx.save();
+      roundRect(ctx, x, y, width, height, 28);
+      ctx.clip();
+      ctx.fillStyle = "#111";
+      ctx.fillRect(x, y, width, height);
+      const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+      const imageWidth = image.naturalWidth * scale;
+      const imageHeight = image.naturalHeight * scale;
+      ctx.drawImage(image, x + (width - imageWidth) / 2, y + (height - imageHeight) / 2, imageWidth, imageHeight);
+      ctx.restore();
+
+      ctx.fillStyle = "#14100a";
+      const titleSize = style.name.en.length > 24 ? 72 : style.name.en.length > 15 ? 88 : 112;
+      ctx.font = `700 ${titleSize}px Georgia`;
+      wrap(ctx, style.name.en, 64, 1760, 952, titleSize * 1.02);
+      ctx.fillStyle = "#57451e";
+      ctx.font = "800 50px sans-serif";
+      wrap(ctx, style.name.zh, 68, 1990, 930, 62);
+      ctx.fillStyle = "rgba(63, 52, 34, 0.42)";
+      ctx.fillRect(68, 2070, 944, 2);
+      ctx.fillStyle = "#3f3422";
+      ctx.font = "40px sans-serif";
+      wrap(ctx, style.summary[store.lang], 68, 2150, 920, 58);
+      drawWatermark(ctx, canvas.width, canvas.height);
+      return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
     }
@@ -1962,9 +1966,11 @@
 
   async function saveShareCard(style = activeStyle(), ratio = null) {
     return runExportOperation(async () => {
-      const blob = ratio
-        ? await coverCardBlob(style, ratio)
-        : await (store.view === "detail" ? detailCardBlob(style) : coverCardBlob(style));
+      const blob = hasPlusAccess()
+        ? await pureImageBlob(style, ratio || "9:16")
+        : ratio
+          ? await coverCardBlob(style, ratio)
+          : await (store.view === "detail" ? detailCardBlob(style) : coverCardBlob(style));
       const filename = `${style.id}-style-atlas${ratio ? `-${ratio.replace(":", "x")}` : ""}.png`;
       if (hasNativeBridge()) {
         const dataURL = await blobToDataURL(blob);
@@ -2509,7 +2515,7 @@
       if (action === "open-image") {
         const img = event.target.closest("[data-action='open-image']")?.querySelector("img") || event.target.closest("img");
         if (!img) return;
-        return openImage(img.currentSrc || img.src, img.alt);
+        return openImage(img.currentSrc || img.src || img.dataset.src, img.alt);
       }
       if (action === "open-style" && id) return openDetail(id, store.view);
       if (action === "purchase-plus") {
@@ -2533,6 +2539,7 @@
       if (action === "close-plus") return closePlus();
       if (action === "plus-export") return canExportHighRes() ? saveShareCard() : showPlus("highResLocked");
       if (action === "export-ratio" && ratio) return canExportHighRes() ? saveShareCard(activeStyle(), ratio) : showPlus("highResLocked");
+      if (action === "copy-overview") return copyStyleOverview();
       if (action === "copy-prompt") return copyStyleExpression();
       if (action === "save-card") return saveShareCard();
       if (filter) {

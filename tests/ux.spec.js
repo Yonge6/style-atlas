@@ -375,6 +375,32 @@ test("image preview Escape closes and restores image trigger focus", async ({ pa
   await expect(trigger).toBeFocused();
 });
 
+test("public example keeps the full image and opens the shared image preview", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const trigger = page.locator(".example-card [data-action='open-image']");
+  await expect(trigger.locator("img")).toHaveCSS("object-fit", "contain");
+  await trigger.click();
+  await expect(page.locator("#lightbox")).toBeVisible();
+  await expect(page.locator("#lightboxImage")).toHaveAttribute("src", /swiss-style\.webp/);
+});
+
+test("detail overview copy includes style names and summary without rebuilding the hero", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__copiedOverview = "";
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: async (value) => { window.__copiedOverview = value; } }
+    });
+  });
+  await page.goto("/#swiss-style");
+  await page.locator(".detail-hero").evaluate((node) => { node.dataset.copyIdentity = "preserved"; });
+  await page.locator(".detail-hero [data-action='copy-overview']").click();
+  await expect.poll(() => page.evaluate(() => window.__copiedOverview)).toContain("Swiss Style");
+  await expect.poll(() => page.evaluate(() => window.__copiedOverview)).toContain("瑞士国际主义风格");
+  await expect(page.locator(".detail-hero")).toHaveAttribute("data-copy-identity", "preserved");
+  await expect(page.locator("#toast")).toHaveText("已复制");
+});
+
 test("pending purchase keeps purchase controls disabled", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
@@ -475,6 +501,43 @@ test("Plus export uses the requested ratio without a free watermark", async ({ p
   const png = Buffer.from(dataURL.split(",")[1], "base64");
   expect(png.readUInt32BE(16)).toBe(1440);
   expect(png.readUInt32BE(20)).toBe(1440);
+});
+
+test("Plus export renders pure artwork without any canvas text", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#baroque");
+  await page.evaluate(() => {
+    window.__canvasText = [];
+    const original = CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText = function captureText(value, ...args) {
+      window.__canvasText.push(String(value));
+      return original.call(this, value, ...args);
+    };
+    window.StyleAtlasNativeBridge.setPlusAccess(true);
+  });
+  await page.locator("[data-action='export-ratio'][data-ratio='4:5']").click();
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("exportImage");
+  expect(await page.evaluate(() => window.__canvasText)).toEqual([]);
+});
+
+test("detail share card omits the metadata row and style tags", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#swiss-style");
+  const tags = await page.locator(".detail-hero .chip").allTextContents();
+  await page.evaluate(() => {
+    window.__canvasText = [];
+    const original = CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText = function captureText(value, ...args) {
+      window.__canvasText.push(String(value));
+      return original.call(this, value, ...args);
+    };
+  });
+  await page.locator(".detail-hero [data-action='share']").click();
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("shareImage");
+  const canvasText = await page.evaluate(() => window.__canvasText);
+  expect(canvasText.join(" ")).toContain("Swiss Style");
+  expect(canvasText).not.toContain("#1");
+  tags.forEach((tag) => expect(canvasText).not.toContain(tag));
 });
 
 test("home image request budget stays below fifteen style covers", async ({ page }) => {
