@@ -5,11 +5,19 @@
 - Version：1.2
 - Build：6
 - Install source：TestFlight
-- Commit：PENDING
+- Commit：`161bb08245e24c74c82b156bf5fc37dfe2fa6d86`
 - Device：NOT TESTED
 - iOS：NOT TESTED
 - Tester：NOT TESTED
 - Test date：NOT TESTED
+
+## Upload Status
+
+- Archive：SUCCEEDED
+- App Store Connect upload：SUCCESS
+- Last uploader status：Processing
+- Processing completion：NOT CONFIRMED
+- TestFlight installation：NOT TESTED
 
 ## Installation
 
@@ -122,4 +130,3 @@ Run two consecutive rounds on a physical device.
 - Low：NOT TESTED
 - App Review ready：NO
 - Notes：Complete this document only with results from the TestFlight build on a physical device.
-
