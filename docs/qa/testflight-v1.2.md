@@ -1,11 +1,11 @@
-# TestFlight Validation｜虾子曰艺术风格图鉴 1.2 Build 6
+# TestFlight Validation｜虾子曰艺术风格图鉴 1.2 Build 7
 
 ## Build
 
 - Version：1.2
-- Build：6
+- Build：7
 - Install source：TestFlight
-- Commit：`161bb08245e24c74c82b156bf5fc37dfe2fa6d86`
+- Commit：pending final release commit
 - Device：NOT TESTED
 - iOS：NOT TESTED
 - Tester：NOT TESTED
@@ -18,6 +18,8 @@
 - Last uploader status：Processing
 - Processing completion：NOT CONFIRMED
 - TestFlight installation：NOT TESTED
+
+Build 6 device QA found a physical swipe regression and a native offline export failure. Both are fixed and verified in a directly installed development build; all TestFlight-specific checks below remain unchecked until Build 7 is processed and installed from TestFlight.
 
 ## Installation
 
