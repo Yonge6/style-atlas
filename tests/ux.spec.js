@@ -537,7 +537,27 @@ test("detail share card omits the metadata row and style tags", async ({ page })
   const canvasText = await page.evaluate(() => window.__canvasText);
   expect(canvasText.join(" ")).toContain("Swiss Style");
   expect(canvasText).not.toContain("#1");
+  expect(canvasText.join(" ")).not.toContain("Free");
   tags.forEach((tag) => expect(canvasText).not.toContain(tag));
+});
+
+test("detail overview uses a bottom-right icon copy control and hides free preview label", async ({ page }) => {
+  await page.goto("/#baroque");
+  const copy = page.locator(".detail-hero .overview-copy-btn");
+  await expect(copy).toBeVisible();
+  await expect(copy).toHaveText("⧉");
+  await expect(copy).toHaveAttribute("aria-label", "复制风格介绍");
+  await expect(page.locator(".access-note")).toHaveCount(0);
+  const position = await copy.evaluate((button) => {
+    const buttonRect = button.getBoundingClientRect();
+    const cardRect = button.closest(".detail-hero").getBoundingClientRect();
+    return {
+      right: Math.round(cardRect.right - buttonRect.right),
+      bottom: Math.round(cardRect.bottom - buttonRect.bottom)
+    };
+  });
+  expect(position.right).toBeLessThanOrEqual(18);
+  expect(position.bottom).toBeLessThanOrEqual(18);
 });
 
 test("home image request budget stays below fifteen style covers", async ({ page }) => {

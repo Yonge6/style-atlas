@@ -1123,8 +1123,8 @@
       <h1>${escapeHtml(style.name.en)}</h1>
       <p class="zh-name">${escapeHtml(style.name.zh)}</p>
       <p class="summary">${escapeHtml(style.summary[lang])}</p>
-      ${compact ? `<div class="overview-actions"><button class="copy-btn" type="button" data-action="copy-overview">${t("copyOverview")}</button></div>` : ""}
       <div class="chip-row">${style.tags[lang].slice(0, compact ? 3 : 5).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>
+      ${compact ? `<div class="overview-actions"><button class="overview-copy-btn" type="button" data-action="copy-overview" aria-label="${escapeHtml(t("copyOverview"))}" title="${escapeHtml(t("copyOverview"))}">⧉</button></div>` : ""}
       ${compact ? "" : `<div class="card-footer"><span>← ${t("swipe")} →</span><button type="button" data-action="detail">${t("detail")}</button></div>`}
     `;
   }
@@ -1276,7 +1276,6 @@
     `;
     dom.detailContent.innerHTML = `
       <div class="detail-hero style-card">${renderCard(style, true)}</div>
-      ${locked ? `<p class="access-note">${t("freePreview")}</p>` : ""}
       <section class="detail-section">
         <h2>${t("memory")}</h2>
         <p>${escapeHtml(style.memoryAnchor[lang])}</p>
@@ -1864,15 +1863,16 @@
       ctx.fillStyle = "#14100a";
       const titleSize = style.name.en.length > 24 ? 72 : style.name.en.length > 15 ? 88 : 112;
       ctx.font = `700 ${titleSize}px Georgia`;
-      wrap(ctx, style.name.en, 64, 1760, 952, titleSize * 1.02);
+      const titleEndY = wrap(ctx, style.name.en, 64, 1760, 952, titleSize * 1.02);
       ctx.fillStyle = "#57451e";
       ctx.font = "800 50px sans-serif";
-      wrap(ctx, style.name.zh, 68, 1990, 930, 62);
+      const chineseEndY = wrap(ctx, style.name.zh, 68, titleEndY + 100, 930, 62);
       ctx.fillStyle = "rgba(63, 52, 34, 0.42)";
-      ctx.fillRect(68, 2070, 944, 2);
+      const dividerY = chineseEndY + 54;
+      ctx.fillRect(68, dividerY, 944, 2);
       ctx.fillStyle = "#3f3422";
       ctx.font = "40px sans-serif";
-      wrap(ctx, style.summary[store.lang], 68, 2150, 920, 58);
+      wrap(ctx, style.summary[store.lang], 68, dividerY + 76, 920, 58);
       drawWatermark(ctx, canvas.width, canvas.height);
       return await canvasBlob(canvas);
     } finally {
@@ -2037,20 +2037,25 @@
       }
     }
     ctx.fillText(line, centered ? x : x, y);
+    return y;
   }
 
   function drawWatermark(ctx, width, height) {
     if (!ACCESS_CONFIG.freeExportWatermark || hasPlusAccess()) return;
-    const watermark = store.lang === "zh" ? "虾子曰艺术风格图鉴 Free" : "Xiazishuo Style Atlas Free";
+    const watermark = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Xiazishuo Style Atlas";
     ctx.save();
-    ctx.globalAlpha = 0.82;
-    ctx.fillStyle = "rgba(10, 8, 6, 0.58)";
-    const boxWidth = Math.min(430, Math.max(292, watermark.length * 18));
-    roundRect(ctx, width - boxWidth - 60, height - 92, boxWidth, 50, 25);
+    ctx.globalAlpha = 0.62;
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#493816";
+    ctx.font = "700 23px sans-serif";
+    const textWidth = ctx.measureText(watermark).width;
+    const textX = width - 60;
+    const textY = height - 54;
+    ctx.fillRect(textX - textWidth - 54, textY - 8, 34, 2);
+    ctx.beginPath();
+    ctx.arc(textX - textWidth - 9, textY - 9, 4, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = "#fff6dc";
-    ctx.font = "700 24px sans-serif";
-    ctx.fillText(watermark, width - boxWidth - 32, height - 58);
+    ctx.fillText(watermark, textX, textY);
     ctx.restore();
   }
 
