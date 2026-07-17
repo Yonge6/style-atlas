@@ -2110,6 +2110,7 @@
     let settleTimer = 0;
     let swipeTimer = 0;
     let randomTimer = 0;
+    let lastSwipeStartedAt = 0;
 
     function resetGhost(card) {
       card.style.removeProperty("--ghost-x");
@@ -2214,6 +2215,9 @@
 
     function completeSwipe(direction) {
       if (animating || dragging) return;
+      const now = performance.now();
+      if (lastSwipeStartedAt && now - lastSwipeStartedAt < 320) return;
+      lastSwipeStartedAt = now;
       clearGestureTimers();
       if (prefersReducedMotion()) {
         dom.deckStage.classList.remove("dragging", "fly-left", "fly-right", "is-animating");
@@ -2316,7 +2320,7 @@
     }
 
     dom.styleDeck.addEventListener("pointerdown", (event) => {
-      if (event.pointerType === "touch" || event.target.closest("button") || animating) return;
+      if (window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell === true || event.pointerType === "touch" || event.target.closest("button") || animating) return;
       beginGesture(event.clientX, event.clientY, "pointer");
       try {
         dom.styleDeck.setPointerCapture(event.pointerId);

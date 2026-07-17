@@ -123,6 +123,26 @@ test("iOS-style touch swipe changes cards while vertical touch does not", async 
   await expect(page.locator("#deckStage")).not.toHaveClass(/dragging|is-animating/);
 });
 
+test("native shell ignores compatibility mouse drags and consumes one touch swipe", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  const before = await page.locator("#styleDeck .cover-top > span").textContent();
+  const deck = page.locator("#styleDeck");
+  const box = await deck.boundingBox();
+  await page.mouse.move(box.x + box.width * 0.75, box.y + box.height * 0.5);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.5, { steps: 8 });
+  await page.mouse.up();
+  await expect(page.locator("#styleDeck .cover-top > span")).toHaveText(before);
+
+  await dispatchTouchGesture(page, "#styleDeck", [
+    { x: 320, y: 420 },
+    { x: 270, y: 421 },
+    { x: 215, y: 422 }
+  ]);
+  await expect(page.locator("#styleDeck .cover-top > span")).not.toHaveText(before);
+});
+
 test("home introduction follows the card controls and random uses a card transition", async ({ page }) => {
   await page.goto("/");
   const order = await page.locator("#homeView").evaluate((home) => {
