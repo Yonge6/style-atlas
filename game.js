@@ -549,7 +549,10 @@
 
     function decodeSource(src, priority, fallbackUsed = false) {
       const image = new Image();
-      image.crossOrigin = "anonymous";
+      const resolvedSource = new URL(src, location.href);
+      if (/^https?:$/.test(resolvedSource.protocol) && resolvedSource.origin !== location.origin) {
+        image.crossOrigin = "anonymous";
+      }
       image.decoding = "async";
       if ("fetchPriority" in image) image.fetchPriority = priority;
       image.src = src;
@@ -690,6 +693,8 @@
 
   const exportState = { status: "idle", operationId: 0 };
   const NATIVE_EXPORT_PENDING = Symbol("native-export-pending");
+  const nativeAssetRequests = new Map();
+  let nativeAssetRequestSequence = 0;
 
   function updateExportControls() {
     const busy = exportState.status === "preparing" || exportState.status === "sharing";
@@ -733,6 +738,7 @@
       finishExportState("completed");
       return true;
     } catch (error) {
+      console.error("Style Atlas export failed", error);
       finishExportState("failed");
       if (error?.name === "AbortError") return false;
       const knownCode = ["exportInProgress", "canvasUnavailable", "imageDecodeFailed", "blobCreationFailed"].includes(error?.code)
@@ -1076,7 +1082,7 @@
     prepareImages(dom.deckStage);
     imagePipeline.preload(style.image, { priority: "high" }).catch(() => null);
     [-1, 1, -2, 2].forEach((offset) => imagePipeline.preload(styleByOffset(offset).image, { priority: "low" }).catch(() => null));
-    dom.deckStage.classList.remove("dragging", "fly-left", "fly-right", "is-animating");
+    dom.deckStage.classList.remove("dragging", "fly-left", "fly-right", "is-animating", "random-out", "random-in");
     dom.styleDeck.style.removeProperty("--drag-x");
     [dom.prevGhost, dom.nextGhost].forEach((card) => {
       card.style.removeProperty("--ghost-x");
@@ -1486,6 +1492,12 @@
 
   function setView(view, shouldRender = true) {
     if (store.view === "detail" && view !== "detail") abortWikiGallery();
+    if (view !== "detail") {
+      const detailView = $("detailView");
+      detailView.classList.remove("edge-back-dragging", "edge-back-settling");
+      detailView.style.removeProperty("--edge-back-x");
+      detailView.style.removeProperty("--edge-back-opacity");
+    }
     if (view === "detail" && !store.backView) store.backView = "home";
     if (shouldRender && view === "screenshots") renderScreenshots();
     if (shouldRender && view === "about") renderAbout();
@@ -1647,7 +1659,53 @@
     await copyText(`${style.imagePrompts[store.lang]}\n\n${style.negativePrompt[store.lang]}`);
   }
 
+  function requestBundledImageFromNative(src) {
+    const filename = decodeURIComponent(new URL(src, location.href).pathname.split("/").pop() || "");
+    const requestId = `asset-${Date.now()}-${++nativeAssetRequestSequence}`;
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        nativeAssetRequests.delete(requestId);
+        reject(performanceError("imageDecodeFailed", "Bundled image request timed out"));
+      }, 8000);
+      nativeAssetRequests.set(requestId, { resolve, reject, timer });
+      if (!postNativeMessage("readBundledAsset", { requestId, filename })) {
+        clearTimeout(timer);
+        nativeAssetRequests.delete(requestId);
+        reject(performanceError("imageDecodeFailed", "Native asset bridge is unavailable"));
+      }
+    });
+  }
+
+  function resolveBundledAssetFromNative(requestId, dataURL = "", errorCode = "") {
+    const pending = nativeAssetRequests.get(String(requestId));
+    if (!pending) return false;
+    clearTimeout(pending.timer);
+    nativeAssetRequests.delete(String(requestId));
+    if (errorCode || !String(dataURL).startsWith("data:image/")) {
+      pending.reject(performanceError("imageDecodeFailed", errorCode || "Bundled image data is invalid"));
+      return false;
+    }
+    pending.resolve(String(dataURL));
+    return true;
+  }
+
   async function loadImage(src) {
+    if (hasNativeBridge() && location.protocol === "file:") {
+      const dataURL = await requestBundledImageFromNative(src);
+      const image = new Image();
+      image.decoding = "async";
+      image.src = dataURL;
+      try {
+        if (typeof image.decode === "function") await image.decode();
+        else await new Promise((resolve, reject) => {
+          image.addEventListener("load", resolve, { once: true });
+          image.addEventListener("error", reject, { once: true });
+        });
+        return image;
+      } catch (error) {
+        throw performanceError("imageDecodeFailed", error?.message || "Bundled image decode failed");
+      }
+    }
     return imagePipeline.preload(src, { priority: "high" });
   }
 
@@ -2004,17 +2062,14 @@
     dom.drawerBtn.addEventListener("click", () => setDrawer(true));
     dom.drawerCloseBtn.addEventListener("click", () => setDrawer(false));
     dom.drawerBackdrop.addEventListener("click", () => setDrawer(false));
-    dom.backBtn.addEventListener("click", () => {
+    function navigateBack() {
       const returnFocus = store.view === "search" ? store.viewReturnFocus : null;
       setView(store.view === "detail" ? store.backView : "home");
       store.viewReturnFocus = null;
       if (returnFocus) requestAnimationFrame(() => returnFocus.focus());
-    });
-    dom.randomBtn.addEventListener("click", () => {
-      if (animating || dragging) return;
-      store.activeId = styles[Math.floor(Math.random() * styles.length)].id;
-      renderDeck();
-    });
+    }
+
+    dom.backBtn.addEventListener("click", navigateBack);
     dom.prevBtn.addEventListener("click", () => completeSwipe(-1));
     dom.nextBtn.addEventListener("click", () => completeSwipe(1));
     dom.styleDeck.addEventListener("click", (event) => {
@@ -2045,9 +2100,12 @@
     let lastTime = 0;
     let velocityX = 0;
     let gestureAxis = "";
+    let gestureInput = "";
+    let touchIdentifier = null;
     let animating = false;
     let settleTimer = 0;
     let swipeTimer = 0;
+    let randomTimer = 0;
 
     function resetGhost(card) {
       card.style.removeProperty("--ghost-x");
@@ -2079,6 +2137,42 @@
       settleTimer = 0;
       swipeTimer = 0;
     }
+
+    function chooseRandomStyle() {
+      if (styles.length < 2) return;
+      let next = activeStyle();
+      while (next.id === store.activeId) next = styles[Math.floor(Math.random() * styles.length)];
+      store.activeId = next.id;
+    }
+
+    function animateRandomCard() {
+      if (animating || dragging) return;
+      clearTimeout(randomTimer);
+      if (prefersReducedMotion()) {
+        chooseRandomStyle();
+        renderDeck();
+        postNativeMessage("hapticFeedback");
+        return;
+      }
+      animating = true;
+      dom.randomBtn.disabled = true;
+      dom.randomBtn.setAttribute("aria-busy", "true");
+      dom.deckStage.classList.add("is-animating", "random-out");
+      postNativeMessage("hapticFeedback");
+      randomTimer = setTimeout(() => {
+        chooseRandomStyle();
+        renderDeck();
+        dom.deckStage.classList.add("is-animating", "random-in");
+        randomTimer = setTimeout(() => {
+          dom.deckStage.classList.remove("is-animating", "random-in");
+          dom.randomBtn.disabled = false;
+          dom.randomBtn.removeAttribute("aria-busy");
+          animating = false;
+        }, 380);
+      }, 180);
+    }
+
+    dom.randomBtn.addEventListener("click", animateRandomCard);
 
     function settleBack() {
       clearGestureTimers();
@@ -2132,7 +2226,7 @@
         dom.deckStage.classList.add(direction > 0 ? "fly-left" : "fly-right");
         postNativeMessage("hapticFeedback");
       });
-      swipeTimer = setTimeout(finish, 280);
+      swipeTimer = setTimeout(finish, 250);
     }
 
     function finishGesture(cancelled = false) {
@@ -2143,9 +2237,9 @@
         return;
       }
       const horizontal = gestureAxis === "x" || Math.abs(dragX) > Math.abs(dragY);
-      const distanceThreshold = Math.min(72, dom.styleDeck.clientWidth * 0.18);
-      const velocityIsFresh = performance.now() - lastTime < 100;
-      const shouldChange = horizontal && (Math.abs(dragX) >= distanceThreshold || (!prefersReducedMotion() && velocityIsFresh && Math.abs(velocityX) >= 0.36));
+      const distanceThreshold = Math.min(54, dom.styleDeck.clientWidth * 0.14);
+      const velocityIsFresh = performance.now() - lastTime < 130;
+      const shouldChange = horizontal && (Math.abs(dragX) >= distanceThreshold || (!prefersReducedMotion() && velocityIsFresh && Math.abs(velocityX) >= 0.3));
       if (shouldChange) {
         completeSwipe(dragX < 0 || (dragX === 0 && velocityX < 0) ? 1 : -1);
         return;
@@ -2153,51 +2247,194 @@
       settleBack();
     }
 
-    dom.styleDeck.addEventListener("pointerdown", (event) => {
-      if (event.target.closest("button") || animating) return;
+    function beginGesture(x, y, input) {
       clearGestureTimers();
       dragging = true;
       moved = false;
-      startX = event.clientX;
-      startY = event.clientY;
+      gestureInput = input;
+      startX = x;
+      startY = y;
       lastX = startX;
       lastTime = performance.now();
       dragX = 0;
       dragY = 0;
       velocityX = 0;
       gestureAxis = "";
-      dom.styleDeck.setPointerCapture(event.pointerId);
-      dom.deckStage.classList.add("dragging");
-    });
+    }
 
-    dom.styleDeck.addEventListener("pointermove", (event) => {
+    function moveGesture(x, y, event) {
       if (!dragging) return;
-      const coalesced = event.getCoalescedEvents ? event.getCoalescedEvents() : [];
-      const point = coalesced[coalesced.length - 1] || event;
-      const dx = point.clientX - startX;
-      const dy = point.clientY - startY;
-      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
+      const dx = x - startX;
+      const dy = y - startY;
       dragY = dy;
-      if (!gestureAxis && Math.max(Math.abs(dx), Math.abs(dy)) > 7) gestureAxis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+      if (!gestureAxis) {
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+        if (absX > 7 && absX > absY * 1.08) {
+          gestureAxis = "x";
+          moved = true;
+          dom.deckStage.classList.add("dragging");
+        } else if (absY > 7 && absY > absX * 1.08) {
+          gestureAxis = "y";
+          dragging = false;
+          gestureInput = "";
+          return;
+        } else {
+          return;
+        }
+      }
       if (gestureAxis === "y") return;
-      event.preventDefault();
+      if (event.cancelable) event.preventDefault();
       const now = performance.now();
       const elapsed = Math.max(1, now - lastTime);
-      const sampleVelocity = (point.clientX - lastX) / elapsed;
+      const sampleVelocity = (x - lastX) / elapsed;
       velocityX = velocityX * 0.58 + sampleVelocity * 0.42;
-      lastX = point.clientX;
+      lastX = x;
       lastTime = now;
       dragX = Math.max(-dom.styleDeck.clientWidth, Math.min(dom.styleDeck.clientWidth, dx));
       if (!dragFrame) dragFrame = requestAnimationFrame(paintDrag);
+    }
+
+    dom.styleDeck.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "touch" || event.target.closest("button") || animating) return;
+      beginGesture(event.clientX, event.clientY, "pointer");
+      try {
+        dom.styleDeck.setPointerCapture(event.pointerId);
+      } catch (_) {
+        // Pointer capture is an enhancement for mouse and stylus only.
+      }
+    });
+
+    dom.styleDeck.addEventListener("pointermove", (event) => {
+      if (!dragging || gestureInput !== "pointer") return;
+      const coalesced = event.getCoalescedEvents ? event.getCoalescedEvents() : [];
+      const point = coalesced[coalesced.length - 1] || event;
+      moveGesture(point.clientX, point.clientY, event);
     }, { passive: false });
 
     dom.styleDeck.addEventListener("pointerup", () => {
-      if (!dragging) return;
+      if (!dragging || gestureInput !== "pointer") return;
       finishGesture();
+      gestureInput = "";
     });
 
     dom.styleDeck.addEventListener("pointercancel", () => {
+      if (gestureInput !== "pointer") return;
       finishGesture(true);
+      gestureInput = "";
+    });
+
+    dom.styleDeck.addEventListener("touchstart", (event) => {
+      if (event.touches.length !== 1 || event.target.closest("button") || animating) {
+        if (dragging && gestureInput === "touch") finishGesture(true);
+        touchIdentifier = null;
+        gestureInput = "";
+        return;
+      }
+      const touch = event.changedTouches[0];
+      touchIdentifier = touch.identifier;
+      beginGesture(touch.clientX, touch.clientY, "touch");
+    }, { passive: true });
+
+    dom.styleDeck.addEventListener("touchmove", (event) => {
+      if (!dragging || gestureInput !== "touch" || event.touches.length !== 1) return;
+      const touch = Array.from(event.touches).find((item) => item.identifier === touchIdentifier);
+      if (touch) moveGesture(touch.clientX, touch.clientY, event);
+    }, { passive: false });
+
+    dom.styleDeck.addEventListener("touchend", (event) => {
+      if (gestureInput !== "touch") return;
+      const ended = Array.from(event.changedTouches).some((item) => item.identifier === touchIdentifier);
+      if (!ended) return;
+      finishGesture();
+      touchIdentifier = null;
+      gestureInput = "";
+    });
+
+    dom.styleDeck.addEventListener("touchcancel", () => {
+      if (gestureInput !== "touch") return;
+      finishGesture(true);
+      touchIdentifier = null;
+      gestureInput = "";
+    });
+
+    const detailView = $("detailView");
+    let edgeBackTracking = false;
+    let edgeBackActive = false;
+    let edgeBackStartX = 0;
+    let edgeBackStartY = 0;
+    let edgeBackX = 0;
+
+    function resetEdgeBack(animated = true) {
+      detailView.classList.toggle("edge-back-settling", animated && !prefersReducedMotion());
+      detailView.style.setProperty("--edge-back-x", "0px");
+      detailView.style.setProperty("--edge-back-opacity", "1");
+      setTimeout(() => {
+        if (store.view !== "detail" || edgeBackTracking) return;
+        detailView.classList.remove("edge-back-dragging", "edge-back-settling");
+        detailView.style.removeProperty("--edge-back-x");
+        detailView.style.removeProperty("--edge-back-opacity");
+      }, animated ? 190 : 0);
+    }
+
+    detailView.addEventListener("touchstart", (event) => {
+      if (store.view !== "detail" || event.touches.length !== 1 || !dom.plusModal.hidden || !dom.lightbox.hidden) return;
+      const touch = event.touches[0];
+      if (touch.clientX > 28) return;
+      edgeBackTracking = true;
+      edgeBackActive = false;
+      edgeBackStartX = touch.clientX;
+      edgeBackStartY = touch.clientY;
+      edgeBackX = 0;
+    }, { passive: true });
+
+    detailView.addEventListener("touchmove", (event) => {
+      if (!edgeBackTracking || event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      const dx = Math.max(0, touch.clientX - edgeBackStartX);
+      const dy = touch.clientY - edgeBackStartY;
+      if (!edgeBackActive) {
+        if (Math.abs(dy) > 9 && Math.abs(dy) > dx * 1.08) {
+          edgeBackTracking = false;
+          return;
+        }
+        if (dx <= 8 || dx <= Math.abs(dy) * 1.08) return;
+        edgeBackActive = true;
+        detailView.classList.remove("edge-back-settling");
+        detailView.classList.add("edge-back-dragging");
+      }
+      if (event.cancelable) event.preventDefault();
+      edgeBackX = Math.min(window.innerWidth, dx);
+      const progress = Math.min(1, edgeBackX / Math.max(160, window.innerWidth * 0.7));
+      detailView.style.setProperty("--edge-back-x", `${edgeBackX}px`);
+      detailView.style.setProperty("--edge-back-opacity", String(1 - progress * 0.18));
+    }, { passive: false });
+
+    detailView.addEventListener("touchend", () => {
+      if (!edgeBackTracking) return;
+      const shouldReturn = edgeBackActive && edgeBackX >= Math.min(96, window.innerWidth * 0.24);
+      edgeBackTracking = false;
+      edgeBackActive = false;
+      if (!shouldReturn) {
+        resetEdgeBack();
+        return;
+      }
+      postNativeMessage("hapticFeedback");
+      if (prefersReducedMotion()) {
+        navigateBack();
+        return;
+      }
+      detailView.classList.add("edge-back-settling");
+      detailView.style.setProperty("--edge-back-x", `${window.innerWidth}px`);
+      detailView.style.setProperty("--edge-back-opacity", "0.82");
+      setTimeout(navigateBack, 180);
+    });
+
+    detailView.addEventListener("touchcancel", () => {
+      if (!edgeBackTracking) return;
+      edgeBackTracking = false;
+      edgeBackActive = false;
+      resetEdgeBack();
     });
 
     dom.styleDeck.addEventListener("keydown", (event) => {
@@ -2394,6 +2631,7 @@
       return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice;
     },
     setStoreAction: setStoreActionFromNative,
+    resolveBundledAsset: resolveBundledAssetFromNative,
     getPlusAccess: hasPlusAccess,
     postNativeMessage
   };

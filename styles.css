@@ -270,7 +270,7 @@ main {
 }
 
 .positioning-copy {
-  margin: -2px 0 14px;
+  margin: 14px 2px 10px;
   color: #d8c694;
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 14px;
@@ -367,6 +367,49 @@ main {
 
 .deck-stage.is-animating {
   pointer-events: none;
+}
+
+.deck-stage.random-out .live-card {
+  animation: random-card-out 180ms cubic-bezier(.4, 0, 1, 1) both;
+}
+
+.deck-stage.random-in .live-card {
+  animation: random-card-in 360ms cubic-bezier(.18, .82, .2, 1) both;
+}
+
+.deck-stage.random-out .ghost-card,
+.deck-stage.random-in .ghost-card {
+  opacity: 0.42;
+}
+
+@keyframes random-card-out {
+  to {
+    transform: perspective(900px) rotateY(-76deg) scale(.94);
+    opacity: 0;
+  }
+}
+
+@keyframes random-card-in {
+  from {
+    transform: perspective(900px) rotateY(76deg) scale(.94);
+    opacity: 0;
+  }
+
+  to {
+    transform: perspective(900px) rotateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+#detailView.edge-back-dragging {
+  transform: translate3d(var(--edge-back-x, 0px), 0, 0);
+  opacity: var(--edge-back-opacity, 1);
+  transition: none;
+  will-change: transform, opacity;
+}
+
+#detailView.edge-back-settling {
+  transition: transform 180ms cubic-bezier(.2, .82, .22, 1), opacity 160ms ease;
 }
 
 .deck-stage.fly-left .live-card {
