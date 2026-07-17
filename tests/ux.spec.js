@@ -28,6 +28,31 @@ async function openPlus(page) {
   await expect(page.locator("#plusModal")).toBeVisible();
 }
 
+async function dispatchTouchGesture(page, selector, points) {
+  await page.locator(selector).evaluate((node, gesturePoints) => {
+    const dispatch = (type, point, touches) => {
+      const event = new Event(type, { bubbles: true, cancelable: true });
+      const touch = point ? {
+        identifier: 7,
+        target: node,
+        clientX: point.x,
+        clientY: point.y,
+        pageX: point.x,
+        pageY: point.y,
+        screenX: point.x,
+        screenY: point.y
+      } : null;
+      Object.defineProperty(event, "touches", { value: touches && touch ? [touch] : [] });
+      Object.defineProperty(event, "targetTouches", { value: touches && touch ? [touch] : [] });
+      Object.defineProperty(event, "changedTouches", { value: touch ? [touch] : [] });
+      node.dispatchEvent(event);
+    };
+    dispatch("touchstart", gesturePoints[0], true);
+    gesturePoints.slice(1).forEach((point) => dispatch("touchmove", point, true));
+    dispatch("touchend", gesturePoints[gesturePoints.length - 1], false);
+  }, points);
+}
+
 test("core mobile flows remain stable", async ({ page }) => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -73,6 +98,57 @@ test("core mobile flows remain stable", async ({ page }) => {
   await expect(page.locator("#drawer")).toHaveAttribute("aria-hidden", "true");
   await expect(page.locator("#drawerBtn")).toBeFocused();
   expect(errors).toEqual([]);
+});
+
+test("iOS-style touch swipe changes cards while vertical touch does not", async ({ page }) => {
+  await page.goto("/");
+  const before = await page.locator("#styleDeck .cover-top > span").textContent();
+  await dispatchTouchGesture(page, "#styleDeck", [
+    { x: 320, y: 420 },
+    { x: 275, y: 422 },
+    { x: 220, y: 423 }
+  ]);
+  await expect(page.locator("#styleDeck .cover-top > span")).not.toHaveText(before);
+
+  const afterHorizontal = await page.locator("#styleDeck .cover-top > span").textContent();
+  await dispatchTouchGesture(page, "#styleDeck", [
+    { x: 190, y: 360 },
+    { x: 192, y: 420 },
+    { x: 193, y: 485 }
+  ]);
+  await expect(page.locator("#styleDeck .cover-top > span")).toHaveText(afterHorizontal);
+  await expect(page.locator("#deckStage")).not.toHaveClass(/dragging|is-animating/);
+});
+
+test("home introduction follows the card and random uses a card transition", async ({ page }) => {
+  await page.goto("/");
+  const order = await page.locator("#homeView").evaluate((home) => {
+    const deck = home.querySelector("#deckStage");
+    const copy = home.querySelector("#positioningCopy");
+    return Boolean(deck.compareDocumentPosition(copy) & Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+  expect(order).toBe(true);
+
+  const before = await page.locator("#styleDeck .cover-top > span").textContent();
+  await page.locator("#randomBtn").click();
+  await expect(page.locator("#deckStage")).toHaveClass(/random-out|random-in/);
+  await expect(page.locator("#randomBtn")).toBeDisabled();
+  await expect(page.locator("#styleDeck .cover-top > span")).not.toHaveText(before);
+  await expect(page.locator("#randomBtn")).toBeEnabled();
+  await expect(page.locator("#deckStage")).not.toHaveClass(/random-out|random-in|is-animating/);
+});
+
+test("detail view supports a left-edge touch gesture to return", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#styleDeck").click({ position: { x: 180, y: 260 } });
+  await expect(page.locator("#detailView")).toHaveClass(/active/);
+  await dispatchTouchGesture(page, "#detailView", [
+    { x: 5, y: 410 },
+    { x: 52, y: 411 },
+    { x: 118, y: 412 }
+  ]);
+  await expect(page.locator("#homeView")).toHaveClass(/active/);
+  await expect(page.locator("#detailView")).not.toHaveClass(/edge-back-dragging|edge-back-settling/);
 });
 
 test("Chinese brand is exact across product surfaces", async ({ page }) => {
