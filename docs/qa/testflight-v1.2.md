@@ -5,7 +5,7 @@
 - Version：1.2
 - Build：8
 - Install source：TestFlight
-- Commit：pending final release commit
+- Commit：`bc7fb6d183cffe0f2e60f0319eabd776ca174876`
 - Device：NOT TESTED
 - iOS：NOT TESTED
 - Tester：NOT TESTED
@@ -13,9 +13,9 @@
 
 ## Upload Status
 
-- Archive：PENDING
-- App Store Connect upload：PENDING
-- Last uploader status：NOT UPLOADED
+- Archive：SUCCEEDED
+- App Store Connect upload：SUCCEEDED on 2026-07-17 at 21:10 China Standard Time
+- Last uploader status：`Uploaded package is processing`; `Upload succeeded`
 - Processing completion：NOT CONFIRMED
 - TestFlight installation：NOT TESTED
 

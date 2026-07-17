@@ -43,6 +43,6 @@ App 不提供外部支付，购买与恢复购买仅通过 Apple StoreKit 完成
 ## Submission Status
 
 - App Review submission：NOT SUBMITTED in V1.2-D
-- App Store Connect upload：PENDING FOR BUILD 8
+- App Store Connect upload：BUILD 8 UPLOAD SUCCEEDED; PROCESSING
 - Build processing：NOT CONFIRMED COMPLETE
 - TestFlight physical-device validation：NOT TESTED
