@@ -139,5 +139,7 @@ Run two consecutive rounds on a physical device.
 - High：0
 - Medium：1（首次冷启动商品价格加载延迟，重启后恢复）
 - Low：0
-- App Review ready：NO
-- Notes：购买、重启保持、删除重装后的 entitlement 自动恢复及四比例连续导出均通过。VoiceOver、Large / XL / XXL、Reduce Motion、200% 页面缩放、完整离线浏览和物理触控左右滑动尚未真实执行，因此不能标记为完整 PASS。
+- App Review ready：YES（产品负责人已接受剩余人工覆盖风险）
+- App Review submission：SUBMITTED，2026-07-18，当前状态为“正在等待审核”
+- Release method：Manual release
+- Notes：购买、重启保持、删除重装后的 entitlement 自动恢复及四比例连续导出均通过。VoiceOver、Large / XL / XXL、Reduce Motion、200% 页面缩放、完整离线浏览和物理触控左右滑动尚未真实执行，因此总体测试结果仍保持 PARTIAL；产品负责人已明确接受这些剩余风险并授权提交 Build 9 审核。
