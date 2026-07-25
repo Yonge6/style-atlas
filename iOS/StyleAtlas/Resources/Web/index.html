@@ -143,9 +143,25 @@
     </div>
     <button id="lightboxCloseBtn" class="lightbox-close" type="button" data-action="close-lightbox" aria-label="关闭图片预览">×</button>
   </div>
+  <div id="guidedOverlay" class="guided-overlay" hidden>
+    <div id="guidedPanel" class="guided-panel" role="dialog" aria-modal="true" aria-labelledby="guidedTitle" aria-describedby="guidedText" tabindex="-1">
+      <div class="guided-visual image-slot">
+        <img id="guidedImage" alt="" decoding="async" />
+        <div class="guided-shade"></div>
+      </div>
+      <button id="guidedCloseBtn" class="guided-close" type="button" data-action="close-guided" aria-label="关闭看图引导">×</button>
+      <div id="guidedStage" class="guided-stage" aria-live="polite" aria-atomic="true">
+        <p id="guidedKicker" class="guided-kicker"></p>
+        <h2 id="guidedTitle" tabindex="-1"></h2>
+        <p id="guidedText"></p>
+        <button id="guidedNextBtn" class="guided-next" type="button" data-action="next-guided"></button>
+      </div>
+    </div>
+  </div>
   <script src="./data-core.js"></script>
   <script src="./data-styles.js"></script>
   <script src="./data-refined.js"></script>
+  <script src="./data-aesthetic-guides.js"></script>
   <script src="./examples.js"></script>
   <script src="./game.js"></script>
 </body>

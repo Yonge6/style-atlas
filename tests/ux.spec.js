@@ -366,7 +366,7 @@ test("Plus modal Escape closes and restores trigger focus", async ({ page }) => 
 
 test("image preview Escape closes and restores image trigger focus", async ({ page }) => {
   await page.goto("/#swiss-style");
-  const trigger = page.locator("#galleryGrid [data-action='open-image']").first();
+  const trigger = page.locator(".detail-hero [data-action='open-image']");
   await trigger.click();
   await expect(page.locator("#lightbox")).toBeVisible();
   await expect(page.locator("#lightbox")).toBeFocused();
@@ -375,10 +375,11 @@ test("image preview Escape closes and restores image trigger focus", async ({ pa
   await expect(trigger).toBeFocused();
 });
 
-test("public example keeps the full image and opens the shared image preview", async ({ page }) => {
+test("detail hero is the only default local artwork and opens the shared image preview", async ({ page }) => {
   await page.goto("/#swiss-style");
-  const trigger = page.locator(".example-card [data-action='open-image']");
-  await expect(trigger.locator("img")).toHaveCSS("object-fit", "contain");
+  const trigger = page.locator(".detail-hero [data-action='open-image']");
+  await expect(page.locator(".detail-hero img[src*='swiss-style.webp']")).toHaveCount(1);
+  await expect(page.locator("#galleryGrid img[src*='swiss-style.webp']")).toHaveCount(0);
   await trigger.click();
   await expect(page.locator("#lightbox")).toBeVisible();
   await expect(page.locator("#lightboxImage")).toHaveAttribute("src", /swiss-style\.webp/);
@@ -847,7 +848,7 @@ test("Plus uses a named modal dialog with a description", async ({ page }) => {
 
 test("image preview uses a named modal dialog with coordinated description", async ({ page }) => {
   await page.goto("/#swiss-style");
-  await page.locator("#galleryGrid [data-action='open-image']").first().click();
+  await page.locator(".detail-hero [data-action='open-image']").click();
   await expect(page.locator("#lightbox")).toHaveAttribute("role", "dialog");
   await expect(page.locator("#lightbox")).toHaveAttribute("aria-modal", "true");
   await expect(page.locator("#lightbox")).toHaveAttribute("aria-labelledby", "lightboxTitle");
@@ -1044,4 +1045,331 @@ test("accessibility diagnostics are absent by default and opt-in by query", asyn
   await expect(page.locator("#a11yDebugPanel")).toContainText("View");
   await expect(page.locator("#a11yDebugPanel")).toContainText("Decode");
   await expect(page.locator("#a11yDebugPanel")).toHaveAttribute("aria-hidden", "true");
+});
+
+const enhancedGuideIds = [
+  "swiss-style",
+  "art-deco",
+  "impressionism",
+  "van-gogh",
+  "chinese-ink-painting",
+  "ukiyo-e",
+  "dunhuang-mural",
+  "islamic-geometric",
+  "african-tribal-pattern",
+  "mexican-muralism",
+  "editorial-illustration",
+  "solarpunk"
+];
+
+for (const styleId of enhancedGuideIds) {
+  test(`enhanced aesthetic guide is complete for ${styleId}`, async ({ page }) => {
+    await page.goto("/");
+    const result = await page.evaluate((id) => {
+      const guide = window.StyleAtlasAesthetic.guides[id];
+      const validIds = new Set(window.STYLE_ATLAS_DATA.rawStyles.map((style) => style[0]));
+      const bilingual = (value) => Boolean(value && value.zh && value.en);
+      return {
+        exists: Boolean(guide),
+        opening: bilingual(guide?.openingQuestion),
+        observe: guide?.observe?.length,
+        observeBilingual: guide?.observe?.every((item) => bilingual(item.label) && bilingual(item.text)),
+        profileKeys: Object.keys(guide?.profile || {}).sort(),
+        levelsValid: Object.values(guide?.profile || {}).every((item) => Number.isInteger(item.level) && item.level >= 1 && item.level <= 5),
+        profileBilingual: Object.values(guide?.profile || {}).every((item) => item.zh && item.en),
+        feelingWords: [guide?.feelingWords?.zh?.length, guide?.feelingWords?.en?.length],
+        everyday: guide?.everydayLife?.length,
+        everydayBilingual: guide?.everydayLife?.every((item) => bilingual(item.scene) && bilingual(item.text)),
+        comparisons: guide?.comparisons?.length,
+        comparisonsValid: guide?.comparisons?.every((item) => validIds.has(item.styleId) && bilingual(item.similarity) && bilingual(item.difference)),
+        reflection: bilingual(guide?.reflectionPrompt)
+      };
+    }, styleId);
+    expect(result).toEqual({
+      exists: true,
+      opening: true,
+      observe: 3,
+      observeBilingual: true,
+      profileKeys: ["color", "emotion", "order", "ornament"],
+      levelsValid: true,
+      profileBilingual: true,
+      feelingWords: [expect.any(Number), expect.any(Number)],
+      everyday: 4,
+      everydayBilingual: true,
+      comparisons: 2,
+      comparisonsValid: true,
+      reflection: true
+    });
+    expect(result.feelingWords[0]).toBeGreaterThanOrEqual(3);
+    expect(result.feelingWords[0]).toBeLessThanOrEqual(5);
+    expect(result.feelingWords[1]).toBe(result.feelingWords[0]);
+  });
+}
+
+test("all 120 style detail pages render without empty primary content", async ({ page }) => {
+  test.setTimeout(60000);
+  await page.goto("/#swiss-style");
+  const failures = await page.evaluate(async () => {
+    const ids = window.STYLE_ATLAS_DATA.rawStyles.map((style) => style[0]);
+    const invalid = [];
+    for (const id of ids) {
+      location.hash = id;
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      const detail = document.querySelector("#detailView.active");
+      const title = document.querySelector("#detailContent h1");
+      if (!detail || !title?.textContent.trim() || detail.textContent.includes("undefined")) invalid.push(id);
+    }
+    return { count: ids.length, invalid };
+  });
+  expect(failures.count).toBe(120);
+  expect(failures.invalid).toEqual([]);
+});
+
+test("detail hero has one h1 and one default local artwork", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await expect(page.locator("#detailContent h1")).toHaveCount(1);
+  await expect(page.locator(".detail-hero .hero-image-button img[src*='swiss-style.webp']")).toHaveCount(1);
+  await expect(page.locator("#detailContent img[src*='swiss-style.webp']")).toHaveCount(1);
+});
+
+test("every detail exposes the guided looking entry", async ({ page }) => {
+  await page.goto("/#bauhaus");
+  await expect(page.locator("[data-action='open-guided']")).toBeVisible();
+  await expect(page.locator("[data-action='open-guided']")).toHaveText("带我看懂这张图");
+});
+
+test("guided looking opens as a named modal dialog", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  const panel = page.locator("#guidedPanel");
+  await expect(page.locator("#guidedOverlay")).toBeVisible();
+  await expect(panel).toHaveAttribute("role", "dialog");
+  await expect(panel).toHaveAttribute("aria-modal", "true");
+  await expect(panel).toHaveAttribute("aria-labelledby", "guidedTitle");
+  await expect(panel).toHaveAttribute("aria-describedby", "guidedText");
+  await expect(panel).toBeFocused();
+});
+
+test("guided opening does not reveal all observation answers", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const firstObservation = await page.evaluate(() => window.StyleAtlasAesthetic.guides["swiss-style"].observe[0].text.zh);
+  await page.locator("[data-action='open-guided']").click();
+  await expect(page.locator("#guidedStage")).toHaveAttribute("data-stage", "0");
+  await expect(page.locator("#guidedText")).not.toHaveText(firstObservation);
+});
+
+test("guided looking advances through three observations and completion", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  for (let stage = 1; stage <= 4; stage += 1) {
+    await page.locator("#guidedNextBtn").click();
+    await expect(page.locator("#guidedStage")).toHaveAttribute("data-stage", String(stage));
+  }
+  await expect(page.locator("#guidedTitle")).toHaveText("你已经抓住这种风格最重要的线索了。");
+});
+
+test("guided completion returns to the detail page", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  for (let step = 0; step < 4; step += 1) await page.locator("#guidedNextBtn").click();
+  await page.locator("#guidedNextBtn").click();
+  await expect(page.locator("#guidedOverlay")).toBeHidden();
+  await expect(page.locator("#detailView")).toHaveClass(/active/);
+});
+
+test("guided Escape closes and restores focus to its entry", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const trigger = page.locator("[data-action='open-guided']");
+  await trigger.click();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#guidedOverlay")).toBeHidden();
+  await expect(trigger).toBeFocused();
+});
+
+test("guided overlay makes the app background inert", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  await expect(page.locator("#appShell")).toHaveAttribute("inert", "");
+  await page.locator("#guidedCloseBtn").click();
+  await expect(page.locator("#appShell")).not.toHaveAttribute("inert", "");
+});
+
+test("guided looking stays free and sends no native purchase message", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#cyberpunk");
+  await page.locator("[data-action='open-guided']").click();
+  await page.locator("#guidedNextBtn").click();
+  const purchaseMessages = await page.evaluate(() => window.__nativeMessages.filter((item) => item.type === "purchasePlus"));
+  expect(purchaseMessages).toEqual([]);
+});
+
+test("non-pilot styles use a stable fallback guide", async ({ page }) => {
+  await page.goto("/#bauhaus");
+  const fallback = await page.evaluate(() => window.StyleAtlasAesthetic.getGuide("bauhaus"));
+  expect(fallback.enhanced).toBe(false);
+  expect(fallback.observe.length).toBeGreaterThanOrEqual(3);
+  expect(fallback.profile).toBeNull();
+  expect(fallback.everydayLife.length).toBeGreaterThan(0);
+  expect(fallback.comparisons.length).toBeGreaterThan(0);
+});
+
+test("fallback detail contains no undefined values or empty profile scale", async ({ page }) => {
+  await page.goto("/#bauhaus");
+  await expect(page.locator("#detailContent")).not.toContainText("undefined");
+  await expect(page.locator(".profile-pending")).toBeVisible();
+  await expect(page.locator(".profile-scale")).toHaveCount(0);
+});
+
+test("recognition module presents at least three explained observation cards", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const cards = page.locator(".recognition-grid .observation-card");
+  expect(await cards.count()).toBeGreaterThanOrEqual(3);
+  for (const card of await cards.all()) {
+    await expect(card.locator("h3")).not.toHaveText("");
+    await expect(card.locator("p")).not.toHaveText("");
+  }
+});
+
+test("pilot everyday module presents four ordinary-life scenes", async ({ page }) => {
+  await page.goto("/#art-deco");
+  await expect(page.locator(".everyday-grid article")).toHaveCount(4);
+  await expect(page.locator(".everyday-grid")).toContainText("家居");
+  await expect(page.locator(".everyday-grid")).toContainText("穿搭");
+  await expect(page.locator(".everyday-grid")).toContainText("摄影");
+  await expect(page.locator(".everyday-grid")).toContainText("日常物件");
+});
+
+test("comparison navigation enters a related style and back returns to the source", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator(".comparison-open").first().click();
+  await expect(page.locator("#detailTitle")).toHaveText("Bauhaus");
+  await page.locator("#backBtn").click();
+  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+});
+
+test("deep accordion is keyboard operable and updates expanded state", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const button = page.locator(".deep-accordion button").nth(1);
+  await expect(button).toHaveAttribute("aria-expanded", "false");
+  await button.focus();
+  await page.keyboard.press("Enter");
+  await expect(button).toHaveAttribute("aria-expanded", "true");
+  const panelId = await button.getAttribute("aria-controls");
+  await expect(page.locator(`#${panelId}`)).toBeVisible();
+});
+
+test("reflection input saves locally and survives detail navigation", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator(".reflection-section summary").click();
+  const input = page.locator("[data-reflection-id='swiss-style']");
+  await input.fill("我喜欢它让信息变得清楚。");
+  await page.locator(".comparison-open").first().click();
+  await page.locator("#backBtn").click();
+  await expect(page.locator("[data-reflection-id='swiss-style']")).toHaveValue("我喜欢它让信息变得清楚。");
+});
+
+test("reflection survives a page reload", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator(".reflection-section summary").click();
+  await page.locator("[data-reflection-id='swiss-style']").fill("留白让我更容易呼吸。");
+  await page.reload();
+  await expect(page.locator("[data-reflection-id='swiss-style']")).toHaveValue("留白让我更容易呼吸。");
+});
+
+test("reflection enforces the 300 character limit", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator(".reflection-section summary").click();
+  const input = page.locator("[data-reflection-id='swiss-style']");
+  await input.fill("审".repeat(360));
+  await expect(input).toHaveValue("审".repeat(300));
+  await expect(input).toHaveAttribute("maxlength", "300");
+});
+
+test("corrupt reflection JSON recovers without breaking the page", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("styleAtlasReflectionsV1", "{broken"));
+  await page.goto("/#swiss-style");
+  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await expect(page.locator("[data-reflection-id='swiss-style']")).toHaveValue("");
+});
+
+test("detail remains usable when localStorage is unavailable", async ({ page }) => {
+  await page.addInitScript(() => {
+    Storage.prototype.getItem = () => { throw new Error("storage disabled"); };
+    Storage.prototype.setItem = () => { throw new Error("storage disabled"); };
+    Storage.prototype.removeItem = () => { throw new Error("storage disabled"); };
+  });
+  await page.goto("/#swiss-style");
+  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await page.locator(".reflection-section summary").click();
+  await page.locator("[data-reflection-id='swiss-style']").fill("仍然可以输入");
+  await expect(page.locator("[data-reflection-id='swiss-style']")).toHaveValue("仍然可以输入");
+});
+
+test("language switching renders complete enhanced English content", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("#langBtn").click();
+  await expect(page.locator("#recognizeTitle")).toHaveText("How to recognize it again");
+  await expect(page.locator("[data-action='open-guided']")).toHaveText("Help me see this style");
+  await expect(page.locator(".everyday-grid article")).toHaveCount(4);
+  await expect(page.locator(".profile-note")).toHaveText("These are viewing cues, not scores of quality.");
+});
+
+test("guided overlay honors reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  const durations = await page.locator("#guidedStage").evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { transition: style.transitionDuration, animation: style.animationDuration };
+  });
+  expect(["0s", "0.001s"]).toContain(durations.transition);
+  expect(["0s", "0.001s"]).toContain(durations.animation);
+});
+
+test("guided overlay can be closed at 200 percent page scale", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  const client = await page.context().newCDPSession(page);
+  await client.send("Emulation.setPageScaleFactor", { pageScaleFactor: 2 });
+  await expect(page.locator("#guidedCloseBtn")).toBeVisible();
+  await page.locator("#guidedCloseBtn").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#guidedOverlay")).toBeHidden();
+});
+
+test("prompt and export controls remain in the redesigned detail", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#swiss-style");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
+  await expect(page.locator("#detail-create")).toBeVisible();
+  await expect(page.locator("#detail-create [data-action='copy-prompt']")).toBeVisible();
+  await expect(page.locator("#detail-create [data-action='save-card']").first()).toBeVisible();
+  await expect(page.locator("#detail-create [data-action='export-ratio']")).toHaveCount(4);
+});
+
+test("offline detail does not duplicate the hero in the optional gallery", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.STYLE_ATLAS_RUNTIME_CONFIG = { nativeShell: true, externalGalleryEnabled: false, submissionMode: "iap" };
+  });
+  await page.goto("/#swiss-style");
+  await expect(page.locator(".detail-hero img[src*='swiss-style.webp']")).toHaveCount(1);
+  await expect(page.locator("#galleryGrid img")).toHaveCount(0);
+  expect(await page.evaluate(() => window.StyleAtlasRuntime.isExternalGalleryEnabled())).toBe(false);
+});
+
+test("detail section navigation is named and updates its current target", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const nav = page.locator(".detail-section-nav");
+  await expect(nav).toHaveAttribute("aria-label", "风格详情分段导航");
+  await expect(nav.locator("button")).toHaveCount(5);
+  await nav.locator("button").nth(1).click();
+  await expect(nav.locator("button").nth(1)).toHaveAttribute("aria-current", "true");
+});
+
+test("aesthetic profile exposes level and description without a total score", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await expect(page.locator(".profile-scale")).toHaveCount(4);
+  await expect(page.locator(".profile-scale").first()).toHaveAttribute("aria-label", /5 \/ 5/);
+  await expect(page.locator(".profile-note")).toHaveText("这是观察提示，不是审美评分。");
+  await expect(page.locator(".profile-section")).not.toContainText(/总分|排名/);
 });

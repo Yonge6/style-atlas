@@ -9,7 +9,7 @@ TARGET="$IOS_ROOT/Resources/Web"
 rm -rf "$TARGET"
 mkdir -p "$TARGET/assets/styles" "$TARGET/assets/brand"
 
-for file in index.html styles.css game.js data-core.js data-styles.js data-refined.js examples.js; do
+for file in index.html styles.css game.js data-core.js data-styles.js data-refined.js data-aesthetic-guides.js examples.js; do
   cp "$WEB_ROOT/$file" "$TARGET/$file"
 done
 

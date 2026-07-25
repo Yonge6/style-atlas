@@ -3,6 +3,7 @@
 
   const $ = (id) => document.getElementById(id);
   const data = window.STYLE_ATLAS_DATA || {};
+  const aestheticGuides = window.STYLE_AESTHETIC_GUIDES || {};
   const { categories, categoryAliases, styleAliases, categoryCopy, palettes, peopleByStyle, categoryHistory, riskByStyle, rawStyles, refinedStyles } = data;
   window.STYLE_ATLAS_RUNTIME_CONFIG = Object.assign({
     nativeShell: false,
@@ -77,7 +78,10 @@
     exportRatio: "9:16",
     drawerOpen: false,
     drawerReturnFocus: null,
-    overlayReturnFocus: null
+    overlayReturnFocus: null,
+    guidedStage: 0,
+    activeDetailSection: "see",
+    detailHistory: []
   };
 
   const styles = rawStyles.map((item, index) => {
@@ -151,8 +155,68 @@
 
   Object.entries(refinedStyles || {}).forEach(([id, data]) => Object.assign(styles.find((style) => style.id === id), data));
   const validStyleIds = new Set(styles.map((style) => style.id));
+  const stylesById = new Map(styles.map((style) => [style.id, style]));
   store.saved = [...new Set(store.saved.filter((id) => validStyleIds.has(id)))];
   store.recent = [...new Set(store.recent.filter((id) => validStyleIds.has(id)))].slice(0, 12);
+
+  const REFLECTIONS_KEY = "styleAtlasReflectionsV1";
+
+  function readReflections() {
+    try {
+      const parsed = JSON.parse(readStorage(REFLECTIONS_KEY, "{}"));
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+    } catch {
+      writeStorage(REFLECTIONS_KEY, "{}");
+      return {};
+    }
+  }
+
+  function localizedList(value, lang = store.lang) {
+    return Array.isArray(value?.[lang]) ? value[lang].filter(Boolean) : [];
+  }
+
+  function guideFor(style) {
+    const guide = aestheticGuides[style.id];
+    if (guide) return { ...guide, enhanced: true };
+    const observationZh = [...new Set(localizedList(style.lookFor, "zh").concat(localizedList(style.visualFeatures, "zh")))].slice(0, 3);
+    const observationEn = [...new Set(localizedList(style.lookFor, "en").concat(localizedList(style.visualFeatures, "en")))].slice(0, 3);
+    const observationCount = Math.max(3, Math.min(5, Math.max(observationZh.length, observationEn.length)));
+    return {
+      enhanced: false,
+      openingQuestion: {
+        zh: style.curatorNote?.zh || style.memoryAnchor.zh,
+        en: style.curatorNote?.en || style.memoryAnchor.en
+      },
+      observe: Array.from({ length: observationCount }, (_, index) => ({
+        key: `fallback-${index + 1}`,
+        label: {
+          zh: `观察线索 ${index + 1}`,
+          en: `Viewing cue ${index + 1}`
+        },
+        text: {
+          zh: observationZh[index] || observationZh[observationZh.length - 1] || style.memoryAnchor.zh,
+          en: observationEn[index] || observationEn[observationEn.length - 1] || style.memoryAnchor.en
+        }
+      })),
+      profile: null,
+      feelingWords: {
+        zh: localizedList(style.tags, "zh").slice(0, 4),
+        en: localizedList(style.tags, "en").slice(0, 4)
+      },
+      everydayLife: localizedList(style.useCases, "zh").slice(0, 4).map((item, index) => ({
+        scene: {
+          zh: item,
+          en: localizedList(style.useCases, "en")[index] || item
+        },
+        text: { zh: "", en: "" }
+      })),
+      comparisons: style.relatedStyles.filter((id) => validStyleIds.has(id)).slice(0, 2).map((styleId) => ({ styleId })),
+      reflectionPrompt: {
+        zh: style.memoryAnchor.zh,
+        en: style.memoryAnchor.en
+      }
+    };
+  }
 
   function hasPlusAccess() {
     return ACCESS_CONFIG.plusEnabled === true;
@@ -231,6 +295,44 @@
       references: "代表作品与案例",
       memory: "记住它",
       useCases: "适用场景",
+      detailSections: ["看", "懂", "用", "创作", "深入"],
+      detailSectionNav: "风格详情分段导航",
+      guidedEntry: "带我看懂这张图",
+      guidedOpening: "先别急着分析",
+      guidedFirst: "先看这里",
+      guidedSecond: "再看一个地方",
+      guidedThird: "最后感受一下",
+      guidedComplete: "你已经抓住这种风格最重要的线索了。",
+      guidedLooked: "我看了一会儿",
+      guidedContinue: "继续看",
+      guidedBack: "回到详情",
+      closeGuided: "关闭看图引导",
+      rememberInOneLine: "一句话记住它",
+      recognizeTitle: "下次再见到它，先认这几个地方",
+      profileTitle: "审美气质",
+      profileLabels: ["秩序感", "色彩浓度", "装饰程度", "情绪张力"],
+      profileNote: "这是观察提示，不是审美评分。",
+      profilePending: "审美气质分析正在完善中。",
+      whyFeelTitle: "为什么它会给你这种感觉？",
+      curatorObservation: "策展人观察",
+      formationMechanism: "形成机制",
+      rememberSentence: "记住它",
+      everydayTitle: "这种美，也藏在日常生活里",
+      compareTitle: "看起来有点像，但它们不一样",
+      similarityLabel: "相似点",
+      differenceLabel: "关键区别",
+      createTitle: "把这种美用进创作",
+      exploreTitle: "深入了解",
+      reflectionTitle: "我对它的第一感觉",
+      reflectionLabel: "记录你对这个风格的第一感觉",
+      reflectionLimit: "最多 300 字符，仅保存在这台设备。",
+      reflectionClear: "清除",
+      reflectionSaved: "已保存在本机",
+      accordionHistory: "历史背景",
+      accordionPeople: "代表人物",
+      accordionReferences: "参考作品",
+      accordionGallery: "公开案例",
+      accordionContext: "文化与形成原因补充",
       prompt: "风格表达词",
       examples: "公开案例",
       source: "查看来源",
@@ -371,6 +473,44 @@
       references: "Works And Cases",
       memory: "Remember it",
       useCases: "Use cases",
+      detailSections: ["See", "Understand", "Apply", "Create", "Explore"],
+      detailSectionNav: "Style detail section navigation",
+      guidedEntry: "Help me see this style",
+      guidedOpening: "Do not analyze it yet",
+      guidedFirst: "First, look here",
+      guidedSecond: "Notice one more place",
+      guidedThird: "Finally, sense the whole",
+      guidedComplete: "You have found the most important cues in this style.",
+      guidedLooked: "I've taken a look",
+      guidedContinue: "Keep looking",
+      guidedBack: "Back to the style",
+      closeGuided: "Close guided looking",
+      rememberInOneLine: "Remember it in one line",
+      recognizeTitle: "How to recognize it again",
+      profileTitle: "Aesthetic character",
+      profileLabels: ["Order", "Color intensity", "Ornament", "Emotional intensity"],
+      profileNote: "These are viewing cues, not scores of quality.",
+      profilePending: "Aesthetic character analysis is being refined.",
+      whyFeelTitle: "Why does it feel this way?",
+      curatorObservation: "Curator observation",
+      formationMechanism: "How the feeling is formed",
+      rememberSentence: "Remember it",
+      everydayTitle: "This kind of beauty appears in everyday life",
+      compareTitle: "Similar at first glance, different when you look closer",
+      similarityLabel: "Shared quality",
+      differenceLabel: "Key difference",
+      createTitle: "Create with this style",
+      exploreTitle: "Explore deeper",
+      reflectionTitle: "My first impression",
+      reflectionLabel: "Record your first impression of this style",
+      reflectionLimit: "Up to 300 characters, saved only on this device.",
+      reflectionClear: "Clear",
+      reflectionSaved: "Saved on this device",
+      accordionHistory: "Historical background",
+      accordionPeople: "Representative figures",
+      accordionReferences: "Reference works",
+      accordionGallery: "Public examples",
+      accordionContext: "Culture and formation",
       prompt: "Style Expression",
       examples: "Public example",
       source: "View source",
@@ -527,7 +667,16 @@
     plusFootnote: $("plusFootnote"),
     plusCta: $("plusCta"),
     plusRestoreBtn: $("plusRestoreBtn"),
-    plusCloseBtn: $("plusCloseBtn")
+    plusCloseBtn: $("plusCloseBtn"),
+    guidedOverlay: $("guidedOverlay"),
+    guidedPanel: $("guidedPanel"),
+    guidedImage: $("guidedImage"),
+    guidedStage: $("guidedStage"),
+    guidedKicker: $("guidedKicker"),
+    guidedTitle: $("guidedTitle"),
+    guidedText: $("guidedText"),
+    guidedNextBtn: $("guidedNextBtn"),
+    guidedCloseBtn: $("guidedCloseBtn")
   };
 
   function pngFallback(src) {
@@ -827,7 +976,7 @@
     const focus = document.activeElement;
     const overlay = !dom.plusModal.hidden
       ? "Plus"
-      : (!dom.lightbox.hidden ? "Lightbox" : (store.drawerOpen ? "Drawer" : "None"));
+      : (!dom.lightbox.hidden ? "Lightbox" : (!dom.guidedOverlay.hidden ? "Guided Looking" : (store.drawerOpen ? "Drawer" : "None")));
     panel.textContent = [
       `View: ${store.view}`,
       `Focus: ${focus?.id || focus?.tagName || "None"}`,
@@ -876,6 +1025,7 @@
     const intendedReturnFocus = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     if (container !== dom.plusModal && !dom.plusModal.hidden) closePlus(false);
     if (container !== dom.lightbox && !dom.lightbox.hidden) closeImage(false);
+    if (container !== dom.guidedOverlay && !dom.guidedOverlay.hidden) closeGuided(false);
     if (store.drawerOpen) setDrawer(false, false);
     store.overlayReturnFocus = intendedReturnFocus;
     store.overlayScrollY = window.scrollY;
@@ -1157,139 +1307,425 @@
     prepareImages(dom.categoryChips);
   }
 
+  function detailSectionNav() {
+    const targets = ["detail-see", "detail-understand", "detail-apply", "detail-create", "detail-explore"];
+    return `
+      <nav class="detail-section-nav" aria-label="${escapeHtml(t("detailSectionNav"))}">
+        ${t("detailSections").map((label, index) => `
+          <button type="button" data-action="jump-detail-section" data-target="${targets[index]}" aria-current="${index === 0 ? "true" : "false"}">${escapeHtml(label)}</button>
+        `).join("")}
+      </nav>
+    `;
+  }
+
+  function recognitionItems(style, guide) {
+    const lang = store.lang;
+    const items = guide.observe.map((item) => ({
+      title: item.label[lang],
+      text: item.text[lang]
+    }));
+    if (guide.enhanced) {
+      localizedList(style.lookFor).forEach((text, index) => {
+        if (items.length >= 5) return;
+        if (items.some((item) => item.text === text || item.title === text)) return;
+        items.push({
+          title: store.lang === "zh" ? `识别线索 ${index + 1}` : `Recognition cue ${index + 1}`,
+          text
+        });
+      });
+    }
+    return items.filter((item) => item.title && item.text).slice(0, 5);
+  }
+
+  function renderRecognition(style, guide) {
+    return `
+      <section id="detail-understand" class="detail-section aesthetic-section recognize-section" aria-labelledby="recognizeTitle">
+        <p class="section-kicker">${escapeHtml(t("detailSections")[1])}</p>
+        <h2 id="recognizeTitle">${escapeHtml(t("recognizeTitle"))}</h2>
+        <div class="recognition-grid">
+          ${recognitionItems(style, guide).map((item, index) => `
+            <article class="observation-card">
+              <span aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+              <h3>${escapeHtml(item.title)}</h3>
+              <p>${escapeHtml(item.text)}</p>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderProfile(guide) {
+    if (!guide.profile) {
+      return `
+        <section class="detail-section aesthetic-section profile-pending">
+          <h2>${escapeHtml(t("profileTitle"))}</h2>
+          <p>${escapeHtml(t("profilePending"))}</p>
+        </section>
+      `;
+    }
+    const lang = store.lang;
+    const keys = ["order", "color", "ornament", "emotion"];
+    return `
+      <section class="detail-section aesthetic-section profile-section">
+        <h2>${escapeHtml(t("profileTitle"))}</h2>
+        <p class="profile-note">${escapeHtml(t("profileNote"))}</p>
+        <div class="profile-grid">
+          ${keys.map((key, index) => {
+            const item = guide.profile[key];
+            return `
+              <div class="profile-row">
+                <div>
+                  <strong>${escapeHtml(t("profileLabels")[index])}</strong>
+                  <span>${escapeHtml(item[lang])}</span>
+                </div>
+                <div class="profile-scale" role="img" aria-label="${escapeHtml(`${t("profileLabels")[index]}：${item.level} / 5，${item[lang]}`)}">
+                  ${Array.from({ length: 5 }, (_, scaleIndex) => `<i class="${scaleIndex < item.level ? "active" : ""}" aria-hidden="true"></i>`).join("")}
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+        <div class="feeling-words" aria-label="${escapeHtml(store.lang === "zh" ? "感受词" : "Feeling words")}">
+          ${localizedList(guide.feelingWords).map((word) => `<span>${escapeHtml(word)}</span>`).join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderWhyItFeels(style, guide, locked) {
+    const lang = store.lang;
+    const observation = locked ? guide.openingQuestion[lang] : style.curatorNote[lang];
+    const mechanism = locked ? style.summary[lang] : style.why[lang];
+    return `
+      <section class="detail-section aesthetic-section why-feels">
+        <h2>${escapeHtml(t("whyFeelTitle"))}</h2>
+        <div class="why-block">
+          <h3>${escapeHtml(t("curatorObservation"))}</h3>
+          <p>${escapeHtml(observation)}</p>
+        </div>
+        <div class="why-block">
+          <h3>${escapeHtml(t("formationMechanism"))}</h3>
+          <p>${escapeHtml(mechanism)}</p>
+        </div>
+        <blockquote>
+          <strong>${escapeHtml(t("rememberSentence"))}</strong>
+          <p>${escapeHtml(style.memoryAnchor[lang])}</p>
+        </blockquote>
+      </section>
+    `;
+  }
+
+  function renderEveryday(guide) {
+    const lang = store.lang;
+    return `
+      <section id="detail-apply" class="detail-section aesthetic-section everyday-section" aria-labelledby="everydayTitle">
+        <p class="section-kicker">${escapeHtml(t("detailSections")[2])}</p>
+        <h2 id="everydayTitle">${escapeHtml(t("everydayTitle"))}</h2>
+        <div class="everyday-grid">
+          ${guide.everydayLife.filter((item) => item.scene?.[lang]).map((item, index) => `
+            <article>
+              <span aria-hidden="true">${["⌂", "◇", "◉", "□"][index] || "•"}</span>
+              <h3>${escapeHtml(item.scene[lang])}</h3>
+              ${item.text?.[lang] ? `<p>${escapeHtml(item.text[lang])}</p>` : ""}
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderComparisons(guide) {
+    const lang = store.lang;
+    const comparisons = guide.comparisons.map((item) => ({ item, style: stylesById.get(item.styleId) })).filter(({ style }) => style);
+    if (!comparisons.length) return "";
+    return `
+      <section class="detail-section aesthetic-section comparison-section">
+        <h2>${escapeHtml(t("compareTitle"))}</h2>
+        <div class="comparison-list">
+          ${comparisons.map(({ item, style }) => `
+            <article class="comparison-card">
+              <button class="comparison-open image-slot" type="button" data-action="open-style" data-id="${style.id}" data-image-label="${escapeHtml(style.name[lang])}">
+                ${imageMarkup(style.image, "", "", { decorative: true })}
+                <span><strong>${escapeHtml(style.name[lang])}</strong><small>${escapeHtml(style.name[lang === "zh" ? "en" : "zh"])}</small></span>
+              </button>
+              ${item.similarity?.[lang] ? `<p><strong>${escapeHtml(t("similarityLabel"))}</strong>${escapeHtml(item.similarity[lang])}</p>` : `<p>${escapeHtml(style.summary[lang])}</p>`}
+              ${item.difference?.[lang] ? `<p><strong>${escapeHtml(t("differenceLabel"))}</strong>${escapeHtml(item.difference[lang])}</p>` : ""}
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderReflection(style, guide) {
+    const lang = store.lang;
+    const reflections = readReflections();
+    const value = typeof reflections[style.id]?.text === "string" ? reflections[style.id].text.slice(0, 300) : "";
+    const inputId = `reflection-${style.id}`;
+    return `
+      <details class="detail-section reflection-section">
+        <summary>${escapeHtml(t("reflectionTitle"))}</summary>
+        <div class="reflection-body">
+          <p>${escapeHtml(guide.reflectionPrompt[lang])}</p>
+          <label for="${inputId}">${escapeHtml(t("reflectionLabel"))}</label>
+          <textarea id="${inputId}" data-reflection-id="${style.id}" maxlength="300" rows="5" aria-describedby="${inputId}-limit">${escapeHtml(value)}</textarea>
+          <div class="reflection-footer">
+            <small id="${inputId}-limit">${escapeHtml(t("reflectionLimit"))}</small>
+            <button class="copy-btn" type="button" data-action="clear-reflection" data-id="${style.id}">${escapeHtml(t("reflectionClear"))}</button>
+          </div>
+        </div>
+      </details>
+    `;
+  }
+
+  function renderPromptSection(style, locked) {
+    const lang = store.lang;
+    if (locked) {
+      return `
+        <section class="detail-section locked-section">
+          <div class="locked-preview" aria-hidden="true" inert>
+            <h2>${escapeHtml(t("prompt"))}</h2>
+            <p>${escapeHtml(t("lockedPreview"))}</p>
+          </div>
+          <div class="lock-overlay">
+            <span>${escapeHtml(t("locked"))}</span>
+            <strong>${escapeHtml(t("unlockTitle"))}</strong>
+            <p>${escapeHtml(t("unlockBody"))}</p>
+            <button class="copy-btn" type="button" data-action="show-plus">${escapeHtml(t("unlockCta"))}</button>
+          </div>
+        </section>
+      `;
+    }
+    return `
+      <section class="detail-section">
+        <h2>${escapeHtml(t("prompt"))}</h2>
+        <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
+        <div class="prompt-actions">
+          <button class="copy-btn" type="button" data-action="copy-prompt">${escapeHtml(t("copyPrompt"))}</button>
+          <button class="copy-btn" type="button" data-action="save-card" data-export-control>${escapeHtml(t("saveCard"))}</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderAccordion(id, title, content, expanded = false) {
+    return `
+      <section class="deep-accordion">
+        <h3>
+          <button type="button" data-action="toggle-accordion" aria-expanded="${expanded}" aria-controls="${id}">
+            <span>${escapeHtml(title)}</span><span aria-hidden="true">⌄</span>
+          </button>
+        </h3>
+        <div id="${id}" class="deep-accordion-panel" ${expanded ? "" : "hidden"}>${content}</div>
+      </section>
+    `;
+  }
+
+  function renderExplore(style, locked) {
+    const lang = store.lang;
+    if (locked) {
+      return `
+        <section id="detail-explore" class="detail-section explore-section locked-section" aria-labelledby="exploreTitle">
+          <div class="locked-preview" aria-hidden="true" inert>
+            <p class="section-kicker">${escapeHtml(t("detailSections")[4])}</p>
+            <h2 id="exploreTitle">${escapeHtml(t("exploreTitle"))}</h2>
+            <p>${escapeHtml(style.history[lang])}</p>
+          </div>
+          <div class="lock-overlay">
+            <span>${escapeHtml(t("locked"))}</span>
+            <strong>${escapeHtml(t("unlockTitle"))}</strong>
+            <p>${escapeHtml(t("unlockBody"))}</p>
+            <button class="copy-btn" type="button" data-action="show-plus">${escapeHtml(t("unlockCta"))}</button>
+          </div>
+        </section>
+      `;
+    }
+    const base = style.id.replace(/[^a-z0-9-]/gi, "");
+    return `
+      <section id="detail-explore" class="detail-section explore-section" aria-labelledby="exploreTitle">
+        <p class="section-kicker">${escapeHtml(t("detailSections")[4])}</p>
+        <h2 id="exploreTitle">${escapeHtml(t("exploreTitle"))}</h2>
+        <div class="deep-accordions">
+          ${renderAccordion(`${base}-history`, t("accordionHistory"), `<p>${escapeHtml(style.history[lang])}</p>`, true)}
+          ${renderAccordion(`${base}-people`, t("accordionPeople"), `<div class="chip-row">${style.people[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>`)}
+          ${renderAccordion(`${base}-references`, t("accordionReferences"), `<ul class="detail-list">${style.references[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`)}
+          ${renderAccordion(`${base}-gallery`, t("accordionGallery"), `<div class="gallery-grid" id="galleryGrid"></div><p class="gallery-note">${escapeHtml(store.lang === "zh" ? "公开图库是可选补充；离线时不影响其余内容。" : "The public gallery is optional context; the rest remains available offline.")}</p>`)}
+          ${renderAccordion(`${base}-context`, t("accordionContext"), `<p>${escapeHtml(style.curatorNote[lang])}</p><p>${escapeHtml(style.why[lang])}</p>`)}
+        </div>
+      </section>
+    `;
+  }
+
   function renderDetail() {
     abortWikiGallery();
     releasePreparedImages(dom.detailContent);
     const style = activeStyle();
     const lang = store.lang;
     const locked = isStyleLocked(style);
-    const example = {
-      title: `${style.name[lang]} ${store.lang === "zh" ? "原创示例" : "original example"}`,
-      artist: t("productName"),
-      image: style.image
-    };
+    const guide = guideFor(style);
+    const saved = isSaved(style.id);
     addRecent(style.id);
-    const gallerySection = `
-      <section class="detail-section">
-        <h2>${t("exhibitImages")}</h2>
-        <div class="gallery-grid" id="galleryGrid">
-          <figure class="gallery-item image-slot" data-image-label="${escapeHtml(style.name[lang])}">
-            <button class="gallery-open" type="button" data-action="open-image" aria-label="${escapeHtml(t("imagePreview"))}：${escapeHtml(style.name[lang])}">
-              ${imageMarkup(style.image, style.name[lang])}
-            </button>
-            <figcaption>${escapeHtml(style.name[lang])}</figcaption>
-          </figure>
-        </div>
-      </section>
-    `;
-    const exampleSection = example ? `
-      <section class="detail-section">
-        <h2>${t("examples")}</h2>
-        <figure class="example-card image-slot" data-image-label="${escapeHtml(example.title)}">
-          <button class="gallery-open example-open" type="button" data-action="open-image" aria-label="${escapeHtml(t("imagePreview"))}：${escapeHtml(example.title)}">
-            ${imageMarkup(example.image, example.title)}
-          </button>
-          <figcaption>
-            <strong>${escapeHtml(example.title)}</strong>
-            <span>${escapeHtml(example.artist)}</span>
-            ${example.source ? `<a href="${escapeHtml(example.source)}" target="_blank" rel="noreferrer">${t("source")}</a>` : ""}
-          </figcaption>
-        </figure>
-      </section>
-    ` : "";
-    const promptSection = locked ? `
-      <section class="detail-section locked-section">
-        <div class="locked-preview">
-          <h2>${t("prompt")}</h2>
-          <p>${escapeHtml(t("lockedPreview"))}</p>
-        </div>
-        <div class="lock-overlay">
-          <span>${t("locked")}</span>
-          <strong>${t("unlockTitle")}</strong>
-          <p>${t("unlockBody")}</p>
-          <button class="copy-btn" type="button" data-action="show-plus">${t("unlockCta")}</button>
-        </div>
-      </section>
-    ` : `
-      <section class="detail-section">
-        <h2>${t("prompt")}</h2>
-        <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
-        <div class="prompt-actions">
-          <button class="copy-btn" type="button" data-action="copy-prompt">${t("copyPrompt")}</button>
-          <button class="copy-btn" type="button" data-action="save-card" data-export-control>${t("saveCard")}</button>
-        </div>
-      </section>
-    `;
-    const archiveSections = locked ? `
-      ${lockedSection(t("curator"), style.curatorNote[lang])}
-      ${lockedSection(t("exhibitImages"), style.name[lang])}
-      <section class="detail-section">
-        <h2>${t("features")}</h2>
-        <div class="feature-grid">${style.visualFeatures[lang].slice(0, 3).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      ${lockedSection(t("history"), style.history[lang])}
-      ${lockedSection(t("why"), style.why[lang])}
-      ${lockedSection(t("people"), style.people[lang].join(" / "))}
-      ${lockedSection(t("lookFor"), style.lookFor[lang].slice(0, 2).join(" / "))}
-      ${lockedSection(t("references"), style.references[lang][0])}
-      <section class="detail-section">
-        <h2>${t("useCases")}</h2>
-        <div class="chip-row">${style.useCases[lang].slice(0, 3).map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      ${promptSection}
-    ` : `
-      <section class="detail-section">
-        <h2>${t("curator")}</h2>
-        <p>${escapeHtml(style.curatorNote[lang])}</p>
-      </section>
-      ${gallerySection}
-      <section class="detail-section">
-        <h2>${t("features")}</h2>
-        <div class="feature-grid">${style.visualFeatures[lang].map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      <section class="detail-section">
-        <h2>${t("history")}</h2>
-        <p>${escapeHtml(style.history[lang])}</p>
-      </section>
-      <section class="detail-section">
-        <h2>${t("why")}</h2>
-        <p>${escapeHtml(style.why[lang])}</p>
-      </section>
-      <section class="detail-section">
-        <h2>${t("people")}</h2>
-        <div class="chip-row">${style.people[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      <section class="detail-section">
-        <h2>${t("lookFor")}</h2>
-        <ul class="detail-list">${style.lookFor[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-      </section>
-      <section class="detail-section">
-        <h2>${t("references")}</h2>
-        <ul class="detail-list">${style.references[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-      </section>
-      <section class="detail-section">
-        <h2>${t("useCases")}</h2>
-        <div class="chip-row">${style.useCases[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      ${exampleSection}
-      ${promptSection}
-    `;
+    store.activeDetailSection = "see";
+
     dom.detailContent.innerHTML = `
-      <div class="detail-hero style-card">${renderCard(style, true)}</div>
-      <section class="detail-section">
-        <h2>${t("memory")}</h2>
-        <p>${escapeHtml(style.memoryAnchor[lang])}</p>
+      ${detailSectionNav()}
+      <section id="detail-see" class="detail-hero style-card" aria-labelledby="detailTitle">
+        <div class="badge-row">
+          <div class="badge">#${style.number} · ${escapeHtml(catName(style.category))}<br>${escapeHtml(style.subtitle[lang])}</div>
+          <div class="card-actions">
+            <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" data-id="${style.id}" aria-pressed="${saved}" aria-label="${escapeHtml(savedLabel(style, saved))}">${saved ? "♥" : "♡"}</button>
+            <button class="card-action" type="button" data-action="share" data-export-control aria-label="${escapeHtml(t("shareStyle", style.name[lang]))}">↗</button>
+          </div>
+        </div>
+        <div class="visual image-slot" data-image-label="${escapeHtml(style.name[lang])}">
+          <button class="hero-image-button" type="button" data-action="open-image" aria-label="${escapeHtml(`${t("imagePreview")}：${style.name[lang]}`)}">
+            ${imageMarkup(style.image, style.name[lang], "", { eager: true, priority: "high" })}
+          </button>
+        </div>
+        <div class="detail-hero-copy">
+          <h1 id="detailTitle">${escapeHtml(style.name.en)}</h1>
+          <p class="zh-name">${escapeHtml(style.name.zh)}</p>
+          <p class="summary">${escapeHtml(style.summary[lang])}</p>
+          <div class="memory-anchor">
+            <span>${escapeHtml(t("rememberInOneLine"))}</span>
+            <p>${escapeHtml(style.memoryAnchor[lang])}</p>
+          </div>
+          <div class="chip-row">${style.tags[lang].slice(0, 3).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>
+          <div class="hero-actions">
+            <button class="guided-entry" type="button" data-action="open-guided">${escapeHtml(t("guidedEntry"))}</button>
+            <button class="overview-copy-btn" type="button" data-action="copy-overview" aria-label="${escapeHtml(t("copyOverview"))}" title="${escapeHtml(t("copyOverview"))}">⧉</button>
+          </div>
+        </div>
       </section>
-      ${archiveSections}
-      ${renderExportPanel()}
-      <section class="detail-section">
-        <h2>${t("similar")}</h2>
-        <div class="result-list">${style.relatedStyles.map((id) => resultCard(styles.find((item) => item.id === id))).join("")}</div>
+      ${renderRecognition(style, guide)}
+      ${renderProfile(guide)}
+      ${renderWhyItFeels(style, guide, locked)}
+      ${renderEveryday(guide)}
+      ${renderComparisons(guide)}
+      ${renderReflection(style, guide)}
+      <section id="detail-create" class="detail-create-group" aria-labelledby="createTitle">
+        <div class="detail-section section-heading-card">
+          <p class="section-kicker">${escapeHtml(t("detailSections")[3])}</p>
+          <h2 id="createTitle">${escapeHtml(t("createTitle"))}</h2>
+        </div>
+        ${renderPromptSection(style, locked)}
+        ${renderExportPanel()}
+      </section>
+      ${renderExplore(style, locked)}
+      <section class="detail-section similar-section">
+        <h2>${escapeHtml(t("similar"))}</h2>
+        <div class="result-list">${style.relatedStyles.filter((id) => validStyleIds.has(id)).slice(0, 4).map((id) => resultCard(stylesById.get(id))).join("")}</div>
       </section>
     `;
     prepareImages(dom.detailContent);
+    imagePipeline.preload(style.image, { priority: "high" }).catch(() => null);
     updateExportControls();
     if (!locked) loadWikiGallery(style);
+  }
+
+  function guidedStages(style) {
+    const lang = store.lang;
+    const guide = guideFor(style);
+    const observeStages = guide.observe.slice(0, 3).map((item, index) => ({
+      title: [t("guidedFirst"), t("guidedSecond"), t("guidedThird")][index],
+      kicker: item.label[lang],
+      text: item.text[lang],
+      button: t("guidedContinue")
+    }));
+    return [
+      {
+        title: t("guidedOpening"),
+        kicker: style.name[lang],
+        text: guide.openingQuestion[lang],
+        button: t("guidedLooked")
+      },
+      ...observeStages,
+      {
+        title: t("guidedComplete"),
+        kicker: t("rememberInOneLine"),
+        text: style.memoryAnchor[lang],
+        button: t("guidedBack")
+      }
+    ];
+  }
+
+  function renderGuidedStage() {
+    const stages = guidedStages(activeStyle());
+    const stageIndex = Math.min(store.guidedStage, stages.length - 1);
+    const stage = stages[stageIndex];
+    dom.guidedStage.dataset.stage = String(stageIndex);
+    dom.guidedKicker.textContent = stage.kicker;
+    dom.guidedTitle.textContent = stage.title;
+    dom.guidedText.textContent = stage.text;
+    dom.guidedNextBtn.textContent = stage.button;
+  }
+
+  function openGuided(returnFocus = null) {
+    const style = activeStyle();
+    store.guidedStage = 0;
+    dom.guidedImage.src = style.image;
+    dom.guidedImage.alt = "";
+    dom.guidedImage.setAttribute("aria-hidden", "true");
+    renderGuidedStage();
+    imagePipeline.preload(style.image, { priority: "high" }).catch(() => null);
+    openOverlay(dom.guidedOverlay, dom.guidedPanel, returnFocus);
+  }
+
+  function nextGuided() {
+    const stages = guidedStages(activeStyle());
+    if (store.guidedStage >= stages.length - 1) {
+      closeGuided();
+      return;
+    }
+    store.guidedStage += 1;
+    renderGuidedStage();
+    dom.guidedTitle.focus?.({ preventScroll: true });
+  }
+
+  function closeGuided(restoreFocus = true) {
+    if (dom.guidedOverlay.hidden) return;
+    closeOverlay(dom.guidedOverlay, restoreFocus);
+  }
+
+  function writeReflection(styleId, text) {
+    if (!validStyleIds.has(styleId)) return false;
+    const reflections = readReflections();
+    const normalized = String(text || "").slice(0, 300);
+    if (normalized) {
+      reflections[styleId] = { text: normalized, updatedAt: new Date().toISOString() };
+    } else {
+      delete reflections[styleId];
+    }
+    return writeStorage(REFLECTIONS_KEY, JSON.stringify(reflections));
+  }
+
+  function clearReflection(styleId) {
+    writeReflection(styleId, "");
+    const textarea = dom.detailContent.querySelector(`[data-reflection-id="${CSS.escape(styleId)}"]`);
+    if (textarea) {
+      textarea.value = "";
+      textarea.focus();
+    }
+    toast(t("reflectionSaved"));
+  }
+
+  function jumpToDetailSection(targetId, button) {
+    const target = $(targetId);
+    if (!target) return;
+    dom.detailContent.querySelectorAll(".detail-section-nav button").forEach((item) => item.setAttribute("aria-current", String(item === button)));
+    store.activeDetailSection = targetId.replace("detail-", "");
+    target.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  }
+
+  function toggleAccordion(button) {
+    const panelId = button.getAttribute("aria-controls");
+    const panel = panelId ? $(panelId) : null;
+    if (!panel) return;
+    const expanded = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", String(!expanded));
+    panel.hidden = expanded;
+    if (!expanded) prepareImages(panel);
   }
 
   async function loadWikiGallery(style) {
@@ -1497,13 +1933,20 @@
   }
 
   function openDetail(id = store.activeId, sourceView = store.view) {
+    const previousId = store.activeId;
+    if (sourceView === "detail" && id && id !== previousId) {
+      store.detailHistory.push(previousId);
+    } else if (sourceView !== "detail") {
+      store.detailHistory = [];
+    }
     if (id && validStyleIds.has(id)) store.activeId = id;
-    store.backView = sourceView === "detail" ? "home" : sourceView;
+    if (sourceView !== "detail") store.backView = sourceView;
     setView("detail");
   }
 
   function setView(view, shouldRender = true) {
     if (store.view === "detail" && view !== "detail") abortWikiGallery();
+    if (view !== "detail" && !dom.guidedOverlay.hidden) closeGuided(false);
     if (view !== "detail") {
       const detailView = $("detailView");
       detailView.classList.remove("edge-back-dragging", "edge-back-settling");
@@ -2084,6 +2527,17 @@
     dom.drawerCloseBtn.addEventListener("click", () => setDrawer(false));
     dom.drawerBackdrop.addEventListener("click", () => setDrawer(false));
     function navigateBack() {
+      if (store.view === "detail" && store.detailHistory.length) {
+        store.activeId = store.detailHistory.pop();
+        renderDetail();
+        window.scrollTo({ top: 0, behavior: "auto" });
+        const heading = dom.detailContent.querySelector("h1");
+        if (heading) {
+          heading.tabIndex = -1;
+          requestAnimationFrame(() => heading.focus({ preventScroll: true }));
+        }
+        return;
+      }
       const returnFocus = store.view === "search" ? store.viewReturnFocus : null;
       setView(store.view === "detail" ? store.backView : "home");
       store.viewReturnFocus = null;
@@ -2549,6 +3003,12 @@
       if (action === "copy-overview") return copyStyleOverview();
       if (action === "copy-prompt") return copyStyleExpression();
       if (action === "save-card") return saveShareCard();
+      if (action === "open-guided") return openGuided(event.target.closest("[data-action='open-guided']"));
+      if (action === "next-guided") return nextGuided();
+      if (action === "close-guided") return closeGuided();
+      if (action === "jump-detail-section") return jumpToDetailSection(event.target.closest("[data-target]")?.dataset.target, event.target.closest("[data-target]"));
+      if (action === "toggle-accordion") return toggleAccordion(event.target.closest("[data-action='toggle-accordion']"));
+      if (action === "clear-reflection" && id) return clearReflection(id);
       if (filter) {
         store.filter = store.filter === filter ? "" : filter;
         if (store.view !== "search") {
@@ -2568,6 +3028,14 @@
     });
     dom.lightbox.addEventListener("click", (event) => {
       if (event.target === dom.lightbox) closeImage();
+    });
+    dom.guidedOverlay.addEventListener("click", (event) => {
+      if (event.target === dom.guidedOverlay) closeGuided();
+    });
+    dom.detailContent.addEventListener("input", (event) => {
+      const textarea = event.target.closest("[data-reflection-id]");
+      if (!textarea) return;
+      writeReflection(textarea.dataset.reflectionId, textarea.value);
     });
 
     document.querySelectorAll(".nav-btn").forEach((button) => {
@@ -2594,12 +3062,15 @@
       copyText(list || t("productName"));
     });
     document.addEventListener("keydown", (event) => {
-      const overlay = !dom.plusModal.hidden ? dom.plusModal : (!dom.lightbox.hidden ? dom.lightbox : (store.drawerOpen ? dom.drawer : null));
+      const overlay = !dom.plusModal.hidden
+        ? dom.plusModal
+        : (!dom.lightbox.hidden ? dom.lightbox : (!dom.guidedOverlay.hidden ? dom.guidedOverlay : (store.drawerOpen ? dom.drawer : null)));
       if (!overlay) return;
       if (event.key === "Escape") {
         event.preventDefault();
         if (!dom.plusModal.hidden) closePlus();
         else if (!dom.lightbox.hidden) closeImage();
+        else if (!dom.guidedOverlay.hidden) closeGuided();
         else setDrawer(false);
         return;
       }
@@ -2650,6 +3121,7 @@
     dom.styleDeck.setAttribute("aria-roledescription", t("styleCardRole"));
     dom.lightboxCloseBtn.setAttribute("aria-label", t("closePreview"));
     dom.plusCloseBtn.setAttribute("aria-label", store.lang === "zh" ? "关闭 Plus" : "Close Plus");
+    dom.guidedCloseBtn.setAttribute("aria-label", t("closeGuided"));
     renderHome();
     if (store.view === "detail") renderDetail();
     if (store.view === "search") renderSearch();
@@ -2667,6 +3139,7 @@
     if (store.view === "about") renderAbout();
     if (store.view === "screenshots") renderScreenshots();
     if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
+    if (!dom.guidedOverlay.hidden) renderGuidedStage();
   }
 
   const initialHash = location.hash.slice(1);
@@ -2715,9 +3188,19 @@
     getState: () => ({
       view: store.view,
       focus: document.activeElement?.id || document.activeElement?.tagName || "",
-      overlay: !dom.plusModal.hidden ? "plus" : (!dom.lightbox.hidden ? "lightbox" : (store.drawerOpen ? "drawer" : "none")),
+      overlay: !dom.plusModal.hidden ? "plus" : (!dom.lightbox.hidden ? "lightbox" : (!dom.guidedOverlay.hidden ? "guided" : (store.drawerOpen ? "drawer" : "none"))),
       viewport: { width: window.innerWidth, height: window.innerHeight }
     })
+  };
+  window.StyleAtlasAesthetic = {
+    guides: aestheticGuides,
+    getGuide: (styleId) => {
+      const style = stylesById.get(styleId);
+      return style ? guideFor(style) : null;
+    },
+    getReflection: (styleId) => readReflections()[styleId] || null,
+    openGuided,
+    closeGuided
   };
   if (new URLSearchParams(location.search).get("debug") === "a11y") {
     const panel = document.createElement("pre");

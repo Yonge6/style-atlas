@@ -14,6 +14,7 @@ required_web_files=(
   "data-core.js"
   "data-styles.js"
   "data-refined.js"
+  "data-aesthetic-guides.js"
   "examples.js"
   "assets/brand/app-icon.png"
 )
