@@ -81,7 +81,11 @@
     overlayReturnFocus: null,
     guidedStage: 0,
     activeDetailSection: "see",
-    detailHistory: []
+    detailHistory: [],
+    reviewMode: "",
+    reviewSection: "",
+    reviewGuidedStage: null,
+    reflectionTimers: new Map()
   };
 
   const styles = rawStyles.map((item, index) => {
@@ -160,6 +164,7 @@
   store.recent = [...new Set(store.recent.filter((id) => validStyleIds.has(id)))].slice(0, 12);
 
   const REFLECTIONS_KEY = "styleAtlasReflectionsV1";
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
   function readReflections() {
     try {
@@ -173,6 +178,19 @@
 
   function localizedList(value, lang = store.lang) {
     return Array.isArray(value?.[lang]) ? value[lang].filter(Boolean) : [];
+  }
+
+  function normalizedFocus(focus) {
+    if (!focus || typeof focus !== "object") return null;
+    const x = Number(focus.x);
+    const y = Number(focus.y);
+    const scale = Number(focus.scale);
+    if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(scale)) return null;
+    return {
+      x: clamp(x, 0, 100),
+      y: clamp(y, 0, 100),
+      scale: clamp(scale, 1, 2)
+    };
   }
 
   function guideFor(style) {
@@ -307,10 +325,13 @@
       guidedContinue: "继续看",
       guidedBack: "回到详情",
       closeGuided: "关闭看图引导",
+      previousGuided: "上一步",
+      guidedStep: (current, total) => `${current} / ${total}`,
       rememberInOneLine: "一句话记住它",
       recognizeTitle: "下次再见到它，先认这几个地方",
       profileTitle: "审美气质",
       profileLabels: ["秩序感", "色彩浓度", "装饰程度", "情绪张力"],
+      profileScaleHints: ["自由 ↔ 严谨", "克制 ↔ 浓郁", "简洁 ↔ 丰富", "平静 ↔ 强烈"],
       profileNote: "这是观察提示，不是审美评分。",
       profilePending: "审美气质分析正在完善中。",
       whyFeelTitle: "为什么它会给你这种感觉？",
@@ -328,6 +349,8 @@
       reflectionLimit: "最多 300 字符，仅保存在这台设备。",
       reflectionClear: "清除",
       reflectionSaved: "已保存在本机",
+      reflectionCleared: "已清除",
+      reflectionStorageUnavailable: "本地保存暂时不可用，但你仍可以继续输入。",
       accordionHistory: "历史背景",
       accordionPeople: "代表人物",
       accordionReferences: "参考作品",
@@ -485,10 +508,13 @@
       guidedContinue: "Keep looking",
       guidedBack: "Back to the style",
       closeGuided: "Close guided looking",
+      previousGuided: "Previous",
+      guidedStep: (current, total) => `${current} / ${total}`,
       rememberInOneLine: "Remember it in one line",
       recognizeTitle: "How to recognize it again",
       profileTitle: "Aesthetic character",
       profileLabels: ["Order", "Color intensity", "Ornament", "Emotional intensity"],
+      profileScaleHints: ["Free ↔ Rigorous", "Restrained ↔ Rich", "Simple ↔ Layered", "Calm ↔ Intense"],
       profileNote: "These are viewing cues, not scores of quality.",
       profilePending: "Aesthetic character analysis is being refined.",
       whyFeelTitle: "Why does it feel this way?",
@@ -506,6 +532,8 @@
       reflectionLimit: "Up to 300 characters, saved only on this device.",
       reflectionClear: "Clear",
       reflectionSaved: "Saved on this device",
+      reflectionCleared: "Cleared",
+      reflectionStorageUnavailable: "Local saving is temporarily unavailable, but you can keep typing.",
       accordionHistory: "Historical background",
       accordionPeople: "Representative figures",
       accordionReferences: "Reference works",
@@ -675,6 +703,9 @@
     guidedKicker: $("guidedKicker"),
     guidedTitle: $("guidedTitle"),
     guidedText: $("guidedText"),
+    guidedStepLabel: $("guidedStepLabel"),
+    guidedDots: $("guidedDots"),
+    guidedPrevBtn: $("guidedPrevBtn"),
     guidedNextBtn: $("guidedNextBtn"),
     guidedCloseBtn: $("guidedCloseBtn")
   };
@@ -1324,7 +1355,7 @@
       title: item.label[lang],
       text: item.text[lang]
     }));
-    if (guide.enhanced) {
+    if (!guide.enhanced) {
       localizedList(style.lookFor).forEach((text, index) => {
         if (items.length >= 5) return;
         if (items.some((item) => item.text === text || item.title === text)) return;
@@ -1382,6 +1413,7 @@
                 <div class="profile-scale" role="img" aria-label="${escapeHtml(`${t("profileLabels")[index]}：${item.level} / 5，${item[lang]}`)}">
                   ${Array.from({ length: 5 }, (_, scaleIndex) => `<i class="${scaleIndex < item.level ? "active" : ""}" aria-hidden="true"></i>`).join("")}
                 </div>
+                <small class="profile-hint">${escapeHtml(t("profileScaleHints")[index])}</small>
               </div>
             `;
           }).join("")}
@@ -1440,12 +1472,12 @@
     const comparisons = guide.comparisons.map((item) => ({ item, style: stylesById.get(item.styleId) })).filter(({ style }) => style);
     if (!comparisons.length) return "";
     return `
-      <section class="detail-section aesthetic-section comparison-section">
+      <section id="detail-compare" class="detail-section aesthetic-section comparison-section">
         <h2>${escapeHtml(t("compareTitle"))}</h2>
         <div class="comparison-list">
           ${comparisons.map(({ item, style }) => `
             <article class="comparison-card">
-              <button class="comparison-open image-slot" type="button" data-action="open-style" data-id="${style.id}" data-image-label="${escapeHtml(style.name[lang])}">
+              <button class="comparison-open image-slot" type="button" data-action="open-style" data-id="${style.id}" data-return-section="detail-compare" data-image-label="${escapeHtml(style.name[lang])}">
                 ${imageMarkup(style.image, "", "", { decorative: true })}
                 <span><strong>${escapeHtml(style.name[lang])}</strong><small>${escapeHtml(style.name[lang === "zh" ? "en" : "zh"])}</small></span>
               </button>
@@ -1472,6 +1504,7 @@
           <textarea id="${inputId}" data-reflection-id="${style.id}" maxlength="300" rows="5" aria-describedby="${inputId}-limit">${escapeHtml(value)}</textarea>
           <div class="reflection-footer">
             <small id="${inputId}-limit">${escapeHtml(t("reflectionLimit"))}</small>
+            <span class="reflection-status" data-reflection-status="${style.id}" role="status" aria-live="polite"></span>
             <button class="copy-btn" type="button" data-action="clear-reflection" data-id="${style.id}">${escapeHtml(t("reflectionClear"))}</button>
           </div>
         </div>
@@ -1558,6 +1591,7 @@
   }
 
   function renderDetail() {
+    flushAllReflections();
     abortWikiGallery();
     releasePreparedImages(dom.detailContent);
     const style = activeStyle();
@@ -1631,21 +1665,24 @@
       title: [t("guidedFirst"), t("guidedSecond"), t("guidedThird")][index],
       kicker: item.label[lang],
       text: item.text[lang],
-      button: t("guidedContinue")
+      button: t("guidedContinue"),
+      focus: normalizedFocus(item.focus)
     }));
     return [
       {
         title: t("guidedOpening"),
         kicker: style.name[lang],
         text: guide.openingQuestion[lang],
-        button: t("guidedLooked")
+        button: t("guidedLooked"),
+        focus: normalizedFocus(guide.openingFocus)
       },
       ...observeStages,
       {
         title: t("guidedComplete"),
         kicker: t("rememberInOneLine"),
         text: style.memoryAnchor[lang],
-        button: t("guidedBack")
+        button: t("guidedBack"),
+        focus: normalizedFocus(guide.closingFocus)
       }
     ];
   }
@@ -1655,15 +1692,32 @@
     const stageIndex = Math.min(store.guidedStage, stages.length - 1);
     const stage = stages[stageIndex];
     dom.guidedStage.dataset.stage = String(stageIndex);
+    dom.guidedStage.dataset.total = String(stages.length);
+    dom.guidedStepLabel.textContent = t("guidedStep", stageIndex + 1, stages.length);
+    dom.guidedDots.innerHTML = stages.map((_, index) => `<i class="${index === stageIndex ? "active" : ""}" aria-hidden="true"></i>`).join("");
     dom.guidedKicker.textContent = stage.kicker;
     dom.guidedTitle.textContent = stage.title;
     dom.guidedText.textContent = stage.text;
+    dom.guidedPrevBtn.textContent = t("previousGuided");
+    dom.guidedPrevBtn.hidden = stageIndex === 0;
     dom.guidedNextBtn.textContent = stage.button;
+    const focus = normalizedFocus(stage.focus);
+    dom.guidedImage.classList.toggle("has-focus", Boolean(focus));
+    if (focus) {
+      dom.guidedImage.style.setProperty("--focus-x", `${focus.x}%`);
+      dom.guidedImage.style.setProperty("--focus-y", `${focus.y}%`);
+      dom.guidedImage.style.setProperty("--focus-scale", String(focus.scale));
+    } else {
+      dom.guidedImage.style.removeProperty("--focus-x");
+      dom.guidedImage.style.removeProperty("--focus-y");
+      dom.guidedImage.style.removeProperty("--focus-scale");
+    }
   }
 
-  function openGuided(returnFocus = null) {
+  function openGuided(returnFocus = null, stage = 0) {
     const style = activeStyle();
-    store.guidedStage = 0;
+    const stages = guidedStages(style);
+    store.guidedStage = clamp(Number.isFinite(Number(stage)) ? Number(stage) : 0, 0, stages.length - 1);
     dom.guidedImage.src = style.image;
     dom.guidedImage.alt = "";
     dom.guidedImage.setAttribute("aria-hidden", "true");
@@ -1679,6 +1733,13 @@
       return;
     }
     store.guidedStage += 1;
+    renderGuidedStage();
+    dom.guidedTitle.focus?.({ preventScroll: true });
+  }
+
+  function previousGuided() {
+    if (store.guidedStage <= 0) return;
+    store.guidedStage -= 1;
     renderGuidedStage();
     dom.guidedTitle.focus?.({ preventScroll: true });
   }
@@ -1700,14 +1761,43 @@
     return writeStorage(REFLECTIONS_KEY, JSON.stringify(reflections));
   }
 
+  function setReflectionStatus(styleId, key) {
+    const status = dom.detailContent.querySelector(`[data-reflection-status="${CSS.escape(styleId)}"]`);
+    if (status) status.textContent = key ? t(key) : "";
+  }
+
+  function flushReflection(styleId) {
+    const pending = store.reflectionTimers.get(styleId);
+    if (!pending) return true;
+    clearTimeout(pending.timer);
+    store.reflectionTimers.delete(styleId);
+    const ok = writeReflection(styleId, pending.text);
+    setReflectionStatus(styleId, ok ? "reflectionSaved" : "reflectionStorageUnavailable");
+    return ok;
+  }
+
+  function flushAllReflections() {
+    [...store.reflectionTimers.keys()].forEach(flushReflection);
+  }
+
+  function scheduleReflectionSave(styleId, text) {
+    if (!validStyleIds.has(styleId)) return;
+    const existing = store.reflectionTimers.get(styleId);
+    if (existing) clearTimeout(existing.timer);
+    const timer = setTimeout(() => flushReflection(styleId), 450);
+    store.reflectionTimers.set(styleId, { text, timer });
+  }
+
   function clearReflection(styleId) {
+    flushReflection(styleId);
     writeReflection(styleId, "");
     const textarea = dom.detailContent.querySelector(`[data-reflection-id="${CSS.escape(styleId)}"]`);
     if (textarea) {
       textarea.value = "";
       textarea.focus();
     }
-    toast(t("reflectionSaved"));
+    setReflectionStatus(styleId, "reflectionCleared");
+    toast(t("reflectionCleared"));
   }
 
   function jumpToDetailSection(targetId, button) {
@@ -1932,10 +2022,11 @@
     return slides;
   }
 
-  function openDetail(id = store.activeId, sourceView = store.view) {
+  function openDetail(id = store.activeId, sourceView = store.view, returnSection = "") {
+    flushAllReflections();
     const previousId = store.activeId;
     if (sourceView === "detail" && id && id !== previousId) {
-      store.detailHistory.push(previousId);
+      store.detailHistory.push({ id: previousId, section: returnSection });
     } else if (sourceView !== "detail") {
       store.detailHistory = [];
     }
@@ -1945,6 +2036,7 @@
   }
 
   function setView(view, shouldRender = true) {
+    flushAllReflections();
     if (store.view === "detail" && view !== "detail") abortWikiGallery();
     if (view !== "detail" && !dom.guidedOverlay.hidden) closeGuided(false);
     if (view !== "detail") {
@@ -2528,11 +2620,17 @@
     dom.drawerBackdrop.addEventListener("click", () => setDrawer(false));
     function navigateBack() {
       if (store.view === "detail" && store.detailHistory.length) {
-        store.activeId = store.detailHistory.pop();
+        const entry = store.detailHistory.pop();
+        store.activeId = typeof entry === "string" ? entry : entry.id;
         renderDetail();
-        window.scrollTo({ top: 0, behavior: "auto" });
+        const section = typeof entry === "object" ? entry.section : "";
+        if (section) {
+          requestAnimationFrame(() => $(section)?.scrollIntoView({ behavior: "auto", block: "start" }));
+        } else {
+          window.scrollTo({ top: 0, behavior: "auto" });
+        }
         const heading = dom.detailContent.querySelector("h1");
-        if (heading) {
+        if (heading && !section) {
           heading.tabIndex = -1;
           requestAnimationFrame(() => heading.focus({ preventScroll: true }));
         }
@@ -2978,7 +3076,7 @@
         if (!img) return;
         return openImage(img.currentSrc || img.src || img.dataset.src, img.alt);
       }
-      if (action === "open-style" && id) return openDetail(id, store.view);
+      if (action === "open-style" && id) return openDetail(id, store.view, event.target.closest("[data-return-section]")?.dataset.returnSection || "");
       if (action === "purchase-plus") {
         if (!isIapMode() || !hasNativeBridge()) return toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
         if (["purchasing", "restoring", "pending"].includes(window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction)) return;
@@ -3005,6 +3103,7 @@
       if (action === "save-card") return saveShareCard();
       if (action === "open-guided") return openGuided(event.target.closest("[data-action='open-guided']"));
       if (action === "next-guided") return nextGuided();
+      if (action === "previous-guided") return previousGuided();
       if (action === "close-guided") return closeGuided();
       if (action === "jump-detail-section") return jumpToDetailSection(event.target.closest("[data-target]")?.dataset.target, event.target.closest("[data-target]"));
       if (action === "toggle-accordion") return toggleAccordion(event.target.closest("[data-action='toggle-accordion']"));
@@ -3035,8 +3134,15 @@
     dom.detailContent.addEventListener("input", (event) => {
       const textarea = event.target.closest("[data-reflection-id]");
       if (!textarea) return;
-      writeReflection(textarea.dataset.reflectionId, textarea.value);
+      scheduleReflectionSave(textarea.dataset.reflectionId, textarea.value);
     });
+    dom.detailContent.addEventListener("blur", (event) => {
+      const textarea = event.target.closest("[data-reflection-id]");
+      if (!textarea) return;
+      flushReflection(textarea.dataset.reflectionId);
+    }, true);
+    window.addEventListener("pagehide", flushAllReflections);
+    window.addEventListener("beforeunload", flushAllReflections);
 
     document.querySelectorAll(".nav-btn").forEach((button) => {
       button.addEventListener("click", () => {
@@ -3143,11 +3249,26 @@
   }
 
   const initialHash = location.hash.slice(1);
-  const screenshotMode = initialHash === "screenshots" || new URLSearchParams(location.search).get("screenshots") === "1";
+  const initialParams = new URLSearchParams(location.search);
+  const screenshotMode = initialHash === "screenshots" || initialParams.get("screenshots") === "1";
+  const reviewMode = initialParams.get("review") === "detail";
+  const reviewStyle = initialParams.get("style");
+  const reviewLang = initialParams.get("lang");
+  const reviewSection = initialParams.get("section");
+  const reviewGuided = initialParams.has("guided") ? Number(initialParams.get("guided")) : NaN;
+  if (reviewMode) {
+    store.reviewMode = "detail";
+    if (["zh", "en"].includes(reviewLang)) store.lang = reviewLang;
+    if (["see", "understand", "apply", "create", "explore", "compare"].includes(reviewSection)) {
+      store.reviewSection = reviewSection;
+    }
+    if (Number.isInteger(reviewGuided) && reviewGuided >= 0) store.reviewGuidedStage = reviewGuided;
+  }
   store.activeId = initialHash && styles.some((style) => style.id === initialHash)
     ? location.hash.slice(1)
-    : styles[dailyIndex()].id;
+    : (reviewStyle && validStyleIds.has(reviewStyle) ? reviewStyle : styles[dailyIndex()].id);
   if (initialHash && styles.some((style) => style.id === initialHash)) store.view = "detail";
+  if (reviewMode) store.view = "detail";
   if (screenshotMode) store.view = "screenshots";
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
   window.StyleAtlasNativeBridge = {
@@ -3198,6 +3319,7 @@
       const style = stylesById.get(styleId);
       return style ? guideFor(style) : null;
     },
+    normalizeFocus: normalizedFocus,
     getReflection: (styleId) => readReflections()[styleId] || null,
     openGuided,
     closeGuided
@@ -3215,5 +3337,10 @@
   bind();
   renderAll();
   setView(store.view, false);
+  if (store.reviewMode === "detail") {
+    const sectionId = store.reviewSection === "compare" ? "detail-compare" : (store.reviewSection ? `detail-${store.reviewSection}` : "");
+    if (sectionId) requestAnimationFrame(() => $(sectionId)?.scrollIntoView({ behavior: "auto", block: "start" }));
+    if (store.reviewGuidedStage !== null) requestAnimationFrame(() => openGuided(null, store.reviewGuidedStage));
+  }
   updateAccessibilityDebug();
 })();

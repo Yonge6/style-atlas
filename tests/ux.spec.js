@@ -1332,8 +1332,10 @@ test("guided overlay can be closed at 200 percent page scale", async ({ page }) 
   const client = await page.context().newCDPSession(page);
   await client.send("Emulation.setPageScaleFactor", { pageScaleFactor: 2 });
   await expect(page.locator("#guidedCloseBtn")).toBeVisible();
-  await page.locator("#guidedCloseBtn").focus();
-  await page.keyboard.press("Enter");
+  const box = await page.locator("#guidedCloseBtn").boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  await page.keyboard.press("Escape");
   await expect(page.locator("#guidedOverlay")).toBeHidden();
 });
 
@@ -1373,3 +1375,240 @@ test("aesthetic profile exposes level and description without a total score", as
   await expect(page.locator(".profile-note")).toHaveText("这是观察提示，不是审美评分。");
   await expect(page.locator(".profile-section")).not.toContainText(/总分|排名/);
 });
+
+test("review mode opens a specified style detail", async ({ page }) => {
+  await page.goto("/?review=detail&style=swiss-style");
+  await expect(page.locator("#detailView")).toHaveClass(/active/);
+  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+});
+
+test("review mode switches to English", async ({ page }) => {
+  await page.goto("/?review=detail&style=ukiyo-e&lang=en");
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.locator("[data-action='open-guided']")).toHaveText("Help me see this style");
+});
+
+test("review mode opens a requested guided stage", async ({ page }) => {
+  await page.goto("/?review=detail&style=art-deco&guided=2");
+  await expect(page.locator("#guidedOverlay")).toBeVisible();
+  await expect(page.locator("#guidedStage")).toHaveAttribute("data-stage", "2");
+});
+
+test("review mode falls back safely for an invalid style", async ({ page }) => {
+  await page.goto("/?review=detail&style=missing-style");
+  await expect(page.locator("#detailView")).toHaveClass(/active/);
+  await expect(page.locator("#detailTitle")).not.toHaveText("");
+  await expect(page.locator("#detailContent")).not.toContainText("undefined");
+});
+
+test("review mode scrolls to a valid comparison section", async ({ page }) => {
+  await page.goto("/?review=detail&style=solarpunk&section=compare");
+  await expect(page.locator("#detail-compare")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => Math.abs(document.querySelector("#detail-compare").getBoundingClientRect().top))).toBeLessThan(220);
+});
+
+test("invalid review section is ignored", async ({ page }) => {
+  await page.goto("/?review=detail&style=solarpunk&section=nope");
+  await expect(page.locator("#detail-see")).toBeVisible();
+  expect(await page.locator("#detail-see").boundingBox()).not.toBeNull();
+});
+
+test("guided first stage hides previous", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  await expect(page.locator("#guidedPrevBtn")).toBeHidden();
+});
+
+test("guided second stage shows previous and returns to opening", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  await page.locator("#guidedNextBtn").click();
+  await expect(page.locator("#guidedPrevBtn")).toBeVisible();
+  await page.locator("#guidedPrevBtn").click();
+  await expect(page.locator("#guidedStage")).toHaveAttribute("data-stage", "0");
+});
+
+test("guided indicator shows current stage and total", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  await expect(page.locator("#guidedStepLabel")).toHaveText("1 / 5");
+  await expect(page.locator("#guidedDots i")).toHaveCount(5);
+  await expect(page.locator("#guidedDots i.active")).toHaveCount(1);
+});
+
+test("guided focus data clamps to valid image coordinates", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const focus = await page.evaluate(() => window.StyleAtlasAesthetic.normalizeFocus({ x: -20, y: 140, scale: 4 }));
+  expect(focus).toEqual({ x: 0, y: 100, scale: 2 });
+});
+
+test("guided image is not scaled when focus is absent", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  await expect(page.locator("#guidedImage")).not.toHaveClass(/has-focus/);
+});
+
+test("guided image applies optional focus when present", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.evaluate(() => {
+    window.StyleAtlasAesthetic.guides["swiss-style"].observe[0].focus = { x: 42, y: 58, scale: 1.4 };
+    window.StyleAtlasAesthetic.openGuided(null, 1);
+  });
+  await expect(page.locator("#guidedImage")).toHaveClass(/has-focus/);
+  await expect(page.locator("#guidedImage")).toHaveCSS("object-position", "42% 58%");
+});
+
+test("reduced motion removes guided focus transition", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/#swiss-style");
+  await page.evaluate(() => {
+    window.StyleAtlasAesthetic.guides["swiss-style"].observe[0].focus = { x: 50, y: 50, scale: 1.2 };
+    window.StyleAtlasAesthetic.openGuided(null, 1);
+  });
+  const duration = await page.locator("#guidedImage").evaluate((node) => getComputedStyle(node).transitionDuration);
+  expect(["0s", "0.001s"]).toContain(duration);
+});
+
+test("pilot recognition titles are not generic numbered labels", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const titles = await page.locator(".recognition-grid h3").allTextContents();
+  expect(titles).not.toContain("识别线索 1");
+  expect(titles).not.toContain("Recognition cue 1");
+});
+
+test("pilot recognition text has no duplicate body copy", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const body = await page.locator(".recognition-grid p").allTextContents();
+  expect(new Set(body).size).toBe(body.length);
+});
+
+test("profile scale exposes endpoint hint text", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await expect(page.locator(".profile-hint")).toHaveCount(4);
+  await expect(page.locator(".profile-hint").first()).toHaveText("自由 ↔ 严谨");
+});
+
+test("comparison back returns near the comparison section", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("#detail-compare").scrollIntoViewIfNeeded();
+  await page.locator(".comparison-open").first().click();
+  await expect(page.locator("#detailTitle")).toHaveText("Bauhaus");
+  await page.locator("#backBtn").click();
+  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await expect.poll(() => page.evaluate(() => Math.abs(document.querySelector("#detail-compare").getBoundingClientRect().top))).toBeLessThan(220);
+});
+
+test("reflection debounce delays local write until quiet", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator(".reflection-section summary").click();
+  await page.locator("[data-reflection-id='swiss-style']").fill("延迟保存");
+  expect(await page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style"))).toBeNull();
+  await expect.poll(() => page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style")?.text)).toBe("延迟保存");
+});
+
+test("reflection flushes before opening a comparison style", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator(".reflection-section summary").click();
+  await page.locator("[data-reflection-id='swiss-style']").fill("切换前保存");
+  await page.locator(".comparison-open").first().click();
+  expect(await page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style")?.text)).toBe("切换前保存");
+});
+
+test("reflection clear removes stored text and confirms", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator(".reflection-section summary").click();
+  await page.locator("[data-reflection-id='swiss-style']").fill("准备清除");
+  await expect.poll(() => page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style")?.text)).toBe("准备清除");
+  await page.locator("[data-action='clear-reflection']").click();
+  expect(await page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style"))).toBeNull();
+  await expect(page.locator("[data-reflection-status='swiss-style']")).toHaveText("已清除");
+});
+
+test("empty reflection does not create a stored record", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator(".reflection-section summary").click();
+  await page.locator("[data-reflection-id='swiss-style']").fill("");
+  await page.locator("[data-reflection-id='swiss-style']").blur();
+  expect(await page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style"))).toBeNull();
+});
+
+test("English reflection saved status is localized", async ({ page }) => {
+  await page.goto("/?review=detail&style=swiss-style&lang=en");
+  await page.locator(".reflection-section summary").click();
+  await page.locator("[data-reflection-id='swiss-style']").fill("Clear order.");
+  await expect.poll(() => page.locator("[data-reflection-status='swiss-style']").textContent()).toBe("Saved on this device");
+});
+
+test("Plus purchase and restore actions remain wired after detail polish", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#swiss-style");
+  await openPlus(page);
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrice("$4.99"));
+  await page.locator("#plusCta").click();
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
+  await page.locator("#plusRestoreBtn").click();
+  const messages = await page.evaluate(() => window.__nativeMessages.map((item) => item.type));
+  expect(messages).toContain("purchasePlus");
+  expect(messages).toContain("restorePurchases");
+});
+
+const pilotStyleIds = [
+  "swiss-style",
+  "art-deco",
+  "impressionism",
+  "van-gogh",
+  "chinese-ink-painting",
+  "ukiyo-e",
+  "dunhuang-mural",
+  "islamic-geometric",
+  "african-tribal-pattern",
+  "mexican-muralism",
+  "editorial-illustration",
+  "solarpunk"
+];
+
+for (const styleId of pilotStyleIds) {
+  test(`pilot ${styleId} has complete Chinese guide copy`, async ({ page }) => {
+    await page.goto(`/?review=detail&style=${styleId}&lang=zh`);
+    const result = await page.evaluate((id) => {
+      const guide = window.StyleAtlasAesthetic.getGuide(id);
+      return {
+        opening: guide.openingQuestion.zh.trim(),
+        observe: guide.observe.map((item) => [item.label.zh, item.text.zh]),
+        everyday: guide.everydayLife.map((item) => [item.scene.zh, item.text.zh]),
+        comparisons: guide.comparisons.map((item) => [item.similarity.zh, item.difference.zh]),
+        reflection: guide.reflectionPrompt.zh.trim()
+      };
+    }, styleId);
+    expect(result.opening.length).toBeGreaterThan(8);
+    expect(result.observe).toHaveLength(3);
+    expect(result.observe.flat().every((item) => item.trim().length > 0)).toBe(true);
+    expect(result.everyday).toHaveLength(4);
+    expect(result.everyday.flat().every((item) => item.trim().length > 0)).toBe(true);
+    expect(result.comparisons).toHaveLength(2);
+    expect(result.comparisons.flat().every((item) => item.trim().length > 0)).toBe(true);
+    expect(result.reflection.length).toBeGreaterThan(8);
+  });
+
+  test(`pilot ${styleId} has complete English guide copy`, async ({ page }) => {
+    await page.goto(`/?review=detail&style=${styleId}&lang=en`);
+    const result = await page.evaluate((id) => {
+      const guide = window.StyleAtlasAesthetic.getGuide(id);
+      return {
+        opening: guide.openingQuestion.en.trim(),
+        observe: guide.observe.map((item) => [item.label.en, item.text.en]),
+        everyday: guide.everydayLife.map((item) => [item.scene.en, item.text.en]),
+        comparisons: guide.comparisons.map((item) => [item.similarity.en, item.difference.en]),
+        reflection: guide.reflectionPrompt.en.trim()
+      };
+    }, styleId);
+    expect(result.opening.length).toBeGreaterThan(12);
+    expect(result.observe).toHaveLength(3);
+    expect(result.observe.flat().every((item) => item.trim().length > 0)).toBe(true);
+    expect(result.everyday).toHaveLength(4);
+    expect(result.everyday.flat().every((item) => item.trim().length > 0)).toBe(true);
+    expect(result.comparisons).toHaveLength(2);
+    expect(result.comparisons.flat().every((item) => item.trim().length > 0)).toBe(true);
+    expect(result.reflection.length).toBeGreaterThan(12);
+  });
+}

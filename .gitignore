@@ -15,6 +15,7 @@ xcuserdata/
 /node_modules/
 /test-results/
 /playwright-report/
+/assets/review/v1.3-style-detail/
 
 # Temporary App Store upload derivatives
 /assets/app-store/upload/

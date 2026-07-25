@@ -151,10 +151,17 @@
       </div>
       <button id="guidedCloseBtn" class="guided-close" type="button" data-action="close-guided" aria-label="关闭看图引导">×</button>
       <div id="guidedStage" class="guided-stage" aria-live="polite" aria-atomic="true">
+        <div class="guided-progress" aria-hidden="true">
+          <span id="guidedStepLabel"></span>
+          <span id="guidedDots" class="guided-dots"></span>
+        </div>
         <p id="guidedKicker" class="guided-kicker"></p>
         <h2 id="guidedTitle" tabindex="-1"></h2>
         <p id="guidedText"></p>
-        <button id="guidedNextBtn" class="guided-next" type="button" data-action="next-guided"></button>
+        <div class="guided-actions">
+          <button id="guidedPrevBtn" class="guided-prev" type="button" data-action="previous-guided"></button>
+          <button id="guidedNextBtn" class="guided-next" type="button" data-action="next-guided"></button>
+        </div>
       </div>
     </div>
   </div>

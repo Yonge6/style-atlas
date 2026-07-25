@@ -70,11 +70,11 @@
         life("家居", "Home", "在灯具、镜框或柜门上找重复的扇形与阶梯线；一个强装饰点就足够。", "Look for repeated fans and stepped lines in lamps, mirrors or cabinets; one strong accent can be enough."),
         life("穿搭", "Clothing", "观察直线轮廓、金属配件和几何首饰如何把整体变得更有仪式感。", "Notice how straight silhouettes, metal hardware and geometric jewelry add ceremony."),
         life("摄影", "Photography", "寻找门廊、楼梯和走廊的中轴，让人物站在对称关系里。", "Find the central axes of entrances, stairs and corridors, then place the subject inside that symmetry."),
-        life("日常物件", "Everyday objects", "香水瓶、影院招牌和巧克力包装常用黑金、放射线与切角制造精致感。", "Perfume bottles, cinema signs and chocolate boxes often use black-gold palettes, sunbursts and clipped corners.")
+        life("日常物件", "Everyday objects", "观察香水瓶、影院招牌和巧克力包装怎样用黑金、放射线与切角建立清楚的装饰秩序。", "Notice how perfume bottles, cinema signs and chocolate boxes use black-gold palettes, sunbursts and clipped corners to build a clear decorative order.")
       ],
       comparisons: [
         compare("art-nouveau", "都重视装饰，并把建筑、海报和物件做成完整视觉语言。", "Both value ornament and extend one visual language across architecture, posters and objects.", "Art Deco 偏几何、对称和机器时代；Art Nouveau 偏植物曲线、手工感和自然生长。", "Art Deco is geometric, symmetrical and machine-age; Art Nouveau is organic, handmade and plant-like."),
-        compare("minimalism", "两者都能用清楚轮廓形成强烈识别。", "Both can build strong recognition from clear silhouettes.", "Art Deco 用重复和材质把画面推向盛大；极简主义主动删除装饰，让空白和比例成为主角。", "Art Deco builds grandeur through repetition and material; Minimalism removes ornament so space and proportion take the lead.")
+        compare("minimalism", "两者都能用清楚轮廓形成高辨识度。", "Both can become recognizable through clear silhouettes.", "Art Deco 用重复和材质把画面推向盛大；极简主义主动删除装饰，让空白和比例成为主角。", "Art Deco builds grandeur through repetition and material; Minimalism removes ornament so space and proportion take the lead.")
       ],
       reflectionPrompt: bi("你被它的仪式感吸引，还是会觉得装饰太满？", "Are you drawn to its ceremony, or does the ornament feel too full?")
     },
@@ -117,11 +117,11 @@
       observe: [
         observe("line", "先看笔触方向", "First, follow the strokes", "短而厚的笔触会绕着天空、树木和道路转弯，形体像被一股看不见的力量推动。", "Short, thick strokes curve around sky, trees and roads, making forms feel driven by an invisible force."),
         observe("color", "再看冷暖碰撞", "Then, notice warm and cool color", "蓝与黄、绿与橙常被放在近处，让光和情绪同时变得更强。", "Blue and yellow, green and orange often meet at close range, intensifying both light and emotion."),
-        observe("feeling", "最后感受不安与生命力", "Finally, feel tension and vitality", "画面并不追求平静复制现实；重复、旋转和起伏让普通景物也带着强烈内心节奏。", "The image does not calmly copy reality; repetition, spirals and rises give ordinary scenery an intense inner rhythm.")
+        observe("feeling", "最后感受不安与生命力", "Finally, feel tension and vitality", "画面并不追求平静复制现实；重复、旋转和起伏让普通景物也带着明显的内在节奏。", "The image does not calmly copy reality; repetition, spirals and rises give ordinary scenery a visible inner rhythm.")
       ],
       profile: {
         order: trait(3, "结构清楚但表面涌动", "Clear structure with a restless surface"),
-        color: trait(5, "色彩强烈", "Very strong color intensity"),
+        color: trait(5, "色彩饱和而明亮", "Saturated, bright color"),
         ornament: trait(3, "笔触纹理丰富", "Rich brush texture"),
         emotion: trait(5, "情绪张力很高", "Very high emotional intensity")
       },
@@ -133,7 +133,7 @@
         life("日常物件", "Everyday objects", "看刷痕墙面、旧木桌和手写字如何因为不完美而显得更有人在场。", "See how brush-marked walls, old wood and handwriting feel more human because they are imperfect.")
       ],
       comparisons: [
-        compare("post-impressionism", "都保留可见笔触，并让色彩超出自然再现。", "Both keep visible brushwork and push color beyond natural description.", "后印象派包含多种不同方向；梵高式笔触尤其依靠旋转线条、厚涂和强烈冷暖对比表达内心节奏。", "Post-Impressionism contains several directions; Van Gogh-like language is especially driven by swirling line, impasto and strong warm-cool contrast."),
+        compare("post-impressionism", "都保留可见笔触，并让色彩超出自然再现。", "Both keep visible brushwork and push color beyond natural description.", "后印象派包含多种不同方向；梵高式笔触尤其依靠旋转线条、厚涂和鲜明冷暖对比表达内心节奏。", "Post-Impressionism contains several directions; Van Gogh-like language is especially driven by swirling line, impasto and vivid warm-cool contrast."),
         compare("expressionism", "都允许形体和颜色服从情绪。", "Both let form and color serve emotion.", "表现主义常进一步扭曲人物和空间以制造冲击；梵高仍多从可见景物出发，让笔触在景物内部燃烧。", "Expressionism often distorts figures and space more aggressively; Van Gogh usually starts from visible scenery and lets the strokes burn within it.")
       ],
       reflectionPrompt: bi("你感到的是生命力、焦虑，还是两者同时存在？", "Do you feel vitality, anxiety, or both at once?")
@@ -253,7 +253,7 @@
         life("日常物件", "Everyday objects", "留意笔记本、餐盘和包装上，边框如何接住中心图案并完成收束。", "Notice how borders on notebooks, plates and packaging contain and resolve a central pattern.")
       ],
       comparisons: [
-        compare("art-deco", "都依靠几何、重复和精确边界制造强识别。", "Both use geometry, repetition and precise edges for strong recognition.", "伊斯兰几何纹样强调可连续延伸的关系网络；Art Deco 更强调中心轴、阶梯轮廓与都市奢华。", "Islamic geometry emphasizes continuously extending networks; Art Deco emphasizes central axes, stepped silhouettes and urban glamour."),
+        compare("art-deco", "都依靠几何、重复和精确边界形成辨识度。", "Both use geometry, repetition and precise edges to become recognizable.", "伊斯兰几何纹样强调可连续延伸的关系网络；Art Deco 更强调中心轴、阶梯轮廓与都市奢华。", "Islamic geometry emphasizes continuously extending networks; Art Deco emphasizes central axes, stepped silhouettes and urban glamour."),
         compare("persian-miniature", "都可见精细纹样、建筑装饰和高密度表面。", "Both can contain fine pattern, architectural ornament and dense surfaces.", "伊斯兰几何以非具象规则和重复为核心；波斯细密画以人物、园林和叙事场景为核心。", "Islamic geometry centers on nonfigurative rule and repetition; Persian miniature centers on figures, gardens and narrative scenes.")
       ],
       reflectionPrompt: bi("这种重复让你安定，还是让你更想追踪它的规则？", "Does the repetition calm you, or make you want to trace its rules?")
