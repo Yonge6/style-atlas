@@ -4,7 +4,7 @@
 
 - Branch: `feature/v1.3-style-deep-dive`
 - Source baseline: `dc5cf4518f991add254af59805892e2dbf428326`
-- Candidate: baseline plus the V1.3-C changes recorded in this branch
+- App candidate commit: `3b1d4dbcca8b06359742e4bfb108eebb5fce1b90`
 - Device: iPhone 14 Pro Max (`永歌14PM`)
 - iOS: 26.5.2 (`23F84`)
 - Install source: Xcode Debug direct install
@@ -28,7 +28,7 @@
 | 西非织物纹样 | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED |
 | 墨西哥壁画 | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED |
 | 编辑插画 | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED |
-| Solarpunk | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED |
+| Solarpunk | PASS | PASS | PASS | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED |
 
 All 12 pilot Hero images were opened in one continuous physical-device session. Each image loaded with the expected aspect ratio and no persistent blank state. The full module matrix was not completed, so each untouched cell remains `NOT TESTED`.
 
@@ -36,9 +36,9 @@ All 12 pilot Hero images were opened in one continuous physical-device session. 
 
 | Module | Chinese | English |
 | --- | --- | --- |
-| Summary | PASS (Swiss sample) | NOT TESTED |
-| Memory Anchor | PASS (Swiss sample) | NOT TESTED |
-| Recognition | PASS (Swiss sample) | NOT TESTED |
+| Summary | PASS (Swiss sample) | PASS (Solarpunk sample) |
+| Memory Anchor | PASS (Swiss sample) | PASS (Solarpunk sample) |
+| Recognition | PASS (Swiss sample) | PASS (Solarpunk sample) |
 | Why It Feels | NOT TESTED | NOT TESTED |
 | Everyday | NOT TESTED | NOT TESTED |
 | Comparison | NOT TESTED | NOT TESTED |
@@ -79,6 +79,7 @@ The decision remains conservative until the physical-device checks above are act
 ## Additional Device Evidence
 
 - Guided Looking: opening safe area, close control, five-stage progression, previous/return controls, and final state were usable.
+- English Solarpunk: Hero, Guided Looking opening state, Recognition, and Profile entry were readable; Everyday and Comparison remain `NOT TESTED`.
 - Detail navigation: tapping `懂` reached the intended content without sticky-header overlap.
 - Manual-scroll navigation: after the fix, returning to the Hero region changed the current item back to `看`.
 - Preview badge: absent from the installed native bundle.
