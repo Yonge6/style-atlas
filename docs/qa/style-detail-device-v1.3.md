@@ -54,7 +54,7 @@ The requested full reading samples remain incomplete. Swiss Chinese and Solarpun
 - Larger Text: PARTIAL PASS. The native candidate originally ignored Dynamic Type. The candidate now bridges the system setting into the web view. Swiss Chinese was checked at the normal setting and at maximum standard text (at least XXL): the segmented navigation stayed usable, body content did not require horizontal scrolling, and the Guided close/previous/next controls remained visible after the Guided stage was made scrollable. Solarpunk English and the exact separate Large/XL ticks remain `NOT TESTED`.
 - Reduce Motion: PASS for the checked Swiss path. Segmented navigation, Guided stage changes, and Swiss to Editorial Typography to Swiss return remained understandable with no sustained zoom, obvious fly-in, or flashing. Optional image focus and every Accordion state were not exhaustively traversed.
 - Zoom (200%): NOT TESTED on the physical display. System Zoom was enabled, set to Full Screen, and configured to show while mirroring, but iPhone Mirroring did not expose the magnified interaction surface. Automated 200% coverage passes but is not counted as physical-device proof.
-- Landscape: PARTIAL. The candidate now declares portrait plus both iPhone landscape orientations in Debug and Release. Physical rotation and Chinese Ink overlay/input operation in landscape remain `NOT TESTED` because iPhone Mirroring cannot rotate the phone.
+- Screen orientation: PASS by product decision. The iPhone app is intentionally portrait-only; landscape is not part of the V1.3 product requirement.
 
 ## Core Interaction Checks
 
@@ -79,7 +79,6 @@ The requested full reading samples remain incomplete. Swiss Chinese and Solarpun
 - High: NONE RECORDED
 - Medium: RESOLVED - the native WKWebView ignored system Dynamic Type; SwiftUI now bridges the current text scale into the native shell
 - Medium: RESOLVED - at maximum standard text, the first Guided stage pushed the next action below the viewport; large-text Guided content now scrolls while keeping controls reachable
-- Medium: RESOLVED - the iPhone target declared portrait only; Debug and Release now declare portrait plus both landscape orientations
 - Low: RESOLVED - manual scrolling could leave the previous detail-navigation item selected; the current section now updates from scroll position and was rechecked on device
 
 ## Decision
@@ -118,3 +117,7 @@ Blocker and High remain zero, and the XXL Guided layout issue is fixed. The stri
 - Version / Build: 1.2 / 9
 - Archive: not generated
 - App Store/TestFlight build: not uploaded
+
+## Product Orientation Decision
+
+Portrait-only is an intentional product decision. Style Atlas is currently positioned as a phone-first, vertically browsed art-style atlas. Debug and Release both declare `UIInterfaceOrientationPortrait`; the earlier C2 description of portrait-only support as a Medium defect is withdrawn.

@@ -1711,16 +1711,6 @@ test("native Dynamic Type scales the page without affecting the web build", asyn
   await expect(page.locator("html")).not.toHaveAttribute("data-native-large-text", "");
 });
 
-test("iOS candidate supports portrait and both landscape orientations", async () => {
-  const project = fs.readFileSync(
-    path.join(__dirname, "..", "iOS", "StyleAtlas", "StyleAtlas.xcodeproj", "project.pbxproj"),
-    "utf8"
-  );
-  expect(project).toContain("UIInterfaceOrientationPortrait");
-  expect(project).toContain("UIInterfaceOrientationLandscapeLeft");
-  expect(project).toContain("UIInterfaceOrientationLandscapeRight");
-});
-
 test("profile announces the non-rating note before semantic levels", async ({ page }) => {
   await page.goto("/#swiss-style");
   const profile = page.locator(".profile-section");
