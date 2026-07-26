@@ -8,6 +8,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const baselinePath = path.join(root, "scripts", "aesthetic-guide-audit-baseline.json");
 const auditPath = path.join(root, "docs", "qa", "aesthetic-guide-corpus-audit-v1.3.md");
 const signoffPath = path.join(root, "docs", "review", "v1.3-product-owner-signoff.md");
+const signoffCandidateBaseline = {
+  branch: "feature/v1.3-editorial-audit",
+  appUiCandidateCommit: "PENDING",
+  previewDeployCommit: "PENDING"
+};
 const checkOnly = process.argv.includes("--check");
 
 const signoffStyleIds = [
@@ -593,6 +598,17 @@ function buildSignoffDocument(guides) {
   }).join("\n");
 
   return `# V1.3 Product Owner Signoff
+
+## Candidate Baseline
+
+- Candidate branch: \`${signoffCandidateBaseline.branch}\`
+- App/UI candidate commit: \`${signoffCandidateBaseline.appUiCandidateCommit}\`
+- Preview deploy commit: \`${signoffCandidateBaseline.previewDeployCommit}\`
+- Enhanced Guide: 72
+- Fallback: 48
+- Product-owner completion: 0 / 36
+- Candidate position: V1.3 RC UI Candidate
+- UI Freeze: YES
 
 ## Status Rules
 

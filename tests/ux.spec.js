@@ -1826,6 +1826,7 @@ test("recognition module presents at least three explained observation cards", a
   await page.goto("/#swiss-style");
   const cards = page.locator(".recognition-grid .observation-card");
   expect(await cards.count()).toBeGreaterThanOrEqual(3);
+  await expect(cards.first()).toHaveCSS("background-color", "rgba(24, 21, 15, 0.96)");
   for (const card of await cards.all()) {
     await expect(card.locator("h3")).not.toHaveText("");
     await expect(card.locator("p")).not.toHaveText("");
@@ -1966,8 +1967,22 @@ test("detail section navigation is named and updates its current target", async 
   const nav = page.locator(".detail-section-nav");
   await expect(nav).toHaveAttribute("aria-label", "风格详情分段导航");
   await expect(nav.locator("button")).toHaveCount(5);
+  await expect(nav.locator(".detail-nav-arrow")).toHaveCount(5);
   await nav.locator("button").nth(1).click();
   await expect(nav.locator("button").nth(1)).toHaveAttribute("aria-current", "true");
+});
+
+test("creation heading is integrated with the rounded prompt module", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const create = page.locator("#detail-create");
+  const prompt = create.locator(".prompt-section");
+  const exportPanel = create.locator(".export-section");
+  await expect(create.locator(".section-heading-card")).toHaveCount(0);
+  await expect(prompt.locator(".section-kicker")).toHaveText("创作");
+  await expect(prompt.locator("#createTitle")).toHaveText("把这种美用进创作");
+  await expect(prompt.locator(".prompt-heading")).toHaveText("风格表达词");
+  expect(await prompt.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)).not.toBe("0px");
+  expect(await exportPanel.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)).not.toBe("0px");
 });
 
 test("aesthetic profile exposes level and description without a total score", async ({ page }) => {
@@ -2007,6 +2022,12 @@ test("review mode scrolls to a valid comparison section", async ({ page }) => {
   await page.goto("/?review=detail&style=solarpunk&section=compare");
   await expect(page.locator("#detail-compare")).toBeVisible();
   await expect.poll(() => page.evaluate(() => Math.abs(document.querySelector("#detail-compare").getBoundingClientRect().top))).toBeLessThan(220);
+});
+
+test("review mode keeps the integrated creation heading below the top bar", async ({ page }) => {
+  await page.goto("/?review=detail&style=swiss-style&section=create");
+  await expect(page.locator("#createTitle")).toBeVisible();
+  await expect.poll(() => page.locator("#createTitle").evaluate((node) => node.getBoundingClientRect().top)).toBeGreaterThan(80);
 });
 
 test("invalid review section is ignored", async ({ page }) => {
@@ -2259,6 +2280,23 @@ test("detail navigation current state follows manual scrolling", async ({ page }
   await expect(nav.locator("button").nth(1)).toHaveAttribute("aria-current", "true");
   await page.locator("#detail-see").evaluate((node) => node.scrollIntoView({ behavior: "auto", block: "start" }));
   await expect.poll(() => nav.locator("button").first().getAttribute("aria-current")).toBe("true");
+});
+
+test("desktop detail supports vertical mouse drag scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 700 });
+  await page.goto("/?review=detail&style=swiss-style&section=understand");
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  const section = page.locator("#detail-understand");
+  const box = await section.boundingBox();
+  const startX = box.x + box.width - 12;
+  const startY = Math.min(620, box.y + Math.min(110, box.height / 2));
+  const before = await page.evaluate(() => window.scrollY);
+  await page.mouse.move(startX, startY);
+  await page.mouse.down();
+  await page.mouse.move(startX, startY - 180, { steps: 8 });
+  await page.mouse.up();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before + 120);
+  await expect(page.locator("body")).not.toHaveClass(/desktop-drag-scrolling/);
 });
 
 test("related style returns to the source comparison region", async ({ page }) => {

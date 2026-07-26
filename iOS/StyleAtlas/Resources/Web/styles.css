@@ -900,6 +900,19 @@ main {
   overflow-anchor: none;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  #detailView.active {
+    cursor: grab;
+  }
+
+  body.desktop-drag-scrolling,
+  body.desktop-drag-scrolling #detailView.active {
+    cursor: grabbing;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
 .detail-hero {
   margin: 8px 0 18px;
 }
@@ -925,23 +938,48 @@ main {
 }
 
 .detail-section-nav button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: 1 0 auto;
   min-width: 58px;
   min-height: 44px;
-  padding: 0 11px;
-  border: 1px solid transparent;
+  gap: 4px;
+  padding: 0 9px;
+  border: 1px solid rgba(243, 212, 134, 0.12);
   border-radius: 8px;
-  background: transparent;
-  color: #bfae83;
+  background: rgba(255, 255, 255, 0.035);
+  color: #ddcda4;
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 13px;
   font-weight: 700;
+}
+
+.detail-nav-arrow {
+  color: var(--gold);
+  font-size: 10px;
+  line-height: 1;
+  opacity: 0.72;
+}
+
+.detail-section-nav button:active {
+  background: rgba(217, 170, 69, 0.12);
+  transform: translateY(1px);
+}
+
+.detail-section-nav button:focus-visible {
+  outline: 2px solid var(--gold-2);
+  outline-offset: 2px;
 }
 
 .detail-section-nav button[aria-current="true"] {
   border-color: rgba(243, 212, 134, 0.32);
   background: rgba(217, 170, 69, 0.15);
   color: var(--gold-2);
+}
+
+.detail-section-nav button[aria-current="true"] .detail-nav-arrow {
+  opacity: 1;
 }
 
 .detail .style-card {
@@ -1055,10 +1093,10 @@ main {
   position: relative;
   min-height: 130px;
   padding: 16px 14px 15px 52px;
-  border: 1px solid rgba(243, 212, 134, 0.22);
+  border: 1px solid rgba(243, 212, 134, 0.2);
   border-radius: 10px;
-  background: rgba(244, 233, 204, 0.96);
-  color: #241c11;
+  background: rgba(24, 21, 15, 0.96);
+  color: #f2e4bf;
 }
 
 .observation-card > span {
@@ -1082,7 +1120,7 @@ main {
 }
 
 .observation-card p {
-  color: #4f4028;
+  color: #cdbf9d;
   font-size: 14px;
   line-height: 1.65;
 }
@@ -1350,19 +1388,6 @@ main {
   white-space: nowrap;
 }
 
-.section-heading-card {
-  margin-bottom: 0;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.detail-create-group > .detail-section:not(.section-heading-card) {
-  margin-top: 0;
-  border-top-color: rgba(243, 212, 134, 0.1);
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-
 .deep-accordions {
   display: grid;
   gap: 9px;
@@ -1432,6 +1457,10 @@ main {
   border: 1px solid var(--line);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.055);
+}
+
+.detail-create-group {
+  scroll-margin-top: calc(var(--topbar-height) + 76px);
 }
 
 .access-note {
@@ -1542,6 +1571,14 @@ main {
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 13px;
   line-height: 1.6;
+}
+
+.prompt-heading {
+  margin: 18px 0 10px;
+  color: var(--paper);
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 18px;
+  line-height: 1.35;
 }
 
 .example-card {
