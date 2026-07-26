@@ -85,6 +85,8 @@
     reviewMode: "",
     reviewSection: "",
     reviewGuidedStage: null,
+    detailSectionObserver: null,
+    detailSectionScrollFrame: 0,
     reflectionTimers: new Map()
   };
 
@@ -1655,6 +1657,7 @@
       </section>
     `;
     prepareImages(dom.detailContent);
+    observeDetailSections();
     imagePipeline.preload(style.image, { priority: "high" }).catch(() => null);
     updateExportControls();
     if (!locked) loadWikiGallery(style);
@@ -1808,6 +1811,38 @@
     dom.detailContent.querySelectorAll(".detail-section-nav button").forEach((item) => item.setAttribute("aria-current", String(item === button)));
     store.activeDetailSection = targetId.replace("detail-", "");
     target.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  }
+
+  function updateCurrentDetailSection() {
+    const targets = ["detail-see", "detail-understand", "detail-apply", "detail-create", "detail-explore"]
+      .map((id) => $(id))
+      .filter(Boolean);
+    if (!targets.length) return;
+    const anchor = 140;
+    const candidate = targets
+      .map((target) => ({ target, rect: target.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.bottom > anchor)
+      .sort((a, b) => Math.abs(a.rect.top - anchor) - Math.abs(b.rect.top - anchor))[0];
+    if (!candidate) return;
+    const targetId = candidate.target.id;
+    store.activeDetailSection = targetId.replace("detail-", "");
+    dom.detailContent.querySelectorAll(".detail-section-nav button").forEach((button) => {
+      button.setAttribute("aria-current", String(button.dataset.target === targetId));
+    });
+  }
+
+  function observeDetailSections() {
+    store.detailSectionObserver?.disconnect();
+    if (typeof IntersectionObserver !== "function") return;
+    store.detailSectionObserver = new IntersectionObserver(updateCurrentDetailSection, {
+      rootMargin: "-128px 0px -65% 0px",
+      threshold: [0, 0.01]
+    });
+    ["detail-see", "detail-understand", "detail-apply", "detail-create", "detail-explore"]
+      .map((id) => $(id))
+      .filter(Boolean)
+      .forEach((target) => store.detailSectionObserver.observe(target));
+    updateCurrentDetailSection();
   }
 
   function toggleAccordion(button) {
@@ -3145,6 +3180,13 @@
     }, true);
     window.addEventListener("pagehide", flushAllReflections);
     window.addEventListener("beforeunload", flushAllReflections);
+    window.addEventListener("scroll", () => {
+      if (store.view !== "detail" || store.detailSectionScrollFrame) return;
+      store.detailSectionScrollFrame = requestAnimationFrame(() => {
+        store.detailSectionScrollFrame = 0;
+        updateCurrentDetailSection();
+      });
+    }, { passive: true });
 
     document.querySelectorAll(".nav-btn").forEach((button) => {
       button.addEventListener("click", () => {
