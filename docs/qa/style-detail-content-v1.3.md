@@ -2,20 +2,22 @@
 
 ## Candidate
 
-- Branch: `feature/v1.3-guide-batch-2`
-- Batch: V1.3-D2
+- Branch: `feature/v1.3-guide-batch-3`
+- Batch: V1.3-D3
 - New enhanced guides: 20
-- Enhanced guide total: 52
-- Fallback style total: 68
-- Original 32 enhanced guides modified: NO
+- Enhanced guide total: 72
+- Fallback style total: 48
+- Poster category enhanced coverage: 20 / 20
+- Original 52 enhanced guides modified: NO
 
 ## Data Validation
 
 | Check | Result |
 | --- | --- |
-| All 20 requested styleIds exist | PASS |
-| Enhanced guide total = 52 | PASS |
-| Fallback total = 68 | PASS |
+| All 20 requested D3 styleIds exist | PASS |
+| Enhanced guide total = 72 | PASS |
+| Fallback total = 48 | PASS |
+| Poster category complete = 20 / 20 | PASS |
 | Exactly 3 observations per new guide | PASS |
 | Exactly 4 profile traits per new guide | PASS |
 | Profile keys are order/color/ornament/emotion | PASS |
@@ -31,59 +33,64 @@
 | All 20 Guided Looking flows complete five stages | PASS |
 | Profile non-rating statement remains visible | PASS |
 | Reflection remains free and local | PASS |
-| Prompt / Plus boundary unchanged | PASS |
+| StoreKit purchase / restore and export boundary unchanged | PASS |
 
 ## Language Review
 
-- Chinese: PASS for D2 author edit. Opening questions are conversational, each observation points to a visible feature, and historical context supports rather than replaces looking.
-- English: PASS for D2 author edit. Copy is rewritten as natural guidance rather than literal Chinese syntax; artist, movement and institutional terms were checked.
-- Repeated phrasing: PASS. Labels vary across `Begin`, `Follow`, `Read`, `Enter`, `Trace`, `Watch`, `Ask`, `Sense`, and style-specific phrasing.
+- Chinese: PASS for D3 author edit. Opening questions stay conversational and invite looking; each observation points to visible features or necessary context without becoming a design tutorial.
+- English: PASS for D3 author edit. Copy is natural, not literal back-translation; movement and artist names use common English forms.
+- Repeated phrasing: PASS. Labels vary across `Begin`, `Read`, `See`, `Follow`, `Hold`, `Ask`, `Watch`, and style-specific descriptions.
 - Empty strings: PASS.
+- Prohibited generic praise terms: PASS for D3 scan.
 - Product-owner editorial sign-off: PENDING.
 
 ## Cultural Risk Review
 
-- No fabricated quotations or artist intent.
-- No universal color, animal or motif dictionary.
-- No instruction to reproduce sacred, ritual or community-restricted imagery.
-- Aboriginal and Torres Strait Islander cultural and intellectual property is explicitly acknowledged in the First Nations guide.
-- Indian, Korean, Chinese, Japanese, Mithila and Nordic traditions are described as internally varied rather than fixed regional looks.
-- `Sumi-e`, Chinese ink painting, Gongbi and Shanshui remain distinct.
-- `Nihonga` is not reduced to mineral pigment.
-- `Picasso / Cubism` distinguishes one artist's participation from the wider movement.
-- `Klimt` retains the sitter's agency instead of treating women as decorative surfaces.
-- `Kandinsky`, `Symbolism` and `Rothko` avoid fixed color, symbol, spiritual or emotional dictionaries.
-- `Expressionism` and `German Expressionism` remain historically distinct.
-- `Abstract Expressionism`, `Pollock`, `Color Field Painting` and `Rothko` remain distinct levels of movement and artist.
+- Futurism includes a restrained note on historical links to nationalism and fascism; it does not glamorize war or violence.
+- Psychedelic Poster avoids drug romanticization and gives no drug-related guidance.
+- Punk DIY and Grunge are not reduced to dirt, rebellion or generic aging.
+- Corporate Modernism includes both clarity and institutional power.
+- Anti-Design is described as conscious rule-breaking, not absence of design.
+- Conceptual Art avoids mocking viewers and avoids the claim that any idea automatically makes art.
+- Dalí, Magritte, Hopper, Pollock and Basquiat remain distinct from their wider movements or adjacent visual languages.
+- Pollock avoids romanticizing personal difficulty or the "mad genius" myth.
+- Basquiat avoids fixed symbol dictionaries, copying signature imagery and using Black culture as decoration.
 - Cultural review status: AUTHOR PASS; independent specialist review PENDING.
+
+## Original 52 Deep Comparison
+
+- Content fingerprint test added for the 52 pre-D3 enhanced guides.
+- Expected result: original 52 unchanged from `950130a8f81a4f3a49eb61bbee26cde4df856dd8`.
+- Exception modifications recorded: none.
+- Automated status: PASS.
 
 ## Automated Validation
 
 | Check | Result |
 | --- | --- |
 | `npm ci` | PASS |
-| `npm run test:ux` | PASS, 233 / 233 |
+| `npm run test:ux` | PASS, 258 / 258 |
 | `npm audit` | PASS, 0 vulnerabilities |
 | Requested JavaScript syntax checks | PASS, 6 / 6 |
-| Home style-image requests at 390 x 844 | PASS, 10 / 15 |
+| Home style-image requests at 390 x 844 | PASS, 11 / 15 |
 | Root and iOS guide resource byte comparison | PASS |
 | iOS resource integrity script | PASS |
-| Bundled WebP count | PASS, 120 |
+| Bundled WebP count | PASS, 120 root + 120 iOS |
 | Debug generic iOS build | PASS |
 | Release generic iOS build | PASS |
 | StoreKit and export regression | PASS |
-| Original 32 guide deep comparison | PASS, unchanged |
+| Original 52 guide deep comparison | PASS |
 
 ## Product Owner Priority Review
 
-1. `renaissance`
-2. `rococo`
-3. `pre-raphaelite`
-4. `picasso-cubism`
-5. `gustav-klimt`
-6. `kandinsky`
-7. `rothko`
-8. `dada`
+1. `futurism`
+2. `punk-diy`
+3. `psychedelic-poster`
+4. `corporate-modernism`
+5. `anti-design`
+6. `conceptual-art`
+7. `pollock`
+8. `basquiat`
 
 ## Release Boundary
 
@@ -93,3 +100,4 @@
 - Build upload: NO
 - StoreKit / Product ID: unchanged
 - Version / Build: 1.2 / 9
+- iPhone orientation: portrait only

@@ -1109,6 +1109,29 @@ const batchTwoGuideIds = [
   "color-field-painting"
 ];
 
+const batchThreeGuideIds = [
+  "de-stijl",
+  "futurism",
+  "brutalism",
+  "editorial-typography",
+  "new-wave-typography",
+  "punk-diy",
+  "grunge",
+  "psychedelic-poster",
+  "pop-art-poster",
+  "corporate-modernism",
+  "anti-design",
+  "experimental-typography",
+  "kinetic-poster",
+  "op-art",
+  "conceptual-art",
+  "dali",
+  "magritte",
+  "edward-hopper",
+  "pollock",
+  "basquiat"
+];
+
 const original32GuideFingerprints = {
   "swiss-style": "b6f70828",
   "art-deco": "e556a3de",
@@ -1144,7 +1167,62 @@ const original32GuideFingerprints = {
   "nordic-folk-art": "e3332760"
 };
 
-const enhancedGuideIds = [...originalEnhancedGuideIds, ...batchOneGuideIds, ...batchTwoGuideIds];
+const original52GuideFingerprints = {
+  "swiss-style": "b6f70828",
+  "art-deco": "e556a3de",
+  "impressionism": "afff473e",
+  "van-gogh": "93fb129f",
+  "chinese-ink-painting": "0366cc26",
+  "ukiyo-e": "b68d3e6f",
+  "dunhuang-mural": "d62bdaf4",
+  "islamic-geometric": "d1c1807d",
+  "african-tribal-pattern": "6cd31d73",
+  "mexican-muralism": "c68677e9",
+  "editorial-illustration": "97e41b87",
+  "solarpunk": "04ebfc94",
+  "bauhaus": "7e6cfe47",
+  "art-nouveau": "ca16dfb5",
+  "constructivism": "fb6a47fe",
+  "minimalism": "89af1c32",
+  "memphis": "dc184350",
+  "baroque": "e8a80fc0",
+  "romanticism": "e91624a1",
+  "post-impressionism": "ef260a30",
+  "fauvism": "55ca936f",
+  "surrealism": "f1078f95",
+  "gongbi": "669c7040",
+  "shanshui": "860083b1",
+  "sumi-e": "a0f7a132",
+  "nihonga": "b23d5c7e",
+  "indian-miniature": "ddac3234",
+  "korean-minhwa": "a46e5d62",
+  "madhubani": "fd08301a",
+  "chinese-new-year-woodblock": "009fd875",
+  "aboriginal-dot-painting": "863492f9",
+  "nordic-folk-art": "e3332760",
+  "renaissance": "c96440e0",
+  "rococo": "9a655ca2",
+  "neoclassicism": "3dec414e",
+  "realism": "cc7360ec",
+  "academic-painting": "b4d1b3a6",
+  "pre-raphaelite": "9140c8f6",
+  "monet": "c4b86a95",
+  "cezanne": "cf5ac4e6",
+  "matisse": "71346378",
+  "picasso-cubism": "bc2781ac",
+  "gustav-klimt": "eaef30bd",
+  "kandinsky": "00fa302f",
+  "mondrian": "f988d0e9",
+  "rothko": "7e71041f",
+  "expressionism": "fc7ebc01",
+  "german-expressionism": "9a7ccbe9",
+  "symbolism": "5eec8980",
+  "dada": "ac31e381",
+  "abstract-expressionism": "cbb23988",
+  "color-field-painting": "c174b8f0"
+};
+
+const enhancedGuideIds = [...originalEnhancedGuideIds, ...batchOneGuideIds, ...batchTwoGuideIds, ...batchThreeGuideIds];
 
 test("batch one guide coverage remains complete after later expansion", async ({ page }) => {
   await page.goto("/");
@@ -1209,18 +1287,15 @@ test("batch one respects editorial lengths, scene order and prohibited wording",
   expect(violations).toEqual([]);
 });
 
-test("batch two expands guide coverage to 52 with 68 fallback styles", async ({ page }) => {
+test("batch two guide coverage remains complete after later expansion", async ({ page }) => {
   await page.goto("/");
   const coverage = await page.evaluate((batchIds) => {
     const guides = window.StyleAtlasAesthetic.guides;
-    const styleCount = window.STYLE_ATLAS_DATA.rawStyles.length;
     return {
-      guideCount: Object.keys(guides).length,
-      fallbackCount: styleCount - Object.keys(guides).length,
       missing: batchIds.filter((id) => !guides[id])
     };
   }, batchTwoGuideIds);
-  expect(coverage).toEqual({ guideCount: 52, fallbackCount: 68, missing: [] });
+  expect(coverage).toEqual({ missing: [] });
 });
 
 test("batch two contains no empty Chinese or English fields", async ({ page }) => {
@@ -1283,6 +1358,95 @@ test("batch two respects editorial lengths scene order and prohibited wording", 
   expect(violations).toEqual([]);
 });
 
+test("batch three expands guide coverage to 72 with 48 fallback styles and full poster coverage", async ({ page }) => {
+  await page.goto("/");
+  const coverage = await page.evaluate((batchIds) => {
+    const guides = window.StyleAtlasAesthetic.guides;
+    const styles = window.STYLE_ATLAS_DATA.rawStyles;
+    const posterIds = styles.filter((style) => style[3] === "poster").map((style) => style[0]);
+    return {
+      guideCount: Object.keys(guides).length,
+      fallbackCount: styles.length - Object.keys(guides).length,
+      missing: batchIds.filter((id) => !guides[id]),
+      posterComplete: posterIds.filter((id) => guides[id]).length,
+      posterTotal: posterIds.length
+    };
+  }, batchThreeGuideIds);
+  expect(coverage).toEqual({
+    guideCount: 72,
+    fallbackCount: 48,
+    missing: [],
+    posterComplete: 20,
+    posterTotal: 20
+  });
+});
+
+test("batch three contains no empty Chinese or English fields", async ({ page }) => {
+  await page.goto("/");
+  const emptyPaths = await page.evaluate((batchIds) => {
+    const empty = [];
+    const visit = (value, path) => {
+      if (typeof value === "string") {
+        if (!value.trim()) empty.push(path);
+        return;
+      }
+      if (Array.isArray(value)) {
+        value.forEach((item, index) => visit(item, `${path}[${index}]`));
+        return;
+      }
+      if (value && typeof value === "object") {
+        Object.entries(value).forEach(([key, item]) => visit(item, `${path}.${key}`));
+      }
+    };
+    batchIds.forEach((id) => visit(window.StyleAtlasAesthetic.guides[id], id));
+    return empty;
+  }, batchThreeGuideIds);
+  expect(emptyPaths).toEqual([]);
+});
+
+test("batch three respects editorial lengths scene order and prohibited wording", async ({ page }) => {
+  await page.goto("/");
+  const violations = await page.evaluate((batchIds) => {
+    const issues = [];
+    const expectedZhScenes = ["家居", "穿搭", "摄影", "日常物件"];
+    const expectedEnScenes = ["Home", "Clothing", "Photography", "Everyday objects"];
+    const prohibited = [
+      "更高级",
+      "精致",
+      "震撼",
+      "独特",
+      "大师感",
+      "艺术感",
+      "视觉冲击",
+      "higher quality",
+      "more premium",
+      "drug use is",
+      "all viewers",
+      "anything is art",
+      "random design"
+    ];
+    for (const id of batchIds) {
+      const guide = window.StyleAtlasAesthetic.guides[id];
+      if (guide.openingQuestion.zh.length < 20 || guide.openingQuestion.zh.length > 55) {
+        issues.push(`${id}.openingQuestion.zh`);
+      }
+      guide.observe.forEach((item, index) => {
+        if (item.text.zh.length < 30 || item.text.zh.length > 85) issues.push(`${id}.observe[${index}].text.zh`);
+      });
+      const zhScenes = guide.everydayLife.map((item) => item.scene.zh);
+      const enScenes = guide.everydayLife.map((item) => item.scene.en);
+      if (JSON.stringify(zhScenes) !== JSON.stringify(expectedZhScenes)) issues.push(`${id}.everydayLife.zh`);
+      if (JSON.stringify(enScenes) !== JSON.stringify(expectedEnScenes)) issues.push(`${id}.everydayLife.en`);
+      const serialized = JSON.stringify(guide).toLowerCase();
+      prohibited.forEach((phrase) => {
+        if (serialized.includes(phrase.toLowerCase())) issues.push(`${id}.prohibited:${phrase}`);
+      });
+    }
+    return issues;
+  }, batchThreeGuideIds);
+  expect(violations).toEqual([]);
+});
+
 test("the original 32 guides retain their approved content fingerprints", async ({ page }) => {
   await page.goto("/");
   const actual = await page.evaluate((expected) => {
@@ -1300,6 +1464,25 @@ test("the original 32 guides retain their approved content fingerprints", async 
     ]));
   }, original32GuideFingerprints);
   expect(actual).toEqual(original32GuideFingerprints);
+});
+
+test("the original 52 guides retain their approved content fingerprints", async ({ page }) => {
+  await page.goto("/");
+  const actual = await page.evaluate((expected) => {
+    const hash = (value) => {
+      let result = 2166136261;
+      for (let index = 0; index < value.length; index += 1) {
+        result ^= value.charCodeAt(index);
+        result = Math.imul(result, 16777619);
+      }
+      return (result >>> 0).toString(16).padStart(8, "0");
+    };
+    return Object.fromEntries(Object.keys(expected).map((id) => [
+      id,
+      hash(JSON.stringify(window.StyleAtlasAesthetic.guides[id]))
+    ]));
+  }, original52GuideFingerprints);
+  expect(actual).toEqual(original52GuideFingerprints);
 });
 
 for (const styleId of enhancedGuideIds) {
@@ -1371,6 +1554,27 @@ test("all batch-two guides render and complete the five-stage Guided Looking flo
   test.setTimeout(60000);
   await page.goto("/#renaissance");
   for (const styleId of batchTwoGuideIds) {
+    await page.evaluate((id) => {
+      location.hash = id;
+    }, styleId);
+    await expect(page.locator("#detailView")).toHaveClass(/active/);
+    await expect(page.locator("#detailContent h1")).not.toHaveText("");
+    await expect(page.locator(".profile-scale")).toHaveCount(4);
+    await expect(page.locator(".profile-note")).toContainText("不是审美评分");
+    await page.locator("[data-action='open-guided']").click();
+    for (let stage = 1; stage <= 4; stage += 1) {
+      await page.locator("#guidedNextBtn").click();
+      await expect(page.locator("#guidedStage")).toHaveAttribute("data-stage", String(stage));
+    }
+    await page.locator("#guidedNextBtn").click();
+    await expect(page.locator("#guidedOverlay")).toBeHidden();
+  }
+});
+
+test("all batch-three guides render and complete the five-stage Guided Looking flow", async ({ page }) => {
+  test.setTimeout(60000);
+  await page.goto("/#de-stijl");
+  for (const styleId of batchThreeGuideIds) {
     await page.evaluate((id) => {
       location.hash = id;
     }, styleId);
