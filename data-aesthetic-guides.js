@@ -949,6 +949,606 @@
       reflectionPrompt: bi("你先注意图案本身，还是它如何服从木、线、布或器物的制作方式？", "Do you notice the motif first, or the way it follows wood, thread, cloth or the object's construction?")
     },
 
+    renaissance: {
+      openingQuestion: bi(
+        "先找画面中最像舞台中心的位置：人物、建筑和视线是不是都在帮你走向那里？",
+        "Find the place that feels most like the center of a stage: do figures, architecture and sightlines all lead you there?"
+      ),
+      observe: [
+        observe("space", "先追透视线", "Trace the perspective", "地砖、墙面和建筑边缘常向同一消失点收拢，把平面变成仿佛可以走进去的连续空间。", "Floor tiles, walls and architectural edges often converge toward one vanishing point, turning the surface into a space that seems enterable."),
+        observe("composition", "再看人物结构", "Read the figure group", "人物会以三角形、半圆或对称关系稳定地聚合，手势和目光继续连接主要事件。", "Figures gather in triangles, arcs or balanced groups, while gestures and glances keep the main event connected."),
+        observe("light", "最后看身体体积", "Watch bodies gain volume", "明暗沿着脸、手臂和衣褶缓慢转折，让身体像雕塑般占据空间，而不是贴在背景上。", "Light turns gradually across faces, arms and drapery, giving bodies sculptural volume instead of leaving them pasted to the backdrop.")
+      ],
+      profile: {
+        order: trait(5, "结构稳定清楚", "Stable, legible structure"),
+        color: trait(3, "色彩服务体积", "Color supports volume"),
+        ornament: trait(3, "细节服从叙事", "Detail serves the narrative"),
+        emotion: trait(3, "情绪庄重可亲", "Dignified, human tone")
+      },
+      feelingWords: bi(["稳定", "可信", "人文", "平衡"], ["Stable", "Believable", "Human", "Balanced"]),
+      everydayLife: [
+        life("家居", "Home", "观察门框、桌边和地板线如何共同指向空间深处，以及家具怎样围出清楚的活动中心。", "Follow doorframes, table edges and floor lines into depth, and see how furniture defines a clear center of activity."),
+        life("穿搭", "Clothing", "留意衣料在肩、腰和膝部形成的明暗转折，理解布料怎样帮助身体显出重量。", "Attend to shifts of light around shoulders, waist and knees, and how fabric gives the body a sense of weight."),
+        life("摄影", "Photography", "利用走廊或街道的汇聚线组织纵深，再让人物手势和目光连接画面的主要关系。", "Use converging lines in a corridor or street to organize depth, then connect the scene through gestures and glances."),
+        life("日常物件", "Everyday objects", "看说明图、桌面陈列或包装怎样用中心、比例和前后遮挡建立可信空间。", "See how diagrams, tabletop arrangements or packaging use centers, scale and overlap to establish convincing space.")
+      ],
+      comparisons: [
+        compare("neoclassicism", "都借助古典比例、清楚轮廓和稳定人物群建立秩序。", "Both use classical proportion, clear contours and stable figure groups to create order.", "文艺复兴在不同地区重新研究透视、人体与人文主体；新古典主义在十八世纪考古与启蒙语境中更有意识地控制轮廓、题材和道德叙事。", "Renaissance traditions reexamined perspective, the body and human subjects across regions; Neoclassicism later imposed a more deliberate control of contour, antique subject and moral narrative."),
+        compare("baroque", "都能以大型人物、建筑空间和光线讲述宗教或历史事件。", "Both can stage religious or historical events through large figures, architecture and light.", "文艺复兴构图通常让空间与人物保持稳定平衡；巴洛克更常以对角线、强烈明暗和越出边界的动作制造即时戏剧。", "Renaissance compositions usually stabilize figures within coherent space; Baroque art more often uses diagonals, sharp light and outward movement for immediate drama.")
+      ],
+      reflectionPrompt: bi("你更被这个空间的可信秩序吸引，还是被人物作为叙事中心的位置吸引？", "Are you drawn more to the believable order of the space, or to the new weight given to people within it?")
+    },
+
+    rococo: {
+      openingQuestion: bi(
+        "让视线沿着墙角和人物之间最轻的曲线移动：它是在组织空间，还是故意让空间松开？",
+        "Let your eye follow the lightest curve between architecture and figures: is it organizing the space, or allowing it to loosen?"
+      ),
+      observe: [
+        observe("line", "先看不对称曲线", "Follow the off-center curves", "贝壳状转折、枝叶和衣褶常向不同方向伸展，左右并不镜像，却以连续节奏保持平衡。", "Shell-like turns, foliage and drapery extend in different directions; the sides do not mirror each other, yet their rhythm stays balanced."),
+        observe("space", "再看轻盈空间", "Enter the airy space", "浅色墙面、柔和天空和开放边缘减轻建筑重量，人物像在小尺度场景中自由交谈或游戏。", "Pale interiors, soft skies and open edges reduce architectural weight, letting figures converse or play within intimate settings."),
+        observe("surface", "最后看表面节奏", "Read the surface rhythm", "丝绸反光、花束和雕饰密集出现，但小笔触与弯曲间隔让装饰显得流动而非僵硬。", "Silk highlights, flowers and carving appear in abundance, yet small marks and curved intervals keep the ornament mobile rather than rigid.")
+      ],
+      profile: {
+        order: trait(3, "不对称中有节奏", "Rhythm within asymmetry"),
+        color: trait(4, "浅亮色彩丰富", "Rich, pale luminosity"),
+        ornament: trait(5, "表面装饰繁盛", "Abundant surface ornament"),
+        emotion: trait(3, "情绪轻快亲密", "Light, intimate mood")
+      },
+      feelingWords: bi(["轻盈", "亲密", "流动", "闲适"], ["Airy", "Intimate", "Flowing", "Leisurely"]),
+      everydayLife: [
+        life("家居", "Home", "观察镜框、扶手和墙角曲线如何互相接续，让装饰顺着空间移动，而不是平均铺满。", "See how mirrors, rails and corner curves continue one another, moving ornament through space instead of spreading it evenly."),
+        life("穿搭", "Clothing", "关注柔软面料、小尺度细节和不对称配件之间的轻重关系，不必把浅色直接等同于甜美。", "Consider the balance among soft fabric, small detail and an off-center accessory without treating pale color as automatically sweet."),
+        life("摄影", "Photography", "寻找树影、窗帘或人物姿态形成的弯曲路径，用近距离关系表现轻松交流。", "Find a curved path through shadows, curtains or poses, and use close spacing to suggest relaxed exchange."),
+        life("日常物件", "Everyday objects", "看茶具、盒盖和把手怎样在小面积中安排曲线、空白与细碎反光。", "Examine how cups, lids and handles arrange curves, open areas and small highlights within a compact surface.")
+      ],
+      comparisons: [
+        compare("baroque", "都重视曲线、装饰、动作和感官表面。", "Both value curves, ornament, movement and sensuous surfaces.", "巴洛克常以宏大尺度、深暗背景和强烈戏剧推动叙事；洛可可更偏浅亮空间、亲密场景与松弛的不对称节奏。", "Baroque often drives narrative through monumental scale, deep shadow and drama; Rococo favors pale space, intimate scenes and relaxed asymmetry."),
+        compare("art-nouveau", "都让曲线贯穿人物、植物、边框和物件。", "Both let curves travel through figures, plants, frames and objects.", "洛可可属于十八世纪宫廷与室内装饰语境，曲线轻碎且场景亲密；新艺术以十九世纪末的整体设计把植物线条接入字体、海报和现代材料。", "Rococo belongs to eighteenth-century courtly and interior contexts, with light broken curves and intimacy; Art Nouveau redirects botanical line into modern type, posters and materials.")
+      ],
+      reflectionPrompt: bi("这些曲线让你感到空间更自由，还是让你意识到闲适生活背后的社会距离？", "Do these curves make the space feel freer, or make you consider the social distance behind its leisure?")
+    },
+
+    neoclassicism: {
+      openingQuestion: bi(
+        "先别找古代服装，看看人物的轮廓和动作：画面是不是在要求每个选择都显得明确？",
+        "Before identifying antique dress, study the contours and actions: does the image make every choice feel deliberate?"
+      ),
+      observe: [
+        observe("line", "先看受控轮廓", "Begin with controlled contours", "人物边缘、手臂和衣褶常被清楚收住，笔触退到表面之后，使动作像经过排练。", "Edges of bodies, arms and drapery are clearly contained while brushwork recedes, making each action seem rehearsed."),
+        observe("composition", "再看秩序分组", "Read the ordered grouping", "垂直、水平和稳定三角形把人物分成清楚阵营，空隙帮助你判断责任、选择或冲突。", "Verticals, horizontals and stable triangles divide figures into legible groups, with gaps clarifying responsibility, choice or conflict."),
+        observe("tone", "最后看叙事克制", "Feel the narrative restraint", "表情和手势可以强烈，但背景、颜色和表面通常受控，让画面更像公开陈述而非私人爆发。", "Expressions and gestures may be forceful, but setting, color and surface remain controlled, turning the scene into a public statement rather than a private outburst.")
+      ],
+      profile: {
+        order: trait(5, "秩序高度受控", "Highly controlled order"),
+        color: trait(2, "色彩服务轮廓", "Color serves contour"),
+        ornament: trait(2, "装饰受到约束", "Ornament is constrained"),
+        emotion: trait(3, "情绪坚定克制", "Firm, restrained emotion")
+      },
+      feelingWords: bi(["清楚", "坚定", "克制", "公共"], ["Clear", "Resolute", "Restrained", "Public"]),
+      everydayLife: [
+        life("家居", "Home", "观察门、柱、桌面和座椅如何以水平垂直关系分区，让空间显得有规则但不必复古。", "Watch doors, columns, tables and chairs divide space through horizontal and vertical relations without requiring antique decor."),
+        life("穿搭", "Clothing", "从清楚肩线、完整轮廓和有限配色观察衣着怎样传达正式程度，而不是模仿历史服装。", "Read formality through a clear shoulder line, complete silhouette and limited palette rather than copying historical dress."),
+        life("摄影", "Photography", "把人物安排在明确分组和建筑轴线上，用手势与空隙说明关系，不依赖夸张表情。", "Place people in clear groups along architectural axes, using gestures and gaps to explain relationships without exaggerated expressions."),
+        life("日常物件", "Everyday objects", "看证书、纪念品和公共标识如何用边框、中心和稳定比例传达制度感。", "See how certificates, commemorative objects and civic signs use borders, centers and stable proportion to convey institution.")
+      ],
+      comparisons: [
+        compare("renaissance", "都借鉴古典形式，并重视比例、人物结构和清楚空间。", "Both draw on classical form and value proportion, figure structure and legible space.", "文艺复兴以透视、人体和人文研究重建可居空间；新古典主义在十八世纪重新面对古代遗存，以更冷静轮廓和道德叙事回应当代公共生活。", "Renaissance art rebuilt inhabitable space through perspective, anatomy and humanist study; Neoclassicism revisited antiquity in the eighteenth century through cooler contour and moral public narrative."),
+        compare("romanticism", "两者都能处理历史、文学、政治和极端选择。", "Both can address history, literature, politics and difficult choices.", "新古典主义倾向稳定分组、收束轮廓和可读责任；浪漫主义更常让天气、色彩、运动与个人感受打破这种控制。", "Neoclassicism favors stable groups, contained contours and legible duty; Romanticism more often lets weather, color, movement and personal feeling break that control.")
+      ],
+      reflectionPrompt: bi("你更相信这种清楚秩序带来的说服力，还是会寻找被它压低的个人情绪？", "Do you trust the argument made by this clear order, or look for personal feelings held beneath it?")
+    },
+
+    realism: {
+      openingQuestion: bi(
+        "画面没有把生活整理得很体面时，你会先看人物的劳动、环境的重量，还是观看者的位置？",
+        "When life has not been tidied into an ideal, do you first read the labor, the weight of the setting, or your own position as viewer?"
+      ),
+      observe: [
+        observe("subject", "先看谁成为主体", "Ask who occupies the center", "劳动者、街道和普通室内不再只是背景，它们以完整尺度占据画面，要求被认真观看。", "Workers, streets and ordinary interiors cease to be background; they occupy full pictorial weight and demand sustained attention."),
+        observe("surface", "再看未被理想化的表面", "Read the unidealized surface", "手、衣物、泥土和墙面保留磨损、重量与不规则，真实感来自具体处境而不只是像照片。", "Hands, clothes, soil and walls retain wear, weight and irregularity; truth comes from a specific condition, not mere photographic likeness."),
+        observe("composition", "最后看画面立场", "Find the picture's position", "人物仍被比例、遮挡和视线精心组织，题材选择与观看距离会告诉你画面如何面对社会现实。", "Figures are still carefully organized through scale, overlap and gaze; subject choice and viewing distance reveal how the image faces social reality.")
+      ],
+      profile: {
+        order: trait(3, "构图扎实直接", "Grounded, direct composition"),
+        color: trait(2, "色彩贴近日常", "Everyday color range"),
+        ornament: trait(1, "装饰主动退后", "Ornament steps back"),
+        emotion: trait(4, "情绪沉着有立场", "Sober, positioned emotion")
+      },
+      feelingWords: bi(["日常", "沉着", "具体", "有重量"], ["Everyday", "Sober", "Specific", "Weighty"]),
+      everydayLife: [
+        life("家居", "Home", "观察使用痕迹、照明条件和物件摆放怎样说明谁在这里生活，而不急着把空间整理成样板。", "Read wear, available light and object placement as evidence of who lives here instead of tidying the room into a display."),
+        life("穿搭", "Clothing", "留意衣物在实际动作中产生的折痕、磨损和层次，把它们当作生活信息而不是缺点。", "Treat folds, wear and layers produced by real movement as information about life rather than flaws."),
+        life("摄影", "Photography", "让工作、等待或通勤保持原有环境关系，同时思考机位是否把人物变成被观看的对象。", "Keep work, waiting or commuting connected to its setting, while considering whether the camera turns people into objects of observation."),
+        life("日常物件", "Everyday objects", "看工具、账本、容器和修补处如何记录使用时间，并通过排列说明具体劳动流程。", "See how tools, ledgers, containers and repairs record duration and, through arrangement, reveal a working process.")
+      ],
+      comparisons: [
+        compare("romanticism", "都能关注社会、自然和人的处境，也都通过题材选择表达立场。", "Both address society, nature and human circumstance, expressing a position through subject choice.", "现实主义常把普通劳动与不理想化环境置于中心；浪漫主义更常借极端天气、历史事件和主观色彩放大情绪经验。", "Realism centers ordinary labor and unidealized settings; Romanticism more often amplifies feeling through extreme weather, history and subjective color."),
+        compare("impressionism", "都转向现代生活、户外场景和未经英雄化的日常片段。", "Both turn toward modern life, outdoor scenes and everyday moments without heroic framing.", "现实主义更强调题材的社会位置、物质重量和持续观察；印象主义更关注瞬时光色、开放笔触和观看条件的变化。", "Realism emphasizes social position, material weight and sustained observation; Impressionism attends more to transient light, open brushwork and changing conditions of sight.")
+      ],
+      reflectionPrompt: bi("你觉得画面的真实来自外观相似，还是来自它选择认真面对的生活处境？", "Does the image feel truthful because it looks familiar, or because of the life it chooses to confront?")
+    },
+
+    "academic-painting": {
+      openingQuestion: bi(
+        "当笔触几乎消失时，看看人物、道具和背景是否像一场被完整排练过的正式演出？",
+        "When brushstrokes nearly disappear, do figures, props and setting feel like a formal performance rehearsed down to every detail?"
+      ),
+      observe: [
+        observe("finish", "先看隐藏的笔触", "Begin with the concealed brushwork", "颜色过渡和皮肤表面被反复平整，制作痕迹主动后退，让题材显得完成、连续而可信。", "Transitions and skin surfaces are repeatedly smoothed, pushing the making process behind a finished, continuous illusion."),
+        observe("figure", "再看训练过的身体", "Study the trained figure", "姿态、解剖与衣褶显示长期素描和模型训练，身体常承担历史、神话或道德叙事。", "Pose, anatomy and drapery show sustained drawing and model study, with bodies carrying historical, mythic or moral narrative."),
+        observe("hierarchy", "最后看题材层级", "Read the hierarchy of subject", "尺寸、中心位置、舞台式建筑和配角分布共同说明哪些题材在学院与展览体系中被赋予声望。", "Scale, central placement, staged architecture and supporting figures reveal which subjects received prestige within academies and exhibitions.")
+      ],
+      profile: {
+        order: trait(5, "训练秩序严密", "Rigorous trained order"),
+        color: trait(3, "色彩过渡完整", "Fully modeled color"),
+        ornament: trait(4, "细节完成度高", "Highly finished detail"),
+        emotion: trait(3, "情绪正式戏剧", "Formal dramatic tone")
+      },
+      feelingWords: bi(["正式", "完成", "训练", "舞台感"], ["Formal", "Finished", "Trained", "Staged"]),
+      everydayLife: [
+        life("家居", "Home", "观察正式空间如何用中心轴、陈列高度和完整照明建立等级，而不把这种秩序当作唯一标准。", "See how formal rooms establish hierarchy through axes, display height and complete lighting without treating that order as the only standard."),
+        life("穿搭", "Clothing", "从结构、合体程度和面料转折判断正式感，关注身体如何被轮廓组织而非复制历史服装。", "Read formality through structure, fit and fabric modeling, focusing on how the silhouette organizes the body rather than copying period dress."),
+        life("摄影", "Photography", "用预先安排的姿态、道具和均衡照明观察制作痕迹如何被藏起，同时保留人物的主体性。", "Use planned poses, props and balanced light to study how production disappears while preserving the sitter's agency."),
+        life("日常物件", "Everyday objects", "看奖章、证书和陈列品怎样依靠边框、材质和精细收尾表达制度认可。", "Examine how medals, certificates and display objects use framing, material and finish to express institutional recognition.")
+      ],
+      comparisons: [
+        compare("neoclassicism", "都重视素描、清楚轮廓、古典范例和正式历史题材。", "Both value drawing, clear contour, classical precedent and formal history subjects.", "新古典主义是一种强调克制秩序与古代道德叙事的风格方向；学院绘画更指训练、评审和展览制度，可容纳多种历史风格。", "Neoclassicism is a stylistic direction centered on controlled order and antique moral narrative; Academic Painting describes systems of training, judgment and exhibition that could contain several styles."),
+        compare("pre-raphaelite", "都展现精密制作、文学题材和高度完成的表面。", "Both can show meticulous making, literary subjects and highly finished surfaces.", "学院绘画常以理想化人体、层级题材和隐藏笔触证明训练；前拉斐尔派反对部分学院惯例，以清晰颜色、近距离自然和均等细节重新组织表面。", "Academic Painting often demonstrates training through ideal bodies, ranked subjects and concealed brushwork; the Pre-Raphaelites challenged parts of that system with lucid color, close nature study and evenly sharp detail.")
+      ],
+      reflectionPrompt: bi("精细完成让你更容易进入故事，还是让你开始追问谁制定了这种完成标准？", "Does the polished finish draw you into the story, or make you ask who defined that standard?")
+    },
+
+    "pre-raphaelite": {
+      openingQuestion: bi(
+        "当人物、花草和衣料都同样清楚时，你的视线会停在主角，还是不断被细节拉走？",
+        "When figures, plants and fabric are equally clear, does your eye stay with the protagonist or keep being drawn into detail?"
+      ),
+      observe: [
+        observe("detail", "先看均等清晰度", "Begin with equal sharpness", "前景花叶、远处物件和人物衣饰都保留鲜明边缘，背景不轻易退成模糊陪衬。", "Foreground plants, distant objects and clothing all retain crisp edges; the background rarely dissolves into soft support."),
+        observe("color", "再看清亮颜色", "Watch the lucid color", "透明层次与明亮底色让红、绿、蓝显得清澈，颜色把自然细节和文学气氛同时推近。", "Transparent layers and bright grounds make reds, greens and blues unusually lucid, bringing natural detail and literary mood equally close."),
+        observe("relation", "最后看人物与自然", "Connect figure and nature", "植物、季节、手势与物件会围绕人物形成密集关系，但含义需由具体作品语境判断。", "Plants, season, gesture and objects form dense relations around the figure, but their meanings depend on the context of each work.")
+      ],
+      profile: {
+        order: trait(4, "细节组织紧密", "Tightly organized detail"),
+        color: trait(4, "色彩清亮饱和", "Lucid, saturated color"),
+        ornament: trait(4, "表面信息丰富", "Information-rich surface"),
+        emotion: trait(4, "情绪文学浓郁", "Literary, intense mood")
+      },
+      feelingWords: bi(["清澈", "密集", "文学", "专注"], ["Lucid", "Dense", "Literary", "Attentive"]),
+      everydayLife: [
+        life("家居", "Home", "观察植物、织物和小物件是否都被同样认真照亮，以及密集细节怎样仍围绕一个叙事中心。", "See whether plants, textiles and small objects receive equal attention, and how dense detail still gathers around one narrative center."),
+        life("穿搭", "Clothing", "关注纹理、颜色与自然光的关系，不必借用具体文学人物或把长发、长裙当成唯一标志。", "Attend to texture, color and daylight without borrowing a literary character or treating long hair and dress as defining signs."),
+        life("摄影", "Photography", "选择细节丰富的自然环境，让前后景保持清楚，再用人物目光或手势稳住故事。", "Choose a richly detailed natural setting, keep foreground and distance clear, and anchor the story through gaze or gesture."),
+        life("日常物件", "Everyday objects", "看插图书、植物标本和织物如何让微小形状保持可辨，并通过重复颜色建立联系。", "Look at illustrated books, botanical specimens and textiles to see how tiny forms remain legible and repeated colors create links.")
+      ],
+      comparisons: [
+        compare("romanticism", "都借助文学、自然和强烈个人情境建立情绪。", "Both build emotion through literature, nature and intense personal situations.", "浪漫主义常以天气、运动和尺度放大情感；前拉斐尔派更常以清晰光色、近距离自然研究和几乎均等的细节密度制造沉浸。", "Romanticism often enlarges feeling through weather, motion and scale; the Pre-Raphaelites more often immerse through lucid color, close nature study and nearly equal detail."),
+        compare("art-nouveau", "都可见植物曲线、清楚轮廓和人物与装饰表面的结合。", "Both can combine botanical curves, clear contours and figures with decorative surfaces.", "前拉斐尔派主要以绘画重访文学、自然和中世纪题材；新艺术把有机线条发展为海报、字体、建筑和物件的整体设计语言。", "The Pre-Raphaelites primarily revisited literature, nature and medieval subjects through painting; Art Nouveau developed organic line across posters, type, architecture and objects.")
+      ],
+      reflectionPrompt: bi("这些同样清楚的细节让故事更真实，还是让你怀疑真正的主角可能是整个环境？", "Do these equally sharp details make the story more real, or suggest that the whole environment may be the protagonist?")
+    },
+
+    monet: {
+      openingQuestion: bi(
+        "如果同一处景物过一小时再画一次，最先变化的会是物体本身，还是物体周围的光和空气？",
+        "If the same place were painted again an hour later, what would change first: the object itself, or the light and air around it?"
+      ),
+      observe: [
+        observe("light", "先看光色关系", "Begin with light becoming color", "阴影不只是加黑，而会转成蓝、紫、绿等相邻色；亮处也由多种色点共同闪动。", "Shadows are not simply darkened but shift into blues, violets and greens, while highlights flicker through several adjacent hues."),
+        observe("surface", "再看水雾与反光", "Watch water, mist and reflection", "水面、雾气、雪和花园会打散物体边缘，笔触记录空气如何改变你能看清的程度。", "Water, mist, snow and gardens break up edges, with strokes recording how atmosphere changes what can be seen."),
+        observe("time", "最后想象系列", "Imagine the sequence", "同一地点在不同时间、天气与季节中反复出现，稳定的对象成为比较光线变化的坐标。", "The same site returns across hours, weather and seasons, turning a stable subject into a measure of changing light.")
+      ],
+      profile: {
+        order: trait(2, "结构被光线软化", "Structure softened by light"),
+        color: trait(5, "光色变化丰富", "Highly varied light-color"),
+        ornament: trait(2, "细节融入笔触", "Detail dissolves into strokes"),
+        emotion: trait(3, "情绪开放流动", "Open, flowing mood")
+      },
+      feelingWords: bi(["闪动", "湿润", "短暂", "空气感"], ["Flickering", "Moist", "Transient", "Atmospheric"]),
+      everydayLife: [
+        life("家居", "Home", "比较同一面墙在早晚、晴雨和不同窗帘下的颜色变化，暂时别急着给它一个固定色名。", "Compare one wall across morning, evening, weather and curtains before assigning it a fixed color name."),
+        life("穿搭", "Clothing", "观察面料在日光、树影和反光环境中怎样变色，把颜色理解为与周围光线共同发生。", "Watch fabric change under daylight, tree shadow and reflected light, treating color as something produced with its surroundings."),
+        life("摄影", "Photography", "在不同时间重复拍摄同一地点，比较水面、雾气、天空和反光怎样改变边缘。", "Return to one site at different times and compare how water, mist, sky and reflection alter its edges."),
+        life("日常物件", "Everyday objects", "看玻璃、金属和湿润表面如何借来周围颜色，理解物体色并不总是稳定。", "See how glass, metal and wet surfaces borrow surrounding hues, revealing that object color is not always stable.")
+      ],
+      comparisons: [
+        compare("impressionism", "都使用开放笔触、户外光线和现代生活片段研究瞬时观看。", "Both use open brushwork, outdoor light and modern-life fragments to study momentary vision.", "Impressionism 是包含多位艺术家与不同方法的流派；Monet 的个人语言尤其持续于系列、同址重访、水面、花园、雾气与反光中的光色变化。", "Impressionism includes many artists and approaches; Monet's language is especially sustained through series, revisited sites, water, gardens, mist and reflected light."),
+        compare("renoir", "都与印象主义相关，也用碎笔触和明亮色彩处理户外光。", "Both are associated with Impressionism and use broken strokes and bright color in outdoor light.", "Monet 常让景物成为测量时间与空气的场域；Renoir 更常把注意力放在人物、肌肤、社交场景与温暖光色的流动。", "Monet often turns landscape into a field for measuring time and atmosphere; Renoir more often centers figures, skin, sociability and warm moving light.")
+      ],
+      reflectionPrompt: bi("你看到的是一个固定地点，还是光线暂时把它变成的这一刻？", "Are you seeing a fixed place, or what light has temporarily made of it at this moment?")
+    },
+
+    cezanne: {
+      openingQuestion: bi(
+        "桌面似乎有点倾斜、杯口又不完全一致时，画面是在出错，还是在记录眼睛不断移动？",
+        "When the table tilts and rims do not quite agree, is the image failing, or recording an eye that keeps moving?"
+      ),
+      observe: [
+        observe("volume", "先看色块建体积", "Build volume through color", "物体不是主要靠黑白阴影塑形，短小色块在冷暖与深浅之间累积出苹果、山体和身体的重量。", "Objects are not modeled mainly by black and white shadow; short color patches accumulate warmth, coolness and depth into the weight of fruit, mountain or body."),
+        observe("viewpoint", "再看移动视点", "Let the viewpoint shift", "桌边、杯口和地平线可能各自略向不同方向，像眼睛在观看过程中移动后留下多个判断。", "Table edges, rims and horizons may tilt in different directions, as if several judgments from a moving gaze remain visible."),
+        observe("structure", "最后看观察与结构", "Join seeing to structure", "轮廓常被重复寻找，局部保留未完成感；画面一边确认对象，一边重新组织空间。", "Contours are searched more than once and areas may remain unresolved; the image confirms an object while reorganizing the space around it.")
+      ],
+      profile: {
+        order: trait(4, "结构持续校准", "Structure under continual adjustment"),
+        color: trait(4, "色块承担造型", "Color patches build form"),
+        ornament: trait(1, "装饰很少", "Very little ornament"),
+        emotion: trait(3, "情绪专注沉着", "Focused, steady mood")
+      },
+      feelingWords: bi(["结实", "搜寻", "多视点", "缓慢"], ["Solid", "Searching", "Multi-view", "Deliberate"]),
+      everydayLife: [
+        life("家居", "Home", "从不同座位看同一张桌子，比较边缘、杯口和物件遮挡如何随身体位置改变。", "View one table from several seats and compare how its edges, rims and overlaps change with your body position."),
+        life("穿搭", "Clothing", "观察大色块怎样绕过肩、胸和腿建立体积，不只依赖清楚外轮廓或明暗渐变。", "See how broad color patches turn around shoulders, torso and legs to build volume without relying only on a clean outline or smooth shading."),
+        life("摄影", "Photography", "围绕静物移动并拍摄几个角度，比较单张透视与连续观看提供的信息差异。", "Move around a still life and photograph several angles, comparing single-point perspective with the information of continuous looking."),
+        life("日常物件", "Everyday objects", "把水果、瓶子和布料并置，观察圆体、斜面和空隙怎样通过颜色互相支撑。", "Arrange fruit, bottles and cloth, then see how rounded volumes, tilted planes and gaps support one another through color.")
+      ],
+      comparisons: [
+        compare("post-impressionism", "都从印象主义的开放笔触与现代色彩出发，进一步强化个人结构。", "Both begin from Impressionist openness and modern color, then strengthen personal structure.", "Post-Impressionism 是包含多条艺术道路的总称；Cézanne 特别以重复轮廓、色块体积和移动视点连接直接观察与空间构造。", "Post-Impressionism names several artistic paths; Cézanne particularly joins direct observation to constructed space through repeated contours, color volume and shifting viewpoints."),
+        compare("picasso-cubism", "都松动单一透视，并让对象的结构比瞬时外观更重要。", "Both loosen single-point perspective and value an object's structure over one instant appearance.", "Cézanne仍在持续观察中以色块建立可辨对象；Picasso参与的立体主义进一步拆分平面、并置多角度，并把拼贴材料带入画面。", "Cézanne still builds recognizable objects through sustained observation and color; Cubism, with Picasso among its participants, further fractures planes, combines viewpoints and introduces collage.")
+      ],
+      reflectionPrompt: bi("你希望空间保持一次观看的统一，还是愿意让多次观看同时留在画面里？", "Do you want space to preserve one unified view, or allow several moments of looking to remain at once?")
+    },
+
+    matisse: {
+      openingQuestion: bi(
+        "当墙、桌面和人物都被压成大色块时，空间消失了吗，还是换了一种更平面的呼吸方式？",
+        "When wall, table and figure become broad fields of color, has space vanished, or learned to breathe in a flatter way?"
+      ),
+      observe: [
+        observe("color", "先看色块关系", "Begin with the color fields", "颜色不必服从物体固有色，大面积红、蓝、绿会互相推拉，同时决定人物与室内的距离。", "Color need not obey local appearance; broad reds, blues and greens push and pull one another, setting distance between figure and room."),
+        observe("line", "再看轮廓节奏", "Follow the contour rhythm", "简化线条绕过身体、家具和植物，轮廓既分隔形状，也像书写一样让视线连续移动。", "Simplified lines circle bodies, furniture and plants, separating shapes while carrying the eye with the rhythm of handwriting."),
+        observe("space", "最后看装饰空间", "Enter the decorative space", "壁纸、地毯、窗景和人物共享平面纹样，前后关系被压缩，却仍通过重叠和色差保持室内感。", "Wallpaper, rugs, windows and figures share flat pattern; depth is compressed yet survives through overlap and color difference.")
+      ],
+      profile: {
+        order: trait(3, "构图自由平衡", "Freely balanced composition"),
+        color: trait(5, "色彩主导空间", "Color governs space"),
+        ornament: trait(4, "图案融入结构", "Pattern joins structure"),
+        emotion: trait(4, "情绪明亮舒展", "Bright, expansive mood")
+      },
+      feelingWords: bi(["明亮", "舒展", "平面", "有节奏"], ["Bright", "Expansive", "Flat", "Rhythmic"]),
+      everydayLife: [
+        life("家居", "Home", "观察墙面、织物、植物和窗景怎样通过大色块相互呼应，让图案参与空间而不是只作点缀。", "See how walls, textiles, plants and windows answer one another through broad color, making pattern part of the room rather than an accent."),
+        life("穿搭", "Clothing", "关注完整轮廓与两三块颜色的关系，让线条和色面组织身体，不必复制具体剪纸形状。", "Attend to the relation between a complete silhouette and two or three colors, letting line and field organize the body without copying a specific cutout."),
+        life("摄影", "Photography", "寻找人物与墙、桌布或植物之间的色彩呼应，用正面构图压缩空间并保留重叠。", "Find color echoes among a person, wall, cloth or plant, using a frontal composition to compress depth while preserving overlap."),
+        life("日常物件", "Everyday objects", "看餐盘、书封和纸张剪形怎样用连续轮廓与纯色区域形成轻快节奏。", "Look at plates, book covers and cut paper to see how continuous contour and unmodulated color create buoyant rhythm.")
+      ],
+      comparisons: [
+        compare("fauvism", "都使用非自然色、简化轮廓和直接笔触释放颜色力量。", "Both release color through non-natural hues, simplified contours and direct handling.", "野兽派指一段较集中的群体实践；Matisse 的长期语言继续发展装饰室内、平面空间、流动线条与晚期剪纸节奏。", "Fauvism names a concentrated group practice; Matisse's longer language continued through decorative interiors, flattened space, flowing line and late cut-paper rhythm."),
+        compare("picasso-cubism", "都重新处理人物、静物与室内空间，不服从传统透视。", "Both rethink figure, still life and interior without obeying traditional perspective.", "Matisse常让大色块、轮廓和图案保持感官连续；立体主义更常拆分物体、交错正负空间，并把多个角度压进同一结构。", "Matisse often preserves sensuous continuity through broad color, contour and pattern; Cubism more often fractures objects, interlocks positive and negative space, and compresses several views.")
+      ],
+      reflectionPrompt: bi("你需要透视才能相信一个室内，还是颜色、轮廓和重叠已经足够？", "Do you need perspective to believe in a room, or are color, contour and overlap enough?")
+    },
+
+    "picasso-cubism": {
+      openingQuestion: bi(
+        "如果你能同时看到一个物体的正面、侧面和内部，哪一块会最先让你重新认出它？",
+        "If front, side and interior appeared at once, which fragment would let you recognize the object again?"
+      ),
+      observe: [
+        observe("viewpoint", "先看多角度并置", "Begin with several viewpoints", "眼睛、杯口、桌面或乐器会同时出现正面与侧面线索，单一固定机位被拆开。", "Eyes, rims, tabletops or instruments combine frontal and side clues, breaking apart the authority of one fixed viewpoint."),
+        observe("space", "再看正负空间", "Track positive and negative space", "物体边缘与背景平面互相穿插，空隙不再只是剩余区域，而成为形体结构的一部分。", "Object edges and background planes interlock; gaps stop being leftover space and become active parts of the construction."),
+        observe("material", "最后看拼贴材料", "Finish with collage material", "报纸、墙纸、木纹或文字片段可以直接进入作品，让真实材料与被描绘的物体互相质疑。", "Newspaper, wallpaper, wood grain or fragments of type can enter directly, making actual material and represented object question one another.")
+      ],
+      profile: {
+        order: trait(4, "碎片结构严密", "Tightly constructed fragments"),
+        color: trait(2, "色彩常被压低", "Color often subdued"),
+        ornament: trait(2, "材料不是装饰", "Material is not mere ornament"),
+        emotion: trait(3, "情绪分析又机敏", "Analytical, alert mood")
+      },
+      feelingWords: bi(["拆分", "多角度", "拼贴", "机敏"], ["Fragmented", "Multi-view", "Collaged", "Alert"]),
+      everydayLife: [
+        life("家居", "Home", "从门口、桌边和镜面同时观察一个房间，比较不同角度提供的形状怎样在记忆里合成。", "Observe one room from doorway, table and mirror, comparing how shapes from different angles combine in memory."),
+        life("穿搭", "Clothing", "看衣片接缝、重叠层次和正侧轮廓如何把身体分成相互连接的平面，而非模仿具体人物。", "See how seams, layers and front-side contours divide the body into connected planes without imitating a particular figure."),
+        life("摄影", "Photography", "通过玻璃反射、重复曝光或连续取景并置多个视点，同时保留主体可辨的关键线索。", "Combine viewpoints through reflection, repeated exposure or sequential framing while preserving clues that keep the subject recognizable."),
+        life("日常物件", "Everyday objects", "拆看包装、票据和标签的材质关系，观察文字既能被阅读，也能成为形状和表面。", "Examine packaging, receipts and labels to see how type can be read while also acting as shape and surface.")
+      ],
+      comparisons: [
+        compare("cezanne", "都挑战固定透视，并通过结构分析人物、静物和空间。", "Both challenge fixed perspective and analyze figure, still life and space through structure.", "Cézanne以持续观察、色块和重复轮廓让视点缓慢移动；立体主义进一步拆分平面、压缩多角度，并引入拼贴。", "Cézanne lets viewpoint shift gradually through sustained looking, color patches and repeated contour; Cubism fractures planes further, compresses views and introduces collage."),
+        compare("constructivism", "都使用几何切分、拼贴和现代印刷材料重组画面。", "Both reorganize images through geometric division, collage and modern printed material.", "立体主义从观看物体与画面空间的问题出发；构成主义更常把斜向几何、摄影和字体投入公共传播与集体行动。", "Cubism begins with problems of seeing objects and pictorial space; Constructivism more often directs diagonal geometry, photography and type toward public communication and collective action.")
+      ],
+      reflectionPrompt: bi("形体被拆开后，你是在重新理解物体，还是更注意画面本身如何被制造？", "Once form is broken apart, are you understanding the object anew, or noticing how the picture itself is made?")
+    },
+
+    "gustav-klimt": {
+      openingQuestion: bi(
+        "当人物的脸和手仍有体积，而身体周围变成金色纹样时，你觉得人是在浮现，还是被表面包围？",
+        "When face and hands retain volume but the body enters a field of gold pattern, does the person emerge or become enclosed by the surface?"
+      ),
+      observe: [
+        observe("figure", "先看身体与平面", "Begin with body and plane", "脸、手和少量皮肤常以较自然的体积出现，服装与背景却压成连续图案，两种空间彼此拉扯。", "Faces, hands and small areas of skin often retain natural volume while dress and background flatten into continuous pattern, creating tension between two spaces."),
+        observe("surface", "再看金色与镶嵌感", "Read gold and mosaic-like surface", "金色、方块、圆形与重复小图形让画面反光并减弱纵深，但不同作品的材料与密度并不相同。", "Gold, squares, circles and repeated small motifs create shimmer and reduce depth, though materials and density vary across works."),
+        observe("line", "最后看轮廓关系", "Follow the enclosing contour", "流动外轮廓会把人物、衣物和背景连接起来，同时面孔的目光与姿态仍保留个体存在。", "A flowing outer contour joins figure, clothing and ground, while gaze and posture preserve the sitter's individual presence.")
+      ],
+      profile: {
+        order: trait(4, "纹样秩序密集", "Dense patterned order"),
+        color: trait(4, "金色对比突出", "Pronounced gold contrast"),
+        ornament: trait(5, "装饰占据表面", "Ornament fills the surface"),
+        emotion: trait(4, "情绪亲密又疏离", "Intimate yet distant mood")
+      },
+      feelingWords: bi(["闪耀", "包围", "亲密", "平面"], ["Shimmering", "Enclosing", "Intimate", "Planar"]),
+      everydayLife: [
+        life("家居", "Home", "观察反光表面、几何织物和人物照片怎样保持主次，让装饰围绕生活者而不是吞没他们。", "See how reflective surfaces, geometric textiles and portraits preserve hierarchy, allowing ornament to surround inhabitants without consuming them."),
+        life("穿搭", "Clothing", "留意脸、手与大面积纹样服装之间的张力，让身体姿态仍是主体而非图案展示架。", "Attend to the tension between face, hands and patterned clothing, keeping bodily presence central rather than turning it into a pattern display."),
+        life("摄影", "Photography", "用反光墙面或密集背景包围人物，同时保留清楚目光、手势和轮廓边界。", "Surround a sitter with a reflective or dense ground while keeping gaze, gesture and contour clearly present."),
+        life("日常物件", "Everyday objects", "看首饰、书封和盒面如何通过重复小形、金属反光与少量空白控制密度。", "Examine how jewelry, book covers and boxes control density through repeated small forms, metallic reflection and limited open space.")
+      ],
+      comparisons: [
+        compare("art-nouveau", "都使用流动轮廓、植物线条和整体装饰表面。", "Both use flowing contour, botanical line and integrated decorative surfaces.", "Art Nouveau 是跨建筑、海报、字体与物件的广泛设计运动；Klimt 的个人绘画语言更集中于人物体积与金色、镶嵌式平面之间的张力。", "Art Nouveau is a broad movement across architecture, posters, type and objects; Klimt's painting language focuses more specifically on tension between bodily volume and gold, mosaic-like planes."),
+        compare("byzantine-icon", "都可见金色背景、正面性、平面化与镶嵌般的重复节奏。", "Both may show gold grounds, frontality, flatness and mosaic-like repetition.", "拜占庭圣像属于礼仪、信仰和特定图像传统；Klimt 借鉴相关表面语言进入现代肖像、寓意与维也纳视觉文化，功能与语境不同。", "Byzantine icons belong to liturgical, devotional and specific image traditions; Klimt redirected related surface language into modern portraiture, allegory and Viennese visual culture.")
+      ],
+      reflectionPrompt: bi("装饰越密集时，你仍先看见人物，还是先感受到人物与表面之间的距离？", "As ornament grows denser, do you still see the person first, or feel the distance between person and surface?")
+    },
+
+    kandinsky: {
+      openingQuestion: bi(
+        "如果这些点、线和色块不是在画物体，它们靠什么让你感到一次加速、停顿或转向？",
+        "If these points, lines and colors do not describe objects, what makes you feel an acceleration, pause or turn?"
+      ),
+      observe: [
+        observe("movement", "先跟随方向", "Follow the directional movement", "斜线、弧线和尖角向不同方向施力，密集处像加速，孤立形状则让视线暂时停住。", "Diagonals, arcs and angles apply force in different directions; crowded passages accelerate while isolated forms create pauses."),
+        observe("relation", "再看形色张力", "Read tensions among forms", "圆、三角和不规则色块通过距离、重叠与尺度互相回应，情绪来自关系而非单个颜色的固定含义。", "Circles, triangles and irregular fields answer through distance, overlap and scale; feeling arises from relations, not a fixed meaning assigned to one color."),
+        observe("rhythm", "最后听见节奏", "Sense the rhythm", "音乐可以帮助理解重复、对位与停顿，但画面不是乐谱翻译，每次观看仍可形成不同节奏。", "Music can suggest repetition, counterpoint and pause, but the image is not a score translated into color; each viewing can form a different rhythm.")
+      ],
+      profile: {
+        order: trait(3, "关系秩序开放", "Open relational order"),
+        color: trait(5, "色彩主动施力", "Color acts with force"),
+        ornament: trait(2, "形状承担结构", "Shapes carry structure"),
+        emotion: trait(5, "情绪活跃多变", "Active, shifting emotion")
+      },
+      feelingWords: bi(["运动", "张力", "停顿", "回响"], ["Motion", "Tension", "Pause", "Resonance"]),
+      everydayLife: [
+        life("家居", "Home", "观察圆桌、斜灯和墙面色块之间的距离与方向，体会物件关系怎样产生节奏而非寻找固定象征。", "Read distance and direction among a round table, angled lamp and wall color, sensing rhythm without searching for fixed symbols."),
+        life("穿搭", "Clothing", "关注线条方向、色块大小与身体动作的呼应，让关系产生动感，不为每种颜色指定情绪。", "Relate line direction and color-field size to bodily movement, letting their interaction create energy without assigning an emotion to each hue."),
+        life("摄影", "Photography", "寻找电线、路标、圆形物与阴影的方向冲突，把取景当作组织加速和停顿。", "Find directional conflict among wires, signs, circles and shadows, treating framing as an arrangement of acceleration and pause."),
+        life("日常物件", "Everyday objects", "看地图、积木和桌面散物如何通过间距、角度和重复形成可感节奏。", "See how maps, blocks and scattered desk objects form a felt rhythm through spacing, angle and repetition.")
+      ],
+      comparisons: [
+        compare("expressionism", "都允许颜色、线条和形变直接承担主观情绪。", "Both allow color, line and deformation to carry subjective experience.", "Expressionism 常保留人物、城市或风景作为情绪载体；Kandinsky 的抽象语言逐步让点、线、色块及其关系本身成为画面事件。", "Expressionism often retains figures, cities or landscapes as emotional carriers; Kandinsky's abstraction increasingly makes points, lines, color fields and their relations the event."),
+        compare("mondrian", "两者都从自然观察走向抽象，并研究基本形色之间的关系。", "Both moved from natural observation toward abstraction and studied relations among basic forms and colors.", "Kandinsky 的画面常保留斜向、曲线、密度变化和即兴运动；Mondrian 更集中于垂直水平、矩形、不对称平衡与持续校准的网格。", "Kandinsky often retains diagonals, curves, changing density and improvisatory motion; Mondrian concentrates on vertical-horizontal relations, rectangles, asymmetric balance and calibrated grids.")
+      ],
+      reflectionPrompt: bi("你会为这些形色寻找一个故事，还是愿意只跟随它们之间的力量变化？", "Do you search for a story in these forms and colors, or simply follow the changing forces between them?")
+    },
+
+    mondrian: {
+      openingQuestion: bi(
+        "先忽略红黄蓝，看看白色区域和黑线：哪一次宽窄变化让画面没有倒向任何一边？",
+        "Ignore red, yellow and blue for a moment: which shift in white space or black-line width keeps the image from tipping to one side?"
+      ),
+      observe: [
+        observe("axis", "先看垂直与水平", "Begin with vertical and horizontal", "线条只沿两个方向相遇，取消斜线与曲线，却通过长短、断开和延伸保持内部运动。", "Lines meet along only two directions, removing diagonals and curves while retaining movement through length, interruption and extension."),
+        observe("balance", "再看不对称平衡", "Test the asymmetric balance", "色块并不居中或镜像，较小的强色会与较大的白区互相校正，使重量保持悬而未决。", "Color blocks are neither centered nor mirrored; a small intense field counterbalances a larger white area, keeping weight actively unresolved."),
+        observe("process", "最后看逐步抽象", "Remember the path from nature", "树、海岸和建筑曾在他的作品中逐渐被压缩成方向与比例，网格不是突然出现的装饰公式。", "Trees, coasts and buildings were gradually compressed into direction and proportion; the grid did not appear suddenly as a decorative formula.")
+      ],
+      profile: {
+        order: trait(5, "网格秩序精确", "Precisely calibrated grid"),
+        color: trait(3, "少量主色制衡", "Few primary colors balance"),
+        ornament: trait(1, "装饰降到最低", "Ornament reduced to a minimum"),
+        emotion: trait(2, "情绪安静而活跃", "Quiet yet active mood")
+      },
+      feelingWords: bi(["平衡", "清醒", "校准", "开放"], ["Balanced", "Lucid", "Calibrated", "Open"]),
+      everydayLife: [
+        life("家居", "Home", "观察门窗、搁板和空墙形成的水平垂直关系，比较不对称布局怎样仍保持平衡。", "Read the horizontal and vertical relations among doors, shelves and open wall, comparing how asymmetry can remain balanced."),
+        life("穿搭", "Clothing", "把注意力放在接缝、分区和大小色块的制衡，不必复制红黄蓝方格。", "Focus on seams, divisions and the balance of differently sized color areas without copying a red-yellow-blue grid."),
+        life("摄影", "Photography", "正面拍摄建筑边线与空白区域，让一个小色点和大片中性色互相牵制。", "Photograph architectural edges and open areas frontally, allowing one small color accent to counter a broad neutral field."),
+        life("日常物件", "Everyday objects", "看日历、窗格和收纳分区如何通过线宽、间隔与空白建立秩序。", "See how calendars, window grids and storage divisions create order through line width, intervals and empty space.")
+      ],
+      comparisons: [
+        compare("de-stijl", "都使用几何抽象、垂直水平和有限颜色追求整体秩序。", "Both pursue overall order through geometric abstraction, vertical-horizontal structure and limited color.", "De Stijl 是包含建筑、家具、字体和多位艺术家的运动；Mondrian 的个人绘画是在长期自然观察后持续校准线、白区与色块关系。", "De Stijl is a movement spanning architecture, furniture, type and several artists; Mondrian's painting continually recalibrated line, white fields and color after long study of nature."),
+        compare("minimalism", "都减少元素，让比例、边界、重复和空白成为主要内容。", "Both reduce elements until proportion, edge, repetition and space become central.", "Mondrian 的网格保留主色与不对称关系的动态平衡；Minimalism 是更广的后期方向，常强调实际材料、连续模块和物体与场地。", "Mondrian's grid retains dynamic balance among primary color and asymmetry; Minimalism is a broader later direction often emphasizing literal material, serial modules and object-site relations.")
+      ],
+      reflectionPrompt: bi("画面元素这么少时，你感到秩序已经完成，还是仍在不断微调？", "With so few elements, does the order feel complete, or still under continual adjustment?")
+    },
+
+    rothko: {
+      openingQuestion: bi(
+        "站远一点和靠近一点时，这几块颜色的边缘、重量和包围感会发生什么变化？",
+        "What changes in edge, weight and sense of enclosure when you view these color fields from farther away and then closer?"
+      ),
+      observe: [
+        observe("scale", "先感受尺度", "Begin with bodily scale", "大画幅让色块接近身体范围，观看不只是在识别构图，也包含你与画面距离的变化。", "Large canvases bring fields of color toward bodily scale, so looking involves changing your distance rather than only identifying composition."),
+        observe("edge", "再看柔软边缘", "Watch the softened edges", "矩形边界并不硬切，薄层颜色向周围渗开，使色块像停在表面之前或之后。", "Rectangular boundaries do not cut sharply; thin layers feather outward, making fields seem to hover before or behind the surface."),
+        observe("relation", "最后让情绪开放", "Leave the feeling open", "上下色层通过明暗、温度和间距彼此影响，但它们不会保证所有观众得到同一种宗教或悲伤体验。", "Stacked fields affect one another through value, temperature and spacing, but they do not guarantee one religious or sorrowful response for every viewer.")
+      ],
+      profile: {
+        order: trait(3, "结构简单悬浮", "Simple, hovering structure"),
+        color: trait(5, "色层关系主导", "Layered color dominates"),
+        ornament: trait(1, "几乎没有装饰", "Almost no ornament"),
+        emotion: trait(5, "情绪深但开放", "Deep but open emotion")
+      },
+      feelingWords: bi(["包围", "悬浮", "呼吸", "沉浸"], ["Enveloping", "Hovering", "Breathing", "Immersive"]),
+      everydayLife: [
+        life("家居", "Home", "比较一面大色墙在远近位置和不同光线下的包围感，关注边缘与相邻色的作用。", "Compare how a large colored wall encloses you from different distances and light, attending to edges and neighboring hues."),
+        life("穿搭", "Clothing", "观察相近色层在面料重叠处怎样产生深度，不必把深色自动解释为悲伤。", "See how neighboring color layers create depth where fabrics overlap without automatically reading dark color as sadness."),
+        life("摄影", "Photography", "用雾、幕布或虚化边缘形成大面积色域，并比较观看距离怎样改变空间感。", "Use mist, fabric or softened edges to form broad color fields, then compare how viewing distance changes the space."),
+        life("日常物件", "Everyday objects", "看纸张叠层、磨砂玻璃和渐染表面如何让矩形边界显得呼吸而非硬切。", "Look at layered paper, frosted glass and stained surfaces to see how rectangular boundaries can breathe rather than cut.")
+      ],
+      comparisons: [
+        compare("color-field-painting", "都以大面积颜色、弱化中心图形和沉浸观看减少具象叙事。", "Both reduce figurative narrative through broad color, weakened central figure and immersive viewing.", "Color Field Painting 是包含多位艺术家、染色方法、色带与开放表面的广泛方向；Rothko 的个人语言尤其常见层叠矩形、柔边和亲密观看距离。", "Color Field Painting is a broader direction including many artists, staining methods, bands and open surfaces; Rothko's language is especially associated with stacked rectangles, soft edges and intimate viewing distance."),
+        compare("minimalism", "都减少元素、放大尺度，并让观看者与作品的距离变得重要。", "Both reduce elements, enlarge scale and make the viewer's distance important.", "Rothko 以薄层色彩与柔边形成开放情绪关系；Minimalism 更常强调物体的实际材料、模块、边界和现场空间，避免绘画式情绪引导。", "Rothko uses thin color layers and soft edges to open emotional relations; Minimalism more often stresses literal material, modules, edges and site while resisting painterly emotional guidance.")
+      ],
+      reflectionPrompt: bi("这些颜色是否改变了你站立和呼吸的节奏，还是先让你分析它们的结构？", "Do these colors alter the rhythm of your standing and breathing, or make you analyze their structure first?")
+    },
+
+    expressionism: {
+      openingQuestion: bi(
+        "如果形状和颜色不再负责准确描述现实，它们正在替哪一种感受增加音量？",
+        "If shape and color no longer aim to describe reality accurately, which experience are they turning up?"
+      ),
+      observe: [
+        observe("form", "先看主动形变", "Begin with deliberate distortion", "脸、身体、建筑或风景会被拉长、压缩和扭转，变化服务主观经验而非解剖准确。", "Faces, bodies, buildings or landscapes stretch, compress and twist in service of subjective experience rather than anatomical accuracy."),
+        observe("color", "再看情绪色彩", "Read expressive color", "颜色可以偏离自然外观，冷暖冲突、突兀邻接或大面积饱和共同加强心理距离。", "Color can depart from natural appearance; clashes of temperature, abrupt adjacency and saturation intensify psychological distance."),
+        observe("surface", "最后看留下的动作", "See the retained gesture", "粗线、厚笔触和刮擦痕迹让制作动作留在表面，画面像一次正在发生的反应。", "Heavy lines, thick strokes and scraping retain the act of making, so the image feels like a response still taking place.")
+      ],
+      profile: {
+        order: trait(2, "秩序服从感受", "Order bends to experience"),
+        color: trait(5, "色彩情绪强烈", "Emotionally forceful color"),
+        ornament: trait(1, "装饰不是重点", "Ornament is not central"),
+        emotion: trait(5, "主观情绪外显", "Subjective emotion exposed")
+      },
+      feelingWords: bi(["主观", "扭曲", "直接", "高张力"], ["Subjective", "Distorted", "Direct", "Tense"]),
+      everydayLife: [
+        life("家居", "Home", "观察光线、倾斜家具和强烈颜色怎样改变同一房间的心理感受，而不把凌乱等同于某种情绪。", "See how light, tilted furniture and forceful color alter a room psychologically without treating disorder as one fixed emotion."),
+        life("穿搭", "Clothing", "留意拉长轮廓、冲突色和粗糙表面怎样表达状态，同时避免把具体身体特征当作夸张素材。", "Attend to elongated silhouette, clashing hues and rough surface as expressions of state without using bodily features as material for caricature."),
+        life("摄影", "Photography", "用倾斜机位、局部强色或运动模糊表达观看感受，并保留被摄者的尊严和语境。", "Use tilt, isolated strong color or motion blur to express a way of seeing while preserving the sitter's dignity and context."),
+        life("日常物件", "Everyday objects", "看手写字、磨损标牌和快速草图如何通过压力、速度与不规则留下情绪痕迹。", "Look at handwriting, worn signs and quick sketches to see how pressure, speed and irregularity retain emotional traces.")
+      ],
+      comparisons: [
+        compare("fauvism", "都使用非自然色、简化轮廓和直接笔触摆脱写实限制。", "Both use non-natural color, simplified contour and direct brushwork to loosen realism.", "Fauvism 常把色彩用于明亮、开放的画面实验；Expressionism 是更广的主观形变语言，可覆盖焦虑、精神体验、社会冲突与多种地域实践。", "Fauvism often uses color in bright, open pictorial experiment; Expressionism is a broader language of subjective distortion spanning anxiety, spiritual experience, social conflict and varied regions."),
+        compare("german-expressionism", "都通过形变、强色、粗线和暴露笔触表达内在经验。", "Both use distortion, forceful color, rough line and exposed handling to express inner experience.", "Expressionism 是跨地域与媒介的广义倾向；German Expressionism 指二十世纪初德国特定群体与语境，城市经验、木刻语言和战争冲击更突出。", "Expressionism is a broad tendency across regions and media; German Expressionism refers to specific early-twentieth-century German groups and contexts, with urban experience, woodcut language and wartime rupture more pronounced.")
+      ],
+      reflectionPrompt: bi("你需要知道画中发生了什么，还是形色本身已经把感受传给了你？", "Do you need to know what happened in the scene, or have form and color already carried the experience?")
+    },
+
+    "german-expressionism": {
+      openingQuestion: bi(
+        "这些尖锐轮廓和倾斜街道让你更靠近人物，还是让城市显得无法安稳站立？",
+        "Do these jagged contours and tilted streets bring you closer to the figures, or make the city itself unable to stand still?"
+      ),
+      observe: [
+        observe("line", "先看木刻般轮廓", "Begin with woodcut-like contours", "粗黑线、尖角和被压缩的形体保留刻刀或版画感，人物与街景因此显得直接而紧绷。", "Heavy black lines, sharp angles and compressed forms retain the feel of carving or print, making figures and streets direct and taut."),
+        observe("space", "再看焦虑空间", "Enter the unstable space", "街道、室内和人物比例会倾斜或互相挤压，现代城市不只是背景，而成为心理压力的一部分。", "Streets, interiors and figure scale tilt or press together; the modern city becomes part of the psychological pressure rather than mere backdrop."),
+        observe("context", "最后看历史裂缝", "Hold the historical rupture", "作品回应二十世纪初德国的城市变化、社会冲突与战争经验，但不同群体和艺术家的主题并不完全相同。", "The work responds to urban change, social conflict and war in early-twentieth-century Germany, though its groups and artists do not share one identical subject.")
+      ],
+      profile: {
+        order: trait(2, "空间故意不稳定", "Deliberately unstable space"),
+        color: trait(5, "色彩冲突明显", "Pronounced color clashes"),
+        ornament: trait(1, "表面粗粝直接", "Rough, direct surface"),
+        emotion: trait(5, "情绪尖锐紧张", "Sharp, tense emotion")
+      },
+      feelingWords: bi(["尖锐", "城市", "紧绷", "刻痕"], ["Jagged", "Urban", "Taut", "Incised"]),
+      everydayLife: [
+        life("家居", "Home", "观察夜间照明、狭窄走道和倾斜阴影如何改变空间压力，不把某种生活环境简单标签化。", "See how night lighting, narrow passages and tilted shadows alter spatial pressure without reducing a living environment to a label."),
+        life("穿搭", "Clothing", "关注尖锐轮廓、深浅冲突和粗线条的节奏，让衣着表达紧张感而不夸张具体人物特征。", "Use angular silhouette, value contrast and rough line to express tension without exaggerating a person's features."),
+        life("摄影", "Photography", "利用夜街、橱窗反光和倾斜边线观察城市怎样挤压人物，同时交代真实环境关系。", "Use night streets, shop-window reflection and tilted edges to see how a city presses around figures while retaining their real context."),
+        life("日常物件", "Everyday objects", "看木刻、粗印刷和磨损海报如何让边缘不整齐，并以压力痕迹传达制作动作。", "Examine woodcuts, rough printing and worn posters to see how uneven edges and pressure marks convey the act of making.")
+      ],
+      comparisons: [
+        compare("expressionism", "都让形变、色彩与笔触优先表达主观经验。", "Both give distortion, color and handling priority in conveying subjective experience.", "广义 Expressionism 可跨越国家、时期和媒介；German Expressionism 更具体地联系 Die Brücke、Der Blaue Reiter 等群体及德国城市、版画和战争语境。", "Expressionism broadly crosses countries, periods and media; German Expressionism is more specifically tied to groups such as Die Brücke and Der Blaue Reiter and to German urban, print and wartime contexts."),
+        compare("noir-illustration", "都可使用强烈明暗、尖锐城市线条和人物疏离感。", "Both may use stark value contrast, sharp urban lines and alienated figures.", "German Expressionism 以绘画、版画和雕塑中的主观形变回应现代经验；Noir Illustration 更来自犯罪叙事、电影照明和出版图像的类型语言。", "German Expressionism responds to modern experience through subjective deformation in painting, print and sculpture; Noir Illustration comes more from crime narrative, cinematic lighting and publishing conventions.")
+      ],
+      reflectionPrompt: bi("紧张感主要来自人物表情，还是城市线条和空间已经替他们说话？", "Does the tension come mainly from facial expression, or have urban lines and space already spoken for the figures?")
+    },
+
+    symbolism: {
+      openingQuestion: bi(
+        "画面没有把故事说完时，哪一处颜色、目光或不寻常物件让你觉得它在暗示别的层次？",
+        "When the image leaves its story unfinished, which color, gaze or unexpected object suggests another layer?"
+      ),
+      observe: [
+        observe("suggestion", "先看叙事留白", "Begin with what is withheld", "人物与场景看似可辨，却缺少完整因果；夜色、沉默姿态或空白让画面更像暗示而非说明。", "Figures and settings remain recognizable but lack complete cause and effect; night, silent poses or gaps make the image suggest rather than explain."),
+        observe("relation", "再看符号关系", "Read symbols in relation", "花、动物、神话或女性形象可能承担意义，但需要结合题名、时代与作品关系，不能套用统一字典。", "Flowers, animals, myth or female figures may carry meaning, but title, period and pictorial relation matter; no universal dictionary applies."),
+        observe("tone", "最后看梦与现实边界", "Sense the threshold", "自然细节可以很真实，却被不寻常比例、色彩或组合推向心理、精神和想象空间。", "Natural detail may remain convincing, yet unusual scale, color or combination pushes the scene toward psychological, spiritual or imagined space.")
+      ],
+      profile: {
+        order: trait(3, "叙事关系隐约", "Suggestive narrative order"),
+        color: trait(4, "色彩营造暗示", "Color creates suggestion"),
+        ornament: trait(3, "细节具有关系", "Details carry relations"),
+        emotion: trait(5, "气氛深沉开放", "Deep, open atmosphere")
+      },
+      feelingWords: bi(["暗示", "梦境", "神秘", "内向"], ["Suggestive", "Dreamlike", "Mysterious", "Inward"]),
+      everydayLife: [
+        life("家居", "Home", "观察夜灯、镜面、植物和旧物怎样共同改变房间气氛，不给单个物件强加固定意义。", "See how night light, mirrors, plants and old objects alter a room together without imposing a fixed meaning on any one thing."),
+        life("穿搭", "Clothing", "关注颜色、材质与个人记忆的联系，把意义留给具体穿着者而不是套用通用象征。", "Attend to how color and material connect with personal memory, leaving meaning to the wearer rather than a universal symbol."),
+        life("摄影", "Photography", "用遮挡、背影或未完成动作留下叙事空缺，让环境线索提供多种可能解释。", "Use occlusion, a turned figure or unfinished action to leave a narrative gap that environmental clues can open in several ways."),
+        life("日常物件", "Everyday objects", "看书签、纪念物和包装图像如何因组合与使用经历获得私人含义，而非天然携带答案。", "See how bookmarks, keepsakes and packaging gain private meaning through combination and use rather than carrying answers inherently.")
+      ],
+      comparisons: [
+        compare("romanticism", "都重视想象、主观情绪、文学和超越日常现实的经验。", "Both value imagination, subjective feeling, literature and experiences beyond ordinary reality.", "浪漫主义常以自然力量、历史动作和极端尺度直接放大情绪；Symbolism 更常借沉默场景、神话与多义物件间接暗示心理或精神层次。", "Romanticism often amplifies feeling directly through nature, historical action and extreme scale; Symbolism more often suggests psychological or spiritual layers through silence, myth and ambiguous objects."),
+        compare("surrealism", "都让熟悉物件进入不寻常关系，并为图像保留多重解释。", "Both place familiar things in unusual relations and preserve multiple interpretations.", "Symbolism 多在十九世纪末以诗性暗示、神话和精神主题建立氛围；Surrealism 后来更明确探索梦、无意识、偶然组合与现实逻辑的断裂。", "Symbolism builds atmosphere through poetic suggestion, myth and spiritual themes in the late nineteenth century; Surrealism later explores dreams, the unconscious, chance combination and breaks in ordinary logic more explicitly.")
+      ],
+      reflectionPrompt: bi("你想立刻解释这些暗示，还是愿意让它们在不同观看中改变含义？", "Do you want to explain these suggestions immediately, or let their meanings change across viewings?")
+    },
+
+    dada: {
+      openingQuestion: bi(
+        "当报纸、票据、现成物和荒谬文字被放进作品时，它是在制造新图像，还是质疑谁有权定义艺术？",
+        "When newspapers, tickets, found objects and absurd words enter a work, are they making a new image or questioning who gets to define art?"
+      ),
+      observe: [
+        observe("material", "先看现成材料", "Begin with found material", "印刷品、照片、票据和日常物件保留原有用途痕迹，被重新命名、并置或移入展览语境。", "Print, photographs, tickets and ordinary objects retain traces of use, then are renamed, juxtaposed or moved into an exhibition context."),
+        observe("chance", "再看偶然与断裂", "Follow chance and rupture", "裁切边缘、随机落点和不连续句子打破稳定构图，使过程、事故和选择同时可见。", "Cut edges, chance placement and discontinuous sentences break stable composition, keeping process, accident and decision visible together."),
+        observe("context", "最后看质疑对象", "Ask what is challenged", "战争、民族主义、现代制度与艺术权威构成重要背景；荒谬和幽默并非只是胡闹。", "War, nationalism, modern institutions and artistic authority form crucial contexts; absurdity and humor are not merely mischief.")
+      ],
+      profile: {
+        order: trait(1, "秩序主动断裂", "Order deliberately disrupted"),
+        color: trait(2, "色彩依材料而变", "Color follows found material"),
+        ornament: trait(2, "碎片用于质疑", "Fragments serve critique"),
+        emotion: trait(4, "情绪讽刺不安", "Ironic, unsettled mood")
+      },
+      feelingWords: bi(["断裂", "偶然", "讽刺", "质疑"], ["Disrupted", "Chance", "Ironic", "Questioning"]),
+      everydayLife: [
+        life("家居", "Home", "观察被重新使用的容器、旧报纸和错位标签如何改变物件身份，而不是把杂乱直接当作风格。", "See how reused containers, old newspapers and displaced labels alter object identity without treating clutter itself as a style."),
+        life("穿搭", "Clothing", "留意旧标识、拼接材料和反常搭配怎样质疑正式规则，同时考虑原材料的出处与语境。", "Attend to how old labels, joined materials and unlikely combinations question formal rules while considering where those materials came from."),
+        life("摄影", "Photography", "记录广告、路牌和人物动作之间偶然形成的反讽关系，不必导演成固定答案。", "Record accidental irony among advertisements, street signs and human action without staging it into one fixed answer."),
+        life("日常物件", "Everyday objects", "看收据、包装和办公用品在离开原用途后，名称、位置和制度如何决定它们的新身份。", "See how receipts, packaging and office supplies acquire new identities through naming, placement and institution after leaving their usual function.")
+      ],
+      comparisons: [
+        compare("surrealism", "都使用拼贴、偶然关系和熟悉物件的错位挑战日常逻辑。", "Both use collage, chance relation and displaced familiar objects to challenge ordinary logic.", "Dada 在战争与制度危机中更直接质疑艺术、语言和权威；Surrealism 后来更系统地探索梦、无意识、自动性与欲望。", "Dada more directly challenges art, language and authority amid war and institutional crisis; Surrealism later pursues dreams, the unconscious, automatism and desire more systematically."),
+        compare("anti-design", "都故意破坏顺滑规则，并借错误感、冲突和不服从质疑规范。", "Both disrupt polished rules and use error, conflict and refusal to question norms.", "Dada 是一战前后跨城市的前卫实践，涉及表演、诗歌、现成品与拼贴；Anti-design 是更宽泛的后期设计立场，常直接回应功能主义和商业视觉惯例。", "Dada is an avant-garde practice across cities around World War I, spanning performance, poetry, readymades and collage; Anti-design is a broader later design stance often responding to functionalism and commercial conventions.")
+      ],
+      reflectionPrompt: bi("当作品拒绝提供熟练之美时，你会离开，还是开始追问它拒绝了什么？", "When a work refuses polished beauty, do you turn away, or begin asking what exactly it refuses?")
+    },
+
+    "abstract-expressionism": {
+      openingQuestion: bi(
+        "面对一张接近身体尺度的抽象画，你先意识到颜料留下的动作，还是整片颜色正在把你包围？",
+        "Facing an abstract painting near bodily scale, do you first sense the actions left in paint, or the field of color enclosing you?"
+      ),
+      observe: [
+        observe("scale", "先看画面如场域", "Begin with the canvas as field", "大画幅削弱小型中心构图，观看者需要用身体和视线移动，画面更像持续发生的场域。", "Large scale weakens a small central composition; the viewer must move body and gaze, making the canvas feel like an ongoing field."),
+        observe("gesture", "再看动作方向", "Trace the gesture", "滴洒、扫动、刮擦或厚涂留下速度、压力和身体范围，但并非所有作品都依赖激烈动作。", "Drips, sweeps, scraping or impasto retain speed, pressure and bodily reach, though not every work depends on vigorous gesture."),
+        observe("range", "最后看内部差异", "See the range within the movement", "动作性绘画与色域方向可以并存于这一广泛运动，Pollock 只是重要艺术家之一，不代表全部。", "Gestural painting and color-field directions coexist within this broad movement; Pollock is one important artist, not the whole of it.")
+      ],
+      profile: {
+        order: trait(2, "构图扩散开放", "Diffuse, open composition"),
+        color: trait(4, "颜色覆盖场域", "Color occupies the field"),
+        ornament: trait(1, "材料动作即内容", "Material action is content"),
+        emotion: trait(5, "情绪尺度强烈", "Emotionally forceful scale")
+      },
+      feelingWords: bi(["场域", "动作", "尺度", "开放"], ["Field", "Gesture", "Scale", "Open"]),
+      everydayLife: [
+        life("家居", "Home", "观察大墙面、地毯或窗景如何改变身体在空间中的尺度感，不把随意泼洒等同于运动本身。", "See how a large wall, rug or window changes bodily scale in a room without equating casual splashing with the movement."),
+        life("穿搭", "Clothing", "关注材料痕迹、身体动作和大面积色彩之间的关系，区分真实制作过程与印刷仿痕。", "Attend to the relation among material trace, bodily motion and broad color, distinguishing actual process from printed imitation."),
+        life("摄影", "Photography", "靠近记录表面动作，再退远观察整体场域，比较两个距离提供的信息。", "Photograph surface action close up, then step back for the whole field, comparing what each distance reveals."),
+        life("日常物件", "Everyday objects", "看刷痕、擦拭、染色和材料沉积如何记录过程，同时判断这些痕迹是否覆盖整个表面。", "See how brushing, wiping, staining and accumulation record process, and whether those marks extend across the whole surface.")
+      ],
+      comparisons: [
+        compare("pollock", "都关联大尺度、全覆盖构图和可见身体动作。", "Both are associated with large scale, allover composition and visible bodily action.", "Pollock 是以滴洒、线网与地面作画著称的具体艺术家；Abstract Expressionism 是更广运动，还包括 de Kooning、Krasner、Kline、Newman、Rothko 等不同方向。", "Pollock is a specific artist known for poured line networks and floor-based process; Abstract Expressionism is a broader movement including distinct directions represented by de Kooning, Krasner, Kline, Newman, Rothko and others."),
+        compare("color-field-painting", "都使用大画幅、弱化传统叙事，并把观看变成身体尺度的经验。", "Both use large canvases, reduce traditional narrative and make viewing bodily in scale.", "Abstract Expressionism 包含动作性与色域等多种路径；Color Field Painting 更集中于大面积连续颜色、弱化笔触中心和沉浸表面。", "Abstract Expressionism includes gestural and color-field paths among others; Color Field Painting concentrates on continuous expanses of color, reduced central gesture and immersive surface.")
+      ],
+      reflectionPrompt: bi("你把画面看成艺术家动作的记录，还是一个与你共同发生的空间？", "Do you see the canvas as a record of the artist's actions, or as a space unfolding with your presence?")
+    },
+
+    "color-field-painting": {
+      openingQuestion: bi(
+        "当画面没有明确主体时，你的视线会寻找一个中心，还是慢慢接受整片颜色就是事件？",
+        "When a painting offers no clear subject, does your eye search for a center, or slowly accept the entire field of color as the event?"
+      ),
+      observe: [
+        observe("field", "先看颜色铺开", "Begin with color spreading", "大面积颜色跨越画布，中心图形被削弱，边缘、色带或染色共同决定整体连续性。", "Broad color extends across the canvas, weakening a central figure while edges, bands or stains determine overall continuity."),
+        observe("surface", "再看表面是否连续", "Read the continuous surface", "颜料可能渗入画布、保持薄层或形成平整色带，使表面少见传统厚重塑形。", "Paint may soak into canvas, remain thin or form even bands, leaving less of the heavy modeling found in traditional painting."),
+        observe("scale", "最后让视线沉浸", "Let the gaze immerse", "大尺度和弱中心让眼睛不必停在一个物体上，而是在色彩温度、边界与相邻关系中游移。", "Large scale and a weak center free the eye from one object, allowing it to move through color temperature, boundaries and adjacency.")
+      ],
+      profile: {
+        order: trait(2, "秩序扩散连续", "Diffuse, continuous order"),
+        color: trait(5, "颜色就是主体", "Color is the subject"),
+        ornament: trait(1, "几乎无附加装饰", "Almost no added ornament"),
+        emotion: trait(4, "情绪沉浸开放", "Immersive, open emotion")
+      },
+      feelingWords: bi(["连续", "扩散", "沉浸", "无中心"], ["Continuous", "Diffuse", "Immersive", "Centerless"]),
+      everydayLife: [
+        life("家居", "Home", "观察大面积墙色、窗帘或地面如何包围身体，并比较边界清楚与颜色渗开的不同感受。", "See how broad wall color, curtains or flooring surround the body, comparing hard boundaries with color that seems to spread."),
+        life("穿搭", "Clothing", "留意整片颜色在身体移动时的连续性，以及接缝、层叠和材质怎样轻微改变色域。", "Attend to the continuity of a broad color as the body moves, and how seams, layering and material subtly alter the field."),
+        life("摄影", "Photography", "用天空、墙面、水域或雾形成弱中心的大色面，让边缘和邻近色承担空间变化。", "Use sky, wall, water or mist as a broad field with little center, letting edges and neighboring colors carry spatial change."),
+        life("日常物件", "Everyday objects", "看染布、色纸和磨砂表面如何让颜色保持连续，同时通过渗透、折痕或边缘发生变化。", "Examine dyed cloth, colored paper and matte surfaces where color remains continuous yet changes through soaking, folds or edges.")
+      ],
+      comparisons: [
+        compare("abstract-expressionism", "都常用大尺度、抽象语言和身体化观看削弱传统叙事。", "Both often use large scale, abstraction and embodied viewing to reduce traditional narrative.", "Abstract Expressionism 是包含动作绘画、色域及其他路径的广泛运动；Color Field Painting 更专注大面积连续颜色、薄表面与弱化中心动作。", "Abstract Expressionism is a broad movement containing gestural, color-field and other paths; Color Field Painting focuses more narrowly on continuous expanses, thin surfaces and reduced central action."),
+        compare("rothko", "都以大面积色彩、沉浸尺度和弱化具象中心影响观看。", "Both shape viewing through broad color, immersive scale and reduced figurative center.", "Rothko 的个人语言常以柔边层叠矩形组织色层；Color Field Painting 还包括色带、染色画布、单色区和其他艺术家的不同表面方法。", "Rothko's personal language often organizes layers as soft-edged stacked rectangles; Color Field Painting also includes bands, stained canvas, monochrome zones and other surface approaches.")
+      ],
+      reflectionPrompt: bi("没有明确图形中心时，你会感到迷失，还是更能注意颜色在身体周围的变化？", "Without a clear graphic center, do you feel lost, or become more aware of color changing around your body?")
+    },
+
     solarpunk: {
       openingQuestion: bi(
         "这座未来城市最先让你看到的是机器，还是植物、阳光和人如何一起生活？",

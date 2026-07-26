@@ -2,20 +2,20 @@
 
 ## Candidate
 
-- Branch: `feature/v1.3-guide-batch-1`
-- Batch: V1.3-D1
+- Branch: `feature/v1.3-guide-batch-2`
+- Batch: V1.3-D2
 - New enhanced guides: 20
-- Enhanced guide total: 32
-- Fallback style total: 88
-- Original 12 enhanced guides modified: NO
+- Enhanced guide total: 52
+- Fallback style total: 68
+- Original 32 enhanced guides modified: NO
 
 ## Data Validation
 
 | Check | Result |
 | --- | --- |
 | All 20 requested styleIds exist | PASS |
-| Enhanced guide total = 32 | PASS |
-| Fallback total = 88 | PASS |
+| Enhanced guide total = 52 | PASS |
+| Fallback total = 68 | PASS |
 | Exactly 3 observations per new guide | PASS |
 | Exactly 4 profile traits per new guide | PASS |
 | Profile keys are order/color/ornament/emotion | PASS |
@@ -35,9 +35,9 @@
 
 ## Language Review
 
-- Chinese: PASS for author edit. Opening questions are conversational, each observation points to a visible feature, and no entry uses quality-ranking language.
-- English: PASS for author edit. Copy is rewritten as natural guidance rather than literal Chinese syntax.
-- Repeated phrasing: PASS. Labels vary across `Begin`, `Follow`, `Watch`, `Read`, `Find`, `See`, `Attend`, `Compare`, and style-specific phrasing.
+- Chinese: PASS for D2 author edit. Opening questions are conversational, each observation points to a visible feature, and historical context supports rather than replaces looking.
+- English: PASS for D2 author edit. Copy is rewritten as natural guidance rather than literal Chinese syntax; artist, movement and institutional terms were checked.
+- Repeated phrasing: PASS. Labels vary across `Begin`, `Follow`, `Read`, `Enter`, `Trace`, `Watch`, `Ask`, `Sense`, and style-specific phrasing.
 - Empty strings: PASS.
 - Product-owner editorial sign-off: PENDING.
 
@@ -50,6 +50,11 @@
 - Indian, Korean, Chinese, Japanese, Mithila and Nordic traditions are described as internally varied rather than fixed regional looks.
 - `Sumi-e`, Chinese ink painting, Gongbi and Shanshui remain distinct.
 - `Nihonga` is not reduced to mineral pigment.
+- `Picasso / Cubism` distinguishes one artist's participation from the wider movement.
+- `Klimt` retains the sitter's agency instead of treating women as decorative surfaces.
+- `Kandinsky`, `Symbolism` and `Rothko` avoid fixed color, symbol, spiritual or emotional dictionaries.
+- `Expressionism` and `German Expressionism` remain historically distinct.
+- `Abstract Expressionism`, `Pollock`, `Color Field Painting` and `Rothko` remain distinct levels of movement and artist.
 - Cultural review status: AUTHOR PASS; independent specialist review PENDING.
 
 ## Automated Validation
@@ -57,7 +62,7 @@
 | Check | Result |
 | --- | --- |
 | `npm ci` | PASS |
-| `npm run test:ux` | PASS, 208 / 208 |
+| `npm run test:ux` | PASS, 233 / 233 |
 | `npm audit` | PASS, 0 vulnerabilities |
 | Requested JavaScript syntax checks | PASS, 6 / 6 |
 | Home style-image requests at 390 x 844 | PASS, 10 / 15 |
@@ -67,18 +72,18 @@
 | Debug generic iOS build | PASS |
 | Release generic iOS build | PASS |
 | StoreKit and export regression | PASS |
-| Original 12 guide deep comparison | PASS, unchanged |
+| Original 32 guide deep comparison | PASS, unchanged |
 
 ## Product Owner Priority Review
 
-1. `bauhaus`
-2. `baroque`
-3. `shanshui`
-4. `sumi-e`
-5. `indian-miniature`
-6. `madhubani`
-7. `aboriginal-dot-painting`
-8. `chinese-new-year-woodblock`
+1. `renaissance`
+2. `rococo`
+3. `pre-raphaelite`
+4. `picasso-cubism`
+5. `gustav-klimt`
+6. `kandinsky`
+7. `rothko`
+8. `dada`
 
 ## Release Boundary
 
