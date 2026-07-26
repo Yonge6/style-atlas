@@ -1048,7 +1048,7 @@ test("accessibility diagnostics are absent by default and opt-in by query", asyn
   await expect(page.locator("#a11yDebugPanel")).toHaveAttribute("aria-hidden", "true");
 });
 
-const enhancedGuideIds = [
+const originalEnhancedGuideIds = [
   "swiss-style",
   "art-deco",
   "impressionism",
@@ -1062,6 +1062,97 @@ const enhancedGuideIds = [
   "editorial-illustration",
   "solarpunk"
 ];
+
+const batchOneGuideIds = [
+  "bauhaus",
+  "art-nouveau",
+  "constructivism",
+  "minimalism",
+  "memphis",
+  "baroque",
+  "romanticism",
+  "post-impressionism",
+  "fauvism",
+  "surrealism",
+  "gongbi",
+  "shanshui",
+  "sumi-e",
+  "nihonga",
+  "indian-miniature",
+  "korean-minhwa",
+  "madhubani",
+  "chinese-new-year-woodblock",
+  "aboriginal-dot-painting",
+  "nordic-folk-art"
+];
+
+const enhancedGuideIds = [...originalEnhancedGuideIds, ...batchOneGuideIds];
+
+test("batch one expands guide coverage to 32 with 88 fallback styles", async ({ page }) => {
+  await page.goto("/");
+  const coverage = await page.evaluate((batchIds) => {
+    const guides = window.StyleAtlasAesthetic.guides;
+    const styleCount = window.STYLE_ATLAS_DATA.rawStyles.length;
+    return {
+      guideCount: Object.keys(guides).length,
+      fallbackCount: styleCount - Object.keys(guides).length,
+      missing: batchIds.filter((id) => !guides[id])
+    };
+  }, batchOneGuideIds);
+  expect(coverage).toEqual({ guideCount: 32, fallbackCount: 88, missing: [] });
+});
+
+test("batch one contains no empty Chinese or English fields", async ({ page }) => {
+  await page.goto("/");
+  const emptyPaths = await page.evaluate((batchIds) => {
+    const empty = [];
+    const visit = (value, path) => {
+      if (typeof value === "string") {
+        if (!value.trim()) empty.push(path);
+        return;
+      }
+      if (Array.isArray(value)) {
+        value.forEach((item, index) => visit(item, `${path}[${index}]`));
+        return;
+      }
+      if (value && typeof value === "object") {
+        Object.entries(value).forEach(([key, item]) => visit(item, `${path}.${key}`));
+      }
+    };
+    batchIds.forEach((id) => visit(window.StyleAtlasAesthetic.guides[id], id));
+    return empty;
+  }, batchOneGuideIds);
+  expect(emptyPaths).toEqual([]);
+});
+
+test("batch one respects editorial lengths, scene order and prohibited wording", async ({ page }) => {
+  await page.goto("/");
+  const violations = await page.evaluate((batchIds) => {
+    const issues = [];
+    const expectedZhScenes = ["家居", "穿搭", "摄影", "日常物件"];
+    const expectedEnScenes = ["Home", "Clothing", "Photography", "Everyday objects"];
+    const prohibited = ["更高级", "higher quality", "more premium", "similar, but different"];
+    for (const id of batchIds) {
+      const guide = window.StyleAtlasAesthetic.guides[id];
+      if (guide.openingQuestion.zh.length < 20 || guide.openingQuestion.zh.length > 55) {
+        issues.push(`${id}.openingQuestion.zh`);
+      }
+      guide.observe.forEach((item, index) => {
+        if (item.text.zh.length < 30 || item.text.zh.length > 85) issues.push(`${id}.observe[${index}].text.zh`);
+      });
+      const zhScenes = guide.everydayLife.map((item) => item.scene.zh);
+      const enScenes = guide.everydayLife.map((item) => item.scene.en);
+      if (JSON.stringify(zhScenes) !== JSON.stringify(expectedZhScenes)) issues.push(`${id}.everydayLife.zh`);
+      if (JSON.stringify(enScenes) !== JSON.stringify(expectedEnScenes)) issues.push(`${id}.everydayLife.en`);
+      const serialized = JSON.stringify(guide).toLowerCase();
+      prohibited.forEach((phrase) => {
+        if (serialized.includes(phrase.toLowerCase())) issues.push(`${id}.prohibited:${phrase}`);
+      });
+    }
+    return issues;
+  }, batchOneGuideIds);
+  expect(violations).toEqual([]);
+});
 
 for (const styleId of enhancedGuideIds) {
   test(`enhanced aesthetic guide is complete for ${styleId}`, async ({ page }) => {
@@ -1106,6 +1197,27 @@ for (const styleId of enhancedGuideIds) {
     expect(result.feelingWords[1]).toBe(result.feelingWords[0]);
   });
 }
+
+test("all batch-one guides render and complete the five-stage Guided Looking flow", async ({ page }) => {
+  test.setTimeout(60000);
+  await page.goto("/#bauhaus");
+  for (const styleId of batchOneGuideIds) {
+    await page.evaluate((id) => {
+      location.hash = id;
+    }, styleId);
+    await expect(page.locator("#detailView")).toHaveClass(/active/);
+    await expect(page.locator("#detailContent h1")).not.toHaveText("");
+    await expect(page.locator(".profile-scale")).toHaveCount(4);
+    await expect(page.locator(".profile-note")).toContainText("不是审美评分");
+    await page.locator("[data-action='open-guided']").click();
+    for (let stage = 1; stage <= 4; stage += 1) {
+      await page.locator("#guidedNextBtn").click();
+      await expect(page.locator("#guidedStage")).toHaveAttribute("data-stage", String(stage));
+    }
+    await page.locator("#guidedNextBtn").click();
+    await expect(page.locator("#guidedOverlay")).toBeHidden();
+  }
+});
 
 test("all 120 style detail pages render without empty primary content", async ({ page }) => {
   test.setTimeout(60000);
@@ -1205,8 +1317,8 @@ test("guided looking stays free and sends no native purchase message", async ({ 
 });
 
 test("non-pilot styles use a stable fallback guide", async ({ page }) => {
-  await page.goto("/#bauhaus");
-  const fallback = await page.evaluate(() => window.StyleAtlasAesthetic.getGuide("bauhaus"));
+  await page.goto("/#cyberpunk");
+  const fallback = await page.evaluate(() => window.StyleAtlasAesthetic.getGuide("cyberpunk"));
   expect(fallback.enhanced).toBe(false);
   expect(fallback.observe.length).toBeGreaterThanOrEqual(3);
   expect(fallback.profile).toBeNull();
@@ -1215,7 +1327,7 @@ test("non-pilot styles use a stable fallback guide", async ({ page }) => {
 });
 
 test("fallback detail contains no undefined values or empty profile scale", async ({ page }) => {
-  await page.goto("/#bauhaus");
+  await page.goto("/#cyberpunk");
   await expect(page.locator("#detailContent")).not.toContainText("undefined");
   await expect(page.locator(".profile-pending")).toBeVisible();
   await expect(page.locator(".profile-scale")).toHaveCount(0);
