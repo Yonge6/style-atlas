@@ -1233,11 +1233,24 @@ main {
 }
 
 .everyday-grid article {
+  --everyday-tone: rgba(83, 96, 72, 0.34);
   min-width: 0;
   padding: 14px;
-  border: 1px solid rgba(243, 212, 134, 0.2);
+  border: 1px solid rgba(247, 235, 204, 0.2);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--everyday-tone);
+}
+
+.everyday-grid article:nth-child(2) {
+  --everyday-tone: rgba(70, 86, 103, 0.38);
+}
+
+.everyday-grid article:nth-child(3) {
+  --everyday-tone: rgba(97, 78, 91, 0.38);
+}
+
+.everyday-grid article:nth-child(4) {
+  --everyday-tone: rgba(101, 88, 62, 0.38);
 }
 
 .everyday-grid article > span {
@@ -1246,17 +1259,17 @@ main {
   width: 32px;
   height: 32px;
   margin-bottom: 12px;
-  border: 1px solid rgba(243, 212, 134, 0.28);
+  border: 1px solid rgba(247, 235, 204, 0.3);
   border-radius: 50%;
-  color: var(--gold-2);
+  color: #f6dfa0;
 }
 
 .everyday-grid h3 {
-  color: #f2e4bf;
+  color: #fff4d8;
 }
 
-.everyday-grid p {
-  color: #cbbb92;
+.everyday-grid article p {
+  color: #e7dcc1;
   font-size: 13px;
   line-height: 1.6;
 }
@@ -1328,12 +1341,39 @@ main {
 .reflection-section summary {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   min-height: 58px;
   padding: 0 16px;
   color: var(--paper);
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
+  list-style: none;
+}
+
+.reflection-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.reflection-arrow {
+  display: grid;
+  flex: 0 0 32px;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(243, 212, 134, 0.28);
+  border-radius: 50%;
+  color: var(--gold-2);
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+
+.reflection-section[open] .reflection-arrow {
+  transform: rotate(180deg);
+  background: rgba(217, 170, 69, 0.12);
 }
 
 .reflection-body {

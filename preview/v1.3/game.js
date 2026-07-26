@@ -1504,7 +1504,10 @@
     const inputId = `reflection-${style.id}`;
     return `
       <details class="detail-section reflection-section">
-        <summary>${escapeHtml(t("reflectionTitle"))}</summary>
+        <summary>
+          <span>${escapeHtml(t("reflectionTitle"))}</span>
+          <span class="reflection-arrow" aria-hidden="true">⌄</span>
+        </summary>
         <div class="reflection-body">
           <p>${escapeHtml(guide.reflectionPrompt[lang])}</p>
           <label for="${inputId}">${escapeHtml(t("reflectionLabel"))}</label>
@@ -1530,7 +1533,6 @@
         <section class="detail-section prompt-section locked-section">
           ${sectionHeading}
           <div class="locked-preview" aria-hidden="true" inert>
-            <h3 class="prompt-heading">${escapeHtml(t("prompt"))}</h3>
             <p>${escapeHtml(t("lockedPreview"))}</p>
           </div>
           <div class="lock-overlay">
@@ -1545,11 +1547,9 @@
     return `
       <section class="detail-section prompt-section">
         ${sectionHeading}
-        <h3 class="prompt-heading">${escapeHtml(t("prompt"))}</h3>
         <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
         <div class="prompt-actions">
           <button class="copy-btn" type="button" data-action="copy-prompt">${escapeHtml(t("copyPrompt"))}</button>
-          <button class="copy-btn" type="button" data-action="save-card" data-export-control>${escapeHtml(t("saveCard"))}</button>
         </div>
       </section>
     `;
