@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>虾子曰艺术风格图鉴</title>
+  <link rel="icon" type="image/png" href="./assets/brand/app-icon.png" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="v13-preview-badge" aria-label="V1.3 preview environment">V1.3 Preview</div>
+  <style>
+    .v13-preview-badge {
+      position: fixed;
+      right: max(10px, env(safe-area-inset-right));
+      bottom: max(10px, env(safe-area-inset-bottom));
+      z-index: 200;
+      padding: 5px 8px;
+      border: 1px solid rgba(255, 235, 180, 0.35);
+      border-radius: 6px;
+      background: rgba(8, 7, 5, 0.76);
+      color: #f3dfad;
+      font: 700 11px/1.2 ui-sans-serif, system-ui, sans-serif;
+      pointer-events: none;
+    }
+  </style>
+  <div id="appShell" class="app-shell" aria-label="虾子曰艺术风格图鉴">
+    <header class="topbar" aria-label="虾子曰艺术风格图鉴顶部导航">
+      <button id="backBtn" class="icon-btn hidden" type="button" aria-label="返回">‹</button>
+      <div class="brand">
+        <img class="brand-icon" src="./assets/brand/app-icon.png" alt="" aria-hidden="true" width="42" height="42" />
+        <strong class="brand-copy">
+          <span class="brand-primary">虾子曰</span>
+          <span class="brand-secondary">艺术风格图鉴</span>
+        </strong>
+      </div>
+      <div class="top-actions">
+        <button id="searchOpenBtn" class="icon-btn" type="button" aria-label="搜索">⌕</button>
+        <button id="langBtn" class="lang-toggle" type="button">EN｜中文</button>
+        <button id="drawerBtn" class="icon-btn" type="button" aria-label="菜单" aria-controls="drawer" aria-expanded="false">☰</button>
+      </div>
+    </header>
+
+    <main id="mainContent">
+      <section id="homeView" class="view active" aria-labelledby="homeViewTitle" aria-hidden="false">
+        <h1 id="homeViewTitle" class="sr-only">今日推荐</h1>
+        <div class="section-head">
+          <p id="todayLabel">今日推荐</p>
+        </div>
+
+        <div id="deckStage" class="deck-stage">
+          <article id="prevGhost" class="style-card cover-card ghost-card prev" aria-hidden="true"></article>
+          <article id="nextGhost" class="style-card cover-card ghost-card next" aria-hidden="true"></article>
+          <article id="styleDeck" class="style-card cover-card live-card" tabindex="0" role="group" aria-roledescription="风格卡片" aria-label="今日推荐卡片" aria-keyshortcuts="ArrowLeft ArrowRight Enter Space"></article>
+        </div>
+        <p id="deckAnnouncement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+
+        <div class="deck-controls">
+          <button id="prevBtn" class="arrow-btn" type="button" aria-label="上一个风格">←</button>
+          <button id="randomBtn" class="small-action random-control" type="button">随机</button>
+          <button id="nextBtn" class="arrow-btn" type="button" aria-label="下一个风格">→</button>
+        </div>
+        <p id="positioningCopy" class="positioning-copy">一本装进口袋里的视觉风格图鉴。每天 3 分钟认识一种风格，建立自己的审美词库。</p>
+
+        <section class="category-strip" aria-labelledby="categoryTitle">
+          <h2 id="categoryTitle">分类</h2>
+          <div id="categoryChips" class="category-cards"></div>
+        </section>
+      </section>
+
+      <section id="detailView" class="view" aria-label="风格详情" aria-hidden="true" inert>
+        <article id="detailContent" class="detail"></article>
+      </section>
+
+      <section id="searchView" class="view" aria-labelledby="searchViewTitle" aria-hidden="true" inert>
+        <h1 id="searchViewTitle" class="sr-only">搜索风格</h1>
+        <div class="search-panel">
+          <label for="searchInput" id="searchLabel">搜索风格</label>
+          <div class="search-box">
+            <input id="searchInput" type="search" aria-labelledby="searchLabel" enterkeyhint="search" autocomplete="off" placeholder="瑞士、Ukiyo-e、海报、复古..." />
+            <button id="clearSearchBtn" type="button" aria-label="清除搜索">×</button>
+          </div>
+          <div id="filterChips" class="chip-row filters"></div>
+        </div>
+        <h2 id="searchResultsTitle" class="sr-only">120 个搜索结果</h2>
+        <div id="searchResults" class="result-list" role="region" aria-labelledby="searchResultsTitle"></div>
+      </section>
+
+      <section id="savedView" class="view" aria-labelledby="savedViewTitle" aria-hidden="true" inert>
+        <h1 id="savedViewTitle" class="sr-only">收藏</h1>
+        <div class="saved-head">
+          <p id="savedCount">已收藏 0 个风格</p>
+          <button id="copyListBtn" class="small-action" type="button">复制清单</button>
+        </div>
+        <h2 id="savedResultsTitle" class="sr-only">已收藏风格列表</h2>
+        <div id="savedList" class="result-list" role="region" aria-labelledby="savedResultsTitle"></div>
+      </section>
+
+      <section id="aboutView" class="view" aria-label="关于" aria-hidden="true" inert>
+        <article id="aboutContent" class="detail"></article>
+      </section>
+
+      <section id="screenshotsView" class="view" aria-label="App Store Screenshot Kit" aria-hidden="true" inert>
+        <article id="screenshotsContent" class="screenshot-kit"></article>
+      </section>
+    </main>
+
+    <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
+    <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true" inert>
+      <div class="drawer-head">
+        <strong id="drawerTitle">虾子曰艺术风格图鉴</strong>
+        <button id="drawerCloseBtn" class="icon-btn" type="button" aria-label="关闭菜单">×</button>
+      </div>
+      <nav class="drawer-nav">
+        <button class="nav-btn active" type="button" data-view="home">今日</button>
+        <button class="nav-btn" type="button" data-view="search">搜索</button>
+        <button class="nav-btn" type="button" data-view="saved">收藏</button>
+        <button class="nav-btn" type="button" data-view="about">关于</button>
+        <button class="nav-btn plus-nav" type="button" data-action="show-plus">虾子曰艺术风格图鉴 Plus</button>
+      </nav>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="plusModal" class="plus-modal" hidden>
+    <div id="plusPanel" class="plus-panel" role="dialog" aria-modal="true" aria-labelledby="plusTitle" aria-describedby="plusSubtitle plusGentleNote" tabindex="-1">
+      <p id="plusKicker" class="plus-kicker">虾子曰艺术风格图鉴 Plus</p>
+      <h2 id="plusTitle">虾子曰艺术风格图鉴 Plus</h2>
+      <p id="plusSubtitle" class="plus-subtitle">建立你的私人审美资料库。</p>
+      <p id="plusGentleNote" class="plus-subtitle plus-note">免费版可以先认识风格，Plus 帮你建立完整审美资料库。</p>
+      <ul id="plusBenefits" class="plus-benefits"></ul>
+      <div class="plan-compare">
+        <div>
+          <h3 id="freePlanTitle">免费版</h3>
+          <ul id="freePlanList"></ul>
+        </div>
+        <div>
+          <h3 id="plusPlanTitle">Plus</h3>
+          <ul id="plusPlanList"></ul>
+        </div>
+      </div>
+      <div class="plus-price">
+        <span id="plusLaunchPrice">价格以 App Store 显示为准</span>
+        <small id="plusRegularPrice" hidden></small>
+      </div>
+      <p id="plusFootnote" class="plus-footnote">正式版将在 App Store 内开放</p>
+      <button id="plusCta" class="copy-btn plus-cta" type="button" data-action="purchase-plus" disabled>即将开放</button>
+      <button id="plusRestoreBtn" class="copy-btn plus-restore" type="button" data-action="restore-purchases" hidden>恢复购买</button>
+      <button id="plusCloseBtn" class="plus-close" type="button" data-action="close-plus" aria-label="关闭 Plus">×</button>
+    </div>
+  </div>
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" aria-describedby="lightboxDescription" tabindex="-1" hidden>
+    <h2 id="lightboxTitle" class="sr-only">图片预览</h2>
+    <p id="lightboxDescription" class="sr-only"></p>
+    <img id="lightboxImage" alt="" />
+    <div class="lightbox-actions">
+      <button id="saveLightboxBtn" class="copy-btn" type="button" data-action="save-lightbox" data-export-control>保存</button>
+      <button id="shareLightboxBtn" class="copy-btn" type="button" data-action="share-lightbox" data-export-control>分享</button>
+    </div>
+    <button id="lightboxCloseBtn" class="lightbox-close" type="button" data-action="close-lightbox" aria-label="关闭图片预览">×</button>
+  </div>
+  <div id="guidedOverlay" class="guided-overlay" hidden>
+    <div id="guidedPanel" class="guided-panel" role="dialog" aria-modal="true" aria-labelledby="guidedTitle" aria-describedby="guidedText" tabindex="-1">
+      <div class="guided-visual image-slot">
+        <img id="guidedImage" alt="" decoding="async" />
+        <div class="guided-shade"></div>
+      </div>
+      <button id="guidedCloseBtn" class="guided-close" type="button" data-action="close-guided" aria-label="关闭看图引导">×</button>
+      <div id="guidedStage" class="guided-stage" aria-live="polite" aria-atomic="true">
+        <div class="guided-progress" aria-hidden="true">
+          <span id="guidedStepLabel"></span>
+          <span id="guidedDots" class="guided-dots"></span>
+        </div>
+        <p id="guidedKicker" class="guided-kicker"></p>
+        <h2 id="guidedTitle" tabindex="-1"></h2>
+        <p id="guidedText"></p>
+        <div class="guided-actions">
+          <button id="guidedPrevBtn" class="guided-prev" type="button" data-action="previous-guided"></button>
+          <button id="guidedNextBtn" class="guided-next" type="button" data-action="next-guided"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="./data-core.js"></script>
+  <script src="./data-styles.js"></script>
+  <script src="./data-refined.js"></script>
+  <script src="./data-aesthetic-guides.js"></script>
+  <script src="./examples.js"></script>
+  <script src="./game.js"></script>
+</body>
+</html>
