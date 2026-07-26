@@ -1579,4 +1579,606 @@
       reflectionPrompt: bi("你喜欢它的乐观，还是希望未来想象里保留更多矛盾和不确定？", "Do you enjoy its optimism, or want a future vision with more conflict and uncertainty?")
     }
   };
+
+  Object.assign(window.STYLE_AESTHETIC_GUIDES, {
+    "de-stijl": {
+      openingQuestion: bi(
+        "先看这些线和色块：它们是在装饰画面，还是在建立一种共同生活的秩序？",
+        "Start with the lines and color blocks: are they decorating the image, or building a shared order for living?"
+      ),
+      observe: [
+        observe("grid", "先看垂直与水平", "Begin with vertical and horizontal", "线条尽量避开斜向和曲线，垂直、水平与矩形让画面像被一套基础秩序支撑。", "Lines avoid diagonals and curves as much as possible; verticals, horizontals and rectangles make the image feel supported by a basic order."),
+        observe("balance", "再看不对称平衡", "Read the asymmetric balance", "红黄蓝与黑白灰数量很少，却被放在不同重量的位置，让画面没有中心也能稳定。", "Red, yellow, blue, black, white and gray appear sparingly, but their different weights let the image stay stable without a central focus."),
+        observe("scope", "最后看跨媒介秩序", "See the order across media", "这种语言不只属于画布，也进入建筑、家具和书刊，像把日常环境一起重新校准。", "This language does not belong only to canvas; it enters architecture, furniture and print, as if recalibrating everyday surroundings together.")
+      ],
+      profile: {
+        order: trait(5, "基础秩序很强", "Very strong basic order"),
+        color: trait(3, "色彩少而明确", "Few but explicit colors"),
+        ornament: trait(1, "几乎删除装饰", "Ornament nearly removed"),
+        emotion: trait(2, "情绪理性安静", "Rational, quiet tone")
+      },
+      feelingWords: bi(["清楚", "平衡", "克制", "基础"], ["Clear", "Balanced", "Restrained", "Fundamental"]),
+      everydayLife: [
+        life("家居", "Home", "观察书架、柜门和地毯边线是否能形成垂直水平关系，色彩不必多也能有节奏。", "Notice whether shelves, cabinet doors and rug edges form vertical-horizontal relations; color can be sparse and still rhythmic."),
+        life("穿搭", "Clothing", "用清楚分割、直线轮廓和少量基础色观察身体比例，而不是追求满身图案。", "Use clear divisions, straight silhouette and a few basic colors to read proportion rather than covering the body with pattern."),
+        life("摄影", "Photography", "寻找窗框、墙角和街区立面里的矩形关系，让不对称构图仍然安稳。", "Find rectangular relations in windows, corners and facades so an asymmetric frame can still feel settled."),
+        life("日常物件", "Everyday objects", "看笔记本、收纳盒和路牌如何用少数线条和色块建立可预期的秩序。", "See how notebooks, storage boxes and signs use a few lines and blocks to create predictable order.")
+      ],
+      comparisons: [
+        compare("mondrian", "都依靠垂直水平、基础色和非对称平衡。", "Both rely on vertical-horizontal structure, primary color and asymmetric balance.", "De Stijl 是一场共同运动与理念；Mondrian 是其中重要艺术家，个人实践不能替代整个运动。", "De Stijl is a shared movement and ideal; Mondrian is a major artist within it, not a synonym for the whole movement."),
+        compare("bauhaus", "都相信现代生活可以通过清楚形式重新组织。", "Both believe modern life can be reorganized through clear form.", "De Stijl 更追求抽象秩序在各媒介间延展；Bauhaus 更强调学校、工艺、材料和工业生产之间的连接。", "De Stijl extends abstract order across media; Bauhaus more strongly connects school, craft, material and industrial production.")
+      ],
+      reflectionPrompt: bi("这种被简化的秩序让你放松，还是让你想念更柔软的变化？", "Does this simplified order relax you, or make you miss softer variation?")
+    },
+
+    futurism: {
+      openingQuestion: bi(
+        "这张图像像不像把同一个动作拆成几秒钟，让速度本身变成主角？",
+        "Does this image seem to split one action into several seconds, making speed itself the subject?"
+      ),
+      observe: [
+        observe("motion", "先看重复轮廓", "Begin with repeated contours", "身体、车轮或机器部件会以连续残影出现，像同一动作的几个阶段叠在一起。", "Bodies, wheels or machine parts appear as successive afterimages, as if several phases of one action were layered together."),
+        observe("force", "再看力线方向", "Follow the lines of force", "斜线、放射线和压缩空间把视线向前推，文字也可能像声音一样撞入图像。", "Diagonals, rays and compressed space push the eye forward, and type may crash into the image like sound."),
+        observe("context", "最后看现代迷恋", "Hold the modern fascination", "它迷恋工业速度与机器城市，同时也需要克制理解部分成员与民族主义和法西斯主义的历史联系。", "It is fascinated by industrial speed and machine cities, while requiring a restrained awareness of some members' historical ties to nationalism and fascism.")
+      ],
+      profile: {
+        order: trait(3, "秩序被速度拉伸", "Order stretched by speed"),
+        color: trait(4, "色彩常有高能量", "Often high-energy color"),
+        ornament: trait(2, "装饰服从运动", "Ornament follows motion"),
+        emotion: trait(5, "情绪急促兴奋", "Urgent, excited tone")
+      },
+      feelingWords: bi(["速度", "推进", "机械", "紧张"], ["Speed", "Propulsive", "Mechanical", "Tense"]),
+      everydayLife: [
+        life("家居", "Home", "观察风扇、楼梯和光影重复如何制造方向感，不把危险或暴力当作活力来源。", "Notice how fans, stairs and repeated light create direction without treating danger or violence as the source of energy."),
+        life("穿搭", "Clothing", "看斜向切线、运动面料和重复条纹怎样让身体显得正在前进。", "See how diagonal cuts, active fabrics and repeated stripes make the body feel in motion."),
+        life("摄影", "Photography", "拍摄运动残影、车流或手势连续阶段，让速度可见而不美化冲撞。", "Photograph motion blur, traffic flow or phases of a gesture so speed becomes visible without glorifying collision."),
+        life("日常物件", "Everyday objects", "留意车站屏幕、快递标签和仪表盘如何用斜线、箭头和数字制造加速感。", "Notice how station screens, shipping labels and dashboards use diagonals, arrows and numbers to suggest acceleration.")
+      ],
+      comparisons: [
+        compare("constructivism", "都使用斜线、强方向和现代机器时代的能量。", "Both use diagonals, forceful direction and machine-age energy.", "Futurism 更迷恋速度、连续动作和冲击；Constructivism 更强调社会建设、几何结构和传播任务。", "Futurism is more fascinated by speed, successive action and impact; Constructivism stresses social construction, geometric structure and communication."),
+        compare("kinetic-poster", "都让静止画面显得正在移动。", "Both make a still image feel as if it is moving.", "Futurism 是历史前卫运动并带有复杂政治语境；Kinetic Poster 是更宽的平面语言，可用重复、偏移和模糊制造动感。", "Futurism is a historical avant-garde movement with complex politics; Kinetic Poster is a broader graphic language using repetition, offset and blur.")
+      ],
+      reflectionPrompt: bi("你被速度吸引时，也会注意它背后的历史和代价吗？", "When speed attracts you, do you also notice the history and cost behind it?")
+    },
+
+    brutalism: {
+      openingQuestion: bi(
+        "这个画面是不是故意把结构露出来，让你看见信息是怎样被摆上台面的？",
+        "Is this image deliberately exposing its structure, letting you see how information has been placed on the table?"
+      ),
+      observe: [
+        observe("structure", "先看裸露结构", "Begin with exposed structure", "边框、模块、默认按钮感和粗大分区直接显露，画面不急着把施工痕迹藏起来。", "Borders, modules, default-button feelings and heavy divisions are exposed, with little rush to hide construction marks."),
+        observe("surface", "再看不精修表面", "Read the unpolished surface", "字体可能像系统默认，图片裁切也可能生硬，但这种粗糙需要有意组织而非随便堆放。", "Type may feel system-default and image crops may be blunt, but the roughness must be intentionally organized rather than casually piled up."),
+        observe("difference", "最后区别建筑来源", "Separate the borrowed language", "当代平面粗野主义借用建筑粗野主义的直接、重和裸露感，却不等于所有粗糙网页。", "Contemporary graphic brutalism borrows directness, heaviness and exposure from Brutalist architecture, but not every rough page belongs to it.")
+      ],
+      profile: {
+        order: trait(4, "结构直白强硬", "Blunt, forceful structure"),
+        color: trait(2, "色彩常较克制", "Often restrained color"),
+        ornament: trait(1, "少修饰甚至反修饰", "Little polish, sometimes anti-polish"),
+        emotion: trait(4, "情绪直接生硬", "Direct, blunt tone")
+      },
+      feelingWords: bi(["直接", "裸露", "坚硬", "未修饰"], ["Direct", "Exposed", "Hard", "Unpolished"]),
+      everydayLife: [
+        life("家居", "Home", "看水泥、金属架和开放收纳如何显露承重与使用结构，而不是只追求粗糙表面。", "See how concrete, metal shelving and open storage reveal support and use, rather than chasing rough surface alone."),
+        life("穿搭", "Clothing", "观察工装口袋、外露缝线和厚重边界如何让结构成为可见信息。", "Notice how workwear pockets, exposed seams and heavy edges make structure visible."),
+        life("摄影", "Photography", "拍摄建筑边界、临时标牌和未美化角落，保留信息关系而不是只找破败。", "Photograph building edges, temporary signs and unbeautified corners while preserving information relations, not just decay."),
+        life("日常物件", "Everyday objects", "看说明贴纸、纸箱编号和系统界面如何因为直给而显得诚实或生硬。", "Look at instruction stickers, carton numbers and system interfaces that feel honest or harsh because they are so direct.")
+      ],
+      comparisons: [
+        compare("swiss-style", "都能用清楚结构组织信息。", "Both can organize information through clear structure.", "Swiss Style 把系统磨到冷静透明；Graphic Brutalism 则让边界、默认感和未精修表面留在前景。", "Swiss Style refines the system until it feels calm and transparent; Graphic Brutalism keeps borders, defaults and unpolished surfaces in front."),
+        compare("punk-diy", "都可能拒绝光滑商业外观。", "Both may refuse a polished commercial look.", "Brutalism 更强调裸露结构和硬边信息；Punk DIY 更来自剪贴、复印、手写与自主传播。", "Brutalism stresses exposed structure and hard-edged information; Punk DIY comes more from collage, photocopy, handwriting and self-publishing.")
+      ],
+      reflectionPrompt: bi("你觉得这种直接更可信，还是会因为太生硬而产生距离？", "Does this directness feel more trustworthy, or does its bluntness create distance?")
+    },
+
+    "editorial-typography": {
+      openingQuestion: bi(
+        "你还没读正文时，标题、图片和说明文字已经告诉你应该先看哪里了吗？",
+        "Before you read the body text, have headline, image and caption already told you where to begin?"
+      ),
+      observe: [
+        observe("hierarchy", "先看阅读顺序", "Begin with reading order", "标题、正文、图片和说明文字用大小、位置与空白排出先后，让复杂内容可以被慢慢进入。", "Headline, body, image and caption use size, position and space to sequence entry into complex content."),
+        observe("voice", "再看字体语气", "Read the type voice", "字体比例、粗细和行距会改变文章气质，同样的信息可能变得冷静、亲近或紧张。", "Type proportion, weight and leading alter the voice of a story, making the same information feel calm, close or tense."),
+        observe("rhythm", "最后看内容节奏", "Follow the story rhythm", "不同主题需要不同呼吸，版面会在长读、停顿、图片和小注之间调整速度。", "Different subjects need different breathing; layout adjusts speed among long reading, pause, image and small note.")
+      ],
+      profile: {
+        order: trait(4, "阅读秩序清楚", "Clear reading order"),
+        color: trait(2, "色彩服务内容", "Color serves content"),
+        ornament: trait(2, "装饰从属版面", "Ornament follows layout"),
+        emotion: trait(3, "情绪随内容变化", "Tone shifts with content")
+      },
+      feelingWords: bi(["可读", "节奏", "层级", "语气"], ["Readable", "Rhythmic", "Layered", "Voiced"]),
+      everydayLife: [
+        life("家居", "Home", "观察书墙、菜单和标签的字号层级，哪些信息让你先拿起、再细读。", "Notice type hierarchy on bookshelves, menus and labels: what makes you pick something up before reading closely?"),
+        life("穿搭", "Clothing", "看衣物上的文字、吊牌和图案比例如何改变整体语气，而不只把字当装饰。", "See how text on clothing, tags and graphic scale change the overall voice, not merely decorating fabric."),
+        life("摄影", "Photography", "拍摄有文字的场景时，留意招牌、人物和空白如何共同决定阅读顺序。", "When photographing text-rich scenes, watch how signs, people and empty space decide the reading order together."),
+        life("日常物件", "Everyday objects", "看报纸、杂志、药盒和票据如何用字号、栏宽和说明文字安排注意力。", "Look at newspapers, magazines, medicine boxes and tickets arranging attention with size, column width and captions.")
+      ],
+      comparisons: [
+        compare("swiss-style", "都依靠字体、空白和层级帮助信息被理解。", "Both rely on type, space and hierarchy to make information understandable.", "Swiss Style 常追求稳定中性系统；Editorial Typography 更会随文章内容改变节奏、语气和图文比例。", "Swiss Style often seeks a stable neutral system; Editorial Typography shifts rhythm, voice and image-text balance with the story."),
+        compare("new-wave-typography", "都把字体视为画面结构的一部分。", "Both treat type as part of pictorial structure.", "Editorial Typography 通常保持阅读路径清楚；New Wave Typography 会移动基线、字距和方向，让阅读被打散但未消失。", "Editorial Typography usually keeps the reading path clear; New Wave Typography shifts baseline, spacing and direction so reading is disturbed but not lost.")
+      ],
+      reflectionPrompt: bi("你是被内容吸引，还是先被字体安排出来的节奏带进去？", "Are you drawn by the content, or first carried in by the rhythm type has arranged?")
+    },
+
+    "new-wave-typography": {
+      openingQuestion: bi(
+        "这些文字还是在给你读，还是已经像图形一样让你的眼睛绕路行走？",
+        "Are these words still asking to be read, or have they become shapes that make your eye take a detour?"
+      ),
+      observe: [
+        observe("baseline", "先看基线移动", "Begin with shifting baselines", "文字可能上升、下沉、旋转或分段错位，阅读路径被打散，却仍留下可追踪的线索。", "Type may rise, sink, rotate or split into offsets; the reading path is disrupted but still leaves clues to follow."),
+        observe("spacing", "再看字距张力", "Read spacing tension", "字母之间的距离忽紧忽松，文字不再只是容器，而开始承担节奏和图像重量。", "Letter spacing tightens and loosens, so type stops being only a container and starts carrying rhythm and pictorial weight."),
+        observe("context", "最后看后现代语境", "See the postmodern context", "它回应过度稳定的现代主义秩序，用实验让阅读重新变成一种身体动作。", "It responds to overly stable modernist order, using experiment to make reading a bodily act again.")
+      ],
+      profile: {
+        order: trait(3, "秩序被重新打散", "Order deliberately unsettled"),
+        color: trait(3, "色彩可强可弱", "Color can vary widely"),
+        ornament: trait(3, "字体本身成图形", "Type itself becomes graphic"),
+        emotion: trait(4, "情绪活跃不安", "Active, unsettled tone")
+      },
+      feelingWords: bi(["跳动", "错位", "实验", "后现代"], ["Jumping", "Offset", "Experimental", "Postmodern"]),
+      everydayLife: [
+        life("家居", "Home", "看唱片、书脊和展览小册子的字距与方向，哪些仍能读，哪些先成为图形。", "Look at records, book spines and exhibition leaflets: which type remains readable, and which first becomes shape?"),
+        life("穿搭", "Clothing", "观察印字在衣褶和身体转折处如何改变阅读顺序，但不必把文字随便倾斜。", "Notice how printed words change reading order across folds and body turns without simply slanting text at random."),
+        life("摄影", "Photography", "拍摄路牌、玻璃反射和屏幕文字，让错位来自真实观看角度。", "Photograph signs, reflections and screen text so displacement comes from an actual viewing angle."),
+        life("日常物件", "Everyday objects", "看活动海报、票根和包装字样如何用断行、叠压和留白制造节奏。", "See how event posters, tickets and packaging create rhythm through line breaks, overlap and space.")
+      ],
+      comparisons: [
+        compare("editorial-typography", "都让字体、图像和空白共同组织阅读。", "Both use type, image and space to organize reading.", "Editorial Typography 更服务文章节奏；New Wave Typography 更主动挑战基线、字距和现代主义稳定性。", "Editorial Typography serves the story rhythm; New Wave Typography more actively challenges baseline, spacing and modernist stability."),
+        compare("experimental-typography", "都把文字推到普通阅读之外。", "Both push type beyond ordinary reading.", "New Wave Typography 有较具体的后现代平面设计语境；Experimental Typography 范围更广，可涉及材料、动态、空间和生成文字。", "New Wave Typography has a more specific postmodern graphic context; Experimental Typography is broader, including material, motion, spatial and generative type.")
+      ],
+      reflectionPrompt: bi("当阅读变慢时，你会烦躁，还是开始注意文字本身的身体感？", "When reading slows down, do you get impatient, or begin noticing the body of the letters?")
+    },
+
+    "punk-diy": {
+      openingQuestion: bi(
+        "这些剪贴、手写和复印痕迹，是粗糙失败，还是一种自己发声的方式？",
+        "Are these cutouts, handwriting and photocopy marks a rough failure, or a way of speaking for oneself?"
+      ),
+      observe: [
+        observe("making", "先看低成本制作", "Begin with low-cost making", "剪贴、复印、手写和重复覆盖让制作过程留在表面，像信息刚从现场传出来。", "Cutting, photocopying, handwriting and repeated overprinting leave the making on the surface, as if the message just came from the scene."),
+        observe("community", "再看自主传播", "Read self-publishing", "它常与乐队、社群、小刊和反主流文化有关，重点不是脏乱，而是谁能绕过正式渠道发声。", "It often belongs to bands, communities, zines and counterculture; the point is not mess, but who can speak outside official channels."),
+        observe("friction", "最后看冲突关系", "See the friction", "字体、照片和纸片故意碰撞，但冲突仍服务态度和传播，不等于随意堆满。", "Type, photos and paper fragments collide deliberately, yet the conflict still serves attitude and circulation rather than random filling.")
+      ],
+      profile: {
+        order: trait(2, "秩序粗粝直接", "Rough, direct order"),
+        color: trait(2, "色彩受材料限制", "Color limited by materials"),
+        ornament: trait(3, "碎片密度较高", "Fragment density is high"),
+        emotion: trait(5, "情绪自主尖锐", "Autonomous, sharp emotion")
+      },
+      feelingWords: bi(["自主", "剪贴", "粗粝", "急迫"], ["Self-made", "Collaged", "Rough", "Urgent"]),
+      everydayLife: [
+        life("家居", "Home", "观察冰箱便签、手工小册和修补痕迹如何记录真实生活，而不是把房间故意弄乱。", "Notice how fridge notes, handmade booklets and repairs record real life without intentionally making a room messy."),
+        life("穿搭", "Clothing", "看补丁、手写标语和旧衣改造怎样表达立场，同时尊重社群来源。", "See how patches, handwritten slogans and altered clothing express a stance while respecting their community origins."),
+        life("摄影", "Photography", "拍摄演出门口、小广告和临时告示，保留纸张层叠与现场使用痕迹。", "Photograph venue doors, small flyers and temporary notices, keeping layered paper and traces of use."),
+        life("日常物件", "Everyday objects", "看复印件、贴纸和胶带如何让信息快速流通，也暴露制作条件。", "Look at photocopies, stickers and tape as fast circulation of information that also reveals making conditions.")
+      ],
+      comparisons: [
+        compare("dada", "都使用拼贴、断裂和对正式规则的质疑。", "Both use collage, rupture and questioning of official rules.", "Dada 是一战前后前卫艺术对制度和语言的挑战；Punk DIY 更集中在音乐社群、小刊、复印和低成本自主传播。", "Dada is an avant-garde challenge to institutions and language around World War I; Punk DIY centers on music communities, zines, photocopying and low-cost self-publishing."),
+        compare("grunge", "都可能呈现磨损、噪声和反精修表面。", "Both may show wear, noise and anti-polished surfaces.", "Punk DIY 强调剪贴与自主出版方式；Grunge 更强调侵蚀纹理、失真、污点和九十年代音乐传播气候。", "Punk DIY stresses collage and self-publishing methods; Grunge emphasizes eroded texture, distortion, stains and a 1990s music-culture climate.")
+      ],
+      reflectionPrompt: bi("你看到的是杂乱，还是看见了绕开正式渠道的能量？", "Do you see disorder, or the energy of bypassing official channels?")
+    },
+
+    grunge: {
+      openingQuestion: bi(
+        "这些污点、撕裂和失真，是在做旧，还是让表面带着声音和年代的摩擦？",
+        "Are these stains, tears and distortions merely aged, or do they make the surface carry sound and period friction?"
+      ),
+      observe: [
+        observe("surface", "先看侵蚀表面", "Begin with eroded surface", "污点、划痕、破边和模糊让图像像经过复印、潮湿、摩擦或信号失真。", "Stains, scratches, torn edges and blur make the image feel photocopied, damp, rubbed or signal-distorted."),
+        observe("culture", "再看音乐传播", "Read the music context", "Grunge 与九十年代音乐、唱片封面和地下传播有关，不是所有做旧纹理都属于它。", "Grunge relates to 1990s music, album covers and underground circulation; not every aged texture belongs to it."),
+        observe("difference", "最后区别制作方式", "Separate it from DIY", "它比 Punk DIY 更关注表面被侵蚀和失真的状态，而不是剪贴、复印和社群自出版本身。", "It focuses more than Punk DIY on surfaces being eroded and distorted, rather than collage, photocopy and community self-publishing itself.")
+      ],
+      profile: {
+        order: trait(2, "秩序被噪声侵蚀", "Order eroded by noise"),
+        color: trait(2, "色彩常低沉脏化", "Often muted and muddied"),
+        ornament: trait(4, "纹理痕迹密集", "Dense texture traces"),
+        emotion: trait(4, "情绪低沉摩擦", "Muted, abrasive emotion")
+      },
+      feelingWords: bi(["侵蚀", "失真", "低沉", "磨损"], ["Eroded", "Distorted", "Muted", "Worn"]),
+      everydayLife: [
+        life("家居", "Home", "观察旧墙、磨损木面和海报残胶如何记录时间，不把所有破旧都包装成风格。", "Notice old walls, worn wood and poster glue as records of time without packaging all damage as a style."),
+        life("穿搭", "Clothing", "看褪色布料、起毛针织和旧印花如何产生年代感，同时避免空洞地消费反文化符号。", "See how faded fabric, fuzzy knit and old prints create period feeling while avoiding empty consumption of counterculture signs."),
+        life("摄影", "Photography", "利用低光、胶片颗粒或运动模糊观察声音感和空间压迫，不必把画面故意弄脏。", "Use low light, grain or motion blur to observe sonic feeling and spatial pressure without dirtying the image on purpose."),
+        life("日常物件", "Everyday objects", "看唱片封套、旧票据和磨损包装如何因使用而失真，留下触摸和流通痕迹。", "Look at album sleeves, old tickets and worn packaging distorted by use, leaving traces of touch and circulation.")
+      ],
+      comparisons: [
+        compare("punk-diy", "都拒绝过度光滑，也常与地下音乐传播有关。", "Both reject over-polish and often connect with underground music circulation.", "Grunge 更强调侵蚀表面、失真和九十年代气候；Punk DIY 更强调剪贴、复印和自主制作渠道。", "Grunge emphasizes eroded surfaces, distortion and a 1990s climate; Punk DIY emphasizes collage, photocopy and self-made channels."),
+        compare("brutalism", "都可能让画面显得不精修。", "Both may make an image feel unpolished.", "Graphic Brutalism 借用裸露结构和硬边信息；Grunge 通过污点、破损、噪声和音乐文化让表面带有磨耗。", "Graphic Brutalism borrows exposed structure and hard-edged information; Grunge uses stains, damage, noise and music culture to make the surface worn.")
+      ],
+      reflectionPrompt: bi("这些磨损让你靠近真实时间，还是让你觉得它被刻意表演出来？", "Do these worn marks bring you closer to real time, or feel deliberately performed?")
+    },
+
+    "psychedelic-poster": {
+      openingQuestion: bi(
+        "如果你需要多看几秒才能读清文字，这种慢下来是在制造困难，还是制造沉浸？",
+        "If you need a few extra seconds to read the words, is that delay making difficulty or immersion?"
+      ),
+      observe: [
+        observe("contour", "先看波动轮廓", "Begin with wavering contours", "字母、人物和图案像液体一样弯曲，边界互相渗入，让阅读和观看同时发生。", "Letters, figures and patterns bend like liquid, their borders seeping into one another so reading and looking happen together."),
+        observe("color", "再看高饱和碰撞", "Read saturated collisions", "互补色和强烈明暗会让表面振动，音乐现场的声音感被转化成颜色和线条。", "Complementary hues and sharp value shifts make the surface vibrate, translating live music's sound into color and line."),
+        observe("context", "最后看反文化语境", "Hold the counterculture context", "它与六十年代音乐海报和反文化有关，但不需要浪漫化药物，也不能提供相关指导。", "It relates to 1960s music posters and counterculture, but does not require romanticizing drugs or giving related guidance.")
+      ],
+      profile: {
+        order: trait(2, "秩序流动缠绕", "Flowing, tangled order"),
+        color: trait(5, "色彩高饱和", "Highly saturated color"),
+        ornament: trait(5, "图案密集融合", "Dense, fused pattern"),
+        emotion: trait(5, "情绪沉浸亢奋", "Immersive, heightened emotion")
+      },
+      feelingWords: bi(["波动", "沉浸", "饱和", "迷离"], ["Wavering", "Immersive", "Saturated", "Trance-like"]),
+      everydayLife: [
+        life("家居", "Home", "观察灯光、织物和曲线图案如何改变房间节奏，一处强烈元素就足以制造沉浸。", "Notice how lighting, textiles and curving pattern alter a room's rhythm; one strong element can be enough for immersion."),
+        life("穿搭", "Clothing", "看旋涡纹、互补色和流动字样如何影响身体轮廓，避免把反文化只当装饰标签。", "See how swirls, complementary hues and flowing type affect silhouette while avoiding counterculture as a mere decorative label."),
+        life("摄影", "Photography", "拍摄演出灯光、玻璃反射和人群节奏，让色彩与声音感互相牵引。", "Photograph concert light, glass reflection and crowd rhythm so color and sound seem to pull on each other."),
+        life("日常物件", "Everyday objects", "看唱片、门票和活动海报如何把字体融入图案，让读字变成慢观看。", "Look at records, tickets and event posters merging type into pattern so reading becomes slow looking.")
+      ],
+      comparisons: [
+        compare("art-nouveau", "都使用流动轮廓、整体边框和图案化字体。", "Both use flowing contours, total frames and patterned lettering.", "Art Nouveau 多来自植物曲线与手工装饰传统；Psychedelic Poster 更强调高饱和振动、音乐现场和反文化沉浸。", "Art Nouveau grows from botanical curves and crafted ornament; Psychedelic Poster stresses saturated vibration, live music and countercultural immersion."),
+        compare("pop-art-poster", "都放大大众传播中的颜色、图像和印刷感。", "Both amplify color, image and print feeling in mass circulation.", "Psychedelic Poster 让字体与图案缠绕到难读边缘；Pop Art Poster 更关注商品图像、大众媒体、重复和机械复制。", "Psychedelic Poster entwines type and pattern near the edge of legibility; Pop Art Poster focuses on commodities, mass media, repetition and mechanical reproduction.")
+      ],
+      reflectionPrompt: bi("你愿意为了沉浸放慢阅读，还是更需要文字立即清楚？", "Are you willing to slow reading for immersion, or do you need the words clear immediately?")
+    },
+
+    "pop-art-poster": {
+      openingQuestion: bi(
+        "这些像广告或漫画的图像被放大后，你看到的是熟悉快乐，还是消费图像的回声？",
+        "When images like ads or comics are enlarged, do you see familiar pleasure, or echoes of consumer imagery?"
+      ),
+      observe: [
+        observe("source", "先看大众图像来源", "Begin with mass-image sources", "商品包装、漫画、明星照片和广告语进入画面，原本普通的复制图像被当作观看对象。", "Packaging, comics, celebrity photos and slogans enter the image, turning ordinary reproduced pictures into things to examine."),
+        observe("repetition", "再看重复与放大", "Read repetition and enlargement", "同一物件、头像或网点被放大、并列或机械复制，让原作与消费图像的距离变得可见。", "The same object, face or dot pattern is enlarged, repeated or mechanically copied, making the gap between artwork and consumer image visible."),
+        observe("tone", "最后看明亮表面下的关系", "Look under the bright surface", "鲜艳颜色和黑色轮廓可以很亲近，但它们也在提醒我们日常欲望怎样被媒体组织。", "Bright color and black contour can feel friendly, yet they also remind us how everyday desire is organized by media.")
+      ],
+      profile: {
+        order: trait(4, "重复秩序鲜明", "Strong repeated order"),
+        color: trait(5, "色彩明亮饱和", "Bright, saturated color"),
+        ornament: trait(3, "印刷纹理突出", "Print texture stands out"),
+        emotion: trait(4, "情绪明快带反讽", "Bright with irony")
+      },
+      feelingWords: bi(["明快", "重复", "消费", "反讽"], ["Bright", "Repeated", "Consumer", "Ironic"]),
+      everydayLife: [
+        life("家居", "Home", "观察食品包装、日历和冰箱贴如何把普通商品图像变成房间里的颜色节奏。", "Notice how food packaging, calendars and magnets turn ordinary product images into color rhythm in a room."),
+        life("穿搭", "Clothing", "看大图案、印刷网点和标语如何让衣服接近媒体图像，同时避免复制真实品牌或名人脸。", "See how large graphics, halftone dots and slogans make clothing feel media-like while avoiding real brands or celebrity faces."),
+        life("摄影", "Photography", "拍摄橱窗、自动售货机和广告重复，让消费图像的排列方式被看见。", "Photograph shop windows, vending machines and repeated ads so the arrangement of consumer images becomes visible."),
+        life("日常物件", "Everyday objects", "看罐头、杂志和玩具包装如何通过放大、重复和鲜艳色彩制造熟悉感。", "Look at cans, magazines and toy packaging creating familiarity through enlargement, repetition and vivid color.")
+      ],
+      comparisons: [
+        compare("dada", "都把现成图像和日常物件带入艺术观看。", "Both bring found images and everyday objects into artistic looking.", "Dada 更直接质疑艺术制度和语言权威；Pop Art Poster 更关注广告、商品、媒体复制和流行文化表面。", "Dada more directly questions art institutions and language authority; Pop Art Poster focuses on advertising, commodities, media reproduction and popular-culture surfaces."),
+        compare("psychedelic-poster", "都可能使用高饱和颜色和强烈海报性。", "Both may use saturated color and strong poster presence.", "Pop Art Poster 常使用清楚轮廓、网点、重复和消费图像；Psychedelic Poster 更追求波动轮廓、难读字体和沉浸图案。", "Pop Art Poster often uses clear contour, dots, repetition and consumer imagery; Psychedelic Poster seeks wavering contours, difficult type and immersive pattern.")
+      ],
+      reflectionPrompt: bi("这些熟悉图像让你放松，还是让你意识到自己被媒体训练过？", "Do these familiar images relax you, or make you aware of being trained by media?")
+    },
+
+    "corporate-modernism": {
+      openingQuestion: bi(
+        "为什么有些标识、导视和文件看起来不热情，却让你相信它们来自同一个系统？",
+        "Why do some signs, wayfinding and documents feel unemotional, yet convince you they come from one system?"
+      ),
+      observe: [
+        observe("system", "先看模块化系统", "Begin with modular systems", "标识、字体、网格、色块和导视被反复组合，让大型机构在不同场景中保持同一种声音。", "Marks, type, grids, color fields and wayfinding recombine repeatedly so a large institution keeps one voice across settings."),
+        observe("clarity", "再看可复制性", "Read reproducibility", "版面不靠一次性惊喜，而靠稳定规则让表格、建筑标牌、包装和广告可以持续扩展。", "The layout does not depend on one-time surprise; stable rules let forms, building signs, packaging and ads keep expanding."),
+        observe("power", "最后看清晰与权力", "Consider clarity and power", "系统清楚会降低理解成本，也可能让机构权力显得自然可靠，两种感受可以同时存在。", "System clarity lowers the cost of understanding, and may also make institutional power feel natural and reliable; both can exist at once.")
+      ],
+      profile: {
+        order: trait(5, "系统秩序很强", "Very strong system order"),
+        color: trait(2, "色彩统一克制", "Unified, restrained color"),
+        ornament: trait(1, "装饰极少", "Very little ornament"),
+        emotion: trait(2, "情绪稳定中性", "Stable, neutral tone")
+      },
+      feelingWords: bi(["一致", "可靠", "机构", "清晰"], ["Consistent", "Reliable", "Institutional", "Clear"]),
+      everydayLife: [
+        life("家居", "Home", "观察收纳标签、文件夹和家电说明如何用同一套字体与间距降低寻找成本。", "Notice how labels, folders and appliance manuals use consistent type and spacing to reduce search effort."),
+        life("穿搭", "Clothing", "看制服、工牌和基础配色如何建立可识别身份，同时也限制个人表达。", "See how uniforms, badges and basic palettes create recognizable identity while limiting personal expression."),
+        life("摄影", "Photography", "拍摄机场、医院和银行导视，比较清楚秩序如何让空间更可信。", "Photograph wayfinding in airports, hospitals and banks, comparing how clear order makes space feel trustworthy."),
+        life("日常物件", "Everyday objects", "看票据、说明书和办公用品如何通过重复规则，让不同物件像来自同一机构。", "Look at receipts, manuals and office supplies using repeated rules so different objects feel from one institution.")
+      ],
+      comparisons: [
+        compare("swiss-style", "都依靠网格、无衬线字体和清楚层级建立可信秩序。", "Both use grids, sans-serif type and clear hierarchy to build credible order.", "Swiss Style 是更广的现代主义信息语言；Corporate Modernism 把这种语言系统化，用于机构身份、导视和大规模复制。", "Swiss Style is a broader modernist information language; Corporate Modernism systematizes it for institutional identity, wayfinding and large-scale reproduction."),
+        compare("bauhaus", "都把现代形式与日常功能联系起来。", "Both connect modern form with everyday function.", "Bauhaus 强调学校、工艺和工业实验；Corporate Modernism 更关注大型组织如何保持统一声音。", "Bauhaus stresses school, craft and industrial experiment; Corporate Modernism focuses on how large organizations maintain one voice.")
+      ],
+      reflectionPrompt: bi("你喜欢这种一致性带来的安心，还是会注意它让机构显得过于自然？", "Do you enjoy the reassurance of consistency, or notice how it makes institutions feel too natural?")
+    },
+
+    "anti-design": {
+      openingQuestion: bi(
+        "当画面故意难读、冲突和过量时，它是在放弃设计，还是在反问什么叫好设计？",
+        "When an image is deliberately hard to read, conflicting and excessive, is it abandoning design or questioning what good design means?"
+      ),
+      observe: [
+        observe("conflict", "先看故意冲突", "Begin with deliberate conflict", "颜色、字体、比例和边界彼此顶撞，画面反对干净中性不等于没有选择。", "Color, type, scale and edges collide; rejecting clean neutrality does not mean choices are absent."),
+        observe("excess", "再看过量信息", "Read excess information", "元素可能太多、太近或太响，让观看者意识到商业视觉常要求我们顺滑接受。", "Elements may be too many, too close or too loud, making the viewer aware of how commercial visuals often ask for smooth acceptance."),
+        observe("rule", "最后看被打破的规则", "Find the broken rule", "反设计不是随便设计，它通常先知道可读性、层级和秩序，再有意识地拆开它们。", "Anti-design is not careless work; it usually knows legibility, hierarchy and order before consciously taking them apart.")
+      ],
+      profile: {
+        order: trait(1, "秩序被主动抵抗", "Order actively resisted"),
+        color: trait(4, "色彩常冲突", "Often clashing color"),
+        ornament: trait(5, "元素过量外显", "Excess elements exposed"),
+        emotion: trait(5, "情绪挑衅不安", "Provocative, unsettled tone")
+      },
+      feelingWords: bi(["冲突", "过量", "挑衅", "反规则"], ["Conflicting", "Excessive", "Provocative", "Rule-breaking"]),
+      everydayLife: [
+        life("家居", "Home", "观察贴满便签的墙或混搭角落何时表达真实关系，何时只是增加噪声。", "Notice when a note-covered wall or mixed corner expresses real relations, and when it merely adds noise."),
+        life("穿搭", "Clothing", "看冲突图案、反常比例和不协调颜色如何提出态度，而不是把不合身当作答案。", "See how clashing patterns, odd proportions and discordant colors state an attitude, without treating poor fit as the answer."),
+        life("摄影", "Photography", "拍摄广告牌、屏幕和街头文字相互遮挡的现场，让冲突来自真实公共空间。", "Photograph ads, screens and street text blocking one another so conflict comes from real public space."),
+        life("日常物件", "Everyday objects", "看廉价传单、错误界面和过度包装如何暴露规则，也提醒你判断哪些破坏是有意识的。", "Look at cheap flyers, broken interfaces and excessive packaging exposing rules, while judging which disruptions are conscious.")
+      ],
+      comparisons: [
+        compare("swiss-style", "都围绕可读性、秩序和信息组织展开。", "Both revolve around legibility, order and information organization.", "Swiss Style 让秩序尽量清楚透明；Anti-Design 则把秩序拆开，回应商业洁净感和中性规范。", "Swiss Style makes order as clear and transparent as possible; Anti-Design pulls order apart in response to commercial cleanliness and neutral norms."),
+        compare("new-wave-typography", "都可能打散阅读路径并挑战现代主义稳定性。", "Both may disturb reading paths and challenge modernist stability.", "New Wave Typography 主要从字体基线、字距和后现代排版入手；Anti-Design 范围更宽，常使用过量、冲突和难读来反问设计规则。", "New Wave Typography works mainly through baseline, spacing and postmodern type; Anti-Design is broader, using excess, conflict and difficulty to question design rules.")
+      ],
+      reflectionPrompt: bi("你会先拒绝这种混乱，还是愿意问它到底在抵抗哪一种顺滑？", "Do you reject this disorder first, or ask what kind of smoothness it is resisting?")
+    },
+
+    "experimental-typography": {
+      openingQuestion: bi(
+        "当字母被拉伸、切开或变成材料时，你还在读文字，还是在观看文字的身体？",
+        "When letters are stretched, cut or turned into material, are you reading words or watching the body of type?"
+      ),
+      observe: [
+        observe("letterform", "先看字母变形", "Begin with transformed letters", "笔画可能被压缩、溶解、拆开或重组，文字的形体在画面里成为主要事件。", "Strokes may be compressed, dissolved, separated or rebuilt, making the letterform itself the main event."),
+        observe("material", "再看材料与媒介", "Read material and medium", "纸张、屏幕、光、空间、生成规则或身体动作都可能改变字的边界。", "Paper, screen, light, space, generative rules or bodily action can all change the boundary of type."),
+        observe("legibility", "最后看可读性边界", "Test the edge of legibility", "它不只是把字弄怪，而是在可读和不可读之间让你意识到阅读本身。", "It is not merely making type strange; it makes you aware of reading itself at the edge between legible and illegible.")
+      ],
+      profile: {
+        order: trait(3, "秩序随实验变化", "Order shifts with experiment"),
+        color: trait(3, "色彩不是固定重点", "Color is not fixed"),
+        ornament: trait(4, "字形细节突出", "Letterform detail is prominent"),
+        emotion: trait(4, "情绪探索开放", "Exploratory, open tone")
+      },
+      feelingWords: bi(["变形", "材料", "边界", "探索"], ["Transformed", "Material", "Boundary", "Exploratory"]),
+      everydayLife: [
+        life("家居", "Home", "观察霓虹字、门牌和书法摆件如何因材料改变字的边缘和影子。", "Notice how neon lettering, door numbers and calligraphic objects change letter edges and shadows through material."),
+        life("穿搭", "Clothing", "看印字在拉伸布料、刺绣和反光材料上如何变形，文字不再只是平面。", "See how type changes on stretched fabric, embroidery and reflective material, no longer staying flat."),
+        life("摄影", "Photography", "拍摄投影文字、玻璃遮挡或运动中的招牌，让可读性随着光和角度变化。", "Photograph projected text, glass occlusion or moving signs so legibility changes with light and angle."),
+        life("日常物件", "Everyday objects", "看票据热敏字、压印标识和屏幕故障如何让字形暴露材料条件。", "Look at thermal receipts, embossed marks and screen errors exposing the material conditions of type.")
+      ],
+      comparisons: [
+        compare("new-wave-typography", "都让文字不只承担传递内容的任务。", "Both let type do more than deliver content.", "New Wave Typography 有明确后现代平面排版背景；Experimental Typography 更广，可包括材料、动态、空间和生成系统。", "New Wave Typography has a specific postmodern graphic background; Experimental Typography is broader, including material, motion, space and generative systems."),
+        compare("anti-design", "都可能挑战普通可读性和干净秩序。", "Both may challenge ordinary legibility and clean order.", "Experimental Typography 主要探索字形和阅读边界；Anti-Design 更常用冲突、过量和反商业姿态质疑设计规范。", "Experimental Typography explores letterform and reading boundaries; Anti-Design more often questions design norms through conflict, excess and anti-commercial stance.")
+      ],
+      reflectionPrompt: bi("字变得难读时，你会寻找内容，还是开始欣赏字形如何生成？", "When type becomes hard to read, do you search for content, or notice how the letterform is being made?")
+    },
+
+    "kinetic-poster": {
+      openingQuestion: bi(
+        "画面明明静止，却让你的眼睛想跟着移动；这种运动感从哪里开始？",
+        "The image is still, yet your eye wants to move with it; where does that sense of motion begin?"
+      ),
+      observe: [
+        observe("repetition", "先看重复与偏移", "Begin with repetition and offset", "同一形状、文字或图像连续错开，像时间被切成几片同时放在纸上。", "The same shape, word or image is offset in sequence, as if time were sliced and placed on the page at once."),
+        observe("direction", "再看方向线索", "Read directional cues", "模糊、箭头感、比例变化和斜向布局会推动视线，不需要真实动画也能产生动势。", "Blur, arrow-like cues, scale changes and diagonal layout push the eye, creating motion without actual animation."),
+        observe("rhythm", "最后看节奏", "Follow the rhythm", "元素之间的间距像节拍，密集处加速，空白处停顿，让静止图像带着时间感。", "Spacing works like beats: dense areas accelerate and empty areas pause, giving a still image a sense of time.")
+      ],
+      profile: {
+        order: trait(4, "秩序带有节奏", "Rhythmic order"),
+        color: trait(3, "色彩服务动势", "Color serves motion"),
+        ornament: trait(2, "装饰从属速度", "Ornament follows speed"),
+        emotion: trait(4, "情绪轻快推进", "Light, propulsive tone")
+      },
+      feelingWords: bi(["动势", "节奏", "偏移", "推进"], ["Motion", "Rhythm", "Offset", "Propulsive"]),
+      everydayLife: [
+        life("家居", "Home", "观察楼梯、百叶窗和重复灯具如何让视线按节奏移动。", "Notice how stairs, blinds and repeated lamps make the eye move rhythmically."),
+        life("穿搭", "Clothing", "看条纹、褶皱和渐变比例如何在身体移动时产生连续阶段。", "See how stripes, folds and shifting scale create successive phases as the body moves."),
+        life("摄影", "Photography", "用连拍、拖影或重复姿态表现时间经过，而不是依赖真正动画。", "Use sequence, motion blur or repeated posture to show time passing without requiring actual animation."),
+        life("日常物件", "Everyday objects", "看交通图、运动包装和活动海报如何用偏移、模糊和方向建立速度。", "Look at transit maps, sports packaging and event posters building speed with offset, blur and direction.")
+      ],
+      comparisons: [
+        compare("futurism", "都通过重复、斜向和连续阶段表现运动。", "Both show motion through repetition, diagonals and successive phases.", "Futurism 是迷恋速度与工业现代性的历史运动；Kinetic Poster 是更通用的静态图像动感方法。", "Futurism is a historical movement fascinated by speed and industrial modernity; Kinetic Poster is a more general method for motion in still images."),
+        compare("op-art", "都能让静止表面产生运动错觉。", "Both can make a still surface produce the illusion of motion.", "Kinetic Poster 多靠偏移、模糊、方向和节奏模拟时间；Op Art 更依靠高频重复、图地关系和观看距离产生视网膜振动。", "Kinetic Poster simulates time through offset, blur, direction and rhythm; Op Art relies on high-frequency repetition, figure-ground relations and viewing distance.")
+      ],
+      reflectionPrompt: bi("你感到画面在移动，是因为形状真的变了，还是你的眼睛被节奏牵动？", "Do you feel the image moving because forms changed, or because rhythm pulled your eye?")
+    },
+
+    "op-art": {
+      openingQuestion: bi(
+        "这些重复图形没有真的动，可你的眼睛为什么会感觉表面在闪烁或起伏？",
+        "These repeated forms are not actually moving, so why does your eye feel the surface flicker or swell?"
+      ),
+      observe: [
+        observe("frequency", "先看高频重复", "Begin with high-frequency repetition", "细密线条、格子或圆点反复接近，让眼睛难以一次固定在稳定边界上。", "Dense lines, grids or dots repeat closely, making it difficult for the eye to settle on one stable edge."),
+        observe("ground", "再看图形背景关系", "Read figure and ground", "黑白、明暗或互补色互相争夺前后位置，图形和背景会像在交换角色。", "Black-white, value or complementary contrasts compete for front and back, so figure and ground seem to exchange roles."),
+        observe("distance", "最后看观看距离", "Change viewing distance", "远看和近看会产生不同振动、弯曲或凸起感；部分高频图案可能让人不适，需要允许移开视线。", "Near and far views create different vibration, bending or swelling; some high-frequency patterns may feel uncomfortable, so looking away is fine.")
+      ],
+      profile: {
+        order: trait(5, "重复秩序极强", "Extremely strong repeated order"),
+        color: trait(3, "色彩用于视错觉", "Color serves optical effect"),
+        ornament: trait(3, "图案密度高", "High pattern density"),
+        emotion: trait(4, "情绪警觉跳动", "Alert, flickering tone")
+      },
+      feelingWords: bi(["振动", "错觉", "精密", "闪烁"], ["Vibrating", "Illusory", "Precise", "Flickering"]),
+      everydayLife: [
+        life("家居", "Home", "观察细格窗帘、瓷砖和地毯在不同距离下如何改变稳定感，必要时减少密度。", "Notice how fine curtains, tiles and rugs change stability at different distances, reducing density when needed."),
+        life("穿搭", "Clothing", "看密条纹和小格纹如何随身体移动产生闪烁感，选择时也照顾观看舒适。", "See how tight stripes and small checks flicker with movement, while considering viewing comfort."),
+        life("摄影", "Photography", "拍摄栏杆、百叶窗和网格立面，比较近景与远景中的图地变化。", "Photograph railings, blinds and grid facades, comparing figure-ground shifts close up and far away."),
+        life("日常物件", "Everyday objects", "看包装防伪纹、屏幕摩尔纹和织物纹理如何让静止表面显得在动。", "Look at security patterns, screen moire and fabric texture making a still surface feel active.")
+      ],
+      comparisons: [
+        compare("kinetic-poster", "都让静止图像产生运动感。", "Both create motion in still images.", "Op Art 主要依靠重复、图地和观看距离造成视错觉；Kinetic Poster 更常通过偏移、模糊和方向表现时间节奏。", "Op Art relies on repetition, figure-ground and viewing distance for optical illusion; Kinetic Poster more often uses offset, blur and direction to show time rhythm."),
+        compare("fractal-art", "都可能使用高度重复和数学感图案。", "Both may use intense repetition and mathematical pattern.", "Op Art 关注观看时的视网膜振动和图地转换；Fractal Art 更强调递归结构、尺度自相似和数字生成的无限细节。", "Op Art focuses on retinal vibration and figure-ground switching; Fractal Art stresses recursive structure, self-similar scale and digitally generated detail.")
+      ],
+      reflectionPrompt: bi("你会享受这种眼睛被唤醒的感觉，还是更想退到安静表面？", "Do you enjoy having your eye awakened this way, or want to return to a quieter surface?")
+    },
+
+    "conceptual-art": {
+      openingQuestion: bi(
+        "如果作品最重要的部分不是物件本身，而是它提出的问题，你会从哪里开始看？",
+        "If the most important part is not the object itself but the question it raises, where do you begin looking?"
+      ),
+      observe: [
+        observe("idea", "先看概念位置", "Begin with the concept's place", "作品可能把想法、规则、题名或指令放在物件之前，物质形式反而变得很克制。", "A work may place idea, rule, title or instruction before the object, making the physical form restrained."),
+        observe("language", "再看语言与记录", "Read language and record", "文字、照片、清单、地图或档案可以成为作品的一部分，而不只是说明材料。", "Text, photograph, list, map or archive can become part of the work, not merely explanatory material."),
+        observe("context", "最后看展示制度", "Ask about context", "同一物件在展厅、文件或日常环境中意义会改变，作品也许正在询问谁决定它被怎样理解。", "The same object changes meaning in a gallery, document or daily setting; the work may ask who decides how it is understood.")
+      ],
+      profile: {
+        order: trait(4, "概念秩序清楚", "Clear conceptual order"),
+        color: trait(1, "色彩通常克制", "Color often restrained"),
+        ornament: trait(1, "装饰不是重点", "Ornament is not central"),
+        emotion: trait(3, "情绪思辨开放", "Reflective, open tone")
+      },
+      feelingWords: bi(["提问", "语言", "语境", "克制"], ["Questioning", "Linguistic", "Contextual", "Restrained"]),
+      everydayLife: [
+        life("家居", "Home", "观察一张清单、标签或摆放位置如何改变物件意义，而不是只看物件是否好看。", "Notice how a list, label or placement changes an object's meaning, not only whether it looks good."),
+        life("穿搭", "Clothing", "看衣服上的文字、编号和穿着场合如何提出身份问题，而不把口号当作全部答案。", "See how words, numbers and occasion on clothing raise questions of identity without treating slogans as the whole answer."),
+        life("摄影", "Photography", "拍摄同一物件在不同语境中的位置，比较题名和环境如何改变观看。", "Photograph the same object in different contexts, comparing how title and setting change the looking."),
+        life("日常物件", "Everyday objects", "看票、证件、说明书和档案袋如何因为制度关系而拥有超过材料本身的意义。", "Look at tickets, IDs, manuals and folders carrying meaning beyond their material through institutional relations.")
+      ],
+      comparisons: [
+        compare("dada", "都可能使用现成物、语言和制度语境来质疑艺术边界。", "Both may use readymades, language and institutional context to question art boundaries.", "Dada 更带有战时反权威、荒谬和前卫表演背景；Conceptual Art 更系统地让概念、指令和记录先于物件。", "Dada carries wartime anti-authority, absurd and performance contexts; Conceptual Art more systematically places concept, instruction and record before object."),
+        compare("editorial-illustration", "都可能借文字与图像关系表达抽象问题。", "Both can use text-image relations to express abstract issues.", "Editorial Illustration 通常服务一篇文章或公共议题的可读表达；Conceptual Art 可能把表达条件本身变成作品问题。", "Editorial Illustration usually serves readable expression of an article or public issue; Conceptual Art may turn the conditions of expression into the work's question.")
+      ],
+      reflectionPrompt: bi("当作品把答案留给你时，你会觉得被拒绝，还是被邀请一起思考？", "When a work leaves the answer to you, do you feel refused, or invited to think with it?")
+    },
+
+    dali: {
+      openingQuestion: bi(
+        "这个梦境为什么看起来这么清楚：是物体荒诞，还是写实表面让荒诞更可信？",
+        "Why does this dream look so clear: are the objects strange, or does the realistic surface make the strangeness believable?"
+      ),
+      observe: [
+        observe("surface", "先看精细写实表面", "Begin with precise realism", "空间、影子和物体边缘常被画得很清楚，荒诞因此不像草图，而像真的发生过。", "Space, shadow and object edges are often rendered clearly, so the absurdity feels not like a sketch but like something that happened."),
+        observe("transformation", "再看软化和变形", "Read softening and distortion", "坚硬物会变软，身体或日常物件被拉长、融化或错置，现实规则在局部失效。", "Hard things soften, and bodies or everyday objects stretch, melt or shift place, making rules of reality fail locally."),
+        observe("persona", "最后看个人舞台", "See the personal stage", "Dalí 的语言包括梦境逻辑和强烈公众形象，不能把所有超现实图像都叫作 Dalí。", "Dali's language includes dream logic and a powerful public persona; not every Surrealist image should be called Dali-like.")
+      ],
+      profile: {
+        order: trait(3, "空间清楚但逻辑错位", "Clear space with displaced logic"),
+        color: trait(3, "色彩戏剧化克制", "Dramatic but controlled color"),
+        ornament: trait(3, "细节精密突出", "Precise detail stands out"),
+        emotion: trait(5, "情绪荒诞戏剧", "Absurd, theatrical emotion")
+      },
+      feelingWords: bi(["梦境", "荒诞", "精细", "变形"], ["Dreamlike", "Absurd", "Precise", "Distorted"]),
+      everydayLife: [
+        life("家居", "Home", "观察镜子、钟表和阴影如何改变物件确定性，但不要把任何奇怪物件都称为 Dalí。", "Notice how mirrors, clocks and shadows change certainty around objects, without calling every strange object Dali-like."),
+        life("穿搭", "Clothing", "看硬软材质反差、夸张配件和尺度错位如何制造梦感，而不复制艺术家的个人符号。", "See how hard-soft contrast, exaggerated accessories and scale shifts create dream feeling without copying the artist's personal symbols."),
+        life("摄影", "Photography", "用清晰光影拍摄不合常理的摆放，让荒诞来自真实空间里的错位。", "Use clear light and shadow to photograph illogical placement, letting absurdity come from displacement in real space."),
+        life("日常物件", "Everyday objects", "看融化冰、弯曲塑料和反射器物如何让熟悉东西短暂失去稳定身份。", "Look at melting ice, bent plastic and reflective objects making familiar things briefly lose stable identity.")
+      ],
+      comparisons: [
+        compare("surrealism", "都让梦、无意识和日常物件错位进入图像。", "Both bring dreams, the unconscious and displaced everyday objects into images.", "Surrealism 是更大的运动；Dalí 是其中一位艺术家，以精细写实表面、软化物体和公众形象特别突出。", "Surrealism is the broader movement; Dali is one artist within it, especially marked by precise realism, softened objects and public persona."),
+        compare("magritte", "都让熟悉物件进入不合常理的关系。", "Both place familiar objects in illogical relations.", "Dalí 更常戏剧化、细密和梦境空间强烈；Magritte 更冷静地用日常物体、遮挡、文字和语境错位提出问题。", "Dali is often more theatrical, detailed and dream-spatial; Magritte more calmly uses everyday objects, occlusion, text and contextual displacement to pose questions.")
+      ],
+      reflectionPrompt: bi("你更相信这个梦，是因为它荒诞，还是因为它被画得太清楚？", "Do you believe this dream because it is absurd, or because it is rendered so clearly?")
+    },
+
+    magritte: {
+      openingQuestion: bi(
+        "这件普通物体为什么突然不普通了：是位置变了，还是它和文字、尺度的关系变了？",
+        "Why has this ordinary object become strange: did its position change, or its relation to words and scale?"
+      ),
+      observe: [
+        observe("ordinary", "先看日常物体", "Begin with ordinary objects", "帽子、苹果、窗、云和室内空间常被冷静画出，奇异感来自关系而不是表面扭曲。", "Hats, apples, windows, clouds and rooms are often painted calmly; strangeness comes from relation rather than surface distortion."),
+        observe("occlusion", "再看遮挡与尺度", "Read occlusion and scale", "物体可能挡住脸、穿过空间或被放到不合比例的位置，让你怀疑看见与理解是否相同。", "An object may cover a face, pass through space or sit at impossible scale, making you doubt whether seeing equals understanding."),
+        observe("language", "最后看文字图像关系", "Ask about word and image", "题名、句子或标签可能否定眼前图像，作品的冷静语气让问题更尖锐。", "Titles, sentences or labels may contradict the image before you, and the calmness makes the question sharper.")
+      ],
+      profile: {
+        order: trait(4, "画面秩序冷静", "Calm pictorial order"),
+        color: trait(3, "色彩清楚克制", "Clear, restrained color"),
+        ornament: trait(1, "装饰很少", "Very little ornament"),
+        emotion: trait(4, "情绪安静诡异", "Quietly uncanny tone")
+      },
+      feelingWords: bi(["冷静", "错位", "遮挡", "疑问"], ["Calm", "Displaced", "Occluded", "Questioning"]),
+      everydayLife: [
+        life("家居", "Home", "观察镜子、门框和窗景如何让一个普通物件因为位置改变而变得陌生。", "Notice how mirrors, doorframes and window views make an ordinary object strange by changing its position."),
+        life("穿搭", "Clothing", "看帽子、围巾和图案如何遮挡或替换身份线索，但避免复制特定作品符号。", "See how hats, scarves and motifs obscure or replace identity cues without copying symbols from specific works."),
+        life("摄影", "Photography", "拍摄物体遮住脸、天空进入室内或文字否定图像的场景，让问题保持冷静。", "Photograph objects covering faces, sky entering interiors or words contradicting images, keeping the question calm."),
+        life("日常物件", "Everyday objects", "看标签、说明和物品本身何时不一致，日常语言怎样改变观看。", "Look at moments when labels, instructions and objects disagree, and how everyday language changes looking.")
+      ],
+      comparisons: [
+        compare("surrealism", "都打破日常逻辑，并让熟悉物件产生陌生关系。", "Both break ordinary logic and make familiar objects enter strange relations.", "Surrealism 是更广运动；Magritte 的个人语言更冷静、写实、概念化，常围绕文字、遮挡和语境错位。", "Surrealism is the broader movement; Magritte's personal language is calmer, realistic and conceptual, often around words, occlusion and contextual displacement."),
+        compare("dali", "都以清楚描绘制造不合常理的图像。", "Both use clear depiction to create illogical images.", "Magritte 少有 Dalí 式软化物体和戏剧梦境表面，更常把普通物件放进安静而尖锐的逻辑问题。", "Magritte rarely uses Dali-like softened objects and theatrical dream surfaces; he more often places ordinary things inside quiet, sharp logical questions.")
+      ],
+      reflectionPrompt: bi("你会急着解释这个谜，还是愿意让它继续改变你对普通物的信任？", "Do you rush to solve the puzzle, or let it keep changing your trust in ordinary things?")
+    },
+
+    "edward-hopper": {
+      openingQuestion: bi(
+        "这里的人物没有说话时，光线、窗户和房间切面已经替他们留下故事了吗？",
+        "When the figures say nothing, have light, windows and room sections already left a story for them?"
+      ),
+      observe: [
+        observe("space", "先看建筑切面", "Begin with cutaway space", "房间、餐馆和街角像被切开观看，窗框与墙面让人物处在清楚却封闭的位置。", "Rooms, diners and corners feel cut open for viewing; window frames and walls place figures in clear but enclosed positions."),
+        observe("distance", "再看人物距离", "Read human distance", "人物可能相隔不远，却被桌子、窗光或视线方向隔开；这不必直接等同于悲伤。", "Figures may be physically close yet separated by tables, window light or gaze direction; this need not mean simple sadness."),
+        observe("light", "最后看人工与自然光", "Watch artificial and natural light", "强烈日光、夜间灯光和大片阴影制造叙事留白，让城市空间像暂停的一刻。", "Hard daylight, night lighting and broad shadow create narrative gaps, making urban space feel paused.")
+      ],
+      profile: {
+        order: trait(4, "空间秩序清楚", "Clear spatial order"),
+        color: trait(3, "色彩安静集中", "Quiet, focused color"),
+        ornament: trait(1, "装饰很少", "Little ornament"),
+        emotion: trait(4, "情绪留白克制", "Restrained, open-ended emotion")
+      },
+      feelingWords: bi(["停顿", "城市", "距离", "光线"], ["Paused", "Urban", "Distant", "Lit"]),
+      everydayLife: [
+        life("家居", "Home", "观察窗边椅子、门口光线和空桌面如何让房间像有故事却未说完。", "Notice how a chair by a window, light at a doorway or an empty table makes a room feel storied but unfinished."),
+        life("穿搭", "Clothing", "看简单轮廓、低饱和颜色和人物姿态如何在空间里保持距离感。", "See how simple silhouette, muted color and posture hold distance within space."),
+        life("摄影", "Photography", "拍摄咖啡馆、车站和夜窗时，保留人物之间的空隙和光线方向。", "When photographing cafes, stations and night windows, preserve gaps between people and the direction of light."),
+        life("日常物件", "Everyday objects", "看台灯、百叶窗、杯子和空椅子如何在没有人物时也留下使用痕迹。", "Look at lamps, blinds, cups and empty chairs leaving traces of use even without figures.")
+      ],
+      comparisons: [
+        compare("realism", "都从可识别的日常场景和人物关系出发。", "Both begin from recognizable daily scenes and human relations.", "Realism 是更广的社会与日常再现立场；Edward Hopper 的语言尤其依靠建筑切面、光线、城市空间和叙事留白。", "Realism is a broader stance toward social and everyday representation; Edward Hopper's language especially relies on cutaway architecture, light, urban space and narrative silence."),
+        compare("noir-illustration", "都可能使用城市夜景、强光影和疏离人物。", "Both may use urban night, stark light and distant figures.", "Hopper 的画面更安静、开放，不一定服务犯罪叙事；Noir Illustration 更来自电影和出版类型中的悬疑光影。", "Hopper's images are quieter and more open, not necessarily serving crime narrative; Noir Illustration comes more from suspenseful lighting in film and publishing genres.")
+      ],
+      reflectionPrompt: bi("你是在替人物补故事，还是被空间和光线本身留住了？", "Are you inventing a story for the figures, or being held by the space and light itself?")
+    },
+
+    pollock: {
+      openingQuestion: bi(
+        "这些线条像不是被画在画布上，而是身体绕着画布移动后留下的轨迹吗？",
+        "Do these lines feel less painted onto canvas than left by a body moving around it?"
+      ),
+      observe: [
+        observe("process", "先看滴洒与倾倒", "Begin with dripping and pouring", "颜料以滴洒、倾倒和甩动形成线网，痕迹记录速度、距离和手臂范围。", "Paint forms networks through dripping, pouring and flinging, recording speed, distance and the reach of the arm."),
+        observe("field", "再看全覆盖画面", "Read the allover field", "视线很难找到唯一中心，线条在整个表面延展，让观看像进入一片密度不同的场。", "The eye has trouble finding one center; lines extend across the whole surface, making viewing a field of changing density."),
+        observe("myth", "最后避开天才神话", "Avoid the genius myth", "重点不是浪漫化个人困境，而是看制作行为、层次、重力和身体移动如何留在画面里。", "The point is not romanticizing personal struggle, but seeing how action, layers, gravity and bodily movement remain in the image.")
+      ],
+      profile: {
+        order: trait(2, "秩序扩散全覆盖", "Diffuse allover order"),
+        color: trait(3, "颜色服从层次", "Color serves layering"),
+        ornament: trait(2, "线网不是装饰", "Line network is not ornament"),
+        emotion: trait(5, "情绪动作强烈", "Strong action-based emotion")
+      },
+      feelingWords: bi(["滴洒", "身体", "密度", "轨迹"], ["Dripped", "Bodily", "Dense", "Trace-like"]),
+      everydayLife: [
+        life("家居", "Home", "观察大地毯、桌面划痕和墙面刷痕如何显示动作范围，而不把随意泼洒当作同义词。", "Notice how a large rug, tabletop scratches and wall brush marks show the range of action without equating casual splashing with the language."),
+        life("穿搭", "Clothing", "看线条印花和层叠纱线如何形成全身节奏，同时避免复制特定作品表面。", "See how line prints and layered yarn create body-wide rhythm while avoiding copies of specific work surfaces."),
+        life("摄影", "Photography", "从近处拍材料轨迹，再退远看整体密度，比较动作和场域两种信息。", "Photograph material traces up close, then step back for overall density, comparing action and field."),
+        life("日常物件", "Everyday objects", "看油漆桶边缘、调色盘和工作台如何记录重力、甩动和层层覆盖。", "Look at paint-can rims, palettes and worktables recording gravity, flicking and layered coverage.")
+      ],
+      comparisons: [
+        compare("abstract-expressionism", "都关联大尺度、身体动作和抽象绘画场域。", "Both relate to large scale, bodily action and the field of abstract painting.", "Pollock 是具体艺术家，以地面作画、滴洒和全覆盖线网著称；Abstract Expressionism 是更广运动，包含许多不同路径。", "Pollock is a specific artist known for floor-based process, dripping and allover networks; Abstract Expressionism is a broader movement with many paths."),
+        compare("color-field-painting", "都弱化传统主体，并让观看面对大面积画面。", "Both weaken traditional subject matter and make viewing face a large pictorial field.", "Pollock 的场域由线网、动作和层次形成；Color Field Painting 更集中于连续色面、染色表面和弱化中心手势。", "Pollock's field forms through line networks, action and layers; Color Field Painting focuses on continuous color, stained surface and reduced central gesture.")
+      ],
+      reflectionPrompt: bi("你更先看到混乱，还是看到动作在整个表面建立出的密度？", "Do you first see chaos, or the density built by action across the whole surface?")
+    },
+
+    basquiat: {
+      openingQuestion: bi(
+        "这些文字、数字和身体图像同时出现时，你是在读信息，还是在面对一层层被擦写的历史？",
+        "When words, numbers and bodily images appear together, are you reading information or facing layers of history being written and crossed out?"
+      ),
+      observe: [
+        observe("language", "先看文字与删除线", "Begin with writing and crossing out", "词语、数字和重复书写常被划掉又保留，像让信息在显露和拒绝解释之间摇摆。", "Words, numbers and repeated writing are often crossed out yet retained, making information hover between exposure and refusal to explain."),
+        observe("symbols", "再看符号并置", "Read juxtaposed signs", "解剖形象、头部、皇冠或街头标记彼此碰撞，但不能把任何符号固定成单一字典。", "Anatomical images, heads, crowns or street marks collide, but no symbol should be fixed into a single dictionary."),
+        observe("context", "最后看文化张力", "Hold the cultural tension", "他的语言连接纽约街头、画廊、黑人历史、海地与波多黎各家庭背景和艺术市场，不能把这些当装饰标签。", "His language connects New York streets, galleries, Black history, Haitian and Puerto Rican family background and the art market; these are not decorative labels.")
+      ],
+      profile: {
+        order: trait(2, "秩序碰撞分层", "Colliding, layered order"),
+        color: trait(4, "色彩直接粗粝", "Direct, rough color"),
+        ornament: trait(3, "符号密度较高", "High sign density"),
+        emotion: trait(5, "情绪尖锐复杂", "Sharp, complex emotion")
+      },
+      feelingWords: bi(["擦写", "并置", "历史", "紧迫"], ["Crossed-out", "Juxtaposed", "Historical", "Urgent"]),
+      everydayLife: [
+        life("家居", "Home", "观察便签、旧书页和墙面涂写如何叠出生活痕迹，不把个人符号语言变成装饰模板。", "Notice how notes, old pages and wall writing layer traces of life without turning a personal sign language into decor."),
+        life("穿搭", "Clothing", "看文字、数字和手绘线如何表达经历与身份，同时避免挪用黑人文化或复制签名式图像。", "See how words, numbers and drawn lines express experience and identity while avoiding appropriation of Black culture or signature imagery."),
+        life("摄影", "Photography", "拍摄街头文字、博物馆标签和人物身体之间的关系，保留社会语境而非只取表面能量。", "Photograph relations among street text, museum labels and bodies, preserving social context rather than taking surface energy alone."),
+        life("日常物件", "Everyday objects", "看课本批注、账单数字和药盒图示如何把知识、身体和制度放到同一张纸上。", "Look at textbook notes, bill numbers and medicine-box diagrams putting knowledge, body and institution on one page.")
+      ],
+      comparisons: [
+        compare("expressionism", "都允许线条、颜色和形体承载强烈主观经验。", "Both allow line, color and form to carry forceful subjective experience.", "Expressionism 是更广的主观形变语言；Basquiat 的个人语言更集中于文字、符号、解剖图像、黑人历史和纽约文化张力。", "Expressionism is a broader language of subjective distortion; Basquiat's personal language centers more on writing, signs, anatomy, Black history and New York cultural tension."),
+        compare("punk-diy", "都可能显露手写、街头能量和反精修表面。", "Both may expose handwriting, street energy and anti-polished surfaces.", "Punk DIY 更指向剪贴、复印和社群自主传播；Basquiat 不能被简化为朋克涂鸦，必须保留其艺术、历史和身份语境。", "Punk DIY points more to collage, photocopy and community self-publishing; Basquiat cannot be reduced to punk graffiti and must retain artistic, historical and identity contexts.")
+      ],
+      reflectionPrompt: bi("你会把这些符号当成谜题解码，还是先承认它们来自复杂语境？", "Do you decode these signs like a puzzle, or first acknowledge the complex contexts they come from?")
+    }
+  });
 })();
