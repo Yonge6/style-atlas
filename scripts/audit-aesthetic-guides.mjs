@@ -10,8 +10,8 @@ const auditPath = path.join(root, "docs", "qa", "aesthetic-guide-corpus-audit-v1
 const signoffPath = path.join(root, "docs", "review", "v1.3-product-owner-signoff.md");
 const signoffCandidateBaseline = {
   branch: "feature/v1.3-editorial-audit",
-  appUiCandidateCommit: "PENDING",
-  previewDeployCommit: "PENDING"
+  appUiCandidateCommit: "6e2e6fdc3b4b5bc01499a883ff7d72375d86747a",
+  previewDeployCommit: "28f19c554b450c7f3262fefdd81e8cb161b63c9a"
 };
 const checkOnly = process.argv.includes("--check");
 

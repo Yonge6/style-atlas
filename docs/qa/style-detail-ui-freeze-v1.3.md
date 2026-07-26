@@ -4,9 +4,9 @@
 
 - Branch: `feature/v1.3-editorial-audit`
 - Original editorial review baseline: `b0f641528b6c8eb878c6d2c834a1aa9b6252aa7d`
-- App/UI candidate commit: `PENDING`
-- Documentation HEAD: `PENDING`
-- Preview deploy commit: `PENDING`
+- App/UI candidate commit: `6e2e6fdc3b4b5bc01499a883ff7d72375d86747a`
+- Documentation HEAD: this document's containing commit; report the exact hash after commit
+- Preview deploy commit: `28f19c554b450c7f3262fefdd81e8cb161b63c9a`
 - Product position: V1.3 RC UI Candidate
 - UI Freeze: YES
 
@@ -63,7 +63,12 @@
 - iOS resource integrity: PASS, 129 bundled files
 - Debug generic iOS build: PASS
 - Release generic iOS build: PASS
-- Isolated Preview: PENDING
+- Isolated Preview: PASS
+- Preview source manifest: PASS, `feature/v1.3-editorial-audit@6e2e6fdc3b4b5bc01499a883ff7d72375d86747a`
+- Preview badge and `noindex,nofollow`: PASS
+- Preview online Guide / fallback / poster: PASS, 72 / 48 / 20 of 20
+- Preview online source bytes: PASS, 9 / 9 checked files match the App/UI candidate
+- Production Pages root: unchanged
 
 ## Manual UI Review
 
