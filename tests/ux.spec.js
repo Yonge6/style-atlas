@@ -1727,6 +1727,37 @@ test("all 120 style detail pages render without empty primary content", async ({
   expect(failures.invalid).toEqual([]);
 });
 
+test("all detail pages share the polished modules in Chinese and English", async ({ page }) => {
+  test.setTimeout(60000);
+  await page.goto("/#swiss-style");
+  const failures = await page.evaluate(async () => {
+    const ids = window.STYLE_ATLAS_DATA.rawStyles.map((style) => style[0]);
+    const invalid = [];
+    for (const lang of ["zh", "en"]) {
+      if (document.documentElement.lang !== lang) document.querySelector("#langBtn").click();
+      for (const id of ids) {
+        location.hash = id;
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const cards = [...document.querySelectorAll(".everyday-grid article")];
+        const state = {
+          cards: cards.length,
+          colors: new Set(cards.map((card) => getComputedStyle(card).backgroundColor)).size,
+          arrow: document.querySelectorAll(".reflection-arrow").length,
+          heading: document.querySelectorAll(".prompt-section .prompt-heading").length,
+          promptSave: document.querySelectorAll(".prompt-section [data-action='save-card']").length,
+          overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth
+        };
+        if (state.cards !== 4 || state.colors !== 4 || state.arrow !== 1 || state.heading !== 0 || state.promptSave !== 0 || state.overflow) {
+          invalid.push({ id, lang, ...state });
+        }
+      }
+    }
+    return { count: ids.length * 2, invalid };
+  });
+  expect(failures.count).toBe(240);
+  expect(failures.invalid).toEqual([]);
+});
+
 test("detail hero has one h1 and one default local artwork", async ({ page }) => {
   await page.goto("/#swiss-style");
   await expect(page.locator("#detailContent h1")).toHaveCount(1);
@@ -1835,11 +1866,16 @@ test("recognition module presents at least three explained observation cards", a
 
 test("pilot everyday module presents four ordinary-life scenes", async ({ page }) => {
   await page.goto("/#art-deco");
-  await expect(page.locator(".everyday-grid article")).toHaveCount(4);
+  const cards = page.locator(".everyday-grid article");
+  await expect(cards).toHaveCount(4);
   await expect(page.locator(".everyday-grid")).toContainText("家居");
   await expect(page.locator(".everyday-grid")).toContainText("穿搭");
   await expect(page.locator(".everyday-grid")).toContainText("摄影");
   await expect(page.locator(".everyday-grid")).toContainText("日常物件");
+  const backgrounds = await cards.evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).backgroundColor));
+  expect(new Set(backgrounds).size).toBe(4);
+  await expect(cards.first().locator("h3")).toHaveCSS("color", "rgb(255, 244, 216)");
+  await expect(cards.first().locator("p")).toHaveCSS("color", "rgb(231, 220, 193)");
 });
 
 test("comparison navigation enters a related style and back returns to the source", async ({ page }) => {
@@ -1863,7 +1899,10 @@ test("deep accordion is keyboard operable and updates expanded state", async ({ 
 
 test("reflection input saves locally and survives detail navigation", async ({ page }) => {
   await page.goto("/#swiss-style");
-  await page.locator(".reflection-section summary").click();
+  const reflection = page.locator(".reflection-section");
+  await expect(reflection.locator(".reflection-arrow")).toBeVisible();
+  await reflection.locator("summary").click();
+  await expect(reflection).toHaveAttribute("open", "");
   const input = page.locator("[data-reflection-id='swiss-style']");
   await input.fill("我喜欢它让信息变得清楚。");
   await page.locator(".comparison-open").first().click();
@@ -1948,7 +1987,7 @@ test("prompt and export controls remain in the redesigned detail", async ({ page
   await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   await expect(page.locator("#detail-create")).toBeVisible();
   await expect(page.locator("#detail-create [data-action='copy-prompt']")).toBeVisible();
-  await expect(page.locator("#detail-create [data-action='save-card']").first()).toBeVisible();
+  await expect(page.locator(".prompt-section [data-action='save-card']")).toHaveCount(0);
   await expect(page.locator("#detail-create [data-action='export-ratio']")).toHaveCount(4);
 });
 
@@ -1980,7 +2019,7 @@ test("creation heading is integrated with the rounded prompt module", async ({ p
   await expect(create.locator(".section-heading-card")).toHaveCount(0);
   await expect(prompt.locator(".section-kicker")).toHaveText("创作");
   await expect(prompt.locator("#createTitle")).toHaveText("把这种美用进创作");
-  await expect(prompt.locator(".prompt-heading")).toHaveText("风格表达词");
+  await expect(prompt.locator(".prompt-heading")).toHaveCount(0);
   expect(await prompt.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)).not.toBe("0px");
   expect(await exportPanel.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)).not.toBe("0px");
 });
