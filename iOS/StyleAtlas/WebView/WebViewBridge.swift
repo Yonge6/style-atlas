@@ -103,6 +103,11 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setProductPrice(\(value))")
     }
 
+    func injectTextScale(_ scale: Double) {
+        let clampedScale = min(max(scale, 0.9), 1.6)
+        webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setTextScale(\(clampedScale))")
+    }
+
     func refreshAfterForeground() async {
         bridgeLogger.info("operation=foregroundRefresh status=started")
         await storeManager.refreshEntitlements()

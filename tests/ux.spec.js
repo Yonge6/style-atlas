@@ -1692,6 +1692,35 @@ test("XXL text keeps detail navigation operable at 320px", async ({ page }) => {
   await expect(nav.locator("button").last()).toHaveAttribute("aria-current", "true");
 });
 
+test("native Dynamic Type scales the page without affecting the web build", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#swiss-style");
+  await expect.poll(() => page.evaluate(() => window.StyleAtlasNativeBridge.setTextScale(1.24))).toBe(1.24);
+  await expect(page.locator("html")).toHaveCSS("zoom", "1.24");
+  await page.locator("[data-action='open-guided']").click();
+  await expect(page.locator("html")).toHaveAttribute("data-native-large-text", "");
+  const nextButton = await page.locator("#guidedNextBtn").boundingBox();
+  expect(nextButton.y + nextButton.height).toBeLessThanOrEqual(page.viewportSize().height);
+
+  await page.reload();
+  await page.evaluate(() => {
+    window.STYLE_ATLAS_RUNTIME_CONFIG.nativeShell = false;
+  });
+  await expect.poll(() => page.evaluate(() => window.StyleAtlasNativeBridge.setTextScale(1.54))).toBe(1);
+  await expect(page.locator("html")).toHaveCSS("zoom", "1");
+  await expect(page.locator("html")).not.toHaveAttribute("data-native-large-text", "");
+});
+
+test("iOS candidate supports portrait and both landscape orientations", async () => {
+  const project = fs.readFileSync(
+    path.join(__dirname, "..", "iOS", "StyleAtlas", "StyleAtlas.xcodeproj", "project.pbxproj"),
+    "utf8"
+  );
+  expect(project).toContain("UIInterfaceOrientationPortrait");
+  expect(project).toContain("UIInterfaceOrientationLandscapeLeft");
+  expect(project).toContain("UIInterfaceOrientationLandscapeRight");
+});
+
 test("profile announces the non-rating note before semantic levels", async ({ page }) => {
   await page.goto("/#swiss-style");
   const profile = page.locator(".profile-section");

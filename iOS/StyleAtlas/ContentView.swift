@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @StateObject private var entitlementManager: EntitlementManager
     @StateObject private var storeManager: StoreManager
     @StateObject private var bridge: WebViewBridge
@@ -18,7 +19,8 @@ struct ContentView: View {
         WebViewContainer(
             bridge: bridge,
             hasPlus: entitlementManager.hasPlus,
-            productDisplayPrice: storeManager.plusProduct?.displayPrice
+            productDisplayPrice: storeManager.plusProduct?.displayPrice,
+            textScale: textScale
         )
             .ignoresSafeArea()
             .task {
@@ -33,5 +35,23 @@ struct ContentView: View {
                     await bridge.refreshAfterForeground()
                 }
             }
+    }
+
+    private var textScale: Double {
+        switch dynamicTypeSize {
+        case .xSmall: 0.92
+        case .small: 0.95
+        case .medium: 0.98
+        case .large: 1
+        case .xLarge: 1.12
+        case .xxLarge: 1.18
+        case .xxxLarge: 1.24
+        case .accessibility1: 1.3
+        case .accessibility2: 1.36
+        case .accessibility3: 1.42
+        case .accessibility4: 1.48
+        case .accessibility5: 1.54
+        @unknown default: 1
+        }
     }
 }

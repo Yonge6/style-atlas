@@ -3315,6 +3315,14 @@
   if (reviewMode) store.view = "detail";
   if (screenshotMode) store.view = "screenshots";
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
+  function setTextScaleFromNative(value) {
+    if (window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell !== true) return 1;
+    const scale = Math.min(1.6, Math.max(0.9, Number(value) || 1));
+    document.documentElement.style.zoom = String(scale);
+    document.documentElement.toggleAttribute("data-native-large-text", scale > 1.05);
+    return scale;
+  }
+
   window.StyleAtlasNativeBridge = {
     setPlusAccess(value) {
       if (window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell !== true) return false;
@@ -3326,6 +3334,7 @@
       return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice;
     },
     setStoreAction: setStoreActionFromNative,
+    setTextScale: setTextScaleFromNative,
     resolveBundledAsset: resolveBundledAssetFromNative,
     getPlusAccess: hasPlusAccess,
     postNativeMessage

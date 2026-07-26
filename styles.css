@@ -2385,6 +2385,12 @@ main {
   backdrop-filter: blur(14px);
 }
 
+html[data-native-large-text] .guided-stage {
+  top: max(92px, calc(env(safe-area-inset-top) + 60px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 .guided-progress {
   display: flex;
   align-items: center;

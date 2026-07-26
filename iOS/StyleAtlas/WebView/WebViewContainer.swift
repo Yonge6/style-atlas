@@ -5,6 +5,7 @@ struct WebViewContainer: UIViewRepresentable {
     @ObservedObject var bridge: WebViewBridge
     let hasPlus: Bool
     let productDisplayPrice: String?
+    let textScale: Double
 
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
@@ -51,28 +52,38 @@ struct WebViewContainer: UIViewRepresentable {
     func updateUIView(_ webView: WKWebView, context: Context) {
         context.coordinator.hasPlus = hasPlus
         context.coordinator.productDisplayPrice = productDisplayPrice
+        context.coordinator.textScale = textScale
         bridge.injectPlusAccess(hasPlus)
         bridge.injectProductPrice(productDisplayPrice)
+        bridge.injectTextScale(textScale)
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(bridge: bridge, hasPlus: hasPlus, productDisplayPrice: productDisplayPrice)
+        Coordinator(
+            bridge: bridge,
+            hasPlus: hasPlus,
+            productDisplayPrice: productDisplayPrice,
+            textScale: textScale
+        )
     }
 
     final class Coordinator: NSObject, WKNavigationDelegate {
         private let bridge: WebViewBridge
         var hasPlus: Bool
         var productDisplayPrice: String?
+        var textScale: Double
 
-        init(bridge: WebViewBridge, hasPlus: Bool, productDisplayPrice: String?) {
+        init(bridge: WebViewBridge, hasPlus: Bool, productDisplayPrice: String?, textScale: Double) {
             self.bridge = bridge
             self.hasPlus = hasPlus
             self.productDisplayPrice = productDisplayPrice
+            self.textScale = textScale
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             bridge.injectPlusAccess(hasPlus)
             bridge.injectProductPrice(productDisplayPrice)
+            bridge.injectTextScale(textScale)
         }
     }
 }
