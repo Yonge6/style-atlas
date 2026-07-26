@@ -1,4 +1,5 @@
 const { test, expect } = require("@playwright/test");
+const fs = require("node:fs");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 
@@ -1371,7 +1372,7 @@ test("detail section navigation is named and updates its current target", async 
 test("aesthetic profile exposes level and description without a total score", async ({ page }) => {
   await page.goto("/#swiss-style");
   await expect(page.locator(".profile-scale")).toHaveCount(4);
-  await expect(page.locator(".profile-scale").first()).toHaveAttribute("aria-label", /5 \/ 5/);
+  await expect(page.locator(".profile-scale").first()).toHaveAttribute("aria-label", /观察强度第 5 级，共 5 级，不代表好坏/);
   await expect(page.locator(".profile-note")).toHaveText("这是观察提示，不是审美评分。");
   await expect(page.locator(".profile-section")).not.toContainText(/总分|排名/);
 });
@@ -1612,3 +1613,168 @@ for (const styleId of pilotStyleIds) {
     expect(result.reflection.length).toBeGreaterThan(12);
   });
 }
+
+test("preview build has noindex and its visible environment label", async ({ page }) => {
+  await page.goto("/build/preview/v1.3/");
+  await expect(page.locator("meta[name='robots']")).toHaveAttribute("content", "noindex,nofollow");
+  await expect(page.locator(".v13-preview-badge")).toHaveText("V1.3 Preview");
+});
+
+test("preview label never enters the iOS resource index", async ({ page }) => {
+  await page.goto("/");
+  const iosIndex = fs.readFileSync(path.join(__dirname, "..", "iOS", "StyleAtlas", "Resources", "Web", "index.html"), "utf8");
+  expect(iosIndex).not.toContain("V1.3 Preview");
+  expect(iosIndex).not.toContain("v13-preview-badge");
+});
+
+test("production source never displays the preview label", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".v13-preview-badge")).toHaveCount(0);
+  await expect(page.locator("meta[name='robots']")).toHaveCount(0);
+});
+
+test("preview subdirectory resolves scripts, styles, and local hero assets", async ({ page }) => {
+  const failures = [];
+  page.on("requestfailed", (request) => failures.push(request.url()));
+  await page.goto("/build/preview/v1.3/?review=detail&style=swiss-style");
+  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await expect(page.locator(".detail-hero img")).toBeVisible();
+  await expect(page.locator(".detail-hero img")).toHaveAttribute("src", "assets/styles/swiss-style.webp");
+  expect(failures.filter((url) => url.includes("/build/preview/v1.3/"))).toEqual([]);
+});
+
+test("detail navigation leaves the target heading below sticky controls", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const button = page.locator(".detail-section-nav button").nth(1);
+  await button.click();
+  await expect(button).toHaveAttribute("aria-current", "true");
+  await expect.poll(() => page.locator("#recognizeTitle").evaluate((node) => node.getBoundingClientRect().top)).toBeGreaterThan(120);
+});
+
+test("detail navigation current state follows manual scrolling", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const nav = page.locator(".detail-section-nav");
+  await nav.locator("button").nth(1).click();
+  await expect(nav.locator("button").nth(1)).toHaveAttribute("aria-current", "true");
+  await page.locator("#detail-see").evaluate((node) => node.scrollIntoView({ behavior: "auto", block: "start" }));
+  await expect.poll(() => nav.locator("button").first().getAttribute("aria-current")).toBe("true");
+});
+
+test("related style returns to the source comparison region", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("#detail-compare").scrollIntoViewIfNeeded();
+  await page.locator(".comparison-open").first().click();
+  await page.locator("#backBtn").click();
+  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await expect.poll(() => page.locator("#detail-compare").evaluate((node) => Math.abs(node.getBoundingClientRect().top))).toBeLessThan(220);
+});
+
+test("reflection remains focusable and visible at 200 percent zoom", async ({ page }) => {
+  await page.goto("/#chinese-ink-painting");
+  await page.locator(".reflection-section summary").click();
+  await page.evaluate(() => { document.documentElement.style.zoom = "2"; });
+  const input = page.locator("[data-reflection-id='chinese-ink-painting']");
+  await input.focus();
+  await expect(input).toBeFocused();
+  const box = await input.boundingBox();
+  expect(box.width).toBeGreaterThan(100);
+  expect(box.height).toBeGreaterThan(80);
+});
+
+test("XXL text keeps detail navigation operable at 320px", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.goto("/#dunhuang-mural");
+  await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  const nav = page.locator(".detail-section-nav");
+  await expect(nav).toBeVisible();
+  expect(await nav.evaluate((node) => node.scrollWidth >= node.clientWidth)).toBe(true);
+  await nav.locator("button").last().click();
+  await expect(nav.locator("button").last()).toHaveAttribute("aria-current", "true");
+});
+
+test("profile announces the non-rating note before semantic levels", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  const profile = page.locator(".profile-section");
+  const order = await profile.locator(".profile-note, .profile-scale").evaluateAll((nodes) => nodes.map((node) => node.className));
+  expect(order[0]).toBe("profile-note");
+  await expect(profile.locator(".profile-note")).toHaveText("这是观察提示，不是审美评分。");
+  await expect(profile.locator(".profile-scale").first()).toHaveAttribute("aria-label", /不代表好坏/);
+  await expect(profile.locator(".profile-scale").first()).not.toHaveAttribute("aria-label", /5 \/ 5/);
+});
+
+test("guided looking ignores a horizontal swipe", async ({ page }) => {
+  await page.goto("/#swiss-style");
+  await page.locator("[data-action='open-guided']").click();
+  await expect(page.locator("#guidedStage")).toHaveAttribute("data-stage", "0");
+  await dispatchTouchGesture(page, "#guidedPanel", [
+    { x: 320, y: 420 },
+    { x: 240, y: 420 },
+    { x: 140, y: 420 }
+  ]);
+  await expect(page.locator("#guidedStage")).toHaveAttribute("data-stage", "0");
+});
+
+test("twelve native detail visits produce no Wiki requests", async ({ page }) => {
+  await installNativeMock(page);
+  let wikiRequests = 0;
+  page.on("request", (request) => {
+    if (request.url().includes("wikipedia.org/w/api.php")) wikiRequests += 1;
+  });
+  for (const styleId of pilotStyleIds) {
+    await page.goto(`/?review=detail&style=${styleId}`);
+    await expect(page.locator("#detailTitle")).not.toHaveText("");
+  }
+  expect(wikiRequests).toBe(0);
+});
+
+test("detail hero and guided looking reuse one local image request", async ({ page }) => {
+  let heroRequests = 0;
+  page.on("request", (request) => {
+    if (request.url().includes("/assets/styles/solarpunk.webp")) heroRequests += 1;
+  });
+  await page.goto("/#solarpunk");
+  await expect(page.locator(".detail-hero img")).toBeVisible();
+  await page.locator("[data-action='open-guided']").click();
+  await expect(page.locator("#guidedImage")).toBeVisible();
+  expect(heroRequests).toBe(1);
+});
+
+test("reflection creates no fetch or Native bridge message", async ({ page }) => {
+  await installNativeMock(page);
+  const externalRequests = [];
+  page.on("request", (request) => {
+    if (!request.url().startsWith("http://127.0.0.1:8765/")) externalRequests.push(request.url());
+  });
+  await page.goto("/#swiss-style");
+  await page.locator(".reflection-section summary").click();
+  await page.locator("[data-reflection-id='swiss-style']").fill("只保存在本机");
+  await page.locator("[data-reflection-id='swiss-style']").blur();
+  await expect.poll(() => page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style")?.text)).toBe("只保存在本机");
+  expect(externalRequests).toEqual([]);
+  expect(await page.evaluate(() => window.__nativeMessages)).toEqual([]);
+});
+
+test("preview payload is nested and cannot replace production root files", async () => {
+  const previewRoot = path.join(__dirname, "..", "build", "preview");
+  const manifest = JSON.parse(fs.readFileSync(path.join(previewRoot, "v1.3", "preview-manifest.json"), "utf8"));
+  expect(manifest.deployPath).toBe("/preview/v1.3/");
+  expect(manifest.productionRootFilesIncluded).toBe(false);
+  expect(fs.existsSync(path.join(previewRoot, "index.html"))).toBe(false);
+  expect(fs.existsSync(path.join(previewRoot, "CNAME"))).toBe(false);
+});
+
+test("StoreKit purchase restore and all export ratios survive preview work", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#art-deco");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
+  await expect(page.locator("[data-action='export-ratio']")).toHaveCount(4);
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(false));
+  await openPlus(page);
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrice("$4.99"));
+  await page.locator("#plusCta").click();
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
+  await page.locator("#plusRestoreBtn").click();
+  const messages = await page.evaluate(() => window.__nativeMessages.map((message) => message.type));
+  expect(messages).toContain("purchasePlus");
+  expect(messages).toContain("restorePurchases");
+});

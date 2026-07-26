@@ -92,7 +92,7 @@
 
 ## Automated Result
 
-- Playwright: 120 / 120 passed
+- Playwright: 183 / 183 passed
 - Node syntax: PASS
 - npm audit: 0 vulnerabilities
 - iOS resource check: PASS, WebP count 120
@@ -102,6 +102,9 @@
 ## Manual Review
 
 - 12 个增强 guide 的中英文内容：PENDING
+- iPhone 14 Pro Max Debug 安装与启动：PASS
+- 12 个试点 Hero 连续浏览：PASS
+- 12 个试点全模块真机矩阵：NOT TESTED
 - VoiceOver 真机流程：NOT TESTED
 - Large / XL / XXL 真机布局：NOT TESTED
 - 200% 缩放真机操作：NOT TESTED

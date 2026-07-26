@@ -77,8 +77,16 @@ English review focus:
 
 ## Current Manual Status
 
-- Browser screenshot generation: NOT TESTED
-- iPhone 14 Pro Max Debug install: NOT TESTED
-- Chinese 12-style manual pass: reviewed in source, pending device pass
+- Browser screenshot generation: PASS
+  - Screenshot count: 120
+  - Styles: 6
+  - Languages: Chinese / English
+  - Viewports: 390 x 844 / 430 x 932
+  - States: Hero / Recognition and Profile / Everyday and Comparison / Guided Looking
+  - Output directory: `assets/review/v1.3-style-detail/`
+  - Git status: ignored by `.gitignore`
+- iPhone 14 Pro Max Debug install and launch: PASS
+- Chinese 12-style Hero pass: PASS on device
+- Chinese full 12-style module pass: NOT TESTED
 - English 12-style manual pass: reviewed in source, pending device pass
 - Reduce Motion, 200 percent zoom, and VoiceOver: automated coverage added; device pass NOT TESTED

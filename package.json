@@ -2,7 +2,8 @@
   "name": "xiazishuo-style-atlas",
   "private": true,
   "scripts": {
-    "test:ux": "playwright test"
+    "build:preview": "node scripts/build-preview.mjs",
+    "test:ux": "npm run build:preview && playwright test"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1"

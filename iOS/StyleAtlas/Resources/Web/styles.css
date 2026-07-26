@@ -1428,6 +1428,7 @@ main {
 .detail-section {
   margin: 14px 0;
   padding: 16px;
+  scroll-margin-top: calc(var(--topbar-height) + 76px);
   border: 1px solid var(--line);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.055);
