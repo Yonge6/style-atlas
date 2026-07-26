@@ -2,6 +2,7 @@
   "name": "xiazishuo-style-atlas",
   "private": true,
   "scripts": {
+    "audit:guides": "node scripts/audit-aesthetic-guides.mjs",
     "build:preview": "node scripts/build-preview.mjs",
     "test:ux": "npm run build:preview && playwright test"
   },

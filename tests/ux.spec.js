@@ -1,4 +1,6 @@
 const { test, expect } = require("@playwright/test");
+const crypto = require("node:crypto");
+const { execFileSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
@@ -1223,6 +1225,120 @@ const original52GuideFingerprints = {
 };
 
 const enhancedGuideIds = [...originalEnhancedGuideIds, ...batchOneGuideIds, ...batchTwoGuideIds, ...batchThreeGuideIds];
+const editorialAuditBaseline = JSON.parse(fs.readFileSync(
+  path.join(__dirname, "..", "scripts", "aesthetic-guide-audit-baseline.json"),
+  "utf8"
+));
+
+test("the E1 editorial audit script and generated review documents are current", () => {
+  expect(() => execFileSync(
+    process.execPath,
+    [path.join(__dirname, "..", "scripts", "audit-aesthetic-guides.mjs"), "--check"],
+    { cwd: path.join(__dirname, ".."), stdio: "pipe" }
+  )).not.toThrow();
+});
+
+test("the E1 corpus freeze records every changed Guide and keeps structural gates intact", async ({ page }) => {
+  await page.goto("/");
+  const corpus = await page.evaluate(() => {
+    const guides = window.StyleAtlasAesthetic.guides;
+    const styles = window.STYLE_ATLAS_DATA.rawStyles;
+    const normalize = (value, lang) => {
+      const normalized = String(value || "").normalize("NFKC").toLowerCase();
+      return lang === "zh"
+        ? normalized.replace(/[\p{P}\p{S}\s]/gu, "")
+        : normalized.replace(/[^\p{L}\p{N}]+/gu, " ").trim().replace(/\s+/g, " ");
+    };
+    const duplicatePaths = (records, lang) => {
+      const groups = new Map();
+      records.forEach((record) => {
+        const key = normalize(record.value, lang);
+        const paths = groups.get(key) || [];
+        paths.push(record.path);
+        groups.set(key, paths);
+      });
+      return [...groups.values()].filter((paths) => paths.length > 1);
+    };
+    const openingZh = [];
+    const openingEn = [];
+    const observeZh = [];
+    const observeEn = [];
+    const invalidComparisons = [];
+    const selfComparisons = [];
+    const validIds = new Set(styles.map((style) => style[0]));
+    Object.entries(guides).forEach(([styleId, guide]) => {
+      openingZh.push({ path: `${styleId}.openingQuestion.zh`, value: guide.openingQuestion.zh });
+      openingEn.push({ path: `${styleId}.openingQuestion.en`, value: guide.openingQuestion.en });
+      guide.observe.forEach((item, index) => {
+        observeZh.push({ path: `${styleId}.observe[${index}].text.zh`, value: item.text.zh });
+        observeEn.push({ path: `${styleId}.observe[${index}].text.en`, value: item.text.en });
+      });
+      guide.comparisons.forEach((comparison, index) => {
+        if (!validIds.has(comparison.styleId)) invalidComparisons.push(`${styleId}.${index}`);
+        if (comparison.styleId === styleId) selfComparisons.push(`${styleId}.${index}`);
+      });
+    });
+    const posterIds = styles.filter((style) => style[3] === "poster").map((style) => style[0]);
+    return {
+      serializedGuides: Object.fromEntries(Object.entries(guides).map(([id, guide]) => [id, JSON.stringify(guide)])),
+      guideCount: Object.keys(guides).length,
+      fallbackCount: styles.length - Object.keys(guides).length,
+      posterComplete: posterIds.filter((id) => guides[id]).length,
+      posterTotal: posterIds.length,
+      duplicateOpeningZh: duplicatePaths(openingZh, "zh"),
+      duplicateOpeningEn: duplicatePaths(openingEn, "en"),
+      duplicateObserveZh: duplicatePaths(observeZh, "zh"),
+      duplicateObserveEn: duplicatePaths(observeEn, "en"),
+      invalidComparisons,
+      selfComparisons
+    };
+  });
+
+  const currentFingerprints = Object.fromEntries(Object.entries(corpus.serializedGuides).map(([id, guide]) => [
+    id,
+    crypto.createHash("sha256").update(guide).digest("hex")
+  ]));
+  const changedIds = Object.keys(currentFingerprints)
+    .filter((id) => currentFingerprints[id] !== editorialAuditBaseline.fingerprints[id])
+    .sort();
+  const approvedIds = [...new Set(editorialAuditBaseline.approvedRevisions.map((item) => item.styleId))].sort();
+
+  expect({
+    guideCount: corpus.guideCount,
+    fallbackCount: corpus.fallbackCount,
+    posterComplete: corpus.posterComplete,
+    posterTotal: corpus.posterTotal
+  }).toEqual({
+    guideCount: 72,
+    fallbackCount: 48,
+    posterComplete: 20,
+    posterTotal: 20
+  });
+  expect(corpus.duplicateOpeningZh).toEqual([]);
+  expect(corpus.duplicateOpeningEn).toEqual([]);
+  expect(corpus.duplicateObserveZh).toEqual([]);
+  expect(corpus.duplicateObserveEn).toEqual([]);
+  expect(corpus.invalidComparisons).toEqual([]);
+  expect(corpus.selfComparisons).toEqual([]);
+  expect(changedIds).toEqual(approvedIds);
+  expect(editorialAuditBaseline.approvedRevisions.every((item) => (
+    item.styleId && item.field && item.issue && item.reason && item.before && item.after && item.source
+  ))).toBe(true);
+});
+
+test("the web and iOS Guide data stay byte-identical after E1 review", () => {
+  const rootGuide = fs.readFileSync(path.join(__dirname, "..", "data-aesthetic-guides.js"));
+  const iosGuide = fs.readFileSync(path.join(
+    __dirname,
+    "..",
+    "iOS",
+    "StyleAtlas",
+    "Resources",
+    "Web",
+    "data-aesthetic-guides.js"
+  ));
+  expect(iosGuide.equals(rootGuide)).toBe(true);
+});
 
 test("batch one guide coverage remains complete after later expansion", async ({ page }) => {
   await page.goto("/");

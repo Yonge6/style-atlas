@@ -2105,7 +2105,7 @@
         order: trait(4, "空间秩序清楚", "Clear spatial order"),
         color: trait(3, "色彩安静集中", "Quiet, focused color"),
         ornament: trait(1, "装饰很少", "Little ornament"),
-        emotion: trait(4, "情绪留白克制", "Restrained, open-ended emotion")
+        emotion: trait(4, "情绪张力含蓄而持续", "Quiet but sustained emotional tension")
       },
       feelingWords: bi(["停顿", "城市", "距离", "光线"], ["Paused", "Urban", "Distant", "Lit"]),
       everydayLife: [
