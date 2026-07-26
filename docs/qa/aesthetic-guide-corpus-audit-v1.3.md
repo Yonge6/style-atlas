@@ -305,8 +305,22 @@ Approved revision details:
 ## Release Candidate Gate
 
 - Automated corpus audit: PASS
-- Product-owner signoff: PENDING, 0 / 36 inspected
-- BLOCKED known from product-owner review: 0, but review has not started
-- Ready for V1.3 Release Candidate: NO
-- Reason: all 36 signoff entries must be inspected by the product owner before the gate can become YES.
-- D4 recommended now: NO
+- Product-owner signoff: COMPLETE, 36 / 36 final statuses assigned
+- Complete Chinese and English page-by-page manual inspection: 3 representative pages (`swiss-style`, `art-deco`, `impressionism`)
+- Explicit product-owner batch acceptance: 33 pages; these pages were not individually represented as having received page-by-page manual inspection
+- Final status counts: PASS 30, REVISE 0, SPECIALIST REVIEW 6, BLOCKED 0, NOT REVIEWED 0
+- Ready for V1.3 Release Candidate: YES
+- Decision basis:
+  1. The product owner explicitly approved the batch-signoff method.
+  2. All 36 representative pages have a final status.
+  3. BLOCKED = 0.
+  4. REVISE = 0.
+  5. Unresolved High content issues = 0.
+  6. The six SPECIALIST REVIEW recommendations do not block the current RC.
+  7. The 72-Guide full-corpus audit passed.
+  8. UI Freeze is active.
+  9. Automated, build, resource and StoreKit regression evidence passed.
+- Independent cultural specialist review completed: NO
+- The six SPECIALIST REVIEW pages retain a recommendation for independent expert review before large-scale promotion, education partnerships or content expansion.
+- D4: NO
+- Next stage: V1.3-RC1

@@ -42,7 +42,7 @@
 - Repeated phrasing: PASS. Labels vary across `Begin`, `Read`, `See`, `Follow`, `Hold`, `Ask`, `Watch`, and style-specific descriptions.
 - Empty strings: PASS.
 - Prohibited generic praise terms: PASS for D3 scan.
-- Product-owner editorial sign-off: PENDING.
+- Product-owner editorial sign-off: COMPLETE through three complete bilingual page reviews plus an explicit product-owner batch-acceptance decision for the remaining representative pages.
 
 ## Cultural Risk Review
 
@@ -88,9 +88,22 @@
 3. `psychedelic-poster`
 4. `corporate-modernism`
 5. `anti-design`
+
 6. `conceptual-art`
 7. `pollock`
 8. `basquiat`
+
+## V1.3 RC Signoff Closure
+
+- Review method: `swiss-style`, `art-deco` and `impressionism` received complete Chinese and English page-by-page manual inspection; the product owner explicitly waived individual page inspection for the remaining pages.
+- Batch-acceptance evidence: E1 full-corpus audit, automated validation, author review and representative-page spot checks.
+- This decision must not be described as all 36 pages having received page-by-page manual inspection.
+- Final status counts: PASS 30, REVISE 0, SPECIALIST REVIEW 6, BLOCKED 0, NOT REVIEWED 0.
+- The six SPECIALIST REVIEW pages do not block the current RC and still retain a recommendation for future independent expert review.
+- Independent cultural specialist review completed: NO.
+- Ready for V1.3 Release Candidate: YES.
+- D4: NO.
+- Next stage: V1.3-RC1.
 
 ## Release Boundary
 

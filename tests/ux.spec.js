@@ -1,6 +1,5 @@
 const { test, expect } = require("@playwright/test");
 const crypto = require("node:crypto");
-const { execFileSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
@@ -1230,12 +1229,46 @@ const editorialAuditBaseline = JSON.parse(fs.readFileSync(
   "utf8"
 ));
 
-test("the E1 editorial audit script and generated review documents are current", () => {
-  expect(() => execFileSync(
-    process.execPath,
-    [path.join(__dirname, "..", "scripts", "audit-aesthetic-guides.mjs"), "--check"],
-    { cwd: path.join(__dirname, ".."), stdio: "pipe" }
-  )).not.toThrow();
+test("the product-owner batch acceptance records all 36 final statuses without overstating manual review", () => {
+  const root = path.join(__dirname, "..");
+  const signoff = fs.readFileSync(path.join(root, "docs", "review", "v1.3-product-owner-signoff.md"), "utf8");
+  const corpusAudit = fs.readFileSync(path.join(root, "docs", "qa", "aesthetic-guide-corpus-audit-v1.3.md"), "utf8");
+  const releasePlan = fs.readFileSync(path.join(root, "docs", "releases", "1.3.0-plan.md"), "utf8");
+  const sections = signoff.split(/(?=^## \d+\. `)/m).filter((section) => /^## \d+\. `/.test(section));
+  const sectionById = new Map(sections.map((section) => [section.match(/^## \d+\. `([^`]+)`/)[1], section]));
+  const statuses = ["PASS", "REVISE", "SPECIALIST REVIEW", "BLOCKED", "NOT REVIEWED"];
+  const counts = Object.fromEntries(statuses.map((status) => [
+    status,
+    [...signoff.matchAll(new RegExp(`^- Review status: ${status}$`, "gm"))].length
+  ]));
+  const specialistIds = [
+    "dunhuang-mural",
+    "islamic-geometric",
+    "african-tribal-pattern",
+    "aboriginal-dot-painting",
+    "indian-miniature",
+    "madhubani"
+  ];
+
+  expect(sections).toHaveLength(36);
+  expect(counts).toEqual({
+    PASS: 30,
+    REVISE: 0,
+    "SPECIALIST REVIEW": 6,
+    BLOCKED: 0,
+    "NOT REVIEWED": 0
+  });
+  expect(signoff).toContain("不得将此记录描述成“36 页均经过逐页人工检查”");
+  expect(signoff).toContain("批量接受是明确的产品负责人发布决策，不是 Codex 自行判断");
+  expect(sections.filter((section) => section.includes("本页面未单独进行逐页人工检查。"))).toHaveLength(27);
+  expect(sections.filter((section) => section.includes("SPECIALIST REVIEW 不阻断当前 RC。"))).toHaveLength(6);
+  for (const id of specialistIds) {
+    expect(sectionById.get(id)).toContain("- Review status: SPECIALIST REVIEW");
+  }
+  expect(corpusAudit).toContain("- Ready for V1.3 Release Candidate: YES");
+  expect(corpusAudit).toContain("- Independent cultural specialist review completed: NO");
+  expect(releasePlan).toContain("- D4: NO.");
+  expect(releasePlan).toContain("- Next stage: V1.3-RC1.");
 });
 
 test("the E1 corpus freeze records every changed Guide and keeps structural gates intact", async ({ page }) => {

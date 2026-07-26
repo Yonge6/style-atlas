@@ -4,9 +4,9 @@
 
 - Branch: `feature/v1.3-editorial-audit`
 - Original editorial review baseline: `b0f641528b6c8eb878c6d2c834a1aa9b6252aa7d`
-- App/UI candidate commit: `6e2e6fdc3b4b5bc01499a883ff7d72375d86747a`
+- App/UI candidate commit: `bd737906a7359a253470e825e5109877e28a2752`
 - Documentation HEAD: this document's containing commit; report the exact hash after commit
-- Preview deploy commit: `28f19c554b450c7f3262fefdd81e8cb161b63c9a`
+- Preview deploy commit: `40f0001bae43d978d60dcd287129f052dff955cd`
 - Product position: V1.3 RC UI Candidate
 - UI Freeze: YES
 
@@ -19,6 +19,10 @@
 5. Added desktop mouse drag scrolling to the Web detail view without changing wheel, trackpad, touch, native-shell or interactive-control behavior.
 6. Added the required scroll offset so the integrated Create heading remains visible below the top bar when opened directly.
 7. Synchronized the changed Web files into the iOS bundled resources.
+8. Added an explicit expanding arrow to the Reflection summary.
+9. Removed the repeated Style Expression heading and the redundant Save Card action from the Create card; Save & Export remains an independent card.
+10. Standardized the four Everyday cards on four readable low-saturation color surfaces across all detail pages.
+11. Added Chinese and English regression coverage for all 120 detail pages so the shared module treatment cannot drift by style.
 
 ## Modified Files
 
@@ -34,7 +38,7 @@
 ## Protected Boundaries
 
 - Guide copy changed: NO
-- Product-owner signoff status changed: NO
+- Product-owner signoff status changed in the later RC closeout documentation only: YES; the App/UI candidate itself contains no Guide or signoff content change
 - StoreKit changed: NO
 - Product ID changed: NO
 - Purchase or restore changed: NO
@@ -50,13 +54,13 @@
 ## Verification
 
 - `npm ci`: PASS
-- Playwright: PASS, 264 / 264
+- Playwright: PASS, 265 / 265
 - npm audit: PASS, 0 vulnerabilities
 - Requested JavaScript syntax checks: PASS, 6 / 6
 - Guide / fallback: PASS, 72 / 48
 - Poster enhanced coverage: PASS, 20 / 20
 - Guide copy fingerprint: PASS, 0 unapproved changes
-- Product-owner status: PASS, 0 / 36 complete and 36 NOT REVIEWED
+- Product-owner status: COMPLETE, PASS 30 / SPECIALIST REVIEW 6 / REVISE 0 / BLOCKED 0 / NOT REVIEWED 0
 - Home image requests: PASS, 11 / 15
 - Root / iOS WebP: PASS, 120 / 120
 - Web / iOS resource sync: PASS, 8 / 8 required Web files byte-identical
@@ -64,7 +68,7 @@
 - Debug generic iOS build: PASS
 - Release generic iOS build: PASS
 - Isolated Preview: PASS
-- Preview source manifest: PASS, `feature/v1.3-editorial-audit@6e2e6fdc3b4b5bc01499a883ff7d72375d86747a`
+- Preview source manifest: PASS, `feature/v1.3-editorial-audit@bd737906a7359a253470e825e5109877e28a2752`
 - Preview badge and `noindex,nofollow`: PASS
 - Preview online Guide / fallback / poster: PASS, 72 / 48 / 20 of 20
 - Preview online source bytes: PASS, 9 / 9 checked files match the App/UI candidate
@@ -78,12 +82,15 @@
 - Arrows remain secondary to the section labels.
 - Style Expression retains the complete prompt and negative-prompt content.
 - Style Expression and Save & Export render as separate 14px-radius cards.
+- Reflection exposes a visible expand arrow in both languages.
+- Everyday renders four distinct low-saturation card surfaces with readable text across all 120 styles.
+- Style Expression has no repeated heading or redundant Save Card action.
 - The 320px compact viewport has no page-level horizontal overflow.
 - Guided Looking, Reflection, Comparison, purchase/restore and every export ratio pass the unchanged regression suite.
 
 ## Freeze Rule
 
-During the 36-page product-owner signoff, the UI remains frozen by default. UI work may reopen only for:
+After product-owner signoff closure, the UI remains frozen by default. UI work may reopen only for:
 
 - unreachable content;
 - clipped text;
