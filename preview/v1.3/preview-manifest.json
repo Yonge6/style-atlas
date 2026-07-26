@@ -1,6 +1,6 @@
 {
   "version": "v1.3",
-  "source": "feature/v1.3-style-deep-dive",
+  "source": "feature/v1.3-guide-batch-1@158ad6a",
   "deployPath": "/preview/v1.3/",
   "productionRootFilesIncluded": false
 }
