@@ -1345,7 +1345,10 @@
     return `
       <nav class="detail-section-nav" aria-label="${escapeHtml(t("detailSectionNav"))}">
         ${t("detailSections").map((label, index) => `
-          <button type="button" data-action="jump-detail-section" data-target="${targets[index]}" aria-current="${index === 0 ? "true" : "false"}">${escapeHtml(label)}</button>
+          <button type="button" data-action="jump-detail-section" data-target="${targets[index]}" aria-current="${index === 0 ? "true" : "false"}">
+            <span>${escapeHtml(label)}</span>
+            <span class="detail-nav-arrow" aria-hidden="true">↓</span>
+          </button>
         `).join("")}
       </nav>
     `;
@@ -1518,11 +1521,16 @@
 
   function renderPromptSection(style, locked) {
     const lang = store.lang;
+    const sectionHeading = `
+      <p class="section-kicker">${escapeHtml(t("detailSections")[3])}</p>
+      <h2 id="createTitle">${escapeHtml(t("createTitle"))}</h2>
+    `;
     if (locked) {
       return `
-        <section class="detail-section locked-section">
+        <section class="detail-section prompt-section locked-section">
+          ${sectionHeading}
           <div class="locked-preview" aria-hidden="true" inert>
-            <h2>${escapeHtml(t("prompt"))}</h2>
+            <h3 class="prompt-heading">${escapeHtml(t("prompt"))}</h3>
             <p>${escapeHtml(t("lockedPreview"))}</p>
           </div>
           <div class="lock-overlay">
@@ -1535,8 +1543,9 @@
       `;
     }
     return `
-      <section class="detail-section">
-        <h2>${escapeHtml(t("prompt"))}</h2>
+      <section class="detail-section prompt-section">
+        ${sectionHeading}
+        <h3 class="prompt-heading">${escapeHtml(t("prompt"))}</h3>
         <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
         <div class="prompt-actions">
           <button class="copy-btn" type="button" data-action="copy-prompt">${escapeHtml(t("copyPrompt"))}</button>
@@ -1643,10 +1652,6 @@
       ${renderComparisons(guide)}
       ${renderReflection(style, guide)}
       <section id="detail-create" class="detail-create-group" aria-labelledby="createTitle">
-        <div class="detail-section section-heading-card">
-          <p class="section-kicker">${escapeHtml(t("detailSections")[3])}</p>
-          <h2 id="createTitle">${escapeHtml(t("createTitle"))}</h2>
-        </div>
         ${renderPromptSection(style, locked)}
         ${renderExportPanel()}
       </section>
@@ -3082,6 +3087,72 @@
       edgeBackActive = false;
       resetEdgeBack();
     });
+
+    let desktopScrollPointerId = null;
+    let desktopScrollActive = false;
+    let desktopScrollStartX = 0;
+    let desktopScrollStartY = 0;
+    let desktopScrollStartTop = 0;
+
+    function finishDesktopScroll(pointerId = desktopScrollPointerId) {
+      if (pointerId !== desktopScrollPointerId) return;
+      try {
+        if (detailView.hasPointerCapture(pointerId)) detailView.releasePointerCapture(pointerId);
+      } catch (_) {
+        // Pointer capture may already have been released by the browser.
+      }
+      desktopScrollPointerId = null;
+      desktopScrollActive = false;
+      document.body.classList.remove("desktop-drag-scrolling");
+    }
+
+    detailView.addEventListener("pointerdown", (event) => {
+      const interactive = event.target.closest("button, a, input, textarea, select, label, summary, [contenteditable='true'], [role='button']");
+      if (
+        event.pointerType !== "mouse"
+        || event.button !== 0
+        || store.view !== "detail"
+        || window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell === true
+        || !dom.plusModal.hidden
+        || !dom.lightbox.hidden
+        || !dom.guidedOverlay.hidden
+        || store.drawerOpen
+        || interactive
+      ) return;
+      desktopScrollPointerId = event.pointerId;
+      desktopScrollActive = false;
+      desktopScrollStartX = event.clientX;
+      desktopScrollStartY = event.clientY;
+      desktopScrollStartTop = window.scrollY;
+      try {
+        detailView.setPointerCapture(event.pointerId);
+      } catch (_) {
+        // Drag scrolling still works while the pointer remains over the detail view.
+      }
+    });
+
+    detailView.addEventListener("pointermove", (event) => {
+      if (event.pointerId !== desktopScrollPointerId) return;
+      const dx = event.clientX - desktopScrollStartX;
+      const dy = event.clientY - desktopScrollStartY;
+      if (!desktopScrollActive) {
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+        if (absX > 8 && absX > absY * 1.1) {
+          finishDesktopScroll(event.pointerId);
+          return;
+        }
+        if (absY < 8 || absY <= absX * 1.1) return;
+        desktopScrollActive = true;
+        document.body.classList.add("desktop-drag-scrolling");
+      }
+      if (event.cancelable) event.preventDefault();
+      window.scrollTo(0, desktopScrollStartTop - dy);
+    }, { passive: false });
+
+    detailView.addEventListener("pointerup", (event) => finishDesktopScroll(event.pointerId));
+    detailView.addEventListener("pointercancel", (event) => finishDesktopScroll(event.pointerId));
+    detailView.addEventListener("lostpointercapture", (event) => finishDesktopScroll(event.pointerId));
 
     dom.styleDeck.addEventListener("keydown", (event) => {
       if (event.key === "ArrowLeft") {
