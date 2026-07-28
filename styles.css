@@ -901,6 +901,11 @@ main {
 }
 
 @media (hover: hover) and (pointer: fine) {
+  html,
+  body {
+    overscroll-behavior-y: auto;
+  }
+
   #detailView.active {
     cursor: grab;
   }
