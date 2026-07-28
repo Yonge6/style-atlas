@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="探索 120 种艺术与设计风格，通过 72 篇深度指南、看图引导、审美画像与风格对比，学习看懂一种美。" />
+  <meta name="apple-itunes-app" content="app-id=6787447019" />
   <title>虾子曰艺术风格图鉴</title>
   <link rel="icon" type="image/png" href="./assets/brand/app-icon.png" />
   <link rel="stylesheet" href="./styles.css" />
@@ -101,6 +103,10 @@
         <button class="nav-btn" type="button" data-view="saved">收藏</button>
         <button class="nav-btn" type="button" data-view="about">关于</button>
         <button class="nav-btn plus-nav" type="button" data-action="show-plus">虾子曰艺术风格图鉴 Plus</button>
+        <a id="downloadAppNav" class="nav-btn download-nav" href="https://apps.apple.com/cn/app/%E8%99%BE%E5%AD%90%E6%9B%B0%E8%89%BA%E6%9C%AF%E9%A3%8E%E6%A0%BC%E5%9B%BE%E9%89%B4/id6787447019" target="_blank" rel="noopener" data-action="download-app">
+          <span>下载 App</span>
+          <span aria-hidden="true">↗</span>
+        </a>
       </nav>
     </aside>
   </div>
@@ -143,9 +149,32 @@
     </div>
     <button id="lightboxCloseBtn" class="lightbox-close" type="button" data-action="close-lightbox" aria-label="关闭图片预览">×</button>
   </div>
+  <div id="guidedOverlay" class="guided-overlay" hidden>
+    <div id="guidedPanel" class="guided-panel" role="dialog" aria-modal="true" aria-labelledby="guidedTitle" aria-describedby="guidedText" tabindex="-1">
+      <div class="guided-visual image-slot">
+        <img id="guidedImage" alt="" decoding="async" />
+        <div class="guided-shade"></div>
+      </div>
+      <button id="guidedCloseBtn" class="guided-close" type="button" data-action="close-guided" aria-label="关闭看图引导">×</button>
+      <div id="guidedStage" class="guided-stage" aria-live="polite" aria-atomic="true">
+        <div class="guided-progress" aria-hidden="true">
+          <span id="guidedStepLabel"></span>
+          <span id="guidedDots" class="guided-dots"></span>
+        </div>
+        <p id="guidedKicker" class="guided-kicker"></p>
+        <h2 id="guidedTitle" tabindex="-1"></h2>
+        <p id="guidedText"></p>
+        <div class="guided-actions">
+          <button id="guidedPrevBtn" class="guided-prev" type="button" data-action="previous-guided"></button>
+          <button id="guidedNextBtn" class="guided-next" type="button" data-action="next-guided"></button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="./data-core.js"></script>
   <script src="./data-styles.js"></script>
   <script src="./data-refined.js"></script>
+  <script src="./data-aesthetic-guides.js"></script>
   <script src="./examples.js"></script>
   <script src="./game.js"></script>
 </body>

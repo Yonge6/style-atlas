@@ -3,6 +3,7 @@
 
   const $ = (id) => document.getElementById(id);
   const data = window.STYLE_ATLAS_DATA || {};
+  const aestheticGuides = window.STYLE_AESTHETIC_GUIDES || {};
   const { categories, categoryAliases, styleAliases, categoryCopy, palettes, peopleByStyle, categoryHistory, riskByStyle, rawStyles, refinedStyles } = data;
   window.STYLE_ATLAS_RUNTIME_CONFIG = Object.assign({
     nativeShell: false,
@@ -10,6 +11,7 @@
     submissionMode: "web",
     publicBaseURL: "https://yonge6.github.io/style-atlas/"
   }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
+  const APP_STORE_URL = "https://apps.apple.com/cn/app/%E8%99%BE%E5%AD%90%E6%9B%B0%E8%89%BA%E6%9C%AF%E9%A3%8E%E6%A0%BC%E5%9B%BE%E9%89%B4/id6787447019";
   const ACCESS_CONFIG = {
     freeFullStyleLimit: 20,
     maxFreeSaved: 20,
@@ -77,7 +79,16 @@
     exportRatio: "9:16",
     drawerOpen: false,
     drawerReturnFocus: null,
-    overlayReturnFocus: null
+    overlayReturnFocus: null,
+    guidedStage: 0,
+    activeDetailSection: "see",
+    detailHistory: [],
+    reviewMode: "",
+    reviewSection: "",
+    reviewGuidedStage: null,
+    detailSectionObserver: null,
+    detailSectionScrollFrame: 0,
+    reflectionTimers: new Map()
   };
 
   const styles = rawStyles.map((item, index) => {
@@ -151,8 +162,82 @@
 
   Object.entries(refinedStyles || {}).forEach(([id, data]) => Object.assign(styles.find((style) => style.id === id), data));
   const validStyleIds = new Set(styles.map((style) => style.id));
+  const stylesById = new Map(styles.map((style) => [style.id, style]));
   store.saved = [...new Set(store.saved.filter((id) => validStyleIds.has(id)))];
   store.recent = [...new Set(store.recent.filter((id) => validStyleIds.has(id)))].slice(0, 12);
+
+  const REFLECTIONS_KEY = "styleAtlasReflectionsV1";
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+  function readReflections() {
+    try {
+      const parsed = JSON.parse(readStorage(REFLECTIONS_KEY, "{}"));
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+    } catch {
+      writeStorage(REFLECTIONS_KEY, "{}");
+      return {};
+    }
+  }
+
+  function localizedList(value, lang = store.lang) {
+    return Array.isArray(value?.[lang]) ? value[lang].filter(Boolean) : [];
+  }
+
+  function normalizedFocus(focus) {
+    if (!focus || typeof focus !== "object") return null;
+    const x = Number(focus.x);
+    const y = Number(focus.y);
+    const scale = Number(focus.scale);
+    if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(scale)) return null;
+    return {
+      x: clamp(x, 0, 100),
+      y: clamp(y, 0, 100),
+      scale: clamp(scale, 1, 2)
+    };
+  }
+
+  function guideFor(style) {
+    const guide = aestheticGuides[style.id];
+    if (guide) return { ...guide, enhanced: true };
+    const observationZh = [...new Set(localizedList(style.lookFor, "zh").concat(localizedList(style.visualFeatures, "zh")))].slice(0, 3);
+    const observationEn = [...new Set(localizedList(style.lookFor, "en").concat(localizedList(style.visualFeatures, "en")))].slice(0, 3);
+    const observationCount = Math.max(3, Math.min(5, Math.max(observationZh.length, observationEn.length)));
+    return {
+      enhanced: false,
+      openingQuestion: {
+        zh: style.curatorNote?.zh || style.memoryAnchor.zh,
+        en: style.curatorNote?.en || style.memoryAnchor.en
+      },
+      observe: Array.from({ length: observationCount }, (_, index) => ({
+        key: `fallback-${index + 1}`,
+        label: {
+          zh: `观察线索 ${index + 1}`,
+          en: `Viewing cue ${index + 1}`
+        },
+        text: {
+          zh: observationZh[index] || observationZh[observationZh.length - 1] || style.memoryAnchor.zh,
+          en: observationEn[index] || observationEn[observationEn.length - 1] || style.memoryAnchor.en
+        }
+      })),
+      profile: null,
+      feelingWords: {
+        zh: localizedList(style.tags, "zh").slice(0, 4),
+        en: localizedList(style.tags, "en").slice(0, 4)
+      },
+      everydayLife: localizedList(style.useCases, "zh").slice(0, 4).map((item, index) => ({
+        scene: {
+          zh: item,
+          en: localizedList(style.useCases, "en")[index] || item
+        },
+        text: { zh: "", en: "" }
+      })),
+      comparisons: style.relatedStyles.filter((id) => validStyleIds.has(id)).slice(0, 2).map((styleId) => ({ styleId })),
+      reflectionPrompt: {
+        zh: style.memoryAnchor.zh,
+        en: style.memoryAnchor.en
+      }
+    };
+  }
 
   function hasPlusAccess() {
     return ACCESS_CONFIG.plusEnabled === true;
@@ -197,8 +282,8 @@
       headerBrandTitle: "虾子曰",
       headerBrandSubtitle: "艺术风格图鉴",
       productName: "虾子曰艺术风格图鉴",
-      positioning: "虾子曰艺术风格图鉴是一本装进口袋里的视觉风格图鉴。\n每天 3 分钟认识一种风格，建立自己的审美词库。",
-      valueLine: "不是替你生成图片，而是帮你知道什么好看、为什么好看、怎么表达好看。",
+      positioning: "探索 120 种艺术与设计风格，其中 72 种提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
+      valueLine: "跟着看图引导观察构图、色彩与线条，再用审美画像、日常观察和风格对比建立自己的审美词库。",
       random: "随机",
       swipe: "左右滑动探索",
       categories: "分类",
@@ -231,6 +316,49 @@
       references: "代表作品与案例",
       memory: "记住它",
       useCases: "适用场景",
+      detailSections: ["看", "懂", "用", "创作", "深入"],
+      detailSectionNav: "风格详情分段导航",
+      guidedEntry: "带我看懂这张图",
+      guidedOpening: "先别急着分析",
+      guidedFirst: "先看这里",
+      guidedSecond: "再看一个地方",
+      guidedThird: "最后感受一下",
+      guidedComplete: "你已经抓住这种风格最重要的线索了。",
+      guidedLooked: "我看了一会儿",
+      guidedContinue: "继续看",
+      guidedBack: "回到详情",
+      closeGuided: "关闭看图引导",
+      previousGuided: "上一步",
+      guidedStep: (current, total) => `${current} / ${total}`,
+      rememberInOneLine: "一句话记住它",
+      recognizeTitle: "下次再见到它，先认这几个地方",
+      profileTitle: "审美气质",
+      profileLabels: ["秩序感", "色彩浓度", "装饰程度", "情绪张力"],
+      profileScaleHints: ["自由 ↔ 严谨", "克制 ↔ 浓郁", "简洁 ↔ 丰富", "平静 ↔ 强烈"],
+      profileNote: "这是观察提示，不是审美评分。",
+      profilePending: "审美气质分析正在完善中。",
+      whyFeelTitle: "为什么它会给你这种感觉？",
+      curatorObservation: "策展人观察",
+      formationMechanism: "形成机制",
+      rememberSentence: "记住它",
+      everydayTitle: "这种美，也藏在日常生活里",
+      compareTitle: "看起来有点像，但它们不一样",
+      similarityLabel: "相似点",
+      differenceLabel: "关键区别",
+      createTitle: "把这种美用进创作",
+      exploreTitle: "深入了解",
+      reflectionTitle: "我对它的第一感觉",
+      reflectionLabel: "记录你对这个风格的第一感觉",
+      reflectionLimit: "最多 300 字符，仅保存在这台设备。",
+      reflectionClear: "清除",
+      reflectionSaved: "已保存在本机",
+      reflectionCleared: "已清除",
+      reflectionStorageUnavailable: "本地保存暂时不可用，但你仍可以继续输入。",
+      accordionHistory: "历史背景",
+      accordionPeople: "代表人物",
+      accordionReferences: "参考作品",
+      accordionGallery: "公开案例",
+      accordionContext: "文化与形成原因补充",
       prompt: "风格表达词",
       examples: "公开案例",
       source: "查看来源",
@@ -268,12 +396,15 @@
       freeExport: "普通清晰度 · 带水印",
       plusExport: "高清无水印 · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "建立你的私人审美资料库。",
-      plusBenefits: ["解锁全部 120 个风格完整档案", "无限收藏", "高清无水印保存", "多比例导出", "完整风格表达词", "后续小更新"],
+      plusBenefits: ["解锁完整风格档案与表达词", "无限收藏", "高清无水印保存", "9:16 / 1:1 / 4:5 / 16:9 多比例导出", "一次购买，永久解锁"],
       freePlan: "免费版",
       plusPlan: "Plus",
       freePlanItems: ["每日推荐", "浏览全部 120 个风格封面", "查看 20 个完整风格档案", "收藏最多 20 个", "普通清晰度带水印保存"],
-      plusPlanItems: ["解锁全部 120 个完整风格档案", "无限收藏", "高清无水印保存", "多比例导出", "完整风格表达词", "后续小更新"],
+      plusPlanItems: ["解锁更多完整风格档案", "无限收藏", "高清无水印保存", "多比例导出", "完整风格表达词", "一次购买，永久解锁"],
       appStorePrice: "价格以 App Store 显示为准",
+      downloadApp: "下载 App",
+      downloadOnAppStore: "前往 App Store 下载",
+      downloadAppNote: "免费下载 iPhone App，在完整的离线体验中继续探索、记录与导出。",
       comingSoon: "即将开放",
       unlockPlus: "解锁 Plus",
       restorePurchases: "恢复购买",
@@ -305,7 +436,7 @@
       blobCreationFailed: "无法创建导出图片，请重试。",
       unknown: "操作失败，请稍后重试。",
       iapFootnote: "购买由 Apple App Store 安全处理",
-      appStoreFootnote: "正式版将在 App Store 内开放",
+      appStoreFootnote: "下载 App 后可在应用内解锁 Plus",
       plusFuture: "Plus 将在后续版本开放",
       plusFutureBody: "首版先提供完整的免费风格浏览、搜索、收藏和离线体验。",
       savedLimit: "你已经收藏了 20 个风格。升级 Plus，建立无限风格灵感库。",
@@ -314,10 +445,12 @@
       ,
       about: "关于",
       aboutTitle: "关于虾子曰艺术风格图鉴",
-      aboutBody: "虾子曰艺术风格图鉴不是一个 AI 生成工具，而是一本帮助你建立审美词库的视觉风格图鉴。它把海报、绘画、插画、动画、民俗、数字艺术等 120 种视觉语言整理成可学习、可收藏、可表达的风格卡片。\n\n每天认识一种风格，慢慢你会更清楚地知道：什么好看，为什么好看，以及如何把脑海中的视觉感受准确表达出来。",
+      aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 120 种视觉语言整理成可以观察、理解、比较和表达的风格图鉴，其中 72 种提供完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和本地 Reflection。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
       aboutFor: "适合设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
-      aboutFree: "免费版可以查看每日推荐、浏览全部风格封面、搜索风格、收藏 20 个风格，并学习 20 个完整风格档案。",
-      aboutPlus: "Plus 未来会解锁全部完整风格档案、无限收藏、高清无水印保存、多比例导出和完整风格表达词。",
+      aboutFree: "App 可免费下载，包含每日推荐、120 种风格浏览、双语搜索、收藏、20 个免费完整风格档案、Reflection 和普通清晰度带水印导出。",
+      aboutPlus: "Plus 通过 App Store 一次购买，解锁更多完整风格档案、无限收藏、高清无水印保存、多比例导出和完整风格表达词。",
+      appFeaturesTitle: "在 App 里看懂一种美",
+      appFeatures: ["浏览 120 种艺术与设计风格", "阅读 72 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用 Reflection 保存自己的第一感受", "支持中英文、离线浏览与多比例导出"],
       safetyTitle: "版权与风格安全说明",
       safetyBody: "虾子曰艺术风格图鉴鼓励学习视觉语言，而不是复制具体作品、具体角色或当代创作者的完整可识别风格。历史艺术流派可以作为学习对象，涉及当代工作室、IP 或在世创作者时，我们更建议使用通用视觉特征来表达。",
       screenshotsTitle: "App Store Screenshot Kit",
@@ -337,8 +470,8 @@
       headerBrandTitle: "Xiazishuo",
       headerBrandSubtitle: "Style Atlas",
       productName: "Xiazishuo Style Atlas",
-      positioning: "Xiazishuo Style Atlas is a pocket visual style atlas.\nLearn one visual style a day and build your own taste vocabulary.",
-      valueLine: "Not just generating images — but helping you understand what looks good, why it works, and how to express it.",
+      positioning: "Explore 120 art and design styles, including 72 complete in-depth guides.\nMove from seeing a style to truly understanding it in three minutes a day.",
+      valueLine: "Follow guided looking prompts, then build recognition through aesthetic profiles, everyday observations, and side-by-side comparisons.",
       random: "Random",
       swipe: "Swipe to explore",
       categories: "Categories",
@@ -371,6 +504,49 @@
       references: "Works And Cases",
       memory: "Remember it",
       useCases: "Use cases",
+      detailSections: ["See", "Understand", "Apply", "Create", "Explore"],
+      detailSectionNav: "Style detail section navigation",
+      guidedEntry: "Help me see this style",
+      guidedOpening: "Do not analyze it yet",
+      guidedFirst: "First, look here",
+      guidedSecond: "Notice one more place",
+      guidedThird: "Finally, sense the whole",
+      guidedComplete: "You have found the most important cues in this style.",
+      guidedLooked: "I've taken a look",
+      guidedContinue: "Keep looking",
+      guidedBack: "Back to the style",
+      closeGuided: "Close guided looking",
+      previousGuided: "Previous",
+      guidedStep: (current, total) => `${current} / ${total}`,
+      rememberInOneLine: "Remember it in one line",
+      recognizeTitle: "How to recognize it again",
+      profileTitle: "Aesthetic character",
+      profileLabels: ["Order", "Color intensity", "Ornament", "Emotional intensity"],
+      profileScaleHints: ["Free ↔ Rigorous", "Restrained ↔ Rich", "Simple ↔ Layered", "Calm ↔ Intense"],
+      profileNote: "These are viewing cues, not scores of quality.",
+      profilePending: "Aesthetic character analysis is being refined.",
+      whyFeelTitle: "Why does it feel this way?",
+      curatorObservation: "Curator observation",
+      formationMechanism: "How the feeling is formed",
+      rememberSentence: "Remember it",
+      everydayTitle: "This kind of beauty appears in everyday life",
+      compareTitle: "Similar at first glance, different when you look closer",
+      similarityLabel: "Shared quality",
+      differenceLabel: "Key difference",
+      createTitle: "Create with this style",
+      exploreTitle: "Explore deeper",
+      reflectionTitle: "My first impression",
+      reflectionLabel: "Record your first impression of this style",
+      reflectionLimit: "Up to 300 characters, saved only on this device.",
+      reflectionClear: "Clear",
+      reflectionSaved: "Saved on this device",
+      reflectionCleared: "Cleared",
+      reflectionStorageUnavailable: "Local saving is temporarily unavailable, but you can keep typing.",
+      accordionHistory: "Historical background",
+      accordionPeople: "Representative figures",
+      accordionReferences: "Reference works",
+      accordionGallery: "Public examples",
+      accordionContext: "Culture and formation",
       prompt: "Style Expression",
       examples: "Public example",
       source: "View source",
@@ -407,12 +583,15 @@
       freeExport: "Standard clarity · watermarked",
       plusExport: "HD watermark-free · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "Build your private taste archive.",
-      plusBenefits: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Complete style expression", "Future minor updates"],
+      plusBenefits: ["Unlock complete style archives and expressions", "Unlimited saved styles", "HD watermark-free export", "9:16 / 1:1 / 4:5 / 16:9 exports", "One-time purchase, lifetime access"],
       freePlan: "Free",
       plusPlan: "Plus",
       freePlanItems: ["Daily pick", "Browse all 120 style covers", "View 20 full style archives", "Save up to 20 styles", "Standard watermarked export"],
-      plusPlanItems: ["Unlock all 120 full style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Complete style expression", "Future minor updates"],
+      plusPlanItems: ["Unlock more complete style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Complete style expression", "One-time purchase, lifetime access"],
       appStorePrice: "Price shown in the App Store",
+      downloadApp: "Download App",
+      downloadOnAppStore: "Download on the App Store",
+      downloadAppNote: "Download the free iPhone app for the complete offline experience, reflections, and exports.",
       comingSoon: "Coming Soon",
       unlockPlus: "Unlock Plus",
       restorePurchases: "Restore Purchases",
@@ -444,7 +623,7 @@
       blobCreationFailed: "The export image could not be created. Please try again.",
       unknown: "The operation could not be completed. Please try again.",
       iapFootnote: "Purchase securely processed by Apple App Store",
-      appStoreFootnote: "Available later via App Store in-app purchase",
+      appStoreFootnote: "Download the app to unlock Plus with an in-app purchase",
       plusFuture: "Plus will be available in a future version",
       plusFutureBody: "The first version focuses on free browsing, search, saved styles, and offline access.",
       savedLimit: "You’ve saved 20 styles. Upgrade to Plus to build an unlimited style library.",
@@ -453,10 +632,12 @@
       ,
       about: "About",
       aboutTitle: "About Xiazishuo Style Atlas",
-      aboutBody: "Xiazishuo Style Atlas is not just an AI image tool. It is a visual style atlas that helps you build your taste vocabulary. It turns 120 visual languages across posters, painting, illustration, animation, folk art and digital aesthetics into learnable, saveable and expressible style cards.\n\nLearn one style a day, and you will gradually understand what looks good, why it works, and how to express the visual feeling in your mind more clearly.",
+      aboutBody: "Xiazishuo Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into styles you can observe, understand, compare, and express. Seventy-two styles include complete in-depth guides.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and a private on-device Reflection. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
       aboutFor: "For designers, AI creators, brand builders, content creators, design students and art lovers.",
-      aboutFree: "The free version includes the daily pick, all style covers, search, 20 saved styles and 20 full style archives.",
-      aboutPlus: "Plus will unlock all full archives, unlimited saved styles, HD watermark-free export, multi-ratio export and complete style expression.",
+      aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, 20 free complete archives, Reflection, and standard watermarked export.",
+      aboutPlus: "Plus is a one-time App Store purchase that unlocks more complete archives, unlimited saved styles, HD watermark-free export, multi-ratio export, and complete style expressions.",
+      appFeaturesTitle: "Learn to see a style in the app",
+      appFeatures: ["Explore 120 art and design styles", "Read 72 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Save your first impressions with Reflection", "Use Chinese or English, browse offline, and export in multiple ratios"],
       safetyTitle: "Copyright And Style Safety",
       safetyBody: "Xiazishuo Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
       screenshotsTitle: "App Store Screenshot Kit",
@@ -527,7 +708,19 @@
     plusFootnote: $("plusFootnote"),
     plusCta: $("plusCta"),
     plusRestoreBtn: $("plusRestoreBtn"),
-    plusCloseBtn: $("plusCloseBtn")
+    plusCloseBtn: $("plusCloseBtn"),
+    guidedOverlay: $("guidedOverlay"),
+    guidedPanel: $("guidedPanel"),
+    guidedImage: $("guidedImage"),
+    guidedStage: $("guidedStage"),
+    guidedKicker: $("guidedKicker"),
+    guidedTitle: $("guidedTitle"),
+    guidedText: $("guidedText"),
+    guidedStepLabel: $("guidedStepLabel"),
+    guidedDots: $("guidedDots"),
+    guidedPrevBtn: $("guidedPrevBtn"),
+    guidedNextBtn: $("guidedNextBtn"),
+    guidedCloseBtn: $("guidedCloseBtn")
   };
 
   function pngFallback(src) {
@@ -827,7 +1020,7 @@
     const focus = document.activeElement;
     const overlay = !dom.plusModal.hidden
       ? "Plus"
-      : (!dom.lightbox.hidden ? "Lightbox" : (store.drawerOpen ? "Drawer" : "None"));
+      : (!dom.lightbox.hidden ? "Lightbox" : (!dom.guidedOverlay.hidden ? "Guided Looking" : (store.drawerOpen ? "Drawer" : "None")));
     panel.textContent = [
       `View: ${store.view}`,
       `Focus: ${focus?.id || focus?.tagName || "None"}`,
@@ -849,6 +1042,12 @@
 
   function hasNativeBridge() {
     return Boolean(window.webkit?.messageHandlers?.styleAtlas);
+  }
+
+  function openAppStore() {
+    if (store.drawerOpen) setDrawer(false, false);
+    if (!dom.plusModal.hidden) closePlus(false);
+    window.location.assign(APP_STORE_URL);
   }
 
   function getSubmissionMode() {
@@ -876,6 +1075,7 @@
     const intendedReturnFocus = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     if (container !== dom.plusModal && !dom.plusModal.hidden) closePlus(false);
     if (container !== dom.lightbox && !dom.lightbox.hidden) closeImage(false);
+    if (container !== dom.guidedOverlay && !dom.guidedOverlay.hidden) closeGuided(false);
     if (store.drawerOpen) setDrawer(false, false);
     store.overlayReturnFocus = intendedReturnFocus;
     store.overlayScrollY = window.scrollY;
@@ -905,6 +1105,10 @@
   }
 
   function showPlus(reasonKey = "plusSubtitle") {
+    if (!hasNativeBridge()) {
+      openAppStore();
+      return;
+    }
     const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const returnFocus = activeElement?.closest("#drawer") ? dom.drawerBtn : activeElement;
     const native = hasNativeBridge();
@@ -1157,139 +1361,524 @@
     prepareImages(dom.categoryChips);
   }
 
+  function detailSectionNav() {
+    const targets = ["detail-see", "detail-understand", "detail-apply", "detail-create", "detail-explore"];
+    return `
+      <nav class="detail-section-nav" aria-label="${escapeHtml(t("detailSectionNav"))}">
+        ${t("detailSections").map((label, index) => `
+          <button type="button" data-action="jump-detail-section" data-target="${targets[index]}" aria-current="${index === 0 ? "true" : "false"}">
+            <span>${escapeHtml(label)}</span>
+            <span class="detail-nav-arrow" aria-hidden="true">↓</span>
+          </button>
+        `).join("")}
+      </nav>
+    `;
+  }
+
+  function recognitionItems(style, guide) {
+    const lang = store.lang;
+    const items = guide.observe.map((item) => ({
+      title: item.label[lang],
+      text: item.text[lang]
+    }));
+    if (!guide.enhanced) {
+      localizedList(style.lookFor).forEach((text, index) => {
+        if (items.length >= 5) return;
+        if (items.some((item) => item.text === text || item.title === text)) return;
+        items.push({
+          title: store.lang === "zh" ? `识别线索 ${index + 1}` : `Recognition cue ${index + 1}`,
+          text
+        });
+      });
+    }
+    return items.filter((item) => item.title && item.text).slice(0, 5);
+  }
+
+  function renderRecognition(style, guide) {
+    return `
+      <section id="detail-understand" class="detail-section aesthetic-section recognize-section" aria-labelledby="recognizeTitle">
+        <p class="section-kicker">${escapeHtml(t("detailSections")[1])}</p>
+        <h2 id="recognizeTitle">${escapeHtml(t("recognizeTitle"))}</h2>
+        <div class="recognition-grid">
+          ${recognitionItems(style, guide).map((item, index) => `
+            <article class="observation-card">
+              <span aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+              <h3>${escapeHtml(item.title)}</h3>
+              <p>${escapeHtml(item.text)}</p>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderProfile(guide) {
+    if (!guide.profile) {
+      return `
+        <section class="detail-section aesthetic-section profile-pending">
+          <h2>${escapeHtml(t("profileTitle"))}</h2>
+          <p>${escapeHtml(t("profilePending"))}</p>
+        </section>
+      `;
+    }
+    const lang = store.lang;
+    const keys = ["order", "color", "ornament", "emotion"];
+    return `
+      <section class="detail-section aesthetic-section profile-section">
+        <h2>${escapeHtml(t("profileTitle"))}</h2>
+        <p class="profile-note">${escapeHtml(t("profileNote"))}</p>
+        <div class="profile-grid">
+          ${keys.map((key, index) => {
+            const item = guide.profile[key];
+            return `
+              <div class="profile-row">
+                <div>
+                  <strong>${escapeHtml(t("profileLabels")[index])}</strong>
+                  <span>${escapeHtml(item[lang])}</span>
+                </div>
+                <div class="profile-scale" role="img" aria-label="${escapeHtml(store.lang === "zh"
+                  ? `${t("profileLabels")[index]}：${item[lang]}。观察强度第 ${item.level} 级，共 5 级，不代表好坏`
+                  : `${t("profileLabels")[index]}: ${item[lang]}. Observation level ${item.level} of 5, not a score`)}">
+                  ${Array.from({ length: 5 }, (_, scaleIndex) => `<i class="${scaleIndex < item.level ? "active" : ""}" aria-hidden="true"></i>`).join("")}
+                </div>
+                <small class="profile-hint">${escapeHtml(t("profileScaleHints")[index])}</small>
+              </div>
+            `;
+          }).join("")}
+        </div>
+        <div class="feeling-words" aria-label="${escapeHtml(store.lang === "zh" ? "感受词" : "Feeling words")}">
+          ${localizedList(guide.feelingWords).map((word) => `<span>${escapeHtml(word)}</span>`).join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderWhyItFeels(style, guide, locked) {
+    const lang = store.lang;
+    const observation = locked ? guide.openingQuestion[lang] : style.curatorNote[lang];
+    const mechanism = locked ? style.summary[lang] : style.why[lang];
+    return `
+      <section class="detail-section aesthetic-section why-feels">
+        <h2>${escapeHtml(t("whyFeelTitle"))}</h2>
+        <div class="why-block">
+          <h3>${escapeHtml(t("curatorObservation"))}</h3>
+          <p>${escapeHtml(observation)}</p>
+        </div>
+        <div class="why-block">
+          <h3>${escapeHtml(t("formationMechanism"))}</h3>
+          <p>${escapeHtml(mechanism)}</p>
+        </div>
+        <blockquote>
+          <strong>${escapeHtml(t("rememberSentence"))}</strong>
+          <p>${escapeHtml(style.memoryAnchor[lang])}</p>
+        </blockquote>
+      </section>
+    `;
+  }
+
+  function renderEveryday(guide) {
+    const lang = store.lang;
+    return `
+      <section id="detail-apply" class="detail-section aesthetic-section everyday-section" aria-labelledby="everydayTitle">
+        <p class="section-kicker">${escapeHtml(t("detailSections")[2])}</p>
+        <h2 id="everydayTitle">${escapeHtml(t("everydayTitle"))}</h2>
+        <div class="everyday-grid">
+          ${guide.everydayLife.filter((item) => item.scene?.[lang]).map((item, index) => `
+            <article>
+              <span aria-hidden="true">${["⌂", "◇", "◉", "□"][index] || "•"}</span>
+              <h3>${escapeHtml(item.scene[lang])}</h3>
+              ${item.text?.[lang] ? `<p>${escapeHtml(item.text[lang])}</p>` : ""}
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderComparisons(guide) {
+    const lang = store.lang;
+    const comparisons = guide.comparisons.map((item) => ({ item, style: stylesById.get(item.styleId) })).filter(({ style }) => style);
+    if (!comparisons.length) return "";
+    return `
+      <section id="detail-compare" class="detail-section aesthetic-section comparison-section">
+        <h2>${escapeHtml(t("compareTitle"))}</h2>
+        <div class="comparison-list">
+          ${comparisons.map(({ item, style }) => `
+            <article class="comparison-card">
+              <button class="comparison-open image-slot" type="button" data-action="open-style" data-id="${style.id}" data-return-section="detail-compare" data-image-label="${escapeHtml(style.name[lang])}">
+                ${imageMarkup(style.image, "", "", { decorative: true })}
+                <span><strong>${escapeHtml(style.name[lang])}</strong><small>${escapeHtml(style.name[lang === "zh" ? "en" : "zh"])}</small></span>
+              </button>
+              ${item.similarity?.[lang] ? `<p><strong>${escapeHtml(t("similarityLabel"))}</strong>${escapeHtml(item.similarity[lang])}</p>` : `<p>${escapeHtml(style.summary[lang])}</p>`}
+              ${item.difference?.[lang] ? `<p><strong>${escapeHtml(t("differenceLabel"))}</strong>${escapeHtml(item.difference[lang])}</p>` : ""}
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderReflection(style, guide) {
+    const lang = store.lang;
+    const reflections = readReflections();
+    const value = typeof reflections[style.id]?.text === "string" ? reflections[style.id].text.slice(0, 300) : "";
+    const inputId = `reflection-${style.id}`;
+    return `
+      <details class="detail-section reflection-section">
+        <summary>
+          <span>${escapeHtml(t("reflectionTitle"))}</span>
+          <span class="reflection-arrow" aria-hidden="true">⌄</span>
+        </summary>
+        <div class="reflection-body">
+          <p>${escapeHtml(guide.reflectionPrompt[lang])}</p>
+          <label for="${inputId}">${escapeHtml(t("reflectionLabel"))}</label>
+          <textarea id="${inputId}" data-reflection-id="${style.id}" maxlength="300" rows="5" aria-describedby="${inputId}-limit">${escapeHtml(value)}</textarea>
+          <div class="reflection-footer">
+            <small id="${inputId}-limit">${escapeHtml(t("reflectionLimit"))}</small>
+            <span class="reflection-status" data-reflection-status="${style.id}" role="status" aria-live="polite"></span>
+            <button class="copy-btn" type="button" data-action="clear-reflection" data-id="${style.id}">${escapeHtml(t("reflectionClear"))}</button>
+          </div>
+        </div>
+      </details>
+    `;
+  }
+
+  function renderPromptSection(style, locked) {
+    const lang = store.lang;
+    const sectionHeading = `
+      <p class="section-kicker">${escapeHtml(t("detailSections")[3])}</p>
+      <h2 id="createTitle">${escapeHtml(t("createTitle"))}</h2>
+    `;
+    if (locked) {
+      return `
+        <section class="detail-section prompt-section locked-section">
+          ${sectionHeading}
+          <div class="locked-preview" aria-hidden="true" inert>
+            <p>${escapeHtml(t("lockedPreview"))}</p>
+          </div>
+          <div class="lock-overlay">
+            <span>${escapeHtml(t("locked"))}</span>
+            <strong>${escapeHtml(t("unlockTitle"))}</strong>
+            <p>${escapeHtml(t("unlockBody"))}</p>
+            <button class="copy-btn" type="button" data-action="show-plus">${escapeHtml(t("unlockCta"))}</button>
+          </div>
+        </section>
+      `;
+    }
+    return `
+      <section class="detail-section prompt-section">
+        ${sectionHeading}
+        <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
+        <div class="prompt-actions">
+          <button class="copy-btn" type="button" data-action="copy-prompt">${escapeHtml(t("copyPrompt"))}</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderAccordion(id, title, content, expanded = false) {
+    return `
+      <section class="deep-accordion">
+        <h3>
+          <button type="button" data-action="toggle-accordion" aria-expanded="${expanded}" aria-controls="${id}">
+            <span>${escapeHtml(title)}</span><span aria-hidden="true">⌄</span>
+          </button>
+        </h3>
+        <div id="${id}" class="deep-accordion-panel" ${expanded ? "" : "hidden"}>${content}</div>
+      </section>
+    `;
+  }
+
+  function renderExplore(style, locked) {
+    const lang = store.lang;
+    if (locked) {
+      return `
+        <section id="detail-explore" class="detail-section explore-section locked-section" aria-labelledby="exploreTitle">
+          <div class="locked-preview" aria-hidden="true" inert>
+            <p class="section-kicker">${escapeHtml(t("detailSections")[4])}</p>
+            <h2 id="exploreTitle">${escapeHtml(t("exploreTitle"))}</h2>
+            <p>${escapeHtml(style.history[lang])}</p>
+          </div>
+          <div class="lock-overlay">
+            <span>${escapeHtml(t("locked"))}</span>
+            <strong>${escapeHtml(t("unlockTitle"))}</strong>
+            <p>${escapeHtml(t("unlockBody"))}</p>
+            <button class="copy-btn" type="button" data-action="show-plus">${escapeHtml(t("unlockCta"))}</button>
+          </div>
+        </section>
+      `;
+    }
+    const base = style.id.replace(/[^a-z0-9-]/gi, "");
+    return `
+      <section id="detail-explore" class="detail-section explore-section" aria-labelledby="exploreTitle">
+        <p class="section-kicker">${escapeHtml(t("detailSections")[4])}</p>
+        <h2 id="exploreTitle">${escapeHtml(t("exploreTitle"))}</h2>
+        <div class="deep-accordions">
+          ${renderAccordion(`${base}-history`, t("accordionHistory"), `<p>${escapeHtml(style.history[lang])}</p>`, true)}
+          ${renderAccordion(`${base}-people`, t("accordionPeople"), `<div class="chip-row">${style.people[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>`)}
+          ${renderAccordion(`${base}-references`, t("accordionReferences"), `<ul class="detail-list">${style.references[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`)}
+          ${renderAccordion(`${base}-gallery`, t("accordionGallery"), `<div class="gallery-grid" id="galleryGrid"></div><p class="gallery-note">${escapeHtml(store.lang === "zh" ? "公开图库是可选补充；离线时不影响其余内容。" : "The public gallery is optional context; the rest remains available offline.")}</p>`)}
+          ${renderAccordion(`${base}-context`, t("accordionContext"), `<p>${escapeHtml(style.curatorNote[lang])}</p><p>${escapeHtml(style.why[lang])}</p>`)}
+        </div>
+      </section>
+    `;
+  }
+
   function renderDetail() {
+    flushAllReflections();
     abortWikiGallery();
     releasePreparedImages(dom.detailContent);
     const style = activeStyle();
     const lang = store.lang;
     const locked = isStyleLocked(style);
-    const example = {
-      title: `${style.name[lang]} ${store.lang === "zh" ? "原创示例" : "original example"}`,
-      artist: t("productName"),
-      image: style.image
-    };
+    const guide = guideFor(style);
+    const saved = isSaved(style.id);
     addRecent(style.id);
-    const gallerySection = `
-      <section class="detail-section">
-        <h2>${t("exhibitImages")}</h2>
-        <div class="gallery-grid" id="galleryGrid">
-          <figure class="gallery-item image-slot" data-image-label="${escapeHtml(style.name[lang])}">
-            <button class="gallery-open" type="button" data-action="open-image" aria-label="${escapeHtml(t("imagePreview"))}：${escapeHtml(style.name[lang])}">
-              ${imageMarkup(style.image, style.name[lang])}
-            </button>
-            <figcaption>${escapeHtml(style.name[lang])}</figcaption>
-          </figure>
-        </div>
-      </section>
-    `;
-    const exampleSection = example ? `
-      <section class="detail-section">
-        <h2>${t("examples")}</h2>
-        <figure class="example-card image-slot" data-image-label="${escapeHtml(example.title)}">
-          <button class="gallery-open example-open" type="button" data-action="open-image" aria-label="${escapeHtml(t("imagePreview"))}：${escapeHtml(example.title)}">
-            ${imageMarkup(example.image, example.title)}
-          </button>
-          <figcaption>
-            <strong>${escapeHtml(example.title)}</strong>
-            <span>${escapeHtml(example.artist)}</span>
-            ${example.source ? `<a href="${escapeHtml(example.source)}" target="_blank" rel="noreferrer">${t("source")}</a>` : ""}
-          </figcaption>
-        </figure>
-      </section>
-    ` : "";
-    const promptSection = locked ? `
-      <section class="detail-section locked-section">
-        <div class="locked-preview">
-          <h2>${t("prompt")}</h2>
-          <p>${escapeHtml(t("lockedPreview"))}</p>
-        </div>
-        <div class="lock-overlay">
-          <span>${t("locked")}</span>
-          <strong>${t("unlockTitle")}</strong>
-          <p>${t("unlockBody")}</p>
-          <button class="copy-btn" type="button" data-action="show-plus">${t("unlockCta")}</button>
-        </div>
-      </section>
-    ` : `
-      <section class="detail-section">
-        <h2>${t("prompt")}</h2>
-        <div class="prompt-box">${escapeHtml(style.imagePrompts[lang])}<br><br>${escapeHtml(style.negativePrompt[lang])}</div>
-        <div class="prompt-actions">
-          <button class="copy-btn" type="button" data-action="copy-prompt">${t("copyPrompt")}</button>
-          <button class="copy-btn" type="button" data-action="save-card" data-export-control>${t("saveCard")}</button>
-        </div>
-      </section>
-    `;
-    const archiveSections = locked ? `
-      ${lockedSection(t("curator"), style.curatorNote[lang])}
-      ${lockedSection(t("exhibitImages"), style.name[lang])}
-      <section class="detail-section">
-        <h2>${t("features")}</h2>
-        <div class="feature-grid">${style.visualFeatures[lang].slice(0, 3).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      ${lockedSection(t("history"), style.history[lang])}
-      ${lockedSection(t("why"), style.why[lang])}
-      ${lockedSection(t("people"), style.people[lang].join(" / "))}
-      ${lockedSection(t("lookFor"), style.lookFor[lang].slice(0, 2).join(" / "))}
-      ${lockedSection(t("references"), style.references[lang][0])}
-      <section class="detail-section">
-        <h2>${t("useCases")}</h2>
-        <div class="chip-row">${style.useCases[lang].slice(0, 3).map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      ${promptSection}
-    ` : `
-      <section class="detail-section">
-        <h2>${t("curator")}</h2>
-        <p>${escapeHtml(style.curatorNote[lang])}</p>
-      </section>
-      ${gallerySection}
-      <section class="detail-section">
-        <h2>${t("features")}</h2>
-        <div class="feature-grid">${style.visualFeatures[lang].map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      <section class="detail-section">
-        <h2>${t("history")}</h2>
-        <p>${escapeHtml(style.history[lang])}</p>
-      </section>
-      <section class="detail-section">
-        <h2>${t("why")}</h2>
-        <p>${escapeHtml(style.why[lang])}</p>
-      </section>
-      <section class="detail-section">
-        <h2>${t("people")}</h2>
-        <div class="chip-row">${style.people[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      <section class="detail-section">
-        <h2>${t("lookFor")}</h2>
-        <ul class="detail-list">${style.lookFor[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-      </section>
-      <section class="detail-section">
-        <h2>${t("references")}</h2>
-        <ul class="detail-list">${style.references[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-      </section>
-      <section class="detail-section">
-        <h2>${t("useCases")}</h2>
-        <div class="chip-row">${style.useCases[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>
-      </section>
-      ${exampleSection}
-      ${promptSection}
-    `;
+    store.activeDetailSection = "see";
+
     dom.detailContent.innerHTML = `
-      <div class="detail-hero style-card">${renderCard(style, true)}</div>
-      <section class="detail-section">
-        <h2>${t("memory")}</h2>
-        <p>${escapeHtml(style.memoryAnchor[lang])}</p>
+      ${detailSectionNav()}
+      <section id="detail-see" class="detail-hero style-card" aria-labelledby="detailTitle">
+        <div class="badge-row">
+          <div class="badge">#${style.number} · ${escapeHtml(catName(style.category))}<br>${escapeHtml(style.subtitle[lang])}</div>
+          <div class="card-actions">
+            <button class="card-action ${saved ? "saved" : ""}" type="button" data-action="save" data-id="${style.id}" aria-pressed="${saved}" aria-label="${escapeHtml(savedLabel(style, saved))}">${saved ? "♥" : "♡"}</button>
+            <button class="card-action" type="button" data-action="share" data-export-control aria-label="${escapeHtml(t("shareStyle", style.name[lang]))}">↗</button>
+          </div>
+        </div>
+        <div class="visual image-slot" data-image-label="${escapeHtml(style.name[lang])}">
+          <button class="hero-image-button" type="button" data-action="open-image" aria-label="${escapeHtml(`${t("imagePreview")}：${style.name[lang]}`)}">
+            ${imageMarkup(style.image, style.name[lang], "", { eager: true, priority: "high" })}
+          </button>
+        </div>
+        <div class="detail-hero-copy">
+          <h1 id="detailTitle">${escapeHtml(style.name.en)}</h1>
+          <p class="zh-name">${escapeHtml(style.name.zh)}</p>
+          <p class="summary">${escapeHtml(style.summary[lang])}</p>
+          <div class="memory-anchor">
+            <span>${escapeHtml(t("rememberInOneLine"))}</span>
+            <p>${escapeHtml(style.memoryAnchor[lang])}</p>
+          </div>
+          <div class="chip-row">${style.tags[lang].slice(0, 3).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>
+          <div class="hero-actions">
+            <button class="guided-entry" type="button" data-action="open-guided">${escapeHtml(t("guidedEntry"))}</button>
+            <button class="overview-copy-btn" type="button" data-action="copy-overview" aria-label="${escapeHtml(t("copyOverview"))}" title="${escapeHtml(t("copyOverview"))}">⧉</button>
+          </div>
+        </div>
       </section>
-      ${archiveSections}
-      ${renderExportPanel()}
-      <section class="detail-section">
-        <h2>${t("similar")}</h2>
-        <div class="result-list">${style.relatedStyles.map((id) => resultCard(styles.find((item) => item.id === id))).join("")}</div>
+      ${renderRecognition(style, guide)}
+      ${renderProfile(guide)}
+      ${renderWhyItFeels(style, guide, locked)}
+      ${renderEveryday(guide)}
+      ${renderComparisons(guide)}
+      ${renderReflection(style, guide)}
+      <section id="detail-create" class="detail-create-group" aria-labelledby="createTitle">
+        ${renderPromptSection(style, locked)}
+        ${renderExportPanel()}
+      </section>
+      ${renderExplore(style, locked)}
+      <section class="detail-section similar-section">
+        <h2>${escapeHtml(t("similar"))}</h2>
+        <div class="result-list">${style.relatedStyles.filter((id) => validStyleIds.has(id)).slice(0, 4).map((id) => resultCard(stylesById.get(id))).join("")}</div>
       </section>
     `;
     prepareImages(dom.detailContent);
+    observeDetailSections();
+    imagePipeline.preload(style.image, { priority: "high" }).catch(() => null);
     updateExportControls();
     if (!locked) loadWikiGallery(style);
+  }
+
+  function guidedStages(style) {
+    const lang = store.lang;
+    const guide = guideFor(style);
+    const observeStages = guide.observe.slice(0, 3).map((item, index) => ({
+      title: [t("guidedFirst"), t("guidedSecond"), t("guidedThird")][index],
+      kicker: item.label[lang],
+      text: item.text[lang],
+      button: t("guidedContinue"),
+      focus: normalizedFocus(item.focus)
+    }));
+    return [
+      {
+        title: t("guidedOpening"),
+        kicker: style.name[lang],
+        text: guide.openingQuestion[lang],
+        button: t("guidedLooked"),
+        focus: normalizedFocus(guide.openingFocus)
+      },
+      ...observeStages,
+      {
+        title: t("guidedComplete"),
+        kicker: t("rememberInOneLine"),
+        text: style.memoryAnchor[lang],
+        button: t("guidedBack"),
+        focus: normalizedFocus(guide.closingFocus)
+      }
+    ];
+  }
+
+  function renderGuidedStage() {
+    const stages = guidedStages(activeStyle());
+    const stageIndex = Math.min(store.guidedStage, stages.length - 1);
+    const stage = stages[stageIndex];
+    dom.guidedStage.dataset.stage = String(stageIndex);
+    dom.guidedStage.dataset.total = String(stages.length);
+    dom.guidedStepLabel.textContent = t("guidedStep", stageIndex + 1, stages.length);
+    dom.guidedDots.innerHTML = stages.map((_, index) => `<i class="${index === stageIndex ? "active" : ""}" aria-hidden="true"></i>`).join("");
+    dom.guidedKicker.textContent = stage.kicker;
+    dom.guidedTitle.textContent = stage.title;
+    dom.guidedText.textContent = stage.text;
+    dom.guidedPrevBtn.textContent = t("previousGuided");
+    dom.guidedPrevBtn.hidden = stageIndex === 0;
+    dom.guidedNextBtn.textContent = stage.button;
+    const focus = normalizedFocus(stage.focus);
+    dom.guidedImage.classList.toggle("has-focus", Boolean(focus));
+    if (focus) {
+      dom.guidedImage.style.setProperty("--focus-x", `${focus.x}%`);
+      dom.guidedImage.style.setProperty("--focus-y", `${focus.y}%`);
+      dom.guidedImage.style.setProperty("--focus-scale", String(focus.scale));
+    } else {
+      dom.guidedImage.style.removeProperty("--focus-x");
+      dom.guidedImage.style.removeProperty("--focus-y");
+      dom.guidedImage.style.removeProperty("--focus-scale");
+    }
+  }
+
+  function openGuided(returnFocus = null, stage = 0) {
+    const style = activeStyle();
+    const stages = guidedStages(style);
+    store.guidedStage = clamp(Number.isFinite(Number(stage)) ? Number(stage) : 0, 0, stages.length - 1);
+    dom.guidedImage.src = style.image;
+    dom.guidedImage.alt = "";
+    dom.guidedImage.setAttribute("aria-hidden", "true");
+    renderGuidedStage();
+    imagePipeline.preload(style.image, { priority: "high" }).catch(() => null);
+    openOverlay(dom.guidedOverlay, dom.guidedPanel, returnFocus);
+  }
+
+  function nextGuided() {
+    const stages = guidedStages(activeStyle());
+    if (store.guidedStage >= stages.length - 1) {
+      closeGuided();
+      return;
+    }
+    store.guidedStage += 1;
+    renderGuidedStage();
+    dom.guidedTitle.focus?.({ preventScroll: true });
+  }
+
+  function previousGuided() {
+    if (store.guidedStage <= 0) return;
+    store.guidedStage -= 1;
+    renderGuidedStage();
+    dom.guidedTitle.focus?.({ preventScroll: true });
+  }
+
+  function closeGuided(restoreFocus = true) {
+    if (dom.guidedOverlay.hidden) return;
+    closeOverlay(dom.guidedOverlay, restoreFocus);
+  }
+
+  function writeReflection(styleId, text) {
+    if (!validStyleIds.has(styleId)) return false;
+    const reflections = readReflections();
+    const normalized = String(text || "").slice(0, 300);
+    if (normalized) {
+      reflections[styleId] = { text: normalized, updatedAt: new Date().toISOString() };
+    } else {
+      delete reflections[styleId];
+    }
+    return writeStorage(REFLECTIONS_KEY, JSON.stringify(reflections));
+  }
+
+  function setReflectionStatus(styleId, key) {
+    const status = dom.detailContent.querySelector(`[data-reflection-status="${CSS.escape(styleId)}"]`);
+    if (status) status.textContent = key ? t(key) : "";
+  }
+
+  function flushReflection(styleId) {
+    const pending = store.reflectionTimers.get(styleId);
+    if (!pending) return true;
+    clearTimeout(pending.timer);
+    store.reflectionTimers.delete(styleId);
+    const ok = writeReflection(styleId, pending.text);
+    setReflectionStatus(styleId, ok ? "reflectionSaved" : "reflectionStorageUnavailable");
+    return ok;
+  }
+
+  function flushAllReflections() {
+    [...store.reflectionTimers.keys()].forEach(flushReflection);
+  }
+
+  function scheduleReflectionSave(styleId, text) {
+    if (!validStyleIds.has(styleId)) return;
+    const existing = store.reflectionTimers.get(styleId);
+    if (existing) clearTimeout(existing.timer);
+    const timer = setTimeout(() => flushReflection(styleId), 450);
+    store.reflectionTimers.set(styleId, { text, timer });
+  }
+
+  function clearReflection(styleId) {
+    flushReflection(styleId);
+    writeReflection(styleId, "");
+    const textarea = dom.detailContent.querySelector(`[data-reflection-id="${CSS.escape(styleId)}"]`);
+    if (textarea) {
+      textarea.value = "";
+      textarea.focus();
+    }
+    setReflectionStatus(styleId, "reflectionCleared");
+    toast(t("reflectionCleared"));
+  }
+
+  function jumpToDetailSection(targetId, button) {
+    const target = $(targetId);
+    if (!target) return;
+    dom.detailContent.querySelectorAll(".detail-section-nav button").forEach((item) => item.setAttribute("aria-current", String(item === button)));
+    store.activeDetailSection = targetId.replace("detail-", "");
+    target.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  }
+
+  function updateCurrentDetailSection() {
+    const targets = ["detail-see", "detail-understand", "detail-apply", "detail-create", "detail-explore"]
+      .map((id) => $(id))
+      .filter(Boolean);
+    if (!targets.length) return;
+    const anchor = 140;
+    const candidate = targets
+      .map((target) => ({ target, rect: target.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.bottom > anchor)
+      .sort((a, b) => Math.abs(a.rect.top - anchor) - Math.abs(b.rect.top - anchor))[0];
+    if (!candidate) return;
+    const targetId = candidate.target.id;
+    store.activeDetailSection = targetId.replace("detail-", "");
+    dom.detailContent.querySelectorAll(".detail-section-nav button").forEach((button) => {
+      button.setAttribute("aria-current", String(button.dataset.target === targetId));
+    });
+  }
+
+  function observeDetailSections() {
+    store.detailSectionObserver?.disconnect();
+    if (typeof IntersectionObserver !== "function") return;
+    store.detailSectionObserver = new IntersectionObserver(updateCurrentDetailSection, {
+      rootMargin: "-128px 0px -65% 0px",
+      threshold: [0, 0.01]
+    });
+    ["detail-see", "detail-understand", "detail-apply", "detail-create", "detail-explore"]
+      .map((id) => $(id))
+      .filter(Boolean)
+      .forEach((target) => store.detailSectionObserver.observe(target));
+    updateCurrentDetailSection();
+  }
+
+  function toggleAccordion(button) {
+    const panelId = button.getAttribute("aria-controls");
+    const panel = panelId ? $(panelId) : null;
+    if (!panel) return;
+    const expanded = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", String(!expanded));
+    panel.hidden = expanded;
+    if (!expanded) prepareImages(panel);
   }
 
   async function loadWikiGallery(style) {
@@ -1423,12 +2012,21 @@
         <h2>${store.lang === "zh" ? "适合谁使用" : "Who It Is For"}</h2>
         <p>${escapeHtml(t("aboutFor"))}</p>
       </section>
+      <section class="detail-section app-feature-section">
+        <p class="plus-kicker">${escapeHtml(t("downloadApp"))}</p>
+        <h2>${escapeHtml(t("appFeaturesTitle"))}</h2>
+        <ul class="app-feature-list">
+          ${t("appFeatures").map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+        <p>${escapeHtml(t("downloadAppNote"))}</p>
+        <a class="copy-btn app-store-link" href="${APP_STORE_URL}" target="_blank" rel="noopener">${escapeHtml(t("downloadOnAppStore"))}<span aria-hidden="true">↗</span></a>
+      </section>
       <section class="detail-section">
         <h2>${store.lang === "zh" ? "免费版能做什么" : "What Free Includes"}</h2>
         <p>${escapeHtml(t("aboutFree"))}</p>
       </section>
       <section class="detail-section">
-        <h2>${isFreeLaunchMode() ? (store.lang === "zh" ? "Plus 后续版本计划" : "Future Plus Plan") : (store.lang === "zh" ? "Plus 未来会解锁什么" : "What Plus Will Unlock")}</h2>
+        <h2>${store.lang === "zh" ? "虾子曰艺术风格图鉴 Plus" : "Xiazishuo Style Atlas Plus"}</h2>
         <p>${escapeHtml(isFreeLaunchMode() ? `${t("plusFutureBody")} ${t("aboutPlus")}` : t("aboutPlus"))}</p>
       </section>
       <section class="detail-section">
@@ -1496,14 +2094,23 @@
     return slides;
   }
 
-  function openDetail(id = store.activeId, sourceView = store.view) {
+  function openDetail(id = store.activeId, sourceView = store.view, returnSection = "") {
+    flushAllReflections();
+    const previousId = store.activeId;
+    if (sourceView === "detail" && id && id !== previousId) {
+      store.detailHistory.push({ id: previousId, section: returnSection });
+    } else if (sourceView !== "detail") {
+      store.detailHistory = [];
+    }
     if (id && validStyleIds.has(id)) store.activeId = id;
-    store.backView = sourceView === "detail" ? "home" : sourceView;
+    if (sourceView !== "detail") store.backView = sourceView;
     setView("detail");
   }
 
   function setView(view, shouldRender = true) {
+    flushAllReflections();
     if (store.view === "detail" && view !== "detail") abortWikiGallery();
+    if (view !== "detail" && !dom.guidedOverlay.hidden) closeGuided(false);
     if (view !== "detail") {
       const detailView = $("detailView");
       detailView.classList.remove("edge-back-dragging", "edge-back-settling");
@@ -2084,6 +2691,23 @@
     dom.drawerCloseBtn.addEventListener("click", () => setDrawer(false));
     dom.drawerBackdrop.addEventListener("click", () => setDrawer(false));
     function navigateBack() {
+      if (store.view === "detail" && store.detailHistory.length) {
+        const entry = store.detailHistory.pop();
+        store.activeId = typeof entry === "string" ? entry : entry.id;
+        renderDetail();
+        const section = typeof entry === "object" ? entry.section : "";
+        if (section) {
+          requestAnimationFrame(() => $(section)?.scrollIntoView({ behavior: "auto", block: "start" }));
+        } else {
+          window.scrollTo({ top: 0, behavior: "auto" });
+        }
+        const heading = dom.detailContent.querySelector("h1");
+        if (heading && !section) {
+          heading.tabIndex = -1;
+          requestAnimationFrame(() => heading.focus({ preventScroll: true }));
+        }
+        return;
+      }
       const returnFocus = store.view === "search" ? store.viewReturnFocus : null;
       setView(store.view === "detail" ? store.backView : "home");
       store.viewReturnFocus = null;
@@ -2494,6 +3118,72 @@
       resetEdgeBack();
     });
 
+    let desktopScrollPointerId = null;
+    let desktopScrollActive = false;
+    let desktopScrollStartX = 0;
+    let desktopScrollStartY = 0;
+    let desktopScrollStartTop = 0;
+
+    function finishDesktopScroll(pointerId = desktopScrollPointerId) {
+      if (pointerId !== desktopScrollPointerId) return;
+      try {
+        if (detailView.hasPointerCapture(pointerId)) detailView.releasePointerCapture(pointerId);
+      } catch (_) {
+        // Pointer capture may already have been released by the browser.
+      }
+      desktopScrollPointerId = null;
+      desktopScrollActive = false;
+      document.body.classList.remove("desktop-drag-scrolling");
+    }
+
+    detailView.addEventListener("pointerdown", (event) => {
+      const interactive = event.target.closest("button, a, input, textarea, select, label, summary, [contenteditable='true'], [role='button']");
+      if (
+        event.pointerType !== "mouse"
+        || event.button !== 0
+        || store.view !== "detail"
+        || window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell === true
+        || !dom.plusModal.hidden
+        || !dom.lightbox.hidden
+        || !dom.guidedOverlay.hidden
+        || store.drawerOpen
+        || interactive
+      ) return;
+      desktopScrollPointerId = event.pointerId;
+      desktopScrollActive = false;
+      desktopScrollStartX = event.clientX;
+      desktopScrollStartY = event.clientY;
+      desktopScrollStartTop = window.scrollY;
+      try {
+        detailView.setPointerCapture(event.pointerId);
+      } catch (_) {
+        // Drag scrolling still works while the pointer remains over the detail view.
+      }
+    });
+
+    detailView.addEventListener("pointermove", (event) => {
+      if (event.pointerId !== desktopScrollPointerId) return;
+      const dx = event.clientX - desktopScrollStartX;
+      const dy = event.clientY - desktopScrollStartY;
+      if (!desktopScrollActive) {
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+        if (absX > 8 && absX > absY * 1.1) {
+          finishDesktopScroll(event.pointerId);
+          return;
+        }
+        if (absY < 8 || absY <= absX * 1.1) return;
+        desktopScrollActive = true;
+        document.body.classList.add("desktop-drag-scrolling");
+      }
+      if (event.cancelable) event.preventDefault();
+      window.scrollTo(0, desktopScrollStartTop - dy);
+    }, { passive: false });
+
+    detailView.addEventListener("pointerup", (event) => finishDesktopScroll(event.pointerId));
+    detailView.addEventListener("pointercancel", (event) => finishDesktopScroll(event.pointerId));
+    detailView.addEventListener("lostpointercapture", (event) => finishDesktopScroll(event.pointerId));
+
     dom.styleDeck.addEventListener("keydown", (event) => {
       if (event.key === "ArrowLeft") {
         event.preventDefault();
@@ -2524,9 +3214,10 @@
         if (!img) return;
         return openImage(img.currentSrc || img.src || img.dataset.src, img.alt);
       }
-      if (action === "open-style" && id) return openDetail(id, store.view);
+      if (action === "open-style" && id) return openDetail(id, store.view, event.target.closest("[data-return-section]")?.dataset.returnSection || "");
       if (action === "purchase-plus") {
-        if (!isIapMode() || !hasNativeBridge()) return toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
+        if (!hasNativeBridge()) return openAppStore();
+        if (!isIapMode()) return toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
         if (["purchasing", "restoring", "pending"].includes(window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction)) return;
         setStoreActionFromNative("purchasing");
         if (!postNativeMessage("purchasePlus")) setStoreActionFromNative("unavailable", "productUnavailable");
@@ -2542,13 +3233,20 @@
       if (action === "close-lightbox") return closeImage();
       if (action === "share-lightbox") return shareImage();
       if (action === "save-lightbox") return saveImage();
-      if (action === "show-plus") return showPlus();
+      if (action === "show-plus") return hasNativeBridge() ? showPlus() : openAppStore();
       if (action === "close-plus") return closePlus();
       if (action === "plus-export") return canExportHighRes() ? saveShareCard() : showPlus("highResLocked");
       if (action === "export-ratio" && ratio) return canExportHighRes() ? saveShareCard(activeStyle(), ratio) : showPlus("highResLocked");
       if (action === "copy-overview") return copyStyleOverview();
       if (action === "copy-prompt") return copyStyleExpression();
       if (action === "save-card") return saveShareCard();
+      if (action === "open-guided") return openGuided(event.target.closest("[data-action='open-guided']"));
+      if (action === "next-guided") return nextGuided();
+      if (action === "previous-guided") return previousGuided();
+      if (action === "close-guided") return closeGuided();
+      if (action === "jump-detail-section") return jumpToDetailSection(event.target.closest("[data-target]")?.dataset.target, event.target.closest("[data-target]"));
+      if (action === "toggle-accordion") return toggleAccordion(event.target.closest("[data-action='toggle-accordion']"));
+      if (action === "clear-reflection" && id) return clearReflection(id);
       if (filter) {
         store.filter = store.filter === filter ? "" : filter;
         if (store.view !== "search") {
@@ -2569,10 +3267,39 @@
     dom.lightbox.addEventListener("click", (event) => {
       if (event.target === dom.lightbox) closeImage();
     });
+    dom.guidedOverlay.addEventListener("click", (event) => {
+      if (event.target === dom.guidedOverlay) closeGuided();
+    });
+    dom.detailContent.addEventListener("input", (event) => {
+      const textarea = event.target.closest("[data-reflection-id]");
+      if (!textarea) return;
+      scheduleReflectionSave(textarea.dataset.reflectionId, textarea.value);
+    });
+    dom.detailContent.addEventListener("blur", (event) => {
+      const textarea = event.target.closest("[data-reflection-id]");
+      if (!textarea) return;
+      flushReflection(textarea.dataset.reflectionId);
+    }, true);
+    window.addEventListener("pagehide", flushAllReflections);
+    window.addEventListener("beforeunload", flushAllReflections);
+    window.addEventListener("scroll", () => {
+      if (store.view !== "detail" || store.detailSectionScrollFrame) return;
+      store.detailSectionScrollFrame = requestAnimationFrame(() => {
+        store.detailSectionScrollFrame = 0;
+        updateCurrentDetailSection();
+      });
+    }, { passive: true });
 
     document.querySelectorAll(".nav-btn").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (event) => {
+        if (button.dataset.action === "download-app") {
+          event.preventDefault();
+          event.stopPropagation();
+          openAppStore();
+          return;
+        }
         if (button.dataset.action === "show-plus") {
+          event.stopPropagation();
           showPlus();
           return;
         }
@@ -2594,12 +3321,15 @@
       copyText(list || t("productName"));
     });
     document.addEventListener("keydown", (event) => {
-      const overlay = !dom.plusModal.hidden ? dom.plusModal : (!dom.lightbox.hidden ? dom.lightbox : (store.drawerOpen ? dom.drawer : null));
+      const overlay = !dom.plusModal.hidden
+        ? dom.plusModal
+        : (!dom.lightbox.hidden ? dom.lightbox : (!dom.guidedOverlay.hidden ? dom.guidedOverlay : (store.drawerOpen ? dom.drawer : null)));
       if (!overlay) return;
       if (event.key === "Escape") {
         event.preventDefault();
         if (!dom.plusModal.hidden) closePlus();
         else if (!dom.lightbox.hidden) closeImage();
+        else if (!dom.guidedOverlay.hidden) closeGuided();
         else setDrawer(false);
         return;
       }
@@ -2650,6 +3380,7 @@
     dom.styleDeck.setAttribute("aria-roledescription", t("styleCardRole"));
     dom.lightboxCloseBtn.setAttribute("aria-label", t("closePreview"));
     dom.plusCloseBtn.setAttribute("aria-label", store.lang === "zh" ? "关闭 Plus" : "Close Plus");
+    dom.guidedCloseBtn.setAttribute("aria-label", t("closeGuided"));
     renderHome();
     if (store.view === "detail") renderDetail();
     if (store.view === "search") renderSearch();
@@ -2662,21 +3393,51 @@
         about: t("about"),
         screenshots: t("screenshotsTitle")
       };
-      button.textContent = button.dataset.view ? map[button.dataset.view] : t("plus");
+      if (button.dataset.action === "download-app") {
+        button.innerHTML = `<span>${escapeHtml(t("downloadApp"))}</span><span aria-hidden="true">↗</span>`;
+        button.setAttribute("aria-label", t("downloadOnAppStore"));
+        button.hidden = hasNativeBridge();
+      } else {
+        button.textContent = button.dataset.view ? map[button.dataset.view] : t("plus");
+      }
     });
     if (store.view === "about") renderAbout();
     if (store.view === "screenshots") renderScreenshots();
     if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
+    if (!dom.guidedOverlay.hidden) renderGuidedStage();
   }
 
   const initialHash = location.hash.slice(1);
-  const screenshotMode = initialHash === "screenshots" || new URLSearchParams(location.search).get("screenshots") === "1";
+  const initialParams = new URLSearchParams(location.search);
+  const screenshotMode = initialHash === "screenshots" || initialParams.get("screenshots") === "1";
+  const reviewMode = initialParams.get("review") === "detail";
+  const reviewStyle = initialParams.get("style");
+  const reviewLang = initialParams.get("lang");
+  const reviewSection = initialParams.get("section");
+  const reviewGuided = initialParams.has("guided") ? Number(initialParams.get("guided")) : NaN;
+  if (reviewMode) {
+    store.reviewMode = "detail";
+    if (["zh", "en"].includes(reviewLang)) store.lang = reviewLang;
+    if (["see", "understand", "apply", "create", "explore", "compare"].includes(reviewSection)) {
+      store.reviewSection = reviewSection;
+    }
+    if (Number.isInteger(reviewGuided) && reviewGuided >= 0) store.reviewGuidedStage = reviewGuided;
+  }
   store.activeId = initialHash && styles.some((style) => style.id === initialHash)
     ? location.hash.slice(1)
-    : styles[dailyIndex()].id;
+    : (reviewStyle && validStyleIds.has(reviewStyle) ? reviewStyle : styles[dailyIndex()].id);
   if (initialHash && styles.some((style) => style.id === initialHash)) store.view = "detail";
+  if (reviewMode) store.view = "detail";
   if (screenshotMode) store.view = "screenshots";
   document.documentElement.lang = store.lang === "zh" ? "zh-CN" : "en";
+  function setTextScaleFromNative(value) {
+    if (window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell !== true) return 1;
+    const scale = Math.min(1.6, Math.max(0.9, Number(value) || 1));
+    document.documentElement.style.zoom = String(scale);
+    document.documentElement.toggleAttribute("data-native-large-text", scale > 1.05);
+    return scale;
+  }
+
   window.StyleAtlasNativeBridge = {
     setPlusAccess(value) {
       if (window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell !== true) return false;
@@ -2688,6 +3449,7 @@
       return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice;
     },
     setStoreAction: setStoreActionFromNative,
+    setTextScale: setTextScaleFromNative,
     resolveBundledAsset: resolveBundledAssetFromNative,
     getPlusAccess: hasPlusAccess,
     postNativeMessage
@@ -2715,9 +3477,20 @@
     getState: () => ({
       view: store.view,
       focus: document.activeElement?.id || document.activeElement?.tagName || "",
-      overlay: !dom.plusModal.hidden ? "plus" : (!dom.lightbox.hidden ? "lightbox" : (store.drawerOpen ? "drawer" : "none")),
+      overlay: !dom.plusModal.hidden ? "plus" : (!dom.lightbox.hidden ? "lightbox" : (!dom.guidedOverlay.hidden ? "guided" : (store.drawerOpen ? "drawer" : "none"))),
       viewport: { width: window.innerWidth, height: window.innerHeight }
     })
+  };
+  window.StyleAtlasAesthetic = {
+    guides: aestheticGuides,
+    getGuide: (styleId) => {
+      const style = stylesById.get(styleId);
+      return style ? guideFor(style) : null;
+    },
+    normalizeFocus: normalizedFocus,
+    getReflection: (styleId) => readReflections()[styleId] || null,
+    openGuided,
+    closeGuided
   };
   if (new URLSearchParams(location.search).get("debug") === "a11y") {
     const panel = document.createElement("pre");
@@ -2732,5 +3505,10 @@
   bind();
   renderAll();
   setView(store.view, false);
+  if (store.reviewMode === "detail") {
+    const sectionId = store.reviewSection === "compare" ? "detail-compare" : (store.reviewSection ? `detail-${store.reviewSection}` : "");
+    if (sectionId) requestAnimationFrame(() => $(sectionId)?.scrollIntoView({ behavior: "auto", block: "start" }));
+    if (store.reviewGuidedStage !== null) requestAnimationFrame(() => openGuided(null, store.reviewGuidedStage));
+  }
   updateAccessibilityDebug();
 })();
