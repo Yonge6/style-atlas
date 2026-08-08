@@ -388,20 +388,34 @@
       ,
       plus: "虾子曰艺术风格图鉴 Plus",
       unlockTitle: "解锁完整风格档案",
-      unlockBody: "免费版可以先认识风格，Plus 帮你建立完整审美资料库。",
-      unlockCta: "了解 Plus",
+      unlockBody: "主图与简介可免费浏览。Plus 打开从观察、理解到表达的完整学习路径。",
+      unlockCta: "查看 Plus 解锁内容",
       locked: "Plus",
       freePreview: "免费预览",
+      lockedArchiveTitle: (name) => `继续看懂 ${name}`,
+      lockedArchiveBody: "下面的学习模块已收纳在 Plus。先看清解锁内容，再决定是否前往 App Store。",
+      lockedArchiveNote: "免费版仍可完整阅读 20 个风格档案。",
+      lockedModules: [
+        ["观察与 Guided Looking", "三个观察线索和分阶段看图引导"],
+        ["审美 Profile", "秩序、色彩、装饰与情绪的观察坐标"],
+        ["Everyday 与 Comparison", "把风格带回日常，并辨析相近风格"],
+        ["Reflection", "保存你对每种风格的第一感受"],
+        ["创作表达", "完整风格表达词与避坑提示"],
+        ["深入与导出", "历史语境、代表作品、高清无水印多比例导出"]
+      ],
       exportOptions: "保存导出",
       freeExport: "普通清晰度 · 带水印",
       plusExport: "高清无水印 · 9:16 / 1:1 / 4:5 / 16:9",
-      plusSubtitle: "建立你的私人审美资料库。",
-      plusBenefits: ["解锁完整风格档案与表达词", "无限收藏", "高清无水印保存", "9:16 / 1:1 / 4:5 / 16:9 多比例导出", "一次购买，永久解锁"],
+      plusSubtitle: "从看见到看懂，完整打开每一种风格。",
+      plusBenefits: ["完整观察与 Guided Looking", "Profile、Everyday 与 Comparison", "Reflection 与创作表达", "历史语境、人物与参考作品", "高清无水印和四种比例导出", "无限收藏"],
+      plusScope: ["20 个免费完整档案", "一次购买，永久解锁"],
+      plusScopeLabel: "Plus 权益摘要",
       freePlan: "免费版",
       plusPlan: "Plus",
-      freePlanItems: ["每日推荐", "浏览全部 120 个风格封面", "查看 20 个完整风格档案", "收藏最多 20 个", "普通清晰度带水印保存"],
-      plusPlanItems: ["解锁更多完整风格档案", "无限收藏", "高清无水印保存", "多比例导出", "完整风格表达词", "一次购买，永久解锁"],
+      freePlanItems: ["浏览全部 120 个主图与简介", "阅读 20 个完整风格档案", "收藏 20 个并普通清晰度导出"],
+      plusPlanItems: ["解锁其余完整档案与全部学习模块", "无限收藏", "高清无水印四比例导出", "一次购买，永久解锁"],
       appStorePrice: "价格以 App Store 显示为准",
+      appStoreCta: "前往 App Store 查看 Plus",
       downloadApp: "下载 App",
       downloadOnAppStore: "前往 App Store 下载",
       downloadAppNote: "免费下载 iPhone App，在完整的离线体验中继续探索、记录与导出。",
@@ -447,8 +461,8 @@
       aboutTitle: "关于虾子曰艺术风格图鉴",
       aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 120 种视觉语言整理成可以观察、理解、比较和表达的风格图鉴，其中 72 种提供完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和本地 Reflection。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
       aboutFor: "适合设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
-      aboutFree: "App 可免费下载，包含每日推荐、120 种风格浏览、双语搜索、收藏、20 个免费完整风格档案、Reflection 和普通清晰度带水印导出。",
-      aboutPlus: "Plus 通过 App Store 一次购买，解锁更多完整风格档案、无限收藏、高清无水印保存、多比例导出和完整风格表达词。",
+      aboutFree: "App 可免费下载，包含每日推荐、120 种风格浏览、双语搜索、收藏，以及 20 个可使用全部学习模块的免费完整风格档案。",
+      aboutPlus: "Plus 通过 App Store 一次购买，解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、Reflection、创作表达、深入内容、无限收藏和高清多比例导出。",
       appFeaturesTitle: "在 App 里看懂一种美",
       appFeatures: ["浏览 120 种艺术与设计风格", "阅读 72 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用 Reflection 保存自己的第一感受", "支持中英文、离线浏览与多比例导出"],
       safetyTitle: "版权与风格安全说明",
@@ -575,20 +589,34 @@
       lockedPreview: "The full archive includes deeper origins, recognition methods, cases and style expression.",
       plus: "Xiazishuo Style Atlas Plus",
       unlockTitle: "Unlock the full style archive",
-      unlockBody: "The free version helps you discover styles. Plus helps you build a complete taste archive.",
-      unlockCta: "View Plus",
+      unlockBody: "The Hero and introduction are free to browse. Plus opens the complete path from observation to expression.",
+      unlockCta: "See what Plus unlocks",
       locked: "Plus",
       freePreview: "Free preview",
+      lockedArchiveTitle: (name) => `Keep understanding ${name}`,
+      lockedArchiveBody: "The learning modules below are included in Plus. See exactly what unlocks before visiting the App Store.",
+      lockedArchiveNote: "The free version still includes 20 complete style archives.",
+      lockedModules: [
+        ["Observation & Guided Looking", "Three visual cues and step-by-step looking prompts"],
+        ["Aesthetic Profile", "Observation coordinates for order, color, ornament, and emotion"],
+        ["Everyday & Comparison", "Bring the style into daily life and distinguish close neighbors"],
+        ["Reflection", "Save your first impression of each style"],
+        ["Creative Expression", "Complete expression vocabulary and pitfalls to avoid"],
+        ["Depth & Export", "Context, reference works, and HD multi-ratio export"]
+      ],
       exportOptions: "Export",
       freeExport: "Standard clarity · watermarked",
       plusExport: "HD watermark-free · 9:16 / 1:1 / 4:5 / 16:9",
-      plusSubtitle: "Build your private taste archive.",
-      plusBenefits: ["Unlock complete style archives and expressions", "Unlimited saved styles", "HD watermark-free export", "9:16 / 1:1 / 4:5 / 16:9 exports", "One-time purchase, lifetime access"],
+      plusSubtitle: "Go from seeing to understanding with every style fully open.",
+      plusBenefits: ["Complete observation and Guided Looking", "Profile, Everyday, and Comparison", "Reflection and creative expression", "Historical context, figures, and references", "HD watermark-free export in four ratios", "Unlimited saved styles"],
+      plusScope: ["20 complete archives free", "One-time purchase, lifetime access"],
+      plusScopeLabel: "Plus access summary",
       freePlan: "Free",
       plusPlan: "Plus",
-      freePlanItems: ["Daily pick", "Browse all 120 style covers", "View 20 full style archives", "Save up to 20 styles", "Standard watermarked export"],
-      plusPlanItems: ["Unlock more complete style archives", "Unlimited saved styles", "HD watermark-free export", "Multi-ratio export", "Complete style expression", "One-time purchase, lifetime access"],
+      freePlanItems: ["Browse all 120 hero images and introductions", "Read 20 complete style archives", "Save 20 styles with standard export"],
+      plusPlanItems: ["Unlock all remaining archives and learning modules", "Unlimited saved styles", "HD watermark-free export in four ratios", "One-time purchase, lifetime access"],
       appStorePrice: "Price shown in the App Store",
+      appStoreCta: "View Plus on the App Store",
       downloadApp: "Download App",
       downloadOnAppStore: "Download on the App Store",
       downloadAppNote: "Download the free iPhone app for the complete offline experience, reflections, and exports.",
@@ -634,8 +662,8 @@
       aboutTitle: "About Xiazishuo Style Atlas",
       aboutBody: "Xiazishuo Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into styles you can observe, understand, compare, and express. Seventy-two styles include complete in-depth guides.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and a private on-device Reflection. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
       aboutFor: "For designers, AI creators, brand builders, content creators, design students and art lovers.",
-      aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, 20 free complete archives, Reflection, and standard watermarked export.",
-      aboutPlus: "Plus is a one-time App Store purchase that unlocks more complete archives, unlimited saved styles, HD watermark-free export, multi-ratio export, and complete style expressions.",
+      aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
+      aboutPlus: "Plus is a one-time App Store purchase that unlocks the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, Reflection, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
       appFeaturesTitle: "Learn to see a style in the app",
       appFeatures: ["Explore 120 art and design styles", "Read 72 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Save your first impressions with Reflection", "Use Chinese or English, browse offline, and export in multiple ratios"],
       safetyTitle: "Copyright And Style Safety",
@@ -1105,13 +1133,10 @@
   }
 
   function showPlus(reasonKey = "plusSubtitle") {
-    if (!hasNativeBridge()) {
-      openAppStore();
-      return;
-    }
     const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const returnFocus = activeElement?.closest("#drawer") ? dom.drawerBtn : activeElement;
     const native = hasNativeBridge();
+    const web = !native;
     const iapReady = isIapMode() && native;
     const freeLaunch = isFreeLaunchMode();
     store.plusReasonKey = reasonKey;
@@ -1119,6 +1144,8 @@
     dom.plusSubtitle.textContent = freeLaunch ? t("plusFuture") : t(reasonKey);
     $("plusKicker").textContent = t("plus");
     $("plusGentleNote").textContent = freeLaunch ? t("plusFutureBody") : t("unlockBody");
+    $("plusScope").setAttribute("aria-label", t("plusScopeLabel"));
+    $("plusScope").innerHTML = t("plusScope").map((item) => `<span>${escapeHtml(item)}</span>`).join("");
     dom.plusBenefits.innerHTML = t("plusBenefits").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     dom.freePlanTitle.textContent = t("freePlan");
     dom.plusPlanTitle.textContent = t("plusPlan");
@@ -1135,14 +1162,16 @@
     dom.plusCta.hidden = false;
     const storeAction = window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction || "idle";
     const isStoreBusy = ["purchasing", "restoring", "pending"].includes(storeAction);
-    dom.plusCta.textContent = hasPlusAccess()
+    dom.plusCta.textContent = web
+      ? t("appStoreCta")
+      : (hasPlusAccess()
       ? t("purchaseSuccess")
       : (storeAction === "purchasing"
         ? t("purchaseLoading")
         : (storeAction === "pending"
           ? t("purchasePending")
-          : (iapReady ? t("unlockPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon")))));
-    dom.plusCta.disabled = hasPlusAccess() || !iapReady || isStoreBusy;
+          : (iapReady ? t("unlockPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"))))));
+    dom.plusCta.disabled = web ? false : (hasPlusAccess() || !iapReady || isStoreBusy);
     dom.plusRestoreBtn.hidden = !iapReady || hasPlusAccess();
     dom.plusRestoreBtn.textContent = storeAction === "restoring" ? t("restoreLoading") : t("restorePurchases");
     dom.plusRestoreBtn.disabled = isStoreBusy;
@@ -1361,17 +1390,46 @@
     prepareImages(dom.categoryChips);
   }
 
-  function detailSectionNav() {
+  function detailSectionNav(locked = false) {
     const targets = ["detail-see", "detail-understand", "detail-apply", "detail-create", "detail-explore"];
     return `
       <nav class="detail-section-nav" aria-label="${escapeHtml(t("detailSectionNav"))}">
-        ${t("detailSections").map((label, index) => `
-          <button type="button" data-action="jump-detail-section" data-target="${targets[index]}" aria-current="${index === 0 ? "true" : "false"}">
+        ${t("detailSections").map((label, index) => {
+          const plusLocked = locked && index > 0;
+          return `
+          <button class="${plusLocked ? "plus-locked" : ""}" type="button" data-action="${plusLocked ? "show-plus" : "jump-detail-section"}" ${plusLocked ? "" : `data-target="${targets[index]}"`} aria-label="${escapeHtml(plusLocked ? `${label} · Plus` : label)}" aria-current="${index === 0 ? "true" : "false"}">
             <span>${escapeHtml(label)}</span>
-            <span class="detail-nav-arrow" aria-hidden="true">↓</span>
+            <span class="detail-nav-arrow" aria-hidden="true">${plusLocked ? "PLUS" : "↓"}</span>
           </button>
-        `).join("")}
+        `;
+        }).join("")}
       </nav>
+    `;
+  }
+
+  function renderLockedArchive(style) {
+    const lang = store.lang;
+    return `
+      <section id="detail-understand" class="detail-section locked-archive-gate" aria-labelledby="lockedArchiveTitle">
+        <div class="locked-gate-head">
+          <span class="locked-gate-mark" aria-hidden="true">PLUS</span>
+          <p>${escapeHtml(t("freePreview"))}</p>
+          <h2 id="lockedArchiveTitle">${escapeHtml(t("lockedArchiveTitle", style.name[lang]))}</h2>
+          <p>${escapeHtml(t("lockedArchiveBody"))}</p>
+        </div>
+        <div class="locked-module-list">
+          ${t("lockedModules").map((item, index) => `
+            <div class="locked-module-item">
+              <span aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+              <div><strong>${escapeHtml(item[0])}</strong><p>${escapeHtml(item[1])}</p></div>
+            </div>
+          `).join("")}
+        </div>
+        <button class="plus-gate-cta" type="button" data-action="show-plus">
+          <span>${escapeHtml(t("unlockCta"))}</span><span aria-hidden="true">→</span>
+        </button>
+        <small>${escapeHtml(t("lockedArchiveNote"))}</small>
+      </section>
     `;
   }
 
@@ -1637,7 +1695,7 @@
     store.activeDetailSection = "see";
 
     dom.detailContent.innerHTML = `
-      ${detailSectionNav()}
+      ${detailSectionNav(locked)}
       <section id="detail-see" class="detail-hero style-card" aria-labelledby="detailTitle">
         <div class="badge-row">
           <div class="badge">#${style.number} · ${escapeHtml(catName(style.category))}<br>${escapeHtml(style.subtitle[lang])}</div>
@@ -1655,32 +1713,34 @@
           <h1 id="detailTitle">${escapeHtml(style.name.en)}</h1>
           <p class="zh-name">${escapeHtml(style.name.zh)}</p>
           <p class="summary">${escapeHtml(style.summary[lang])}</p>
-          <div class="memory-anchor">
+          ${locked ? "" : `<div class="memory-anchor">
             <span>${escapeHtml(t("rememberInOneLine"))}</span>
             <p>${escapeHtml(style.memoryAnchor[lang])}</p>
-          </div>
+          </div>`}
           <div class="chip-row">${style.tags[lang].slice(0, 3).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>
-          <div class="hero-actions">
+          ${locked ? `<p class="hero-free-preview">${escapeHtml(t("freePreview"))}</p>` : `<div class="hero-actions">
             <button class="guided-entry" type="button" data-action="open-guided">${escapeHtml(t("guidedEntry"))}</button>
             <button class="overview-copy-btn" type="button" data-action="copy-overview" aria-label="${escapeHtml(t("copyOverview"))}" title="${escapeHtml(t("copyOverview"))}">⧉</button>
-          </div>
+          </div>`}
         </div>
       </section>
-      ${renderRecognition(style, guide)}
-      ${renderProfile(guide)}
-      ${renderWhyItFeels(style, guide, locked)}
-      ${renderEveryday(guide)}
-      ${renderComparisons(guide)}
-      ${renderReflection(style, guide)}
-      <section id="detail-create" class="detail-create-group" aria-labelledby="createTitle">
-        ${renderPromptSection(style, locked)}
-        ${renderExportPanel()}
-      </section>
-      ${renderExplore(style, locked)}
-      <section class="detail-section similar-section">
-        <h2>${escapeHtml(t("similar"))}</h2>
-        <div class="result-list">${style.relatedStyles.filter((id) => validStyleIds.has(id)).slice(0, 4).map((id) => resultCard(stylesById.get(id))).join("")}</div>
-      </section>
+      ${locked ? renderLockedArchive(style) : `
+        ${renderRecognition(style, guide)}
+        ${renderProfile(guide)}
+        ${renderWhyItFeels(style, guide, false)}
+        ${renderEveryday(guide)}
+        ${renderComparisons(guide)}
+        ${renderReflection(style, guide)}
+        <section id="detail-create" class="detail-create-group" aria-labelledby="createTitle">
+          ${renderPromptSection(style, false)}
+          ${renderExportPanel()}
+        </section>
+        ${renderExplore(style, false)}
+        <section class="detail-section similar-section">
+          <h2>${escapeHtml(t("similar"))}</h2>
+          <div class="result-list">${style.relatedStyles.filter((id) => validStyleIds.has(id)).slice(0, 4).map((id) => resultCard(stylesById.get(id))).join("")}</div>
+        </section>
+      `}
     `;
     prepareImages(dom.detailContent);
     observeDetailSections();
@@ -3233,7 +3293,7 @@
       if (action === "close-lightbox") return closeImage();
       if (action === "share-lightbox") return shareImage();
       if (action === "save-lightbox") return saveImage();
-      if (action === "show-plus") return hasNativeBridge() ? showPlus() : openAppStore();
+      if (action === "show-plus") return showPlus();
       if (action === "close-plus") return closePlus();
       if (action === "plus-export") return canExportHighRes() ? saveShareCard() : showPlus("highResLocked");
       if (action === "export-ratio" && ratio) return canExportHighRes() ? saveShareCard(activeStyle(), ratio) : showPlus("highResLocked");
