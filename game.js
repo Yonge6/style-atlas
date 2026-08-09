@@ -284,8 +284,6 @@
       productName: "虾子曰艺术风格图鉴",
       drawerEyebrow: "虾子曰 · STYLE ATLAS",
       drawerTitle: "你的风格图鉴",
-      drawerSearchTitle: "搜索风格",
-      drawerSearchNote: "按名称、流派与视觉线索查找",
       drawerSavedTitle: "我的收藏",
       drawerSavedNote: (n) => `${n} 个已收藏风格`,
       drawerAboutTitle: "关于图鉴",
@@ -519,8 +517,6 @@
       productName: "Xiazishuo Style Atlas",
       drawerEyebrow: "XIAZISHUO · STYLE ATLAS",
       drawerTitle: "Your Style Atlas",
-      drawerSearchTitle: "Search styles",
-      drawerSearchNote: "Find styles by name, movement, or visual cue",
       drawerSavedTitle: "Saved styles",
       drawerSavedNote: (n) => `${n} saved ${n === 1 ? "style" : "styles"}`,
       drawerAboutTitle: "About the atlas",
@@ -3581,7 +3577,6 @@
   function renderDrawerContent() {
     $("drawerEyebrow").textContent = t("drawerEyebrow");
     $("drawerTitle").textContent = t("drawerTitle");
-    setDrawerRowCopy("drawerSearchBtn", t("drawerSearchTitle"), t("drawerSearchNote"));
     setDrawerRowCopy("drawerSavedBtn", t("drawerSavedTitle"), t("drawerSavedNote", store.saved.length));
     setDrawerRowCopy("drawerAboutBtn", t("drawerAboutTitle"), t("drawerAboutNote"));
     $("drawerContactTitle").textContent = t("drawerContactTitle");
