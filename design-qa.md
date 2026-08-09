@@ -94,12 +94,15 @@ final result: passed
 - No Guide data, access rule, purchase action, or App Store destination was changed.
 - Missing Profile data is shown as `解锁查看` / `Unlock to view` rather than inventing a score or description.
 - Source artwork and related-style assets are reused; no placeholder or CSS illustration was introduced.
-- Browser screenshot comparison is blocked because the in-app browser security policy rejected automation against the local preview URL. No alternate browser or local-address workaround was used.
+- Production verification: `https://style-atlas.wonderelian.com/?review=detail&style=isometric-illustration&lang=zh&section=see`.
+- Mobile production check at 390 x 844 passed in Chinese and English with zero horizontal overflow and no console warnings or errors.
+- The live archive contains three preview chapters, three recognition cues, four Profile dimensions, two valid comparison targets, and one focused App Store CTA.
+- The Plus panel opens from the archive CTA, the removed summary row remains absent, and the App Store destination retains app ID `6787447019`.
 
-## Required Visual Check
+## Visual Check
 
-- Confirm the archive window at the same mobile viewport as the selected mock.
-- Confirm Chinese and English wrapping, CTA visibility, image containment, and zero horizontal overflow.
-- Confirm the Plus panel still opens from the archive CTA.
+- Archive window checked at the same mobile viewport as the selected mock: passed.
+- Chinese and English wrapping, CTA visibility, image containment, and zero horizontal overflow: passed.
+- Plus panel opening from the archive CTA: passed.
 
-final result: blocked
+final result: passed
