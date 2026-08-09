@@ -27,9 +27,16 @@ async function installNativeMock(page) {
 }
 
 async function openPlus(page) {
-  await page.locator("#drawerBtn").click();
-  await page.locator("[data-action='show-plus']").click();
+  let trigger = page.locator("[data-action='show-plus']").first();
+  if (!(await trigger.isVisible().catch(() => false))) {
+    await page.locator("#searchOpenBtn").click();
+    await page.locator("#searchInput").fill("Baroque");
+    await page.locator("#searchResults .result-open").first().click();
+    trigger = page.locator("[data-action='show-plus']").first();
+  }
+  await trigger.click();
   await expect(page.locator("#plusModal")).toBeVisible();
+  return trigger;
 }
 
 async function dispatchTouchGesture(page, selector, points) {
@@ -147,14 +154,9 @@ test("native shell ignores compatibility mouse drags and consumes one touch swip
   await expect(page.locator("#styleDeck .cover-top > span")).not.toHaveText(before);
 });
 
-test("home introduction follows the card controls and random uses a card transition", async ({ page }) => {
+test("home omits the retired introduction and random uses a card transition", async ({ page }) => {
   await page.goto("/");
-  const order = await page.locator("#homeView").evaluate((home) => {
-    const controls = home.querySelector(".deck-controls");
-    const copy = home.querySelector("#positioningCopy");
-    return Boolean(controls.compareDocumentPosition(copy) & Node.DOCUMENT_POSITION_FOLLOWING);
-  });
-  expect(order).toBe(true);
+  await expect(page.locator("#positioningCopy")).toHaveCount(0);
 
   const before = await page.locator("#styleDeck .cover-top > span").textContent();
   await page.locator("#randomBtn").click();
@@ -227,9 +229,10 @@ test("Chinese brand is exact across product surfaces", async ({ page }) => {
   await expect(page.locator(".brand-primary")).toHaveText("虾子曰");
   await expect(page.locator(".brand-secondary")).toHaveText("艺术风格图鉴");
   await page.locator("#drawerBtn").click();
-  await expect(page.locator(".drawer-head strong")).toHaveText("虾子曰艺术风格图鉴");
+  await expect(page.locator(".drawer-head strong")).toHaveText("你的风格图鉴");
   await expect(page.locator(".drawer-nav [data-view='detail']")).toHaveCount(0);
-  await expect(page.locator(".plus-nav")).toHaveText("虾子曰艺术风格图鉴 Plus");
+  await expect(page.locator(".plus-nav")).toHaveCount(0);
+  await expect(page.locator("#downloadAppNav")).toContainText("前往 App Store 下载");
   await page.locator("[data-view='about']").click();
   await expect(page.locator("#aboutContent")).toContainText("关于虾子曰艺术风格图鉴");
   await page.goto("/#screenshots");
@@ -245,8 +248,9 @@ test("English brand is exact across product surfaces", async ({ page }) => {
   await expect(page.locator(".brand-primary")).toHaveText("Xiazishuo");
   await expect(page.locator(".brand-secondary")).toHaveText("Style Atlas");
   await page.locator("#drawerBtn").click();
-  await expect(page.locator(".drawer-head strong")).toHaveText("Xiazishuo Style Atlas");
-  await expect(page.locator(".plus-nav")).toHaveText("Xiazishuo Style Atlas Plus");
+  await expect(page.locator(".drawer-head strong")).toHaveText("Your Style Atlas");
+  await expect(page.locator(".plus-nav")).toHaveCount(0);
+  await expect(page.locator("#downloadAppNav")).toContainText("Download on the App Store");
   await page.locator("[data-view='about']").click();
   await expect(page.locator("#aboutContent")).toContainText("About Xiazishuo Style Atlas");
 });
@@ -360,10 +364,10 @@ test("Plus modal traps Tab focus", async ({ page }) => {
 test("Plus modal Escape closes and restores trigger focus", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
-  await openPlus(page);
+  const trigger = await openPlus(page);
   await page.keyboard.press("Escape");
   await expect(page.locator("#plusModal")).toBeHidden();
-  await expect(page.locator("#drawerBtn")).toBeFocused();
+  await expect(trigger).toBeFocused();
 });
 
 test("image preview Escape closes and restores image trigger focus", async ({ page }) => {
@@ -487,11 +491,11 @@ test("saved styles persist and the free limit opens Plus", async ({ page }) => {
 test("native entitlement true and false update locked UI", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/#baroque");
-  await expect(page.locator(".locked-section").first()).toBeVisible();
+  await expect(page.locator(".locked-archive-gate")).toBeVisible();
   await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
-  await expect(page.locator(".locked-section")).toHaveCount(0);
+  await expect(page.locator(".locked-archive-gate")).toHaveCount(0);
   await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(false));
-  await expect(page.locator(".locked-section").first()).toBeVisible();
+  await expect(page.locator(".locked-archive-gate")).toBeVisible();
 });
 
 test("Plus export uses the requested ratio without a free watermark", async ({ page }) => {
@@ -567,7 +571,7 @@ test("detail overview uses a bottom-right icon copy control and hides free previ
   await page.goto("/#baroque");
   const copy = page.locator(".detail-hero .overview-copy-btn");
   await expect(copy).toBeVisible();
-  await expect(copy).toHaveText("⧉");
+  await expect(copy.locator(".ui-icon-copy")).toHaveCount(1);
   await expect(copy).toHaveAttribute("aria-label", "复制风格介绍");
   await expect(page.locator(".access-note")).toHaveCount(0);
   const position = await copy.evaluate((button) => {
@@ -579,7 +583,8 @@ test("detail overview uses a bottom-right icon copy control and hides free previ
     };
   });
   expect(position.right).toBeLessThanOrEqual(18);
-  expect(position.bottom).toBeLessThanOrEqual(18);
+  expect(position.bottom).toBeGreaterThanOrEqual(18);
+  expect(position.bottom).toBeLessThanOrEqual(32);
 });
 
 test("home image request budget stays below fifteen style covers", async ({ page }) => {
@@ -591,6 +596,25 @@ test("home image request budget stays below fifteen style covers", async ({ page
   await page.waitForTimeout(500);
   expect(requested.size).toBeLessThanOrEqual(15);
   expect(requested.size).toBeLessThan(120);
+});
+
+test("drawer QR images load only when their overlays are opened", async ({ page }) => {
+  const requested = [];
+  page.on("request", (request) => {
+    if (/\/(video-channel\.jpg|wechat-appreciation-code\.png)(?:\?|$)/.test(request.url())) requested.push(request.url());
+  });
+  await page.goto("/");
+  expect(requested).toEqual([]);
+
+  await page.locator("#drawerBtn").click();
+  await page.locator("[data-action='show-support']").click();
+  await expect.poll(() => requested.some((url) => url.endsWith("wechat-appreciation-code.png"))).toBe(true);
+
+  await page.goto("/");
+  await page.locator("#drawerBtn").click();
+  await page.locator("#drawerContact summary").click();
+  await page.locator("[data-action='show-video-channel']").click();
+  await expect.poll(() => requested.some((url) => url.endsWith("video-channel.jpg"))).toBe(true);
 });
 
 test("current deck image is high priority and adjacent cards are decoded", async ({ page }) => {
@@ -917,16 +941,14 @@ test("reduced motion uses automatic scrolling and skips card fly animation", asy
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe("auto");
 });
 
-test("Escape closes only the topmost available layer", async ({ page }) => {
+test("Escape closes Plus without closing the underlying detail", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
-  await page.locator("#drawerBtn").click();
-  await page.locator("[data-action='show-plus']").click();
-  await expect(page.locator("#plusModal")).toBeVisible();
-  await expect(page.locator("#drawer")).toHaveAttribute("aria-hidden", "true");
+  await openPlus(page);
+  await expect(page.locator("#detailView")).toHaveClass(/active/);
   await page.keyboard.press("Escape");
   await expect(page.locator("#plusModal")).toBeHidden();
-  await expect(page.locator("#drawer")).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator("#detailView")).toHaveClass(/active/);
 });
 
 test("search input and results region have explicit accessible names", async ({ page }) => {
@@ -1680,7 +1702,9 @@ for (const styleId of enhancedGuideIds) {
 
 test("all batch-one guides render and complete the five-stage Guided Looking flow", async ({ page }) => {
   test.setTimeout(60000);
+  await installNativeMock(page);
   await page.goto("/#bauhaus");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   for (const styleId of batchOneGuideIds) {
     await page.evaluate((id) => {
       location.hash = id;
@@ -1701,7 +1725,9 @@ test("all batch-one guides render and complete the five-stage Guided Looking flo
 
 test("all batch-two guides render and complete the five-stage Guided Looking flow", async ({ page }) => {
   test.setTimeout(60000);
+  await installNativeMock(page);
   await page.goto("/#renaissance");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   for (const styleId of batchTwoGuideIds) {
     await page.evaluate((id) => {
       location.hash = id;
@@ -1722,7 +1748,9 @@ test("all batch-two guides render and complete the five-stage Guided Looking flo
 
 test("all batch-three guides render and complete the five-stage Guided Looking flow", async ({ page }) => {
   test.setTimeout(60000);
+  await installNativeMock(page);
   await page.goto("/#de-stijl");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   for (const styleId of batchThreeGuideIds) {
     await page.evaluate((id) => {
       location.hash = id;
@@ -1762,7 +1790,9 @@ test("all 120 style detail pages render without empty primary content", async ({
 
 test("all detail pages share the polished modules in Chinese and English", async ({ page }) => {
   test.setTimeout(60000);
+  await installNativeMock(page);
   await page.goto("/#swiss-style");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   const failures = await page.evaluate(async () => {
     const ids = window.STYLE_ATLAS_DATA.rawStyles.map((style) => style[0]);
     const invalid = [];
@@ -1780,7 +1810,7 @@ test("all detail pages share the polished modules in Chinese and English", async
           promptSave: document.querySelectorAll(".prompt-section [data-action='save-card']").length,
           overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth
         };
-        if (state.cards !== 4 || state.colors !== 4 || state.arrow !== 1 || state.heading !== 0 || state.promptSave !== 0 || state.overflow) {
+        if (state.cards !== 4 || state.colors !== 4 || state.arrow !== 0 || state.heading !== 0 || state.promptSave !== 0 || state.overflow) {
           invalid.push({ id, lang, ...state });
         }
       }
@@ -1860,11 +1890,12 @@ test("guided overlay makes the app background inert", async ({ page }) => {
   await expect(page.locator("#appShell")).not.toHaveAttribute("inert", "");
 });
 
-test("guided looking stays free and sends no native purchase message", async ({ page }) => {
+test("a locked guide routes Guided Looking to Plus without starting a purchase", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/#cyberpunk");
-  await page.locator("[data-action='open-guided']").click();
-  await page.locator("#guidedNextBtn").click();
+  await expect(page.locator("[data-action='open-guided']")).toHaveCount(0);
+  await page.locator(".detail-section-nav [data-action='show-plus']").first().click();
+  await expect(page.locator("#plusModal")).toBeVisible();
   const purchaseMessages = await page.evaluate(() => window.__nativeMessages.filter((item) => item.type === "purchasePlus"));
   expect(purchaseMessages).toEqual([]);
 });
@@ -1880,7 +1911,9 @@ test("non-pilot styles use a stable fallback guide", async ({ page }) => {
 });
 
 test("fallback detail contains no undefined values or empty profile scale", async ({ page }) => {
+  await installNativeMock(page);
   await page.goto("/#cyberpunk");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   await expect(page.locator("#detailContent")).not.toContainText("undefined");
   await expect(page.locator(".profile-pending")).toBeVisible();
   await expect(page.locator(".profile-scale")).toHaveCount(0);
@@ -1890,7 +1923,8 @@ test("recognition module presents at least three explained observation cards", a
   await page.goto("/#swiss-style");
   const cards = page.locator(".recognition-grid .observation-card");
   expect(await cards.count()).toBeGreaterThanOrEqual(3);
-  await expect(cards.first()).toHaveCSS("background-color", "rgba(24, 21, 15, 0.96)");
+  await expect(cards.first()).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  await expect(cards.first().locator("p")).toHaveCSS("color", "rgb(219, 203, 164)");
   for (const card of await cards.all()) {
     await expect(card.locator("h3")).not.toHaveText("");
     await expect(card.locator("p")).not.toHaveText("");
@@ -1914,9 +1948,9 @@ test("pilot everyday module presents four ordinary-life scenes", async ({ page }
 test("comparison navigation enters a related style and back returns to the source", async ({ page }) => {
   await page.goto("/#swiss-style");
   await page.locator(".comparison-open").first().click();
-  await expect(page.locator("#detailTitle")).toHaveText("Bauhaus");
+  await expect(page.locator("#detailTitle")).toHaveText("包豪斯风格");
   await page.locator("#backBtn").click();
-  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
 });
 
 test("deep accordion is keyboard operable and updates expanded state", async ({ page }) => {
@@ -1930,41 +1964,17 @@ test("deep accordion is keyboard operable and updates expanded state", async ({ 
   await expect(page.locator(`#${panelId}`)).toBeVisible();
 });
 
-test("reflection input saves locally and survives detail navigation", async ({ page }) => {
+test("retired Reflection controls are not rendered on detail pages", async ({ page }) => {
   await page.goto("/#swiss-style");
-  const reflection = page.locator(".reflection-section");
-  await expect(reflection.locator(".reflection-arrow")).toBeVisible();
-  await reflection.locator("summary").click();
-  await expect(reflection).toHaveAttribute("open", "");
-  const input = page.locator("[data-reflection-id='swiss-style']");
-  await input.fill("我喜欢它让信息变得清楚。");
-  await page.locator(".comparison-open").first().click();
-  await page.locator("#backBtn").click();
-  await expect(page.locator("[data-reflection-id='swiss-style']")).toHaveValue("我喜欢它让信息变得清楚。");
+  await expect(page.locator(".reflection-section")).toHaveCount(0);
+  await expect(page.locator("[data-reflection-id]")).toHaveCount(0);
 });
 
-test("reflection survives a page reload", async ({ page }) => {
-  await page.goto("/#swiss-style");
-  await page.locator(".reflection-section summary").click();
-  await page.locator("[data-reflection-id='swiss-style']").fill("留白让我更容易呼吸。");
-  await page.reload();
-  await expect(page.locator("[data-reflection-id='swiss-style']")).toHaveValue("留白让我更容易呼吸。");
-});
-
-test("reflection enforces the 300 character limit", async ({ page }) => {
-  await page.goto("/#swiss-style");
-  await page.locator(".reflection-section summary").click();
-  const input = page.locator("[data-reflection-id='swiss-style']");
-  await input.fill("审".repeat(360));
-  await expect(input).toHaveValue("审".repeat(300));
-  await expect(input).toHaveAttribute("maxlength", "300");
-});
-
-test("corrupt reflection JSON recovers without breaking the page", async ({ page }) => {
+test("legacy corrupt reflection data does not break the page", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("styleAtlasReflectionsV1", "{broken"));
   await page.goto("/#swiss-style");
-  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
-  await expect(page.locator("[data-reflection-id='swiss-style']")).toHaveValue("");
+  await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
+  await expect(page.locator("[data-reflection-id]")).toHaveCount(0);
 });
 
 test("detail remains usable when localStorage is unavailable", async ({ page }) => {
@@ -1974,10 +1984,9 @@ test("detail remains usable when localStorage is unavailable", async ({ page }) 
     Storage.prototype.removeItem = () => { throw new Error("storage disabled"); };
   });
   await page.goto("/#swiss-style");
-  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
-  await page.locator(".reflection-section summary").click();
-  await page.locator("[data-reflection-id='swiss-style']").fill("仍然可以输入");
-  await expect(page.locator("[data-reflection-id='swiss-style']")).toHaveValue("仍然可以输入");
+  await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
+  await expect(page.locator("#detailContent")).not.toContainText("undefined");
+  await expect(page.locator(".detail-section-nav button")).toHaveCount(5);
 });
 
 test("language switching renders complete enhanced English content", async ({ page }) => {
@@ -2044,7 +2053,7 @@ test("detail section navigation is named and updates its current target", async 
   await expect(nav.locator("button").nth(1)).toHaveAttribute("aria-current", "true");
 });
 
-test("creation heading is integrated with the rounded prompt module", async ({ page }) => {
+test("creation heading is integrated with the unframed detail bands", async ({ page }) => {
   await page.goto("/#swiss-style");
   const create = page.locator("#detail-create");
   const prompt = create.locator(".prompt-section");
@@ -2053,8 +2062,8 @@ test("creation heading is integrated with the rounded prompt module", async ({ p
   await expect(prompt.locator(".section-kicker")).toHaveText("创作");
   await expect(prompt.locator("#createTitle")).toHaveText("把这种美用进创作");
   await expect(prompt.locator(".prompt-heading")).toHaveCount(0);
-  expect(await prompt.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)).not.toBe("0px");
-  expect(await exportPanel.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)).not.toBe("0px");
+  expect(await prompt.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)).toBe("0px");
+  expect(await exportPanel.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)).toBe("0px");
 });
 
 test("aesthetic profile exposes level and description without a total score", async ({ page }) => {
@@ -2068,7 +2077,7 @@ test("aesthetic profile exposes level and description without a total score", as
 test("review mode opens a specified style detail", async ({ page }) => {
   await page.goto("/?review=detail&style=swiss-style");
   await expect(page.locator("#detailView")).toHaveClass(/active/);
-  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
 });
 
 test("review mode switches to English", async ({ page }) => {
@@ -2091,7 +2100,7 @@ test("review mode falls back safely for an invalid style", async ({ page }) => {
 });
 
 test("review mode scrolls to a valid comparison section", async ({ page }) => {
-  await page.goto("/?review=detail&style=solarpunk&section=compare");
+  await page.goto("/?review=detail&style=art-deco&section=compare");
   await expect(page.locator("#detail-compare")).toBeVisible();
   await expect.poll(() => page.evaluate(() => Math.abs(document.querySelector("#detail-compare").getBoundingClientRect().top))).toBeLessThan(220);
 });
@@ -2187,51 +2196,21 @@ test("comparison back returns near the comparison section", async ({ page }) => 
   await page.goto("/#swiss-style");
   await page.locator("#detail-compare").scrollIntoViewIfNeeded();
   await page.locator(".comparison-open").first().click();
-  await expect(page.locator("#detailTitle")).toHaveText("Bauhaus");
+  await expect(page.locator("#detailTitle")).toHaveText("包豪斯风格");
   await page.locator("#backBtn").click();
-  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
   await expect.poll(() => page.evaluate(() => Math.abs(document.querySelector("#detail-compare").getBoundingClientRect().top))).toBeLessThan(220);
 });
 
-test("reflection debounce delays local write until quiet", async ({ page }) => {
+test("legacy Reflection data remains local and is not rendered", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("styleAtlasReflectionsV1", JSON.stringify({
+      "swiss-style": { text: "旧版本地记录", updatedAt: "2026-08-01T00:00:00.000Z" }
+    }));
+  });
   await page.goto("/#swiss-style");
-  await page.locator(".reflection-section summary").click();
-  await page.locator("[data-reflection-id='swiss-style']").fill("延迟保存");
-  expect(await page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style"))).toBeNull();
-  await expect.poll(() => page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style")?.text)).toBe("延迟保存");
-});
-
-test("reflection flushes before opening a comparison style", async ({ page }) => {
-  await page.goto("/#swiss-style");
-  await page.locator(".reflection-section summary").click();
-  await page.locator("[data-reflection-id='swiss-style']").fill("切换前保存");
-  await page.locator(".comparison-open").first().click();
-  expect(await page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style")?.text)).toBe("切换前保存");
-});
-
-test("reflection clear removes stored text and confirms", async ({ page }) => {
-  await page.goto("/#swiss-style");
-  await page.locator(".reflection-section summary").click();
-  await page.locator("[data-reflection-id='swiss-style']").fill("准备清除");
-  await expect.poll(() => page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style")?.text)).toBe("准备清除");
-  await page.locator("[data-action='clear-reflection']").click();
-  expect(await page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style"))).toBeNull();
-  await expect(page.locator("[data-reflection-status='swiss-style']")).toHaveText("已清除");
-});
-
-test("empty reflection does not create a stored record", async ({ page }) => {
-  await page.goto("/#swiss-style");
-  await page.locator(".reflection-section summary").click();
-  await page.locator("[data-reflection-id='swiss-style']").fill("");
-  await page.locator("[data-reflection-id='swiss-style']").blur();
-  expect(await page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style"))).toBeNull();
-});
-
-test("English reflection saved status is localized", async ({ page }) => {
-  await page.goto("/?review=detail&style=swiss-style&lang=en");
-  await page.locator(".reflection-section summary").click();
-  await page.locator("[data-reflection-id='swiss-style']").fill("Clear order.");
-  await expect.poll(() => page.locator("[data-reflection-status='swiss-style']").textContent()).toBe("Saved on this device");
+  expect(await page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style")?.text)).toBe("旧版本地记录");
+  await expect(page.locator("[data-reflection-id]")).toHaveCount(0);
 });
 
 test("Plus purchase and restore actions remain wired after detail polish", async ({ page }) => {
@@ -2309,32 +2288,32 @@ for (const styleId of pilotStyleIds) {
 }
 
 test("preview build has noindex and its visible environment label", async ({ page }) => {
-  await page.goto("/build/preview/v1.3/");
+  await page.goto("/build/preview/v1.4/");
   await expect(page.locator("meta[name='robots']")).toHaveAttribute("content", "noindex,nofollow");
-  await expect(page.locator(".v13-preview-badge")).toHaveText("V1.3 Preview");
+  await expect(page.locator(".v14-preview-badge")).toHaveText("V1.4 Preview");
 });
 
 test("preview label never enters the iOS resource index", async ({ page }) => {
   await page.goto("/");
   const iosIndex = fs.readFileSync(path.join(__dirname, "..", "iOS", "StyleAtlas", "Resources", "Web", "index.html"), "utf8");
-  expect(iosIndex).not.toContain("V1.3 Preview");
-  expect(iosIndex).not.toContain("v13-preview-badge");
+  expect(iosIndex).not.toContain("V1.4 Preview");
+  expect(iosIndex).not.toContain("v14-preview-badge");
 });
 
 test("production source never displays the preview label", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator(".v13-preview-badge")).toHaveCount(0);
+  await expect(page.locator(".v14-preview-badge")).toHaveCount(0);
   await expect(page.locator("meta[name='robots']")).toHaveCount(0);
 });
 
 test("preview subdirectory resolves scripts, styles, and local hero assets", async ({ page }) => {
   const failures = [];
   page.on("requestfailed", (request) => failures.push(request.url()));
-  await page.goto("/build/preview/v1.3/?review=detail&style=swiss-style");
-  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await page.goto("/build/preview/v1.4/?review=detail&style=swiss-style");
+  await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
   await expect(page.locator(".detail-hero img")).toBeVisible();
   await expect(page.locator(".detail-hero img")).toHaveAttribute("src", "assets/styles/swiss-style.webp");
-  expect(failures.filter((url) => url.includes("/build/preview/v1.3/"))).toEqual([]);
+  expect(failures.filter((url) => url.includes("/build/preview/v1.4/"))).toEqual([]);
 });
 
 test("detail navigation leaves the target heading below sticky controls", async ({ page }) => {
@@ -2376,20 +2355,19 @@ test("related style returns to the source comparison region", async ({ page }) =
   await page.locator("#detail-compare").scrollIntoViewIfNeeded();
   await page.locator(".comparison-open").first().click();
   await page.locator("#backBtn").click();
-  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
+  await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
   await expect.poll(() => page.locator("#detail-compare").evaluate((node) => Math.abs(node.getBoundingClientRect().top))).toBeLessThan(220);
 });
 
-test("reflection remains focusable and visible at 200 percent zoom", async ({ page }) => {
+test("detail content remains visible at 200 percent zoom without retired Reflection controls", async ({ page }) => {
   await page.goto("/#chinese-ink-painting");
-  await page.locator(".reflection-section summary").click();
   await page.evaluate(() => { document.documentElement.style.zoom = "2"; });
-  const input = page.locator("[data-reflection-id='chinese-ink-painting']");
-  await input.focus();
-  await expect(input).toBeFocused();
-  const box = await input.boundingBox();
+  const content = page.locator("#detail-understand");
+  await expect(content).toBeVisible();
+  const box = await content.boundingBox();
   expect(box.width).toBeGreaterThan(100);
   expect(box.height).toBeGreaterThan(80);
+  await expect(page.locator("[data-reflection-id]")).toHaveCount(0);
 });
 
 test("XXL text keeps detail navigation operable at 320px", async ({ page }) => {
@@ -2458,36 +2436,35 @@ test("twelve native detail visits produce no Wiki requests", async ({ page }) =>
 });
 
 test("detail hero and guided looking reuse one local image request", async ({ page }) => {
+  await installNativeMock(page);
   let heroRequests = 0;
   page.on("request", (request) => {
     if (request.url().includes("/assets/styles/solarpunk.webp")) heroRequests += 1;
   });
   await page.goto("/#solarpunk");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   await expect(page.locator(".detail-hero img")).toBeVisible();
   await page.locator("[data-action='open-guided']").click();
   await expect(page.locator("#guidedImage")).toBeVisible();
   expect(heroRequests).toBe(1);
 });
 
-test("reflection creates no fetch or Native bridge message", async ({ page }) => {
+test("retired Reflection surface creates no fetch or Native bridge message", async ({ page }) => {
   await installNativeMock(page);
   const externalRequests = [];
   page.on("request", (request) => {
     if (!request.url().startsWith("http://127.0.0.1:8765/")) externalRequests.push(request.url());
   });
   await page.goto("/#swiss-style");
-  await page.locator(".reflection-section summary").click();
-  await page.locator("[data-reflection-id='swiss-style']").fill("只保存在本机");
-  await page.locator("[data-reflection-id='swiss-style']").blur();
-  await expect.poll(() => page.evaluate(() => window.StyleAtlasAesthetic.getReflection("swiss-style")?.text)).toBe("只保存在本机");
+  await expect(page.locator("[data-reflection-id]")).toHaveCount(0);
   expect(externalRequests).toEqual([]);
   expect(await page.evaluate(() => window.__nativeMessages)).toEqual([]);
 });
 
 test("preview payload is nested and cannot replace production root files", async () => {
   const previewRoot = path.join(__dirname, "..", "build", "preview");
-  const manifest = JSON.parse(fs.readFileSync(path.join(previewRoot, "v1.3", "preview-manifest.json"), "utf8"));
-  expect(manifest.deployPath).toBe("/preview/v1.3/");
+  const manifest = JSON.parse(fs.readFileSync(path.join(previewRoot, "v1.4", "preview-manifest.json"), "utf8"));
+  expect(manifest.deployPath).toBe("/preview/v1.4/");
   expect(manifest.productionRootFilesIncluded).toBe(false);
   expect(fs.existsSync(path.join(previewRoot, "index.html"))).toBe(false);
   expect(fs.existsSync(path.join(previewRoot, "CNAME"))).toBe(false);

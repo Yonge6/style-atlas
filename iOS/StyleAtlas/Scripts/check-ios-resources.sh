@@ -17,6 +17,12 @@ required_web_files=(
   "data-aesthetic-guides.js"
   "examples.js"
   "assets/brand/app-icon.png"
+  "assets/contact/video-channel.jpg"
+  "assets/icons/menu.svg"
+  "assets/icons/search.svg"
+  "assets/icons/shuffle.svg"
+  "assets/support/wechat-appreciation-code.png"
+  "assets/support/wechat-appreciation.webp"
 )
 
 for file in "${required_web_files[@]}"; do

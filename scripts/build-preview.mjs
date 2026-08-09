@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const output = path.join(root, "build", "preview", "v1.3");
+const output = path.join(root, "build", "preview", "v1.4");
 const buildRoot = path.join(root, "build", "preview");
 
 if (!output.startsWith(`${buildRoot}${path.sep}`)) {
@@ -27,7 +27,10 @@ await mkdir(output, { recursive: true });
 await Promise.all(webFiles.map((file) => cp(path.join(root, file), path.join(output, file))));
 await Promise.all([
   cp(path.join(root, "assets", "brand"), path.join(output, "assets", "brand"), { recursive: true }),
+  cp(path.join(root, "assets", "contact"), path.join(output, "assets", "contact"), { recursive: true }),
   cp(path.join(root, "assets", "examples"), path.join(output, "assets", "examples"), { recursive: true }),
+  cp(path.join(root, "assets", "icons"), path.join(output, "assets", "icons"), { recursive: true }),
+  cp(path.join(root, "assets", "support"), path.join(output, "assets", "support"), { recursive: true }),
   cp(path.join(root, "assets", "styles"), path.join(output, "assets", "styles"), {
     recursive: true,
     filter: (source) => !path.extname(source) || path.extname(source) === ".webp"
@@ -43,9 +46,9 @@ const previewIndex = sourceIndex
   .replace(
     "<body>",
     `<body>
-  <div class="v13-preview-badge" aria-label="V1.3 preview environment">V1.3 Preview</div>
+  <div class="v14-preview-badge" aria-label="V1.4 preview environment">V1.4 Preview</div>
   <style>
-    .v13-preview-badge {
+    .v14-preview-badge {
       position: fixed;
       right: max(10px, env(safe-area-inset-right));
       bottom: max(10px, env(safe-area-inset-bottom));
@@ -61,7 +64,7 @@ const previewIndex = sourceIndex
   </style>`
   );
 
-if (previewIndex === sourceIndex || !previewIndex.includes("noindex,nofollow") || !previewIndex.includes("V1.3 Preview")) {
+if (previewIndex === sourceIndex || !previewIndex.includes("noindex,nofollow") || !previewIndex.includes("V1.4 Preview")) {
   throw new Error("Preview markers were not injected");
 }
 
@@ -69,11 +72,11 @@ await writeFile(path.join(output, "index.html"), previewIndex);
 await writeFile(
   path.join(output, "preview-manifest.json"),
   `${JSON.stringify({
-    version: "v1.3",
-    source: "feature/v1.3-style-deep-dive",
-    deployPath: "/preview/v1.3/",
+    version: "v1.4",
+    source: "release/v1.4",
+    deployPath: "/preview/v1.4/",
     productionRootFilesIncluded: false
   }, null, 2)}\n`
 );
 
-console.log(`Built isolated V1.3 preview at ${path.relative(root, output)}/`);
+console.log(`Built isolated V1.4 preview at ${path.relative(root, output)}/`);
