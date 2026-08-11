@@ -3667,8 +3667,8 @@
     $("drawerContactNote").textContent = t("drawerContactNote");
     $("drawerContact").querySelector(".drawer-contact-list").setAttribute("aria-label", store.lang === "zh" ? "联系方式" : "Contact methods");
     const contactLabels = store.lang === "zh"
-      ? [["邮箱", "hustyy986@gmail.com"], ["小红书", "打开主页"], ["抖音", "打开主页"], ["X", "@yongyuan1"], ["TikTok", "@wonderelian"]]
-      : [["Email", "hustyy986@gmail.com"], ["RED", "Open profile"], ["Douyin", "Open profile"], ["X", "@yongyuan1"], ["TikTok", "@wonderelian"]];
+      ? [["WonderElian", "wonderelian.com"], ["邮箱", "hustyy986@gmail.com"], ["小红书", "打开主页"], ["抖音", "打开主页"], ["X", "@yongyuan1"], ["TikTok", "@wonderelian"]]
+      : [["WonderElian", "wonderelian.com"], ["Email", "hustyy986@gmail.com"], ["RED", "Open profile"], ["Douyin", "Open profile"], ["X", "@yongyuan1"], ["TikTok", "@wonderelian"]];
     $("drawerContact").querySelectorAll(".drawer-contact-list a").forEach((link, index) => {
       link.querySelector("span").textContent = contactLabels[index][0];
       link.querySelector("strong").textContent = contactLabels[index][1];
