@@ -291,7 +291,7 @@
       drawerAboutNote: "认识产品、内容范围与使用方式",
       drawerDownloadKicker: "iPhone App",
       drawerDownloadTitle: "带走完整风格图鉴",
-      drawerDownloadNote: "72 篇深度指南、中英双语与离线浏览，都装进口袋里。",
+      drawerDownloadNote: "120 篇深度指南、中英双语与离线浏览，都装进口袋里。",
       drawerDownloadCta: "前往 App Store 下载",
       drawerDownloadCtaNote: "免费下载 · iPhone",
       drawerReviewCta: "已经安装？去评分与评价",
@@ -314,8 +314,8 @@
       supportRecognition: "长按二维码，识别并支付",
       supportCodeLink: "单独打开二维码",
       supportPosterLink: "查看完整赞赏海报",
-      drawerFooter: "120 种风格 · 72 篇深度指南 · 中英双语",
-      positioning: "探索 120 种艺术与设计风格，其中 72 种提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
+      drawerFooter: "120 种风格 · 120 篇深度指南 · 中英双语",
+      positioning: "探索 120 种艺术与设计风格，每一种都提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
       valueLine: "跟着看图引导观察构图、色彩与线条，再用审美画像、日常观察和风格对比建立自己的审美词库。",
       random: "随机",
       swipe: "左右滑动探索",
@@ -491,12 +491,12 @@
       ,
       about: "关于",
       aboutTitle: "关于虾子曰艺术风格图鉴",
-      aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 120 种视觉语言整理成可以观察、理解、比较和表达的风格图鉴，其中 72 种提供完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和创作表达。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
+      aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 120 种视觉语言整理成可以观察、理解、比较和表达的完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和创作表达。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
       aboutFor: "适合希望提升审美的人、自媒体人、设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
       aboutFree: "App 可免费下载，包含每日推荐、120 种风格浏览、双语搜索、收藏，以及 20 个可使用全部学习模块的免费完整风格档案。",
       aboutPlus: "Plus 通过 App Store 一次购买，解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
       appFeaturesTitle: "在 App 里看懂一种美",
-      appFeatures: ["浏览 120 种艺术与设计风格", "阅读 72 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用风格表达词把理解带进创作", "支持中英文、离线浏览与多比例导出"],
+      appFeatures: ["浏览 120 种艺术与设计风格", "阅读 120 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用风格表达词把理解带进创作", "支持中英文、离线浏览与多比例导出"],
       safetyTitle: "版权与风格安全说明",
       safetyBody: "虾子曰艺术风格图鉴鼓励学习视觉语言，而不是复制具体作品、具体角色或当代创作者的完整可识别风格。历史艺术流派可以作为学习对象，涉及当代工作室、IP 或在世创作者时，我们更建议使用通用视觉特征来表达。",
       screenshotsTitle: "App Store Screenshot Kit",
@@ -524,7 +524,7 @@
       drawerAboutNote: "Product purpose, content scope, and how it works",
       drawerDownloadKicker: "iPhone App",
       drawerDownloadTitle: "Take the complete atlas with you",
-      drawerDownloadNote: "72 in-depth guides, bilingual content, and offline browsing.",
+      drawerDownloadNote: "120 in-depth guides, bilingual content, and offline browsing.",
       drawerDownloadCta: "Download on the App Store",
       drawerDownloadCtaNote: "Free download · iPhone",
       drawerReviewCta: "Already installed? Rate the app",
@@ -547,8 +547,8 @@
       supportRecognition: "Press and hold the QR code to recognize and pay",
       supportCodeLink: "Open QR code",
       supportPosterLink: "View complete support poster",
-      drawerFooter: "120 styles · 72 in-depth guides · Bilingual",
-      positioning: "Explore 120 art and design styles, including 72 complete in-depth guides.\nMove from seeing a style to truly understanding it in three minutes a day.",
+      drawerFooter: "120 styles · 120 in-depth guides · Bilingual",
+      positioning: "Explore 120 art and design styles, each with a complete in-depth guide.\nMove from seeing a style to truly understanding it in three minutes a day.",
       valueLine: "Follow guided looking prompts, then build recognition through aesthetic profiles, everyday observations, and side-by-side comparisons.",
       random: "Random",
       swipe: "Swipe to explore",
@@ -723,12 +723,12 @@
       ,
       about: "About",
       aboutTitle: "About Xiazishuo Style Atlas",
-      aboutBody: "Xiazishuo Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into styles you can observe, understand, compare, and express. Seventy-two styles include complete in-depth guides.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
+      aboutBody: "Xiazishuo Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
       aboutFor: "For anyone building visual taste, social media creators, designers, AI creators, brand builders, content creators, design students, and art lovers.",
       aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
       aboutPlus: "Plus is a one-time App Store purchase that unlocks the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
       appFeaturesTitle: "Learn to see a style in the app",
-      appFeatures: ["Explore 120 art and design styles", "Read 72 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
+      appFeatures: ["Explore 120 art and design styles", "Read 120 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
       safetyTitle: "Copyright And Style Safety",
       safetyBody: "Xiazishuo Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
       screenshotsTitle: "App Store Screenshot Kit",
@@ -2582,8 +2582,8 @@
     const productName = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Xiazishuo Style Atlas";
     const invitation = store.lang === "zh" ? "扫码看懂这种美" : "SCAN TO EXPLORE THIS STYLE";
     const collection = store.lang === "zh"
-      ? "120 种艺术与设计风格 · 72 篇深度指南"
-      : "120 ART & DESIGN STYLES · 72 IN-DEPTH GUIDES";
+      ? "120 种艺术与设计风格 · 120 篇深度指南"
+      : "120 ART & DESIGN STYLES · 120 IN-DEPTH GUIDES";
 
     ctx.save();
     ctx.fillStyle = "rgba(10, 9, 7, 0.96)";
