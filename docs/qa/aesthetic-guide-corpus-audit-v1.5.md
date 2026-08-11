@@ -52,3 +52,9 @@
 - Supported orientation: portrait only
 - Archive generated: NO
 - Build uploaded: NO
+- Production H5 online Guide / Fallback: 120 / 0 PASS
+- Production H5 sampled new Guides: `yamato-e` (zh), `afrofuturism` (en), `generative-ai-dreamlike` (en) PASS
+- Production H5 Plus CTA retained: PASS
+- Production H5 QR resource: HTTP 200
+- Production H5 page errors in sampled paths: 0
+- Production H5 deploy commit: `afc5685`

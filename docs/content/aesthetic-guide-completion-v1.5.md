@@ -9,6 +9,8 @@
 - Added in this completion: 48 bilingual Guides
 - Original 72 Guide object fingerprints unchanged: YES
 - V1.4 submitted binary changed: NO
+- Production H5 deploy commit: `afc5685`
+- Production H5: `https://style-atlas.wonderelian.com/`
 
 ## Added Guides
 
@@ -53,4 +55,3 @@
 - Version / Build: unchanged
 - Archive or Build upload: NO
 - App Store review state: unchanged
-
