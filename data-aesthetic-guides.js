@@ -7,6 +7,206 @@
     label: bi(zhLabel, enLabel),
     text: bi(zhText, enText)
   });
+
+  const addIllustrationGuides = () => Object.assign(window.STYLE_AESTHETIC_GUIDES, {
+    "ligne-claire": fullGuide(
+      ["先看轮廓：每件物体是否都像被同样清楚的线条单独说出来？", "Begin with the outlines: does every object seem separately spoken by the same clear line?"],
+      [
+        ["line", "先看均匀轮廓", "Begin with even contours", "人物、建筑和物件都由稳定线宽界定，很少用浓重排线制造体积。", "Figures, buildings and objects are bounded by stable line weight, with little heavy hatching for volume."],
+        ["space", "再看清楚空间", "Then, read the clear space", "前景与远景都保留可辨细节，透视严谨，却不会被空气感模糊。", "Foreground and distance retain legible detail; perspective is precise without atmospheric blur."],
+        ["color", "最后看平涂色块", "Finally, notice flat color", "颜色被轮廓分开，以有限明度层次帮助辨认，而不是覆盖线条。", "Color is separated by contours and uses limited value steps to aid recognition rather than cover the drawing."]
+      ],
+      [[5, "线条与空间秩序严谨", "Rigorous line and spatial order"], [3, "平涂色彩清楚", "Clear flat color"], [2, "装饰服从叙事", "Ornament serves narrative"], [2, "情绪克制明快", "Restrained, bright emotion"]],
+      [["清楚", "轻快", "精确", "开放"], ["Clear", "Light", "Precise", "Open"]],
+      [
+        ["家居", "Home", "观察开放搁架和透明收纳如何让每件物品都有边界与位置。", "Notice how open shelves and transparent storage give every object a boundary and place."],
+        ["穿搭", "Clothing", "用干净外轮廓、两三块纯色和少量细节建立清晰形象。", "Use a clean silhouette, two or three flat colors and few details to build a legible look."],
+        ["摄影", "Photography", "选择空气清楚的日光，让前后景都可读，并避免过度虚化。", "Choose clear daylight so foreground and background remain readable, avoiding excessive blur."],
+        ["日常物件", "Everyday objects", "看地图、装配图和交通插画如何用一致线宽区分复杂信息。", "See how maps, assembly diagrams and transit illustrations separate complex information with consistent line weight."]
+      ],
+      [
+        ["american-comic-book", "都用轮廓、分格、文字与连续图像讲故事。", "Both tell stories with contours, panels, lettering and sequential images.", "清线漫画保持均匀线宽、开放空间和平涂色；美式漫画更常用粗细墨线、强阴影与戏剧冲击。", "Ligne claire keeps even line, open space and flat color; American comics more often use varied inks, deep shadow and dramatic impact."],
+        ["flat-illustration", "都依靠清楚边界和平面色块快速传递信息。", "Both rely on clear boundaries and flat color for rapid communication.", "清线漫画保留具象空间、透视和连续叙事；扁平插画常压缩空间并以图形概括概念。", "Ligne claire preserves representational space, perspective and sequence; flat illustration often compresses space into conceptual shapes."]
+      ],
+      ["哪一条轮廓让复杂场景突然变得容易阅读？", "Which contour suddenly makes the complex scene easy to read?"]
+    ),
+
+    "graphic-novel": fullGuide(
+      ["翻页之前，哪一个画面正在让时间变慢，要求你多停一会儿？", "Before turning the page, which image slows time and asks you to stay?"],
+      [
+        ["sequence", "先看分格节奏", "Begin with panel rhythm", "重复小格、突然的大格和无框画面共同控制停顿、推进与转折。", "Repeated small panels, sudden large panels and borderless images control pause, advance and turn."],
+        ["voice", "再看文字声音", "Then, hear the written voice", "旁白、对白与图像有时互相补充，有时故意矛盾，让阅读产生第二层意义。", "Caption, dialogue and image sometimes reinforce and sometimes contradict one another, creating a second layer of meaning."],
+        ["motif", "最后找重复意象", "Finally, find recurring motifs", "一个地点、物件或姿势跨章节返回，把长篇记忆连接起来。", "A place, object or pose returns across chapters, connecting long-form memory."]
+      ],
+      [[4, "长篇结构明确", "Clear long-form structure"], [2, "色彩因作品而异", "Color varies by work"], [3, "画面语言可繁可简", "Visual language ranges widely"], [5, "情绪与主题深入", "Deep emotion and theme"]],
+      [["叙事", "沉浸", "层次", "余韵"], ["Narrative", "Immersive", "Layered", "Resonant"]],
+      [
+        ["家居", "Home", "把旅行票据、照片和短句按时间排列，观察缺口如何让记忆继续。", "Arrange tickets, photos and short notes over time, and see how gaps let memory continue."],
+        ["穿搭", "Clothing", "用重复出现的颜色或小物作为个人叙事线索，而不是一次堆满符号。", "Use a recurring color or small object as a personal narrative cue rather than filling one look with symbols."],
+        ["摄影", "Photography", "用六张照片记录同一地点一天中的变化，让顺序产生故事。", "Use six photos to record one place changing through a day, letting sequence create story."],
+        ["日常物件", "Everyday objects", "观察日记、相册和说明漫画如何让文字与图片分担信息。", "Notice how journals, albums and instructional comics divide information between words and pictures."]
+      ],
+      [
+        ["manga", "都通过分格、文字、翻页和连续图像展开长篇叙事。", "Both unfold long narratives through panels, lettering, page turns and sequential images.", "Graphic Novel 多是书本长度或出版形式的称呼，并非固定画风；Manga 指日本漫画的广泛媒介、行业与阅读传统。", "Graphic novel usually names book-length or publishing form rather than one style; manga names a broad Japanese medium, industry and reading tradition."],
+        ["noir-illustration", "都可用黑影、心理张力和城市空间讲述复杂故事。", "Both can use shadow, psychological tension and urban space for complex stories.", "Graphic Novel 由连续页面建立时间；Noir Illustration 可在单幅画面中浓缩悬念与道德不确定。", "Graphic novels build time across pages; noir illustration may condense suspense and moral uncertainty into one image."]
+      ],
+      ["如果删掉所有旁白，这个故事会失去事实，还是失去人物的内心？", "If every caption vanished, would the story lose facts or the character's inner life?"]
+    ),
+
+    "noir-illustration": fullGuide(
+      ["你先看到人物，还是先看到包围人物的那片黑暗？", "Do you see the figure first, or the darkness surrounding them?"],
+      [
+        ["shadow", "先看黑影形状", "Begin with the shape of shadow", "百叶窗、门框和街灯把黑暗切成有方向的块面，隐藏与揭示同时发生。", "Blinds, doorways and streetlights cut darkness into directional shapes, hiding and revealing at once."],
+        ["angle", "再看不安机位", "Then, notice uneasy angles", "俯视、仰视和倾斜构图让普通房间或街角失去稳定感。", "High, low and tilted viewpoints make an ordinary room or corner lose stability."],
+        ["clue", "最后找线索", "Finally, find the clue", "一只手、一道反光或半开的门承担叙事，画面把答案留在边缘。", "A hand, reflection or half-open door carries the story while the answer remains at the edge."]
+      ],
+      [[4, "构图控制严密", "Tightly controlled composition"], [1, "色彩极度克制", "Extremely restrained color"], [2, "装饰很少", "Very little ornament"], [5, "悬疑情绪浓重", "Intense suspense"]],
+      [["阴影", "悬疑", "冷峻", "含混"], ["Shadowed", "Suspenseful", "Severe", "Ambiguous"]],
+      [
+        ["家居", "Home", "夜间只开一盏侧灯，观察门框、窗帘和家具如何分割空间。", "At night, use one side light and notice how doorframes, curtains and furniture divide space."],
+        ["穿搭", "Clothing", "用清晰长外套轮廓、深浅反差和一件反光配饰建立神秘感。", "Use a clear long-coat silhouette, dark-light contrast and one reflective accessory to create mystery."],
+        ["摄影", "Photography", "让主体靠近画面边缘，用前景遮挡和硬光留下未解释的信息。", "Place the subject near an edge and use foreground obstruction and hard light to leave information unexplained."],
+        ["日常物件", "Everyday objects", "看旧侦探书封、黑白海报和夜间路牌怎样用少量线索制造故事。", "See how detective covers, monochrome posters and night signs create story from few clues."]
+      ],
+      [
+        ["graphic-novel", "都可用高反差、内心独白和城市空间表现心理冲突。", "Both can express psychological conflict through high contrast, inner voice and urban space.", "Noir Illustration 强调一种阴影与悬念语言；Graphic Novel 是可容纳多种风格与主题的长篇叙事形式。", "Noir illustration emphasizes a language of shadow and suspense; graphic novel is a long-form format containing many styles and themes."],
+        ["edward-hopper", "都常把孤立人物放在夜间室内、街角或窗边。", "Both often place isolated figures in night interiors, corners or windows.", "Noir 用斜角、硬影和线索推进危险；Hopper 更常以静止光线、距离和沉默延长日常孤独。", "Noir advances danger with oblique angles, hard shadow and clues; Hopper more often extends everyday solitude through still light, distance and silence."]
+      ],
+      ["画面真正让你不安的是它展示的危险，还是它没有展示的部分？", "Is the unease caused by the danger shown, or by what remains unseen?"]
+    ),
+
+    "childrens-picture-book": fullGuide(
+      ["如果你还不识字，能不能只靠颜色、动作和翻页猜到接下来会发生什么？", "If you could not read yet, could color, action and the page turn tell you what happens next?"],
+      [
+        ["readability", "先看一眼能否读懂", "Begin with instant readability", "角色轮廓、表情与主要动作足够清楚，让文字不是理解故事的唯一入口。", "Character silhouette, expression and main action are clear enough that words are not the only entrance to the story."],
+        ["page", "再看翻页惊喜", "Then, notice the page-turn surprise", "前一页提出方向或期待，后一页用尺度、颜色或结果回应。", "One page sets direction or expectation; the next answers through scale, color or outcome."],
+        ["detail", "最后找可重复发现的细节", "Finally, find repeatable details", "背景里的小角色、物件和图案奖励再次阅读，却不抢走主线。", "Small background characters, objects and motifs reward rereading without stealing the main thread."]
+      ],
+      [[4, "阅读顺序清楚", "Clear reading order"], [4, "色彩亲切鲜明", "Warm, vivid color"], [3, "细节丰富但可控", "Rich but controlled detail"], [4, "情绪直接有温度", "Direct, warm emotion"]],
+      [["亲切", "好奇", "清楚", "想象"], ["Welcoming", "Curious", "Clear", "Imaginative"]],
+      [
+        ["家居", "Home", "把常用物品放在孩子视线高度，用图形标签帮助找到与归位。", "Place common objects at a child's eye level and use picture labels for finding and returning them."],
+        ["穿搭", "Clothing", "用一个易认主色和清楚轮廓帮助快速辨认，再加入可发现的小细节。", "Use one recognizable main color and clear silhouette, then add a small discoverable detail."],
+        ["摄影", "Photography", "从较低视角记录日常动作，让普通桌椅重新显得巨大而有故事。", "Photograph everyday action from a lower view so ordinary furniture feels large and storied again."],
+        ["日常物件", "Everyday objects", "看玩具包装、儿童标识和绘本如何用图像先说明动作，再由文字补充。", "See how toy packs, child-facing signs and picture books show action in image before words add detail."]
+      ],
+      [
+        ["editorial-illustration", "都让图像与文字合作，并把复杂内容变得可进入。", "Both make images work with words and invite readers into complex content.", "绘本通过连续翻页、角色与重复建立儿童阅读经验；编辑插画通常为一篇文章或观点提炼视觉隐喻。", "Picture books build a child's reading experience through page sequence, character and repetition; editorial illustration often distills one article or opinion into a visual metaphor."],
+        ["healing-animation", "都可使用柔和角色、温暖色彩和日常小事建立安全感。", "Both can use gentle characters, warm color and small daily events to create safety.", "绘本是纸页或屏幕上的出版叙事，受翻页和文字关系控制；疗愈动画还通过时间、声音和运动延长陪伴感。", "Picture books are publishing narratives controlled by page turns and text-image relation; healing animation extends companionship through time, sound and motion."]
+      ],
+      ["哪一个小细节会让你愿意把这一页再看一次？", "Which small detail would make you look at this page again?"]
+    ),
+
+    "fashion-illustration": fullGuide(
+      ["这件衣服的感觉来自被准确画出的结构，还是来自被故意拉长的一条线？", "Does the garment's feeling come from accurately drawn construction or one deliberately elongated line?"],
+      [
+        ["gesture", "先看姿态线", "Begin with the gesture line", "身体被简化或拉长，以一条主要方向承托服装的垂坠、转折与态度。", "The body is simplified or elongated so one main direction carries drape, turn and attitude."],
+        ["material", "再看材质笔触", "Then, read material marks", "水彩晕染、墨线、铅笔或数字笔刷用不同边缘暗示丝、毛、皮革与透明层。", "Watercolor bloom, ink, pencil or digital brush use different edges to suggest silk, wool, leather and sheer layers."],
+        ["omit", "最后看省略", "Finally, notice omission", "脸、手或背景常被弱化，让轮廓、比例和服装重点更快显现。", "Face, hands or setting may recede so silhouette, proportion and garment emphasis appear faster."]
+      ],
+      [[3, "姿态组织明确", "Clear gestural organization"], [4, "色彩表达灵活", "Flexible expressive color"], [3, "材质细节选择性丰富", "Selectively rich material detail"], [4, "情绪优雅外放", "Elegant, outward emotion"]],
+      [["修长", "流动", "材质", "姿态"], ["Elongated", "Fluid", "Material", "Attitudinal"]],
+      [
+        ["家居", "Home", "看窗帘、毯子和椅背的垂线如何改变房间的轻重与方向。", "See how the falling lines of curtains, throws and chair backs change a room's weight and direction."],
+        ["穿搭", "Clothing", "先用一条整体轮廓判断比例，再看面料如何在关节处折叠。", "Judge proportion first through one overall silhouette, then see how fabric folds at joints."],
+        ["摄影", "Photography", "让人物在转身或行走时被拍下，用动作而非摆满道具表现衣服。", "Photograph a turn or walk, using movement rather than abundant props to reveal clothing."],
+        ["日常物件", "Everyday objects", "看服装草图、纸样和橱窗陈列如何从概念线变成实际体积。", "See how fashion sketches, patterns and window displays move from conceptual line to physical volume."]
+      ],
+      [
+        ["editorial-illustration", "都可用省略、变形和鲜明笔触为传播内容建立气质。", "Both may use omission, distortion and expressive marks to give communication a mood.", "时装插画围绕服装轮廓、材质与姿态；编辑插画围绕文章观点与视觉隐喻。", "Fashion illustration centers garment silhouette, material and pose; editorial illustration centers an article's idea and visual metaphor."],
+        ["art-nouveau", "都常借助长曲线、优雅人物和装饰性轮廓。", "Both often use long curves, elegant figures and decorative contours.", "时装插画服务服装构想与传播，可跨多种时代画法；新艺术是特定现代时期贯穿海报、建筑与物件的整体装饰语言。", "Fashion illustration serves garment conception and communication across eras; Art Nouveau is a period-specific decorative language across posters, architecture and objects."]
+      ],
+      ["如果只保留一条线，你会留下身体的姿势，还是衣服的外轮廓？", "If only one line could remain, would you keep the body's gesture or the garment's outline?"]
+    ),
+
+    "botanical-illustration": fullGuide(
+      ["这株植物是作为一朵漂亮的花被观看，还是作为一个可以辨认的生命结构被说明？", "Is this plant shown as a beautiful flower or as a living structure to be identified?"],
+      [
+        ["structure", "先看完整结构", "Begin with complete structure", "根、茎、叶、花与果实被安排在可比较的位置，关键连接不被装饰遮住。", "Root, stem, leaf, flower and fruit are arranged for comparison, with key connections unobscured."],
+        ["variation", "再看差异细节", "Then, compare variations", "叶缘、脉络、花瓣数量和不同生长阶段被准确区分。", "Leaf margin, veins, petal count and growth stages are carefully distinguished."],
+        ["space", "最后看标本式留白", "Finally, notice specimen-like space", "浅色背景和分离布局让每个局部可被观察、编号或注释。", "A pale ground and separated layout allow each part to be observed, numbered or annotated."]
+      ],
+      [[5, "分类秩序很强", "Strong taxonomic order"], [3, "色彩接近观察对象", "Color follows observation"], [2, "装饰不是首要目的", "Ornament is not primary"], [2, "情绪安静专注", "Quiet, attentive emotion"]],
+      [["细察", "自然", "精确", "标本"], ["Observed", "Natural", "Precise", "Specimen-like"]],
+      [
+        ["家居", "Home", "比较两株同属植物的叶缘、叶脉和生长方向，而不只看颜色。", "Compare leaf margins, veins and growth direction in two related plants, not only color."],
+        ["穿搭", "Clothing", "选择能辨认具体叶形的植物图案，观察重复后哪些结构仍保留。", "Choose a botanical pattern with identifiable leaf forms and see which structures survive repetition."],
+        ["摄影", "Photography", "在同一光线下记录花苞、盛开与结果，让阶段可以并排比较。", "Record bud, bloom and fruit under consistent light so stages can be compared side by side."],
+        ["日常物件", "Everyday objects", "看种子包装、草本标签和自然笔记如何同时传递名称、形态与尺度。", "See how seed packets, herb labels and field notes communicate name, form and scale together."]
+      ],
+      [
+        ["scientific-illustration", "都以清楚观察、选择性细节和说明结构服务知识。", "Both use close observation, selective detail and explanatory structure in service of knowledge.", "植物插图专注植物辨认、生命周期和分类特征；科学插图还覆盖动物、医学、工程、地质等广泛对象。", "Botanical illustration focuses plant identification, life cycle and taxonomic traits; scientific illustration also covers animals, medicine, engineering, geology and more."],
+        ["gongbi", "都可用细线、层层设色和耐心观察描绘花鸟。", "Both can depict flowers and birds with fine line, layered color and patient observation.", "植物插图优先可验证的形态与辨认信息；工笔画的线、设色与构图属于中国绘画审美和文化表达。", "Botanical illustration prioritizes verifiable morphology and identification; gongbi line, color and composition belong to Chinese painting aesthetics and cultural expression."]
+      ],
+      ["哪一个微小结构让你确认这不是另一种相似植物？", "Which small structure tells you this is not another similar plant?"]
+    ),
+
+    "scientific-illustration": fullGuide(
+      ["照片已经可以记录对象时，这张图为什么仍要选择、分解或重组它？", "When photography can record the subject, why does this image still select, separate or reconstruct it?"],
+      [
+        ["purpose", "先找说明目的", "Begin with explanatory purpose", "画面只保留回答问题所需的结构，视角与比例围绕理解而选择。", "The image keeps structures needed to answer a question; viewpoint and scale are chosen for understanding."],
+        ["layer", "再看分层与剖面", "Then, inspect layers and sections", "透明、爆炸图、剖面和不同阶段让肉眼无法同时看到的关系并置。", "Transparency, exploded views, sections and stages place relations together that the eye cannot see at once."],
+        ["label", "最后看图文系统", "Finally, read the graphic system", "编号、引线、尺度和图例与图像形成可核对的导航。", "Numbers, leaders, scales and legends form a verifiable navigation system with the image."]
+      ],
+      [[5, "信息秩序严格", "Strict information order"], [2, "色彩用于区分", "Color used for distinction"], [1, "几乎无非必要装饰", "Almost no unnecessary ornament"], [1, "情绪中性专注", "Neutral, focused emotion"]],
+      [["解释", "剖面", "准确", "可核对"], ["Explanatory", "Sectioned", "Accurate", "Verifiable"]],
+      [
+        ["家居", "Home", "拆解一件简单工具，按顺序摆放零件并画出连接关系。", "Disassemble a simple tool, arrange its parts in order and draw their connections."],
+        ["穿搭", "Clothing", "看纸样、缝份和里层图如何解释一件衣服从平面变成立体。", "See how patterns, seam allowances and lining diagrams explain a garment moving from flat to volume."],
+        ["摄影", "Photography", "为同一对象拍正面、侧面和细节，比较单一漂亮角度遗漏了什么。", "Photograph one subject from front, side and detail, and compare what a single attractive angle omits."],
+        ["日常物件", "Everyday objects", "观察药品说明、维修手册和博物馆图解如何用编号连接文字与部位。", "Notice how medical inserts, repair manuals and museum diagrams connect text to parts through numbering."]
+      ],
+      [
+        ["botanical-illustration", "都要求观察准确、结构清楚，并允许图像选择性地超越照片。", "Both require accurate observation, clear structure and selective advantages beyond photography.", "植物插图聚焦植物的辨认与生命周期；科学插图覆盖更广学科，并常使用剖面、流程与技术标注。", "Botanical illustration focuses plant identification and life cycle; scientific illustration spans wider disciplines and often uses sections, processes and technical labels."],
+        ["isometric-illustration", "都可拆解复杂对象并用清楚视角说明部件关系。", "Both can separate complex objects and explain relations from a clear viewpoint.", "科学插图的比例和取舍受证据与学科目的约束；等距插画可为传播自由简化、组合场景与品牌化。", "Scientific illustration is constrained by evidence and disciplinary purpose; isometric illustration may freely simplify, combine scenes and adopt brand styling for communication."]
+      ],
+      ["这张图帮助你看见了照片难以同时呈现的哪一种关系？", "What relationship does this image reveal that a photograph could not show all at once?"]
+    ),
+
+    "isometric-illustration": fullGuide(
+      ["没有近大远小的强烈变化时，你仍能一眼看出每个部件在哪里、怎样连接吗？", "Without strong near-far scaling, can you still tell where every part sits and how it connects?"],
+      [
+        ["axis", "先看三组平行方向", "Begin with three parallel directions", "垂直线保持垂直，两组斜线以稳定角度展开，让多个表面同时可见。", "Verticals remain vertical while two stable diagonal sets reveal several surfaces at once."],
+        ["module", "再看模块组合", "Then, see modular assembly", "房间、机器和人物像积木一样占据清楚单元，复杂系统被拆成可浏览部分。", "Rooms, machines and figures occupy clear units like blocks, breaking a complex system into browsable parts."],
+        ["scale", "最后看信息尺度", "Finally, read informational scale", "重要对象可被适度放大或简化，空间可信度让位于说明效率。", "Important objects may be enlarged or simplified; spatial realism yields to explanatory efficiency."]
+      ],
+      [[5, "几何秩序很强", "Very strong geometric order"], [3, "色彩用于分区", "Color separates zones"], [2, "装饰简洁可控", "Controlled, simple ornament"], [2, "情绪理性友好", "Rational, approachable emotion"]],
+      [["模块", "立体", "清楚", "系统"], ["Modular", "Dimensional", "Clear", "Systematic"]],
+      [
+        ["家居", "Home", "从房间角落观察桌、柜与通道，画出不遮挡主要关系的简化布局。", "Observe desk, storage and pathways from a room corner and sketch a simplified layout with key relations unobscured."],
+        ["穿搭", "Clothing", "把口袋、扣件和层次看成模块，观察它们如何围绕身体功能分布。", "Treat pockets, closures and layers as modules distributed around bodily function."],
+        ["摄影", "Photography", "从略高位置拍桌面或街区，让多个表面与路径同时可见。", "Photograph a tabletop or block from slightly above so several surfaces and routes appear together."],
+        ["日常物件", "Everyday objects", "看物流图、园区地图和软件插画如何用统一角度组织系统。", "See how logistics diagrams, campus maps and software illustrations organize systems with one angle."]
+      ],
+      [
+        ["scientific-illustration", "都可用固定视角、拆解和标注解释复杂结构。", "Both can explain complex structures through fixed viewpoint, separation and labels.", "等距插画优先统一空间和传播效率，可自由组合场景；科学插图必须围绕可验证对象与专业说明目的。", "Isometric illustration prioritizes consistent space and communication, freely combining scenes; scientific illustration must serve verifiable subjects and disciplinary explanation."],
+        ["flat-illustration", "都常以简化形状、有限色彩和清楚层级服务数字传播。", "Both often use simplified shapes, limited color and clear hierarchy in digital communication.", "等距插画保留三维轴线和模块深度；扁平插画可完全压缩透视，以二维关系表达概念。", "Isometric illustration retains 3D axes and modular depth; flat illustration may compress perspective entirely into 2D conceptual relations."]
+      ],
+      ["哪一个空间关系因为统一角度而变得比照片更容易理解？", "Which spatial relationship becomes easier to understand than in a photograph because of the unified angle?"]
+    ),
+
+    "flat-illustration": fullGuide(
+      ["当阴影、纹理和透视都退后时，哪几个形状仍足以让你认出主题？", "When shadow, texture and perspective recede, which shapes are still enough to identify the subject?"],
+      [
+        ["shape", "先看大形状", "Begin with large shapes", "人物和物件被概括成少量清楚色块，轮廓承担主要辨认任务。", "Figures and objects become a few clear color fields, with silhouette carrying recognition."],
+        ["hierarchy", "再看尺寸层级", "Then, notice scale hierarchy", "重要内容更大、更亮或更靠前，空间不必真实也能快速说明关系。", "Important content is larger, brighter or more forward; space need not be realistic to explain relation quickly."],
+        ["accent", "最后找唯一强调", "Finally, find the single accent", "有限色板中一处对比色、图标或动作成为视觉入口。", "Within a limited palette, one contrasting color, icon or gesture becomes the entry point."]
+      ],
+      [[5, "图形层级清楚", "Clear graphic hierarchy"], [4, "色块鲜明有限", "Vivid, limited color fields"], [1, "纹理装饰很少", "Very little texture ornament"], [3, "情绪直接友好", "Direct, friendly emotion"]],
+      [["简洁", "明快", "图形", "直接"], ["Simple", "Bright", "Graphic", "Direct"]],
+      [
+        ["家居", "Home", "把一个房间概括为三种主要形状和三种颜色，看功能是否仍可辨认。", "Reduce a room to three main shapes and colors and see whether its function remains recognizable."],
+        ["穿搭", "Clothing", "先看整体色块比例，再决定是否需要图案与材质细节。", "Read the overall color-block proportion before deciding whether pattern and texture are needed."],
+        ["摄影", "Photography", "寻找纯色墙面与清楚剪影，让照片在缩小后仍有辨识度。", "Find a plain wall and clear silhouette so the photo remains recognizable when reduced."],
+        ["日常物件", "Everyday objects", "观察应用引导、公共图标和包装说明如何用最少形状表达动作。", "Notice how app onboarding, public icons and packaging instructions express action with minimal shapes."]
+      ],
+      [
+        ["isometric-illustration", "都用简化形状、有限色板和清楚层级服务说明。", "Both use simplified shapes, limited palettes and clear hierarchy for explanation.", "扁平插画可取消一致透视，重视二维概念关系；等距插画用三组轴线建立可浏览的模块空间。", "Flat illustration may discard consistent perspective for 2D conceptual relation; isometric illustration builds browsable modular space on three axes."],
+        ["editorial-illustration", "都可把复杂主题压缩为少量形状与视觉隐喻。", "Both can compress complex topics into few shapes and a visual metaphor.", "扁平插画是一种广泛图形处理方式；编辑插画由具体文章、观点与出版语境决定图像意义。", "Flat illustration is a broad graphic treatment; editorial illustration derives meaning from a specific article, viewpoint and publishing context."]
+      ],
+      ["如果再删掉一个形状，信息会更清楚，还是主题会开始消失？", "If one more shape were removed, would the message become clearer or would the subject begin to disappear?"]
+    )
+  });
   const trait = (level, zh, en) => ({ level, zh, en });
   const life = (zhScene, enScene, zhText, enText) => ({
     scene: bi(zhScene, enScene),
@@ -16,6 +216,20 @@
     styleId,
     similarity: bi(zhSimilarity, enSimilarity),
     difference: bi(zhDifference, enDifference)
+  });
+  const fullGuide = (opening, observations, profile, words, lifeScenes, comparisons, reflection) => ({
+    openingQuestion: bi(...opening),
+    observe: observations.map((item) => observe(...item)),
+    profile: {
+      order: trait(...profile[0]),
+      color: trait(...profile[1]),
+      ornament: trait(...profile[2]),
+      emotion: trait(...profile[3])
+    },
+    feelingWords: bi(...words),
+    everydayLife: lifeScenes.map((item) => life(...item)),
+    comparisons: comparisons.map((item) => compare(...item)),
+    reflectionPrompt: bi(...reflection)
   });
 
   window.STYLE_AESTHETIC_GUIDES = {
@@ -2181,4 +2395,624 @@
       reflectionPrompt: bi("你会把这些符号当成谜题解码，还是先承认它们来自复杂语境？", "Do you decode these signs like a puzzle, or first acknowledge the complex contexts they come from?")
     }
   });
+
+  Object.assign(window.STYLE_AESTHETIC_GUIDES, {
+    renoir: fullGuide(
+      ["先别追着人物的表情。光是否像穿过树叶和空气，把皮肤、布料与背景连成了一片温度？", "Before following the figures' expressions, notice whether light passes through leaves and air, joining skin, fabric and background into one field of warmth."],
+      [
+        ["light", "先看斑驳亮部", "Begin with the broken light", "亮色常落在脸、肩部和衣裙上，边缘被周围色彩轻轻融化。", "Light catches faces, shoulders and dresses while surrounding color gently dissolves their edges."],
+        ["color", "再看暖色如何呼应", "Then follow the warm echoes", "粉、橙、金和蓝绿在皮肤与环境之间反复出现，人物不会像被剪贴到背景上。", "Pink, orange, gold and blue-green recur across skin and setting, keeping figures from looking pasted onto the background."],
+        ["gesture", "最后看轻松的姿态", "Finally, notice the relaxed gestures", "偏转的头、交叠的手和正在移动的衣褶让场景像聚会中被短暂留住。", "Turned heads, folded hands and moving drapery make the scene feel briefly held in the middle of social life."]
+      ],
+      [[3, "构图稳定而柔和", "Stable, gentle order"], [4, "暖色丰富互渗", "Rich interwoven warm color"], [3, "表面细节柔润", "Soft surface detail"], [4, "情绪亲密明亮", "Intimate, bright emotion"]],
+      [["温暖", "斑驳", "亲密", "轻快"], ["Warm", "Dappled", "Intimate", "Lively"]],
+      [
+        ["家居", "Home", "观察窗边、木色和布料如何用小片暖光把人与房间连起来。", "Notice how window light, wood tones and fabric connect people to a room through small patches of warmth."],
+        ["穿搭", "Clothing", "将粉、珊瑚或奶油色与一点冷色并置，看颜色如何随动作相互反照。", "Place pink, coral or cream beside one cool accent and watch how colors reflect into one another as the body moves."],
+        ["摄影", "Photography", "在树荫或露天聚会中保留斑驳光点，不必把每张脸都照得一样平。", "Keep dappled light at a gathering under trees instead of lighting every face with the same flatness."],
+        ["日常物件", "Everyday objects", "看花束、瓷杯和果盘的反光如何把相邻颜色轻轻带到对方表面。", "See how reflections on flowers, cups and fruit carry neighboring colors gently across their surfaces."]
+      ],
+      [
+        ["impressionism", "都用可见笔触和变动光色留住瞬间。", "Both use visible brushwork and changing light to hold a passing moment.", "印象派是更广的共同语境；雷诺阿式语言更聚焦人物、皮肤、社交场景与暖色气氛。", "Impressionism is the broader shared context; Renoir's language focuses more on figures, skin, sociability and warm atmosphere."],
+        ["monet", "都观察户外光色如何改变可见表面。", "Both observe how outdoor light changes visible surfaces.", "Monet 更常让水、雾、花园和系列时间成为主角；Renoir 更常把光落在人际距离与身体姿态上。", "Monet more often centers water, mist, gardens and serial time; Renoir more often lets light settle on social distance and bodily gesture."]
+      ],
+      ["你是先被人物间的亲密吸引，还是先感到光在整个场景中流动？", "Are you drawn first to intimacy between people, or to light moving through the whole scene?"]
+    ),
+
+    xieyi: fullGuide(
+      ["这几笔看起来很少，却让你认出了花、鸟或山石吗？哪一处是它的神情？", "These few strokes may already suggest a flower, bird or rock. Which mark carries its living character?"],
+      [
+        ["gesture", "先看一气呵成的笔势", "Begin with the continuous gesture", "墨痕的提按、快慢和断连同时交代形状与书写的身体动作。", "Pressure, speed and broken or joined ink marks describe form while recording the body's act of writing."],
+        ["essence", "再看取舍", "Then, notice what is omitted", "细节被大量省略，只保留最能显出姿态、重量和气息的部分。", "Most detail is omitted, leaving the parts that best convey posture, weight and vitality."],
+        ["ink", "最后看墨与水的意外", "Finally, watch ink meet water", "渗化、飞白和浓淡并不是失控，它们让物象在清楚与未尽之间保持活性。", "Bleeding, dry-brush gaps and tonal shifts are not accidents; they keep the subject alive between clarity and incompletion."]
+      ],
+      [[2, "秩序来自笔势", "Order carried by gesture"], [1, "色彩极克制", "Very restrained color"], [1, "不依赖装饰", "Little reliance on ornament"], [4, "情趣凝练鲜活", "Condensed, vivid spirit"]],
+      [["概括", "飞白", "活气", "留白"], ["Suggestive", "Dry-brushed", "Alive", "Open"]],
+      [
+        ["家居", "Home", "从房间里留下一两个最能定义气息的物件，让其余空间继续说话。", "Keep one or two objects that define the room's character and let the remaining space continue the statement."],
+        ["穿搭", "Clothing", "用一个明确轮廓和一处自然垂落表达姿态，不必靠密集纹样填满。", "Use one clear silhouette and one natural drape to express posture without filling the look with dense pattern."],
+        ["摄影", "Photography", "只拍最能显出动作的轮廓或局部，看省略能否让观者自行补全。", "Photograph only the contour or fragment that best carries the action and see whether omission invites completion."],
+        ["日常物件", "Everyday objects", "观察快速手写、茶渍和旧纸边缘如何在不完美中保留动作。", "Notice how quick handwriting, tea stains and worn paper edges preserve action through imperfection."]
+      ],
+      [
+        ["chinese-ink-painting", "都以墨、水、笔势和留白建立画面。", "Both build images through ink, water, brush movement and blank space.", "中国水墨画包含工笔、山水、花鸟等多条路径；写意更强调概括物象并捕捉意趣。", "Chinese ink painting includes meticulous, landscape, bird-and-flower and other paths; Xieyi more specifically condenses the subject to capture spirit."],
+        ["gongbi", "都来自中国绘画传统，也都需要练习与控制。", "Both belong to Chinese painting traditions and require disciplined practice.", "工笔依靠精细勾线、分层设色和完整形体；写意以更少的笔墨保留生动气息。", "Gongbi relies on precise contour, layered color and complete form; Xieyi keeps living energy through fewer marks."]
+      ],
+      ["当细节被省略时，你是更容易感到生命力，还是更需要清楚的轮廓？", "When detail is omitted, do you feel more vitality, or do you want a clearer contour?"]
+    ),
+
+    "yamato-e": fullGuide(
+      ["你的视线会沿着云带和建筑一层层移动，像在读一段被展开的故事吗？", "Does your eye move through cloud bands and buildings layer by layer, as if reading a story being gradually unrolled?"],
+      [
+        ["narrative", "先看故事的分段", "Begin with the narrative divisions", "金色或雾状云带遮挡部分空间，同时把场景分成可以顺序阅读的片段。", "Gold or mist-like cloud bands obscure parts of the space while dividing scenes into readable narrative passages."],
+        ["viewpoint", "再看掀顶式视角", "Then, notice the roofless viewpoint", "屋顶像被移开，观者从斜上方同时看到室内人物、庭院与建筑格局。", "Roofs appear removed so the viewer can see interiors, figures, gardens and architecture from an elevated angle."],
+        ["season", "最后看季节与文学", "Finally, read season and literature", "花木、服饰、诗意题材和宫廷生活共同提示时令、人际关系与情绪。", "Plants, clothing, poetic subjects and court life together signal season, relationship and mood."]
+      ],
+      [[4, "故事秩序层层展开", "Layered narrative order"], [4, "色彩明亮而雅致", "Bright, refined color"], [4, "金色与纹样丰富", "Rich gold and pattern"], [3, "情绪含蓄叙事", "Subtle narrative emotion"]],
+      [["层叠", "宫廷", "季节", "叙事"], ["Layered", "Courtly", "Seasonal", "Narrative"]],
+      [
+        ["家居", "Home", "看屏风、推拉门和高低错落的桌面如何把一个房间分成连续场景。", "See how screens, sliding doors and surfaces at different heights divide one room into connected scenes."],
+        ["穿搭", "Clothing", "观察多层衣摆、小面积纹样和季节色彩如何记录身体的移动。", "Notice how layered hems, small patterns and seasonal colors record the body's movement."],
+        ["摄影", "Photography", "从高处拍摄庭院或聚会，用建筑边缘和遮挡将多个小情节连起来。", "Photograph a garden or gathering from above, using architecture and occlusion to connect several small episodes."],
+        ["日常物件", "Everyday objects", "将信纸、花枝和布料当成一段季节日记，看物件之间是否能形成叙事。", "Treat paper, a flowering branch and fabric as a seasonal diary and see whether the objects form a narrative."]
+      ],
+      [
+        ["ukiyo-e", "都使用清楚平面、大胆分区和日本题材。", "Both use clear planes, bold divisions and Japanese subject matter.", "Yamato-e 源于宫廷文学、手卷与屏风传统，常展开古典叙事；浮世绘更聚焦江户时代的城市生活和版画传播。", "Yamato-e grows from court literature, handscrolls and screens, often unfolding classical narratives; Ukiyo-e centers more on Edo urban life and print circulation."],
+        ["nihonga", "都会使用矿物色、金色和日本传统题材。", "Both may use mineral color, gold and Japanese traditional subjects.", "Yamato-e 是历史悠久的类型与绘画惯例；Nihonga 是近代形成的概念，在现代美术制度中重新界定材料与传统。", "Yamato-e is a long historical genre and set of conventions; Nihonga is a modern category that redefined material and tradition within modern art institutions."]
+      ],
+      ["你会把画面当成一幅整体来看，还是会沿着它一段一段读下去？", "Do you see the image as one whole, or read it passage by passage?"]
+    ),
+
+    "persian-miniature": fullGuide(
+      ["画面里似乎每个角落都在讲故事。你的视线是被中心吸住，还是在细节间游走？", "Every corner seems to tell part of the story. Is your eye held by a center, or does it wander among details?"],
+      [
+        ["space", "先看折叠的空间", "Begin with the folded space", "建筑、花园和人物以斜上方视角层叠，不必服从单一透视点。", "Architecture, gardens and figures stack from an elevated angle without obeying a single vanishing point."],
+        ["detail", "再看小而精密的纹样", "Then, inspect the miniature detail", "地毯、衣料、植物和建筑表面充满可以近距离阅读的纹样与色彩。", "Carpets, textiles, plants and buildings hold patterns and color meant for close reading."],
+        ["manuscript", "最后看图像与文字的关系", "Finally, notice image beside text", "许多绘画本来属于手稿书页，边框、书法和画面共同构成阅读节奏。", "Many paintings belonged to manuscript pages, where borders, calligraphy and image form one rhythm of reading."]
+      ],
+      [[5, "层叠秩序精密", "Dense layered order"], [5, "色彩浓郁清亮", "Rich, clear color"], [5, "纹样与金饰繁密", "Dense pattern and gold"], [3, "叙事情绪含蓄", "Subtle narrative emotion"]],
+      [["精密", "层叠", "珠宝色", "叙事"], ["Intricate", "Layered", "Jewel-toned", "Narrative"]],
+      [
+        ["家居", "Home", "观察地毯、瓷砖和书架如何在小范围内建立密集但清楚的细节层次。", "Notice how rugs, tiles and bookshelves create dense but legible layers of detail within a small area."],
+        ["穿搭", "Clothing", "将精细纹样集中在一层布料上，其余层次用纯色托住，避免每处同时竞争。", "Concentrate intricate pattern on one layer and support it with quieter solids so every surface does not compete."],
+        ["摄影", "Photography", "从高处拍摄庭院、餐桌或市场，让多个小动作共存而不必归向单一焦点。", "Photograph a courtyard, table or market from above, allowing several small actions to coexist without one focal point."],
+        ["日常物件", "Everyday objects", "看书页边框、包装与手写文字如何一起引导阅读，而不只把花纹当装饰。", "See how page borders, packaging and handwriting guide reading together rather than treating pattern as surface decoration alone."]
+      ],
+      [
+        ["indian-miniature", "都与手稿、宫廷赞助、叙事和精密绘制有关。", "Both relate to manuscripts, court patronage, narrative and meticulous painting.", "波斯与印度细密画在不同地区、王朝和工坊中彼此交流，但不能视为同一风格；需看具体作品的语言、服饰与题材。", "Persian and Indian miniature traditions exchanged ideas across regions, courts and workshops, but are not one style; language, dress and subject must be read in each specific work."],
+        ["islamic-geometric", "都可以呈现精确边框、强烈节奏和繁密表面。", "Both can present precise borders, strong rhythm and richly worked surfaces.", "波斯细密画通常以人物和叙事场景展开书页；伊斯兰几何纹样更依靠无尽延展的比例、网格与对称。", "Persian miniature pages often unfold figures and narrative scenes; Islamic geometric pattern relies more on proportion, grids and symmetry that can extend without end."]
+      ],
+      ["面对这样密集的画面，你会顺着故事走，还是会停在某个小细节里？", "In such a dense image, do you follow the story or pause inside one small detail?"]
+    ),
+
+    "tibetan-thangka": fullGuide(
+      ["中心人物与周围层层图像之间，你能感到一套严格的位置和比例关系吗？", "Can you sense a strict system of position and proportion between the central figure and the surrounding layers?"],
+      [
+        ["iconometry", "先看中轴与比例", "Begin with axis and proportion", "神圣人物的身体比例、手印与座位遵循图像规范，不是自由变形的装饰人物。", "Sacred figures follow iconometric conventions in body proportion, gesture and seat; they are not freely distorted decorative characters."],
+        ["hierarchy", "再看环绕层级", "Then, read the surrounding hierarchy", "主尊、伴神、上师、供养与风景按宗教关系排列，大小不只表示距离。", "Principal deity, attendants, teachers, offerings and landscape are arranged by religious relation; size does not merely indicate distance."],
+        ["symbol", "最后看颜色与持物", "Finally, read color and attributes", "人物颜色、手持物、姿态和座骑都有特定图像含义，不应脱离语境随意拼贴。", "Figure color, attributes, posture and mount carry specific iconographic meanings and should not be recombined without context."]
+      ],
+      [[5, "宗教层级严密", "Strict sacred hierarchy"], [5, "色彩饱和具象征", "Saturated symbolic color"], [5, "细节与边饰繁密", "Dense detail and borders"], [4, "情绪庄严集中", "Solemn, concentrated emotion"]],
+      [["中轴", "神圣", "精密", "仪轨"], ["Axial", "Sacred", "Intricate", "Ritual"]],
+      [
+        ["家居", "Home", "观察中心物件、周围辅助物与边界如何建立清楚层级，但不把宗教图像当普通装饰。", "Notice how a central object, supporting objects and boundary create hierarchy without treating sacred imagery as ordinary decor."],
+        ["穿搭", "Clothing", "体会对称、层叠与中心挂件如何稳定全身秩序，避免挪用不理解的宗教符号。", "Observe how symmetry, layers and a central pendant stabilize an outfit while avoiding sacred symbols you do not understand."],
+        ["摄影", "Photography", "拍摄对称正面时，留意中心、四角和边界之间的等级关系。", "When photographing a frontal symmetrical subject, notice the hierarchy among center, corners and frame."],
+        ["日常物件", "Everyday objects", "看教学图、地图或仪器面板如何用中心与环绕层级组织复杂信息。", "See how diagrams, maps or instrument panels organize complex information through center and surrounding levels."]
+      ],
+      [
+        ["dunhuang-mural", "都与佛教图像、色彩象征和修行语境相关。", "Both relate to Buddhist imagery, symbolic color and devotional contexts.", "敦煌壁画依附石窟建筑，跨越多个时期并常展开大型叙事；唐卡通常是可悬挂卷轴，围绕特定尊像与仪轨。", "Dunhuang murals belong to cave architecture across many periods and often unfold broad narratives; thangkas are usually portable hanging scrolls centered on specific sacred figures and practices."],
+        ["byzantine-icon", "都以正面化人物、象征色彩和明确层级服务宗教观想。", "Both use frontal figures, symbolic color and clear hierarchy in devotional viewing.", "唐卡属于藏传佛教及喜马拉雅艺术语境，有特定量度与尊像系统；拜占庭圣像属于东方基督教传统。", "Thangka belongs to Tibetan Buddhist and Himalayan contexts with specific iconometry and deity systems; Byzantine icons belong to Eastern Christian traditions."]
+      ],
+      ["当你不知道具体图像含义时，你能否先观察它的秩序，同时保留对宗教语境的尊重？", "When you do not know the exact iconography, can you observe its order while respecting the religious context?" ]
+    ),
+
+    "thai-temple-mural": fullGuide(
+      ["一面墙上同时出现许多场景时，你能找到故事正在向哪个方向推进吗？", "When many scenes share one wall, can you find the direction in which the story is moving?"],
+      [
+        ["sequence", "先找连续叙事", "First, find the continuous narrative", "不同时间的人物与事件可以共处一幅壁画，建筑、山石和边界引导视线转场。", "Figures and events from different moments can share one mural, with buildings, rocks and boundaries guiding transitions."],
+        ["hierarchy", "再看人物尺度", "Then, compare the scale of figures", "主要人物、王宫与神圣场景可能被放大或置于重要位置，尺度也表示叙事等级。", "Principal figures, palaces and sacred scenes may be enlarged or prominently placed; scale also marks narrative importance."],
+        ["surface", "最后看金色与密集细节", "Finally, read gold and dense detail", "服饰、建筑与森林充满细线、金色和鲜艳色块，在庄严空间里建立强烈视觉节奏。", "Costume, architecture and forest fill with fine line, gold and vivid color, building visual rhythm within a sacred space."]
+      ],
+      [[4, "叙事秩序连续", "Continuous narrative order"], [5, "鲜艳色彩与金色", "Vivid color and gold"], [5, "建筑服饰细节繁密", "Dense architectural and costume detail"], [4, "情节与神圣感强", "Strong drama and sacred presence"]],
+      [["连续", "金色", "繁密", "叙事"], ["Continuous", "Golden", "Dense", "Narrative"]],
+      [
+        ["家居", "Home", "观察长墙、走廊和楼梯如何让人边移动边阅读一组连续画面。", "Notice how a long wall, corridor or stair lets a viewer read a sequence while moving."],
+        ["穿搭", "Clothing", "看金色边缘、鲜艳局部与层叠轮廓如何建立主次，而不复制宗教人物或仪式图案。", "See how gold edging, vivid accents and layered silhouette build hierarchy without copying sacred figures or ritual patterns."],
+        ["摄影", "Photography", "拍摄节庆或街道时，让前景、中景和远景同时保留不同小情节。", "When photographing a festival or street, preserve different small episodes in foreground, middle ground and distance."],
+        ["日常物件", "Everyday objects", "看长卷、连环包装或路线图如何不切断主线，却能容纳多个片段。", "See how scrolls, sequential packaging or route maps hold many episodes without breaking the main line."]
+      ],
+      [
+        ["dunhuang-mural", "都把大量人物、建筑和叙事放进宗教建筑的壁面。", "Both place many figures, buildings and narratives across walls of religious architecture.", "泰国寺庙壁画来自泰国佛教、王宫与文学语境，如拉玛坚故事；敦煌壁画则来自中国石窟与丝路交流语境。", "Thai temple murals belong to Thai Buddhist, royal and literary contexts such as the Ramakien; Dunhuang murals belong to Chinese cave temples and Silk Road exchange."],
+        ["indian-miniature", "都可以用鲜艳色彩、建筑分区和多人物展开叙事。", "Both can unfold narrative through vivid color, architectural divisions and many figures.", "泰国寺庙壁画是大尺度建筑表面，观者随空间移动；印度细密画更常属于小尺度书页或画册。", "Thai temple murals occupy large architectural surfaces traversed by viewers; Indian miniatures more often belong to small pages or albums."]
+      ],
+      ["你在这种密集叙事里是先找主角，还是先被整面墙的节奏吸引？", "In this dense narrative, do you first seek the protagonist or feel the rhythm of the whole wall?"]
+    ),
+
+    "byzantine-icon": fullGuide(
+      ["人物正面朝向你，背后却没有普通风景。金色空间是在表示光，还是另一种现实？", "The figure faces you without an ordinary landscape behind it. Does the gold space represent light, or another order of reality?"],
+      [
+        ["gaze", "先看正面凝视", "Begin with the frontal gaze", "眼睛、手势和身体被安排成直接面对观者的存在，强调观想而不是自然抓拍。", "Eyes, gesture and body directly face the viewer, emphasizing contemplation rather than a natural snapshot."],
+        ["gold", "再看金地", "Then, notice the gold ground", "背景弱化日常深度，金色反光把人物置于超越普通时空的宗教空间。", "The background suppresses ordinary depth, while reflected gold places the figure in a sacred space beyond everyday time."],
+        ["type", "最后看固定图像类型", "Finally, read the established image type", "姿势、服饰、光环和题记遵循传统图像类型，微小变化也可以带出神学与祈祷含义。", "Pose, dress, halo and inscription follow established types in which small changes can carry theological and devotional meaning."]
+      ],
+      [[5, "图像秩序严格", "Strict iconographic order"], [4, "金色与深色庄严", "Solemn gold and deep color"], [4, "光环边框精致", "Refined halos and borders"], [4, "情绪肃穆凝视", "Solemn, contemplative emotion"]],
+      [["正面", "金地", "庄严", "观想"], ["Frontal", "Gold-grounded", "Solemn", "Contemplative"]],
+      [
+        ["家居", "Home", "观察一件中心物与简洁背景如何建立安静凝视，但不把圣像复制为纯装饰。", "Notice how one centered object and a quiet background create contemplation without copying sacred icons as decor."],
+        ["穿搭", "Clothing", "看正面对称、深色层次和少量金色如何带来仪式感，避免挪用神圣题记。", "See how frontal symmetry, deep layers and limited gold create ceremony while avoiding sacred inscriptions."],
+        ["摄影", "Photography", "用正面光线和简单背景拍摄人物，观察目光如何改变与观者的关系。", "Photograph a person frontally against a simple ground and observe how the gaze changes the viewer's relation to the image."],
+        ["日常物件", "Everyday objects", "看证件照、纪念牌和家庭肖像如何通过正面性与边框建立不同的凝视方式。", "Compare how IDs, memorial plaques and family portraits use frontality and framing to establish different forms of attention."]
+      ],
+      [
+        ["renaissance", "都以基督教人物、手势和象征组织神圣叙事。", "Both organize sacred Christian narratives through figures, gestures and symbols.", "拜占庭圣像强调固定图像类型、正面凝视和超越日常的空间；文艺复兴绘画更强调人体体积、线性透视和可感世界。", "Byzantine icons stress established types, frontal contemplation and space beyond the everyday; Renaissance painting stresses bodily volume, linear perspective and the perceptible world."],
+        ["tibetan-thangka", "都是服务信仰实践的神圣图像，使用明确层级和象征。", "Both are sacred images serving religious practice through hierarchy and symbol.", "两者属于不同宗教与文化传统；不能因为正面、金色和对称就互换其图像含义。", "They belong to different religious and cultural traditions; frontal pose, gold and symmetry do not make their iconography interchangeable."]
+      ],
+      ["你感到的是一位人物的存在，还是一套神圣图像秩序在与你对视？", "Do you feel the presence of one figure, or an entire sacred image system looking back at you?"]
+    ),
+
+    "native-american-art": fullGuide(
+      ["在说它像什么之前，你能先问：这件作品来自哪个具体民族、地区、材料与用途吗？", "Before saying what it looks like, can you ask which specific nation, region, material and purpose it comes from?"],
+      [
+        ["specificity", "先看具体来源", "Begin with specific origin", "北美原住民艺术不是单一风格；陶器、编织、珠饰、木雕与绘画必须回到具体社群和时代阅读。", "North American Indigenous art is not one style; pottery, weaving, beadwork, carving and painting must be read through specific communities and periods."],
+        ["material", "再看材料与使用", "Then, notice material and use", "皮革、树皮、羽毛、珠子、石头或植物纤维与当地环境、交易和生活实践相连。", "Hide, bark, feathers, beads, stone or plant fiber connect to local environments, exchange and lived practice."],
+        ["continuity", "最后看延续与创新", "Finally, see continuity and innovation", "当代原住民艺术家不是只保存过去，也持续用新媒介回应身份、主权、历史与当下生活。", "Contemporary Indigenous artists do not merely preserve the past; they use new media to address identity, sovereignty, history and present life."]
+      ],
+      [[3, "秩序因社群与媒介而异", "Order varies by community and medium"], [4, "色彩与材料紧密相连", "Color closely tied to material"], [4, "纹样可承载具体含义", "Pattern may carry specific meaning"], [4, "情感与历史关系深", "Deep emotional and historical relation"]],
+      [["多样", "在地", "持续", "具体"], ["Diverse", "Place-based", "Continuing", "Specific"]],
+      [
+        ["家居", "Home", "看一件编织、陶器或雕刻时，先阅读艺术家、民族、材料与用途标签，不用泛化的部落想象代替。", "When viewing weaving, pottery or carving, read the artist, nation, material and use before replacing them with a generalized tribal idea."],
+        ["穿搭", "Clothing", "区分当代原住民设计师的作品与无来源仿制品，了解图案是否属于特定社群或仪式。", "Distinguish work by contemporary Indigenous designers from unattributed imitation and learn whether patterns belong to a specific community or ceremony."],
+        ["摄影", "Photography", "拍摄文化活动或社群艺术时，先确认是否允许拍摄、如何标注及图像可否公开。", "Before photographing cultural events or community art, confirm permission, attribution and whether images may be shared."],
+        ["日常物件", "Everyday objects", "查看博物馆或市场中物件的采集史、作者和归属，让来源也成为观看的一部分。", "Check an object's collecting history, maker and affiliation in museums or markets, making provenance part of looking."]
+      ],
+      [
+        ["aboriginal-dot-painting", "都是仍在发展的原住民艺术，与土地、社群和知识传承有关。", "Both are living Indigenous arts tied to land, community and transmitted knowledge.", "两者来自不同大陆、民族与历史；不能用点、几何或自然符号把它们合并成一种泛原住民风格。", "They come from different continents, peoples and histories; dots, geometry or natural symbols do not make one generic Indigenous style."],
+        ["nordic-folk-art", "都可以出现在纺织、雕刻、绘画与日常器物中，并由社群实践延续。", "Both may appear in textiles, carving, painting and everyday objects sustained through community practice.", "北欧民间艺术与北美众多原住民传统的历史、权利和文化规范不同；不能因为都是手工传统就互换图案。", "Nordic folk art differs from the histories, rights and cultural protocols of many North American Indigenous traditions; handmade heritage does not make patterns interchangeable."]
+      ],
+      ["你能否把“这是什么风格”换成“这是谁、在哪里、为什么而做”？", "Can you replace 'What style is this?' with 'Who made this, where, and for what purpose?'" ]
+    ),
+
+    "russian-lubok": fullGuide(
+      ["图像与文字同时大声说话时，你是先被色块吸引，还是先想读懂它在讲什么？", "When image and caption speak loudly together, are you drawn first to the color blocks or to the story being told?"],
+      [
+        ["outline", "先看粗壮轮廓", "Begin with the sturdy outline", "人物、动物和建筑被直接线条锁定，即使套色略有错位也保持清楚。", "Figures, animals and buildings are held by direct outlines that remain legible even when color registration shifts."],
+        ["caption", "再看图文配合", "Then, read image with caption", "标题、对话或长短不一的文字补充寓言、新闻、讽刺或通俗故事。", "Titles, dialogue and captions extend fables, news, satire or popular stories."],
+        ["rhythm", "最后看反复和夸张", "Finally, notice repetition and exaggeration", "表情、动作和纹样被简化并放大，让信息在传播中快速被记住。", "Expression, action and pattern are simplified and enlarged so the message is quickly remembered in circulation."]
+      ],
+      [[3, "叙事秩序直接", "Direct narrative order"], [4, "套色鲜明朴素", "Bright, plain printed color"], [3, "花边与图案有节奏", "Rhythmic borders and motifs"], [4, "情绪幽默夸张", "Humorous, exaggerated emotion"]],
+      [["通俗", "直白", "套色", "讽刺"], ["Popular", "Direct", "Color-printed", "Satirical"]],
+      [
+        ["家居", "Home", "观察冰箱贴、日历和小海报如何用一幅图配一句话讲完日常故事。", "Notice how fridge notes, calendars and small posters tell an everyday story through one image and one line."],
+        ["穿搭", "Clothing", "看大轮廓图案、少量鲜色和手工错位感如何带来亲近的印刷气质。", "See how large outlined motifs, a few bright colors and slight handmade misregistration create an approachable printed character."],
+        ["摄影", "Photography", "拍摄市集或街头标语时，将人物动作与旁边文字同时收进画面。", "When photographing markets or street slogans, keep human action and nearby words in the same frame."],
+        ["日常物件", "Everyday objects", "看便宜包装、漫画栏和民间印刷品如何靠清楚轮廓弥补粗糙工艺。", "See how inexpensive packaging, comic panels and popular prints use clear contour to work with rough production."]
+      ],
+      [
+        ["chinese-new-year-woodblock", "都是面向广泛观众的民间版画，使用轮廓、套色和吉祥或叙事题材。", "Both are popular prints using contour, color printing and auspicious or narrative subjects for broad audiences.", "俄罗斯 Lubok 常与寓言、讽刺、新闻和文字说明结合；中国年画更集中于节庆、护佑、家庭愿望与地方工坊传统。", "Russian lubok often combines fable, satire, news and caption; Chinese New Year woodblock prints focus more on festival, protection, family wishes and local workshop traditions."],
+        ["korean-minhwa", "都可用鲜明色彩、清楚轮廓和亲近的日常或象征题材面向广泛观看。", "Both may use vivid color, clear contour and approachable everyday or symbolic subjects for broad viewing.", "韩国民画包含屏风、花鸟、书架与多种生活绘画语境；Lubok 特指俄罗斯图文并置的通俗印刷传统，历史与传播方式不同。", "Korean Minhwa includes screens, birds-and-flowers, book images and varied domestic painting contexts; lubok specifically names a Russian popular print tradition combining image and text, with a different history and circulation."]
+      ],
+      ["你是先读懂它的故事，还是先喜欢上它直接、略带笨拙的印刷感？", "Do you first understand the story, or enjoy the direct, slightly rough character of the print?"]
+    ),
+
+    "celtic-art": fullGuide(
+      ["一条线穿过、绕回又继续前进时，你能用目光跟它走完吗？", "When one line passes over, loops under and continues, can your eye follow its full journey?"],
+      [
+        ["interlace", "先追踪上下编织", "First, trace the over-under interlace", "带状线条以稳定规则交替穿越，让平面图案产生连续编织感。", "Ribbon-like lines alternate over and under by a consistent rule, giving a flat pattern the logic of weaving."],
+        ["transformation", "再看植物与动物变形", "Then, notice plant and animal transformation", "叶、蛇、鸟或兽的身体可以拉长成螺旋与结，在可识别形体与抽象节奏间转换。", "Leaves, serpents, birds or beasts may stretch into spirals and knots, shifting between recognizable bodies and abstract rhythm."],
+        ["object", "最后看图案如何服从器物", "Finally, see pattern follow the object", "金属、石刻、手稿或十字架的边缘决定了线条折返、填充与中断的方式。", "Edges of metalwork, stone, manuscripts or crosses determine where lines turn, fill and break."]
+      ],
+      [[5, "编织规则严密", "Rigorous interlaced order"], [2, "色彩常服从材料", "Color often follows material"], [5, "结、螺旋与动物纹繁密", "Dense knots, spirals and animal forms"], [3, "情绪神秘而持续", "Mysterious, sustained emotion"]],
+      [["编织", "连续", "螺旋", "雕刻感"], ["Interlaced", "Continuous", "Spiraling", "Carved"]],
+      [
+        ["家居", "Home", "观察编织地毯、栏杆和桥架里上下穿越的结构，看规则如何让复杂不乱。", "Notice over-under structures in rugs, railings and bridges, and how rules keep complexity coherent."],
+        ["穿搭", "Clothing", "看编织带、缝线和金属扣如何沿身体边缘连续，而不把具体历史符号随意拼贴。", "See how braid, seam and metal fastening continue along body edges without casually assembling specific historical symbols."],
+        ["摄影", "Photography", "拍摄树根、道路与电缆交错时，找一条能让视线持续追踪的路径。", "When photographing roots, roads or cables, find one path the eye can follow continuously."],
+        ["日常物件", "Everyday objects", "看绳结、编篮和编程流程图如何用重复规则建立可检查的复杂性。", "See how knots, baskets and programming flow diagrams build inspectable complexity through repeated rules."]
+      ],
+      [
+        ["islamic-geometric", "都以重复规则、对称和无尽延展的节奏组织表面。", "Both organize surfaces through repeated rule, symmetry and rhythms that can extend beyond the frame.", "凯尔特艺术常以带状交织、螺旋和变形动物围绕器物边界；伊斯兰几何纹样更依靠多边形网格、星形和精确平面分割。", "Celtic art often wraps objects with ribbon interlace, spirals and transformed animals; Islamic geometric pattern relies more on polygon grids, stars and precise planar division."],
+        ["art-nouveau", "都喜欢连续曲线、植物形和线条绕行。", "Both favor continuous curves, vegetal form and wandering line.", "新艺术以近代设计中的鞭线、花茎和人物轮廓建立流动；凯尔特交织更强调上下穿越的规则与历史媒介。", "Art Nouveau builds flow through modern design's whiplash line, stems and figures; Celtic interlace stresses regulated over-under crossings and historical media."]
+      ],
+      ["你会想追着一条线找到它的结束，还是会享受它似乎永远没有终点？", "Do you want to find where one line ends, or enjoy the sense that it may continue forever?"]
+    )
+  });
+
+  Object.assign(window.STYLE_AESTHETIC_GUIDES, {
+    "healing-animation": fullGuide(
+      ["先别寻找剧情。风、云、草木和小动作是否已经让这个世界显得正在呼吸？", "Before looking for plot, notice whether wind, cloud, plants and small gestures already make the world feel alive and breathing."],
+      [
+        ["environment", "先看环境的微动", "Begin with small environmental motion", "树叶摇动、云影移动、烟气升起或水面反光，让背景不只是人物的布景。", "Leaves sway, shadows pass, smoke rises or water glints, making the setting more than scenery behind a character."],
+        ["gesture", "再看小而准确的动作", "Then, notice the small precise gesture", "端杯、穿鞋、回头或停顿被给予完整时间，日常行为因此显得可感。", "Lifting a cup, putting on shoes, turning or pausing receives full duration, making ordinary action tangible."],
+        ["pace", "最后感受留给观察的速度", "Finally, feel the pace of observation", "剪辑不急着把信息推过去，空镜和停顿让观者有时间进入场所。", "Editing does not hurry information past the viewer; held shots and pauses allow time to enter the place."]
+      ],
+      [[3, "场景秩序清楚自然", "Clear, natural scene order"], [3, "色彩柔和随天气变化", "Soft color shaped by weather"], [2, "细节有生活感而不繁复", "Lived-in rather than ornate detail"], [4, "情绪温和含蓄", "Gentle, understated emotion"]],
+      [["田园", "呼吸", "细微", "温和"], ["Pastoral", "Breathing", "Subtle", "Gentle"]],
+      [
+        ["家居", "Home", "观察窗帘、植物和蒸汽如何让安静房间保持微小动势。", "Notice how curtains, plants and steam keep a quiet room in subtle motion."],
+        ["穿搭", "Clothing", "看宽松布料、使用痕迹和层叠如何让人物显得正在生活，而不只是摆造型。", "See how loose fabric, signs of use and layers make a person feel lived-in rather than merely styled."],
+        ["摄影", "Photography", "留出一段不发生大事的镜头，让天气、声音想象和小动作建立氛围。", "Hold a frame where nothing major happens and let weather, imagined sound and small movement create atmosphere."],
+        ["日常物件", "Everyday objects", "看便当盒、旧自行车和晾晒的衣物如何因使用状态而带出人的存在。", "See how a lunch box, old bicycle or drying clothes imply people through their state of use."]
+      ],
+      [
+        ["cinematic-anime", "都用环境、天气和日常动作建立动画世界的可感性。", "Both use environment, weather and daily gesture to make an animated world tangible.", "田园手绘动画更常保留缓慢生活节奏与自然微动；日系动画电影光影更聚焦镜头化的光线、深度和时刻转折。", "Pastoral hand-drawn animation more often holds slow daily rhythms and natural micro-movement; Japanese animated-film lighting focuses more on cinematic light, depth and turning moments."],
+        ["childrens-picture-book", "都可以用温和图像、日常物件和简单动作建立亲近感。", "Both can build warmth through approachable images, everyday objects and simple actions.", "绘本依靠翻页、图文与静态跨页控制时间；动画依靠真实时长、运动与声音想象。", "Picture books control time through page turns, text-image relation and static spreads; animation uses duration, movement and imagined sound."]
+      ],
+      ["你是在等故事发生，还是已经在风、光和小动作里感到了世界？", "Are you waiting for the story to begin, or already feeling the world through wind, light and small gestures?"]
+    ),
+
+    "cinematic-anime": fullGuide(
+      ["光从门缝、列车窗或云层后面出现时，它只是照亮场景，还是在提醒你这一刻很重要？", "When light appears through a doorway, train window or cloud, is it merely illuminating the scene or marking the moment as important?"],
+      [
+        ["light", "先找光的来源", "First, locate the light source", "逆光、侧光和大片云影把人物与环境分成明确深度，也暗示时间和天气。", "Backlight, side light and broad cloud shadows separate figure and setting into depth while signaling time and weather."],
+        ["atmosphere", "再看空气中的颗粒", "Then, notice the air itself", "雨丝、尘埃、雪、雾或耀光被绘制成可见层，让空间不再是空白。", "Rain, dust, snow, mist or glare becomes a visible layer, so space no longer feels empty."],
+        ["framing", "最后看镜头式构图", "Finally, read the cinematic framing", "前景遮挡、远景大景和偏离中心的人物让画面像一个被选中的电影镜头。", "Foreground occlusion, distant scale and off-center figures make the image feel like a selected film shot."]
+      ],
+      [[4, "镜头秩序清楚", "Clear cinematic order"], [4, "色彩随光线与时刻变化", "Color shaped by light and time"], [2, "细节服务空气感", "Detail serves atmosphere"], [5, "情绪时刻性强", "Strong emotional sense of a moment"]],
+      [["逆光", "空气", "镜头感", "瞬间"], ["Backlit", "Atmospheric", "Cinematic", "Momentary"]],
+      [
+        ["家居", "Home", "看门缝、百叶窗和走廊尽头的光如何让普通空间出现时刻感。", "Notice how light through a door, blinds or the end of a corridor gives an ordinary space a sense of timing."],
+        ["穿搭", "Clothing", "观察半透明面料、边缘光与深色轮廓如何随环境光改变层次。", "Observe how translucent fabric, rim light and dark silhouette change depth under environmental light."],
+        ["摄影", "Photography", "在雨后、黄昏或车窗边拍摄，让反光和空气颗粒与人物共同完成画面。", "Photograph after rain, at dusk or beside a vehicle window, letting reflections and atmosphere work with the figure."],
+        ["日常物件", "Everyday objects", "看玻璃杯、手机屏和金属边缘如何因一道光突然成为视觉焦点。", "See how one beam turns a glass, phone screen or metal edge into a sudden focal point."]
+      ],
+      [
+        ["healing-animation", "都使用天气、场所和小动作让动画世界具有生活感。", "Both use weather, place and small gestures to make animated worlds feel lived in.", "田园手绘动画更强调缓慢日常与自然微动；电影光影语汇更强调光源、景别、空气层和戏剧时刻。", "Pastoral hand-drawn animation stresses slow daily life and natural micro-motion; cinematic lighting stresses light source, shot scale, atmosphere and dramatic moment."],
+        ["noir-illustration", "都用强光影、遮挡和镜头化视角推动情绪。", "Both use strong light, occlusion and cinematic viewpoints to drive mood.", "日系动画电影光影可以明亮、温柔或灿烂，并不固定服务悬疑；黑色电影插画更聚焦犯罪类型、黑暗城市与不安光影。", "Japanese animated-film lighting can be bright, tender or radiant and is not tied to suspense; Noir Illustration centers crime genre, dark cities and uneasy contrast."]
+      ],
+      ["如果把人物移走，这道光和这片空气还能让你感到故事正在发生吗？", "If the figure disappeared, would the light and air still make you feel that a story is happening?"]
+    ),
+
+    "classic-disney": fullGuide(
+      ["人物的身体被拉伸、压缩又恢复时，你是否在它开口之前就读懂了情绪？", "As a character stretches, compresses and recovers, can you read the emotion before any words are spoken?"],
+      [
+        ["silhouette", "先看轮廓是否一眼可读", "Begin with the readable silhouette", "帽子、手臂、裙摆和姿态被简化成清楚外形，缩小或去色后仍能看出动作。", "Hats, arms, hems and posture simplify into clear shapes that remain readable when small or colorless."],
+        ["motion", "再看拉伸与压缩", "Then, watch stretch and squash", "身体和物件通过形变表现重量、弹性和冲击，夸张却保持连续动势。", "Bodies and objects deform to show weight, elasticity and impact, exaggerating while preserving continuous motion."],
+        ["staging", "最后看舞台式调度", "Finally, notice theatrical staging", "人物常在清楚景别里用大动作与目光交流，背景主动让出表演空间。", "Characters exchange large gestures and glances within clear staging while backgrounds yield space to performance."]
+      ],
+      [[4, "表演秩序清楚", "Clear performance order"], [4, "色彩鲜明服务人物", "Bright color serving characters"], [3, "细节精致但不抢戏", "Refined detail without distraction"], [5, "情绪表演外放", "Highly expressive emotion"]],
+      [["流畅", "夸张", "舞台感", "鲜明"], ["Fluid", "Exaggerated", "Theatrical", "Vivid"]],
+      [
+        ["家居", "Home", "看楼梯、门框和家具是否为人的走动、转身和拿取留出清楚表演空间。", "See whether stairs, doorways and furniture leave clear space for walking, turning and reaching."],
+        ["穿搭", "Clothing", "用明确轮廓和能随动作放大节奏的衣摆，从远处也能读出姿态。", "Use a clear silhouette and hems that amplify movement so posture remains readable from a distance."],
+        ["摄影", "Photography", "连拍一个跳跃或抛接动作，比较准备、极点和恢复三个姿态。", "Photograph a jump or toss in sequence and compare anticipation, extreme and recovery poses."],
+        ["日常物件", "Everyday objects", "看弹簧、气球和布袋如何通过形变显示重量与弹性。", "See how springs, balloons and cloth bags reveal weight and elasticity through deformation."]
+      ],
+      [
+        ["anime", "都使用绘制人物、分镜和夸张动作建立情绪。", "Both use drawn characters, staging and exaggerated movement to build emotion.", "黄金时代手绘动画常依靠饱满连续动作、弹性形变和舞台式表演；Anime 是更广的日本动画范围，可以使用有限动画、强分镜与多种类型语汇。", "Golden Age hand-drawn animation often uses full continuous motion, elastic deformation and theatrical performance; Anime is a broader Japanese field that may use limited animation, strong shot design and many genres."],
+        ["healing-animation", "都保留手绘线条、角色表演和可视的动画节奏。", "Both retain drawn line, character acting and visible animation rhythm.", "黄金时代语汇更常把大幅度动作与喜剧节拍放在前景；田园手绘动画更强调小动作、环境呼吸和缓慢时间。", "Golden Age language foregrounds broad action and comic timing; pastoral hand-drawn animation stresses small gestures, breathing environments and slower time."]
+      ],
+      ["当动作被夸张时，你感到的是失真，还是更清楚的重量与情绪？", "When motion is exaggerated, does it feel less real or more clearly weighted and emotional?"]
+    ),
+
+    "warm-3d-animation": fullGuide(
+      ["这些圆润形体为什么让你想伸手触摸？是材质、光，还是人物的小表情？", "Why do these rounded forms invite touch: material, light, or the character's small expression?"],
+      [
+        ["shape", "先看柔软轮廓", "Begin with the soft silhouette", "头部、手脚和家具边缘被圆化，尖锐转折减少，让角色显得可亲近。", "Heads, limbs and furniture edges are rounded, reducing sharp turns and making characters approachable."],
+        ["material", "再看可触的表面", "Then, notice touchable surfaces", "织物、木头、毛发和磨砂塑料保留微小粗糙度，避免所有物件都像同一种亮塑料。", "Fabric, wood, hair and matte plastic keep slight roughness so every object does not look like the same glossy material."],
+        ["acting", "最后看微表情与重量", "Finally, read micro-expression and weight", "眼神、呼吸、肩部下沉与身体偏移让温情不靠夸大笑容，而来自可信的身体状态。", "Gaze, breath, lowered shoulders and shifted weight create warmth through believable bodily state rather than a huge smile."]
+      ],
+      [[4, "形体秩序清晰圆润", "Clear rounded form order"], [3, "色彩温和低刺激", "Warm, low-stimulation color"], [3, "材质细节可触", "Touchable material detail"], [4, "情绪温暖细腻", "Warm, nuanced emotion"]],
+      [["圆润", "可触", "温暖", "细腻"], ["Rounded", "Tactile", "Warm", "Tender"]],
+      [
+        ["家居", "Home", "观察圆角家具、哑光材质和暖色小灯如何减少紧张，同时保留真实使用痕迹。", "Notice how rounded furniture, matte materials and warm lamps reduce tension while retaining signs of use."],
+        ["穿搭", "Clothing", "看羊毛、棉布和柔软外廓如何用材质而不是幼态比例表达亲和。", "See how wool, cotton and soft silhouettes express approachability through material rather than childish proportion."],
+        ["摄影", "Photography", "用靠近窗边的大面柔光拍摄人与物，保留织物和皮肤的细微纹理。", "Use broad window light on people and objects while preserving subtle textile and skin texture."],
+        ["日常物件", "Everyday objects", "比较陶杯、毛绒和木柄的反光差异，看材质如何先于颜色传达温度。", "Compare reflections on ceramic, plush and wood, and see how material conveys warmth before color does."]
+      ],
+      [
+        ["dreamworks-cartoon", "都以三维角色、清楚轮廓和可感材质建立亲近感。", "Both build approachable 3D characters through clear silhouette and tangible material.", "温情三维动画更依靠微表情、柔光和安静节奏；夸张三维卡通喜剧更依靠大表情、形体对比和快节拍反应。", "Warm 3D animation relies more on micro-expression, soft light and quiet rhythm; exaggerated 3D comedy relies on broad faces, shape contrast and rapid reactions."],
+        ["claymorphism", "都使用圆角、哑光体积和柔软阴影创造可触感。", "Both use rounded corners, matte volume and soft shadow to create tactility.", "温情三维动画需要完整角色表演、环境与时间；Claymorphism 主要是界面、图标和插图中的黏土式表面语汇。", "Warm 3D animation requires character acting, environment and duration; Claymorphism is mainly a clay-like surface language for interfaces, icons and illustration."]
+      ],
+      ["你觉得它温暖，是因为形状很圆，还是因为角色的重量和反应很真？", "Does it feel warm because the shapes are round, or because the character's weight and responses feel true?"]
+    ),
+
+    "dreamworks-cartoon": fullGuide(
+      ["角色只是抬一下眉毛、偏一下头，你是否就已经知道它在吐槽、怀疑或准备惹麻烦？", "From one raised brow or tilted head, can you already tell that the character is skeptical, joking or about to cause trouble?"],
+      [
+        ["contrast", "先看形体对比", "Begin with shape contrast", "高与矮、宽与窄、圆与尖的角色并置，让性格关系在开口之前就可读。", "Tall and short, broad and narrow, round and sharp characters sit together so personality relations read before dialogue."],
+        ["face", "再看面部不对称", "Then, notice facial asymmetry", "单边挑眉、歪嘴和短暂停顿让喜剧来自反应，而不只是大声叫喊。", "One raised brow, a crooked mouth and a brief pause make comedy arise from reaction, not only loud action."],
+        ["timing", "最后看节拍反转", "Finally, watch the timing turn", "准备动作可能被拉长，结果却突然加速，视觉节拍本身就构成笑点。", "Anticipation may stretch while the result snaps quickly, making visual timing itself the joke."]
+      ],
+      [[3, "秩序服务角色冲突", "Order serves character conflict"], [4, "色彩鲜明对比强", "Bright, contrasting color"], [3, "形体细节夸张", "Exaggerated form detail"], [5, "喜剧情绪外放", "Highly extroverted comic emotion"]],
+      [["俏皮", "夸张", "反应快", "群像"], ["Witty", "Exaggerated", "Reactive", "Ensemble-driven"]],
+      [
+        ["家居", "Home", "看一组家具的高矮、胖瘦和轮廓对比如何让它们像各有性格的群像。", "See how furniture of different heights, widths and silhouettes can read like an ensemble of personalities."],
+        ["穿搭", "Clothing", "用大外廓对比和一处略带幽默的比例变化表达性格，不必堆满符号。", "Use broad silhouette contrast and one playfully shifted proportion to express character without piling on symbols."],
+        ["摄影", "Photography", "拍摄对话时不只抓说话者，也保留旁人挑眉、停顿和对视的反应。", "When photographing conversation, keep the listeners' raised brows, pauses and glances, not only the speaker."],
+        ["日常物件", "Everyday objects", "比较不同杯子、瓶子和包装的轮廓，看它们是否因比例而显得严肃或俏皮。", "Compare silhouettes of cups, bottles and packages and see how proportion makes them feel serious or playful."]
+      ],
+      [
+        ["warm-3d-animation", "都使用可读三维轮廓、材质和面部表演创造亲近角色。", "Both use readable 3D silhouette, material and facial acting to create approachable characters.", "夸张三维喜剧更强调人物对比、讽刺表情和节拍反转；温情三维更强调微表情、柔光与情感停顿。", "Exaggerated 3D comedy stresses character contrast, ironic expressions and timing reversals; warm 3D stresses micro-expression, soft light and emotional pauses."],
+        ["american-comic-book", "都使用大轮廓、强动作和鲜明角色区分推动娱乐叙事。", "Both drive entertainment narratives through bold silhouette, strong action and vivid character differentiation.", "三维卡通喜剧依赖时间、声音和连续表演；美式漫画依靠分格、拟声词、墨线与静态姿势发挥冲击。", "3D cartoon comedy depends on duration, sound and continuous acting; American comics use panels, sound effects, ink and held poses for impact."]
+      ],
+      ["你的笑是来自角色长得夸张，还是来自它对别人做出的那一秒反应？", "Does the humor come from exaggerated design, or from the one-second reaction to another character?"]
+    ),
+
+    anime: fullGuide(
+      ["一个静止眼神、一片空景和一次突然加速，是否比持续动作更能让你记住时刻？", "Can a held gaze, an empty setting and one sudden acceleration make a moment more memorable than constant motion?"],
+      [
+        ["design", "先看角色识别线索", "Begin with character identifiers", "发型、服装轮廓、眼神和一两个色彩重点让人物在多样画风中仍能快速被认出。", "Hair, costume silhouette, gaze and one or two color accents keep characters identifiable across varied drawing styles."],
+        ["editing", "再看静止与爆发的切换", "Then, watch stillness switch to impact", "有限动画可用持续的静态画面积累张力，再用快速镜头、动态线或局部变形释放。", "Limited animation can build tension through held images, then release it with rapid shots, motion lines or local deformation."],
+        ["genre", "最后分清媒介与类型", "Finally, separate medium from genre", "Anime 是广泛的日本动画范围，内部包含日常、科幻、历史、实验等不同语汇，不是单一大眼风格。", "Anime is a broad field of Japanese animation spanning daily life, science fiction, history and experiment; it is not one big-eye style."]
+      ],
+      [[3, "镜头秩序变化广", "Widely varied shot order"], [4, "色彩随类型变化", "Color varies by genre"], [3, "角色线索集中", "Concentrated character cues"], [4, "情绪节拍对比强", "Strong emotional timing contrast"]],
+      [["分镜", "角色", "停顿", "爆发"], ["Shot-driven", "Character-led", "Held", "Explosive"]],
+      [
+        ["家居", "Home", "观察房间里哪一两个轮廓或颜色能让人立刻识别使用者的性格。", "Notice which one or two shapes or colors in a room instantly suggest its user's character."],
+        ["穿搭", "Clothing", "用清楚剪影、一个识别配件和可动的发型建立人物感，不必复制具体角色。", "Build character through clear silhouette, one identifying accessory and movable hair without copying a specific character."],
+        ["摄影", "Photography", "用一张安静远景配一张高张力近景，观察景别切换如何改变情绪。", "Pair one quiet long shot with one tense close-up and see how shot scale changes emotion."],
+        ["日常物件", "Everyday objects", "看钥匙扣、文具和手机壁纸如何用少量图形成为个人身份线索。", "See how keychains, stationery and phone wallpapers become identity cues through a few shapes."]
+      ],
+      [
+        ["manga", "都来自日本图像叙事生态，共享角色设计、类型惯例和分镜语汇。", "Both belong to Japanese image-narrative ecosystems and share character design, genre conventions and framing language.", "Manga 以纸页、分格、黑白节奏和读者自定速度展开；Anime 以屏幕时长、运动、声音和剪辑控制时间。", "Manga unfolds through pages, panels, black-and-white rhythm and reader-controlled pace; Anime controls time through screen duration, motion, sound and editing."],
+        ["cinematic-anime", "都使用日本动画中的镜头、角色与环境语汇。", "Both use shot, character and environment languages found in Japanese animation.", "Anime 是包含众多制作方法和类型的大范围；“电影光影”只聚焦光源、空气深度和电影式时刻。", "Anime is a broad field of methods and genres; cinematic lighting focuses specifically on light source, atmospheric depth and filmic moments."]
+      ],
+      ["你记住这一刻，是因为角色动得很多，还是因为镜头知道什么时候停下？", "Do you remember the moment because the character moves a lot, or because the shot knows when to hold?"]
+    ),
+
+    manga: fullGuide(
+      ["两个分格之间没有画出的那段时间，你的大脑是否已经自动把它补完？", "Between two panels, has your mind already completed the time that was never drawn?"],
+      [
+        ["panel", "先看分格尺寸", "Begin with panel size", "大格让时刻停留，小格加快动作，突破边框可以放大冲击或情绪。", "Large panels hold a moment, small panels accelerate action, and breaking the border can enlarge impact or emotion."],
+        ["value", "再看黑白与网点", "Then, read black, white and screentone", "纯黑、白地、排线和网点区分光线、材质、气氛与心理强度。", "Solid black, white ground, hatching and screentone distinguish light, material, atmosphere and psychological intensity."],
+        ["reading", "最后看视线如何翻页", "Finally, follow the page-turn path", "人物目光、动态线、对话框和留白共同引导阅读方向，跨页与翻页也是叙事工具。", "Gaze, motion line, speech balloon and blank space guide reading direction, while spreads and page turns become narrative tools."]
+      ],
+      [[4, "分格秩序强但可破格", "Strong panel order that can be broken"], [1, "主要依靠黑白灰", "Primarily black, white and gray"], [3, "网点线条细节丰富", "Rich tone and line detail"], [4, "情绪由节奏放大", "Emotion amplified by pacing"]],
+      [["分格", "黑白", "翻页", "节奏"], ["Paneled", "Monochrome", "Page-turned", "Rhythmic"]],
+      [
+        ["家居", "Home", "把墙面照片、便签和空白视为不同分格，看尺寸差异如何改变阅读顺序。", "Treat wall photos, notes and blank areas as panels and see how size changes reading order."],
+        ["穿搭", "Clothing", "用黑白大块、线性纹理和一个突出轮廓建立清晰节奏，不必复制角色。", "Build clear rhythm with large black-white areas, linear texture and one strong silhouette without copying a character."],
+        ["摄影", "Photography", "用三张照片记录一个动作的前、中、后，观察哪些过程可以留给观者补全。", "Record before, during and after an action in three photos and see which transitions the viewer can complete."],
+        ["日常物件", "Everyday objects", "看说明书、地铁广告和外卖菜单如何用格子、箭头和尺寸差引导阅读。", "See how manuals, transit ads and menus use boxes, arrows and scale differences to guide reading."]
+      ],
+      [
+        ["anime", "都使用日本图像叙事中的角色、镜头与类型语汇。", "Both use character, framing and genre languages within Japanese image narrative.", "Manga 由读者通过分格、翻页和黑白画面决定速度；Anime 用时长、运动、声音与剪辑控制观看。", "Manga lets readers control pace through panels, page turns and monochrome images; Anime controls viewing through duration, motion, sound and editing."],
+        ["graphic-novel", "都以连环图像、分格和文字叙述长短不一的故事。", "Both tell stories of varied length through sequential images, panels and text.", "Manga 指日本漫画的广泛出版与阅读传统，包含多种受众与类型；Graphic Novel 更常是对长篇或书本形式漫画的出版称呼，不限国家画法。", "Manga names a broad Japanese publishing and reading tradition with many audiences and genres; Graphic Novel is more often a publishing term for long-form or book-form comics, not one national drawing style."]
+      ],
+      ["你在哪个分格停得最久？是因为它画得最多，还是因为它留得最少？", "Which panel holds you longest: the one that shows the most, or the one that leaves the most unsaid?"]
+    ),
+
+    shonen: fullGuide(
+      ["在冲突真正爆发之前，画面用了多少准备、对视和动作方向让你期待那一刻？", "Before conflict erupts, how much anticipation, eye contact and directional motion prepares you for it?"],
+      [
+        ["direction", "先看力量方向", "Begin with force direction", "动态线、身体倾斜和透视缩短把力量集中到一个冲击点，让静态分格像在前进。", "Motion lines, tilted bodies and foreshortening focus force on one impact point, making a static panel advance."],
+        ["escalation", "再看尺度递增", "Then, watch scale escalate", "从眼神近景、手部准备到跨页大动作，分格尺寸随能量和风险增长。", "From eye close-up and prepared hand to full-spread action, panel scale grows with energy and risk."],
+        ["team", "最后看成长与群体关系", "Finally, read growth through the group", "训练、竞争、失败与合作通过角色位置和反复对照展开，力量不只是一次打击。", "Training, rivalry, failure and cooperation unfold through placement and repeated contrast; power is more than one strike."]
+      ],
+      [[3, "节奏秩序持续升级", "Pacing continually escalates"], [2, "黑白对比强", "Strong monochrome contrast"], [3, "动态线与效果密集", "Dense motion and impact effects"], [5, "情绪热血外放", "Highly charged, outward emotion"]],
+      [["冲刺", "成长", "对决", "合作"], ["Driving", "Growth-led", "Confrontational", "Collective"]],
+      [
+        ["家居", "Home", "把长期目标分成可见进度、小挑战和休息节点，观察尺度递增如何建立动力。", "Break a long goal into visible progress, small challenges and recovery points, and observe how escalation builds momentum."],
+        ["穿搭", "Clothing", "用向前的斜线、明确身体轮廓和一处高对比建立动势，避免复制角色服装。", "Build forward motion through diagonals, a clear body silhouette and one high contrast without copying a character costume."],
+        ["摄影", "Photography", "在运动中同时拍准备姿态和完成瞬间，看哪一张更能让人感到力量。", "Photograph both anticipation and completion in sport and compare which frame carries more force."],
+        ["日常物件", "Everyday objects", "看运动鞋底、工具手柄和自行车车架如何用斜线与受力点显示方向。", "See how shoe soles, tool handles and bicycle frames reveal direction through diagonals and load points."]
+      ],
+      [
+        ["manga", "都使用分格、黑白节奏、动态线和翻页控制叙事。", "Both use panels, monochrome rhythm, motion lines and page turns to control narrative.", "Manga 是广泛媒介与出版传统，包含众多题材；Shonen 主要是面向少年读者的市场分类，常突出成长、竞争、冒险与伙伴，但不是单一画法。", "Manga is a broad medium and publishing tradition; Shonen is mainly a market category for young male readers, often emphasizing growth, rivalry, adventure and peers, not one drawing style."],
+        ["american-comic-book", "都可以用英雄对决、强透视、动态线和跨页冲击推动行动。", "Both can drive action through heroic conflict, forceful perspective, motion lines and full-page impact.", "Shonen 通常按日本杂志与单行本节奏展开长期成长；美式漫画与美国出版格式、彩色分色和其类型历史相连。", "Shonen often unfolds long-term growth through Japanese magazine and volume rhythms; American comics relate to US publishing formats, color separation and their own genre history."]
+      ],
+      ["你被留住的是一次强力冲击，还是角色经历失败后再站起来的过程？", "Are you held by one powerful impact, or by the process of a character rising after failure?"]
+    ),
+
+    shojo: fullGuide(
+      ["花、星光、头发和空白穿过分格时，它们是背景装饰，还是人物心情正在溢出边框？", "When flowers, sparkles, hair and blank space cross panel borders, are they decoration or emotion spilling beyond the frame?"],
+      [
+        ["gaze", "先看目光与距离", "Begin with gaze and distance", "眼神近景、侧脸和人物之间的空白组织关系，距离本身就是情节。", "Close-up eyes, profiles and blank space between figures organize relationship; distance itself becomes plot."],
+        ["flow", "再看头发与花纹如何跨格", "Then, follow hair and motifs across panels", "长线、花瓣、光点和柔软边界穿过分格，让心理时间盖过物理空间。", "Long lines, petals, sparkles and soft borders cross panels, letting psychological time overtake physical space."],
+        ["interior", "最后看内心声音的排版", "Finally, read the inner voice", "独白、对话和没有文字的停顿以不同字形与位置区分外在行动和内在感受。", "Monologue, dialogue and wordless pause use different lettering and placement to separate outer action from inner feeling."]
+      ],
+      [[3, "分格为心理节奏让路", "Panels yield to psychological rhythm"], [2, "黑白层次轻盈", "Light monochrome layering"], [4, "花纹光点与长线丰富", "Rich flowers, sparkles and long line"], [5, "情感细腻内向", "Nuanced, inward emotion"]],
+      [["轻盈", "心动", "流动", "内省"], ["Airy", "Tender", "Flowing", "Introspective"]],
+      [
+        ["家居", "Home", "看透明帘、镜子和花枝如何在房间里制造反射、遮挡与含蓄距离。", "See how sheer curtains, mirrors and branches create reflection, occlusion and suggestive distance in a room."],
+        ["穿搭", "Clothing", "用长线条、层叠半透明材质和小面积光点建立流动，不必复制具体人物。", "Build flow through long lines, layered translucent materials and small points of light without copying a specific character."],
+        ["摄影", "Photography", "拍摄对话前后的目光、手势和人物间空白，让关系不只靠拥抱来表达。", "Photograph gaze, gesture and space before and after dialogue so relationship is not expressed only by embrace."],
+        ["日常物件", "Everyday objects", "看信纸、日记和香水瓶如何用字体、留白与小图案区分公开话语和私密感受。", "See how letters, diaries and perfume bottles use type, blank space and small motifs to distinguish public words from private feeling."]
+      ],
+      [
+        ["manga", "都使用黑白分格、翻页、对话与线条叙事。", "Both use monochrome panels, page turns, dialogue and line for narrative.", "Manga 是广泛媒介；Shojo 主要是面向少女读者的市场分类，常突出关系、内心时间和流动页面，但包含多种题材与画法。", "Manga is the broad medium; Shojo is mainly a market category for young female readers, often foregrounding relation, inner time and flowing pages, but containing many subjects and styles."],
+        ["art-nouveau", "都会使用长曲线、花朵、发丝和装饰边界让画面流动。", "Both may use long curves, flowers, hair and decorative borders to create flow.", "Shojo 中的花与长线常穿越分格，表示角色心理和阅读时间；新艺术更是建筑、海报与物件设计中的近代装饰语言。", "In Shojo, flowers and long lines cross panels to express psychology and reading time; Art Nouveau is a modern decorative language across architecture, posters and objects."]
+      ],
+      ["画面里哪一处空白最像一句没有说出来的话？", "Which blank space feels most like a sentence left unsaid?"]
+    ),
+
+    "american-comic-book": fullGuide(
+      ["如果去掉所有文字，你仍能从姿势、阴影和分格方向读出冲突即将发生吗？", "If every word disappeared, could pose, shadow and panel direction still tell you that conflict is about to happen?"],
+      [
+        ["pose", "先看英雄式姿势", "Begin with the heroic pose", "身体被扭转到能同时展示力量、方向和身份的角度，剪影通常很强。", "Bodies twist to display force, direction and identity at once, usually producing a strong silhouette."],
+        ["ink", "再看墨线与黑影", "Then, notice ink and shadow", "轮廓线、排线和大块黑影塑造体积与戏剧光，印刷分色让形体保持清楚。", "Contour, hatching and solid shadow model volume and dramatic light, while printed color keeps forms legible."],
+        ["impact", "最后看文字如何进入画面", "Finally, see words enter the image", "拟声词、对话框和旁白以尺寸、字重和爆炸形状参与动作，不只是说明文字。", "Sound effects, balloons and captions join the action through scale, weight and burst shapes rather than sitting as explanation."]
+      ],
+      [[4, "分格与动作秩序强", "Strong panel and action order"], [4, "印刷色彩对比鲜明", "Vivid printed color contrast"], [3, "墨线、网点与拟声密集", "Dense ink, tone and sound effects"], [5, "情绪冲突强烈", "Intense conflict-driven emotion"]],
+      [["有力", "分格", "高对比", "爆发"], ["Forceful", "Paneled", "High-contrast", "Explosive"]],
+      [
+        ["家居", "Home", "看墙面画作、黑色家具和彩色物件如何形成像分格一样的大小对比。", "See how wall art, dark furniture and colored objects form panel-like contrasts of scale."],
+        ["穿搭", "Clothing", "用强剪影、大色块和一处高对比标识建立力量，不复制具体英雄制服。", "Build force with a strong silhouette, large color blocks and one high-contrast mark without copying a hero costume."],
+        ["摄影", "Photography", "从低机位拍摄强姿态，再用一张手、眼或物件的近景组成双格叙事。", "Photograph a strong pose from low angle, then pair it with a close-up of hand, eye or object as a two-panel sequence."],
+        ["日常物件", "Everyday objects", "看运动包装、警示标签和报纸头条如何用粗字与爆炸形让信息显得有动作。", "See how sports packaging, warning labels and headlines use bold type and burst shapes to make information act."]
+      ],
+      [
+        ["manga", "都用连环图像、分格、文字和动态线建立故事时间。", "Both build story time through sequential images, panels, words and motion lines.", "美式漫画与美国期刊、彩色分色、英雄及多种独立类型发展相连；Manga 则来自日本出版、黑白单行本与其多样读者分类。", "American comics relate to US periodicals, color separation, superheroes and many independent genres; Manga grows from Japanese publishing, monochrome volumes and diverse reader categories."],
+        ["pop-art-poster", "都可使用漫画线条、网点、鲜艳印刷色和拟声文字。", "Both may use comic line, halftone, vivid print color and sound-effect lettering.", "美式漫画以连环分格服务角色与故事；波普海报把商品、媒体和漫画图像放大、重复或转用为单幅视觉评论。", "American comics use sequential panels for character and story; Pop Art posters enlarge, repeat or repurpose commercial and comic imagery as single-image visual commentary."]
+      ],
+      ["你感到的力量主要来自身体姿势，黑影，还是文字与分格的冲击？", "Does the force come mainly from bodily pose, shadow, or the impact of lettering and panels?"]
+    )
+  });
+
+  Object.assign(window.STYLE_AESTHETIC_GUIDES, {
+    cyberpunk: fullGuide(
+      ["霓虹最亮的地方是在展示未来，还是在照出城市里更深的不平等？", "Is the brightest neon showing the future, or exposing deeper inequality in the city?"],
+      [["city", "先看技术压住城市", "Begin with technology over the city", "巨型屏幕、管线和高楼覆盖旧街道，先进系统与拥挤生活同时存在。", "Massive screens, conduits and towers cover older streets, placing advanced systems beside crowded life."], ["contrast", "再看霓虹与黑暗", "Then, compare neon and darkness", "高纯度冷暖光只照亮局部，人物常被留在雨、烟和反射之间。", "Saturated warm-cool light reveals only fragments, leaving figures amid rain, haze and reflections."], ["body", "最后看技术进入身体", "Finally, see technology enter the body", "义体、接口和监控把身份、自由与权力问题落到人的尺度。", "Prosthetics, interfaces and surveillance bring questions of identity, freedom and power to the human scale."]],
+      [[4,"系统密集有秩序","Dense systemic order"],[5,"霓虹对比强烈","Intense neon contrast"],[4,"技术细节繁多","Dense technological detail"],[5,"情绪压迫警觉","Oppressive, alert emotion"]],
+      [["霓虹","拥挤","反抗","高科技"],["Neon","Crowded","Defiant","High-tech"]],
+      [["家居","Home","用一处冷光屏幕对比温暖旧物，观察新旧技术怎样共存。","Contrast one cool screen with warm worn objects and notice old and new technology coexisting."],["穿搭","Clothing","用功能层叠、反光材质和一处电子细节表达城市适应，而非复制角色。","Use functional layers, reflective material and one electronic detail to express urban adaptation without copying a character."],["摄影","Photography","在雨后夜街寻找广告反光与行人剪影，让光也讲述空间权力。","Find ad reflections and pedestrian silhouettes on a wet night street, letting light describe spatial power."],["日常物件","Everyday objects","观察支付屏、门禁与摄像头如何把便利和监控同时带入日常。","Notice how payment screens, access controls and cameras bring convenience and surveillance together."]],
+      [["synthwave","都常使用霓虹、夜色、数字界面和未来城市想象。","Both often use neon, night, digital interfaces and imagined futures.","Cyberpunk 关注高科技与低生活、权力和身体；Synthwave 更偏向对 1980 年代电子文化的复古未来情绪。","Cyberpunk examines high tech beside low life, power and bodies; synthwave leans toward retro-futurist feeling rooted in 1980s electronic culture."],["solarpunk","都把技术、城市与未来社会放进视觉叙事。","Both place technology, cities and future society in visual narrative.","Cyberpunk 常通过企业控制、污染和分裂提出警告；Solarpunk 想象生态修复、社区协作与可持续技术。","Cyberpunk often warns through corporate control, pollution and division; solarpunk imagines ecological repair, community and sustainable technology."]],
+      ["你被霓虹吸引之后，画面希望你看见谁拥有技术，谁又被技术控制？", "After neon draws you in, who does the image ask you to see as owning technology, and who is controlled by it?"]
+    ),
+    vaporwave: fullGuide(
+      ["这些熟悉的商品、雕像和电脑界面为什么像一段被放慢、褪色的记忆？", "Why do these familiar products, statues and computer interfaces feel like a slowed, faded memory?"],
+      [["sample","先看被挪用的旧图像","Begin with sampled old images","古典雕像、早期电脑、商场和广告素材被并置，原本的用途变成怀旧碎片。","Classical statues, early computers, malls and ad imagery are juxtaposed, their original uses becoming nostalgic fragments."],["palette","再看粉紫青色","Then, notice pink, violet and cyan","柔亮渐变、夕阳和低清色偏让商业表面显得梦幻又疏离。","Soft gradients, sunsets and low-resolution color casts make commercial surfaces dreamy yet distant."],["loop","最后感受循环","Finally, feel repetition","网格、棕榈、窗格和重复物件像慢速音乐采样，让时间停在一个人工场景。","Grids, palms, windows and repeated objects act like slowed musical samples, holding time in an artificial scene."]],
+      [[3,"拼贴秩序松散","Loose collage order"],[5,"粉紫青色浓烈","Intense pink-cyan color"],[4,"怀旧符号密集","Dense nostalgic symbols"],[4,"情绪梦幻疏离","Dreamy, detached emotion"]],
+      [["怀旧","失真","柔亮","循环"],["Nostalgic","Distorted","Luminous","Looping"]],
+      [["家居","Home","把一件旧电子产品与光滑新材质并置，看怀旧如何改变物件意义。","Place an old electronic object beside a glossy new material and see how nostalgia changes meaning."],["穿搭","Clothing","用粉、青与淡紫的小面积组合，加一处早期数码感配件。","Combine small areas of pink, cyan and pale violet with one early-digital accessory."],["摄影","Photography","拍摄空商场、反光瓷砖或旧显示器，让空旷比人物更有存在感。","Photograph an empty mall, reflective tiles or an old monitor, letting vacancy outweigh the figure."],["日常物件","Everyday objects","观察旧软件界面、购物目录和磁带包装怎样把消费记忆变成图形。","See how old software, catalogs and cassette packaging turn consumer memory into graphics."]],
+      [["synthwave","都使用霓虹渐变、网格和 1980 年代数字想象。","Both use neon gradients, grids and 1980s digital imagination.","Vaporwave 更常挪用消费图像并制造缓慢、空洞的怀旧；Synthwave 更强调速度、夜行和电子电影感。","Vaporwave more often samples consumer imagery into slow, hollow nostalgia; synthwave emphasizes speed, night driving and electronic cinema."],["y2k","都回收早期数字文化、商业界面和过时技术的视觉记忆。","Both recycle visual memories of early digital culture, commerce and obsolete technology.","Vaporwave 常以低清采样和古典拼贴保持疏离；Y2K 更偏千禧年前后的光亮未来、透明塑料和网络乐观。","Vaporwave stays detached through lo-fi sampling and classical collage; Y2K favors turn-of-the-millennium gloss, transparent plastic and web optimism."]],
+      ["这份怀旧让你想回到过去，还是让你重新怀疑过去的消费承诺？", "Does this nostalgia make you want to return, or question the consumer promises of the past?"]
+    ),
+    synthwave: fullGuide(
+      ["视线是被地平线吸进去，还是被像脉冲一样重复的光带推向前方？", "Is your eye pulled into the horizon, or driven forward by repeating bands of light like a pulse?"],
+      [["horizon","先看消失点","Begin with the vanishing point","道路、网格与光线集中到低地平线，制造驾驶般的向前速度。","Road, grid and light converge on a low horizon, creating forward driving speed."],["glow","再看冷暖霓虹","Then, compare neon temperatures","洋红、紫、蓝与橙色夕阳在深黑背景上发光。","Magenta, violet, blue and orange sunset glow against a deep black ground."],["retro","最后找复古未来符号","Finally, find retro-future signs","跑车、合成器、镀铬字和几何太阳让未来看起来来自旧电影想象。","Cars, synthesizers, chrome type and geometric suns make the future look imagined by an older cinema."]],
+      [[5,"透视方向强","Strong perspective direction"],[5,"霓虹色彩浓烈","Intense neon color"],[3,"复古符号明确","Clear retro symbols"],[4,"情绪兴奋孤独","Excited, solitary emotion"]],
+      [["夜行","脉冲","镀铬","远方"],["Nocturnal","Pulsing","Chrome","Distant"]],
+      [["家居","Home","用一条隐藏灯带强调房间纵深，避免全屋同时发光。","Use one concealed light strip to emphasize depth rather than lighting the whole room."],["穿搭","Clothing","在深色基础上加入一处洋红或电蓝反光，保持清楚运动轮廓。","Add one magenta or electric-blue reflective accent to a dark base while keeping a clear moving silhouette."],["摄影","Photography","让道路灯、隧道或扶梯线条汇向远点，拍出夜行节奏。","Let road lights, tunnels or escalators converge into distance to capture a night-driving rhythm."],["日常物件","Everyday objects","看游戏封面、车载界面和音乐海报如何把速度编码进透视与光。","See how game covers, dashboards and music posters encode speed through perspective and light."]],
+      [["vaporwave","都使用霓虹、网格、夕阳与复古数字文化。","Both use neon, grids, sunsets and retro digital culture.","Synthwave 偏速度、电影动作和电子音乐脉冲；Vaporwave 偏采样、消费记忆与缓慢疏离。","Synthwave favors speed, cinematic action and electronic pulse; vaporwave favors sampling, consumer memory and slow detachment."],["retrofuturism","都让过去的人如何想象未来成为视觉主题。","Both turn past visions of the future into a visual subject.","Synthwave 集中于 1980 年代式霓虹夜行语汇；Retrofuturism 范围更广，可引用太空时代、流线现代或早期工业未来。","Synthwave concentrates an 1980s neon-night language; retrofuturism ranges across space-age, streamline and earlier industrial futures."]],
+      ["如果去掉霓虹颜色，这个画面还剩下速度，还是只剩下怀旧？", "Without neon color, would the image still carry speed, or only nostalgia?"]
+    ),
+    y2k: fullGuide(
+      ["这些透明、鼓起、闪亮的表面是在承诺轻松未来，还是在展示早期网络的天真？", "Are these transparent, inflated, glossy surfaces promising an easy future, or revealing early-web optimism?"],
+      [["surface","先看透明与果冻质感","Begin with transparent jelly surfaces","透明塑料、凝胶按钮和水滴高光让界面像可触摸的消费物。","Clear plastic, gel buttons and droplet highlights make interfaces feel like touchable products."],["type","再看圆润科技字","Then, notice rounded tech type","宽体、泡泡字与金属边缘介于玩具、运动品牌和数码设备之间。","Wide, bubbly type and metallic edges sit between toys, sports brands and digital devices."],["optimism","最后看友好未来","Finally, read friendly futurism","蓝、银、青柠与白色把科技包装成清洁、便携和全球连接。","Blue, silver, lime and white package technology as clean, portable and globally connected."]],
+      [[4,"模块秩序清楚","Clear modular order"],[5,"亮色与金属感强","Strong bright and metallic color"],[4,"表面效果丰富","Rich surface effects"],[4,"情绪乐观活跃","Optimistic, active emotion"]],
+      [["透明","弹性","闪亮","网络化"],["Transparent","Bouncy","Glossy","Networked"]],
+      [["家居","Home","观察透明收纳、银色电器和圆角物件如何让科技显得轻巧。","Notice how clear storage, silver devices and rounded objects make technology feel light."],["穿搭","Clothing","用金属银、亮色小包和运动材质组成轻快层次，避免全身反光。","Combine metallic silver, a bright small bag and sport material in light layers without making everything reflective."],["摄影","Photography","用直闪拍透明塑料、旧数码相机和光滑表面，保留真实年代痕迹。","Use direct flash on clear plastic, old digital cameras and glossy surfaces while retaining real signs of age."],["日常物件","Everyday objects","看早期网页、翻盖手机和光盘包装怎样把连接感做成按钮与光泽。","See how early websites, flip phones and disc packaging turned connectivity into buttons and shine."]],
+      [["vaporwave","都重新使用早期网络、商业产品和过时数字界面。","Both reuse early-web, commercial-product and obsolete-interface imagery.","Y2K 更接近千禧年前后的光亮乐观与实体产品感；Vaporwave 以采样、低清和空旷感反思消费记忆。","Y2K stays closer to turn-of-millennium glossy optimism and physical products; vaporwave uses sampling, lo-fi and emptiness to reconsider consumer memory."],["glassmorphism","都利用透明层、亮边和光滑数字表面建立层次。","Both use transparent layers, bright edges and smooth digital surfaces for hierarchy.","Y2K 是更宽的时代审美，包含字体、产品与网络文化；Glassmorphism 是以磨砂透明面板为核心的界面处理。","Y2K is a broader period aesthetic across type, products and web culture; glassmorphism is an interface treatment centered on frosted translucent panels."]],
+      ["这份未来感今天看起来仍然先进，还是已经变成一种可辨认的年代记忆？", "Does this futurism still feel advanced today, or has it become a recognizable period memory?"]
+    ),
+    retrofuturism: fullGuide(
+      ["这是未来的真实样子，还是过去某个时代对未来的愿望留下的肖像？", "Is this what the future looks like, or a portrait of what one past era wished it would be?"],
+      [["era","先找过去的技术语法","Begin with the past's technology","铆钉、流线外壳、模拟仪表或太空舱透露想象来自哪个年代。","Rivets, streamlined shells, analog gauges or capsules reveal the era doing the imagining."],["promise","再看未来承诺","Then, read the promise","自动城市、家庭机器与星际旅行把进步变成具体生活场景。","Automated cities, domestic machines and space travel make progress into concrete daily scenes."],["distance","最后看历史距离","Finally, notice historical distance","今天的观看让当年的乐观、焦虑与遗漏同时显现。","Viewing today reveals the optimism, anxiety and omissions of the original moment together."]],
+      [[4,"技术世界秩序明确","Clear technological world order"],[3,"色彩随引用年代变化","Color varies by referenced era"],[4,"机械与时代细节丰富","Rich mechanical period detail"],[3,"情绪乐观又反思","Optimistic yet reflective emotion"]],
+      [["复古","未来","机械","愿景"],["Retro","Futurist","Mechanical","Visionary"]],
+      [["家居","Home","比较旧家电的按钮与新智能设备，观察两代人如何想象便利。","Compare controls on old appliances and new smart devices to see how two eras imagine convenience."],["穿搭","Clothing","用一个时代轮廓搭配现代功能材质，让时间层次保持清楚。","Pair one period silhouette with modern functional material, keeping the time layers legible."],["摄影","Photography","在老建筑中拍新设备，或在新空间中拍旧机器，让年代关系成为主题。","Photograph new devices in old architecture or old machines in new spaces, making temporal relation the subject."],["日常物件","Everyday objects","看未来概念车、旧科普封面和家电广告如何把愿望变成产品形状。","See how concept cars, old science covers and appliance ads turn wishes into product forms."]],
+      [["synthwave","都通过过去的视觉语汇重新想象未来。","Both reimagine the future through visual languages of the past.","Retrofuturism 可跨多个时代与媒介；Synthwave 更集中于 1980 年代霓虹、电子音乐和夜行速度。","Retrofuturism spans several eras and media; synthwave concentrates 1980s neon, electronic music and night-driving speed."],["steampunk","都把历史材料、机械和未发生的技术路径结合。","Both combine historical materials, machinery and technologies that did not happen.","Steampunk 多从蒸汽时代与维多利亚工业想象分叉；Retrofuturism 还包括太空时代、原子时代和其他过去的未来。","Steampunk often branches from steam-age and Victorian industrial imagination; retrofuturism also includes space-age, atomic-age and other past futures."]],
+      ["这个未来最清楚地暴露了过去的人相信什么，又忽略了什么？", "What does this future reveal most clearly about what people in the past believed and overlooked?"]
+    ),
+    afrofuturism: fullGuide(
+      ["当未来从黑人历史与非洲离散经验出发时，时间、技术和身份会被怎样重新排列？", "When the future begins from Black histories and African diasporic experience, how are time, technology and identity rearranged?"],
+      [["time","先看过去与未来并存","Begin with past and future together","祖先记忆、殖民历史、当代城市与太空想象不是直线阶段，而会在同一画面互相回应。","Ancestral memory, colonial history, contemporary cities and space imagination are not linear stages; they answer one another in one image."],["agency","再看谁掌握技术","Then, ask who holds technology","交通、服装、声音与身体改造常被重新想象为黑人主体创造世界的工具。","Transport, dress, sound and bodily transformation are reimagined as tools through which Black subjects make worlds."],["specificity","最后看文化具体性","Finally, look for cultural specificity","材料、发型、建筑或符号应指向具体社群与创作者语境，而不是泛化的非洲装饰。","Materials, hair, architecture or symbols should point to specific communities and makers, not generalized African decoration."]],
+      [[4,"时空结构多层","Layered temporal order"],[5,"色彩与材质有力量","Powerful color and material"],[4,"符号丰富且需有语境","Rich symbols requiring context"],[5,"情绪自主而有愿景","Agentive, visionary emotion"]],
+      [["未来祖先","自主","离散","造世界"],["Ancestral-future","Agentive","Diasporic","World-making"]],
+      [["家居","Home","了解一件来自黑人设计师或具体非洲文化的作品出处，再决定如何陈列。","Learn the provenance of work by a Black designer or from a specific African culture before deciding how to display it."],["穿搭","Clothing","从具体设计师、音乐或社群理解造型，不把不同非洲传统混成一种图案。","Understand a look through a specific designer, music or community rather than blending distinct African traditions into one pattern."],["摄影","Photography","让被摄者参与决定未来形象与叙事，避免只把文化元素当异域背景。","Let subjects help determine the future image and narrative rather than using culture as an exotic backdrop."],["日常物件","Everyday objects","观察音乐封面、科技设计和当代艺术如何讨论记忆、权力与未来归属。","See how album art, technology design and contemporary art discuss memory, power and belonging in the future."]],
+      [["retrofuturism","都重新排列历史技术与未来想象，并检视谁定义进步。","Both rearrange historical technology and future imagination, examining who defines progress.","Afrofuturism 根植黑人历史、非洲离散文化与解放性未来；Retrofuturism 是更广的过去未来想象，不必包含这一政治文化立场。","Afrofuturism is rooted in Black histories, African diasporic cultures and liberatory futures; retrofuturism broadly revisits past futures without necessarily carrying that cultural-political position."],["cyberpunk","都可借技术、城市与身体讨论权力、身份和不平等。","Both can use technology, cities and bodies to examine power, identity and inequality.","Cyberpunk 常从企业控制和技术异化展开反乌托邦；Afrofuturism 以黑人经验重写历史与未来，也可包含疗愈、主权和共同体愿景。","Cyberpunk often builds dystopia from corporate control and alienation; Afrofuturism rewrites history and futures through Black experience, also holding healing, sovereignty and community visions."]],
+      ["作品是在借用一种未来外观，还是让具体黑人经验真正改变了未来由谁创造？", "Is the work borrowing a futuristic look, or does specific Black experience truly change who creates the future?"]
+    ),
+    steampunk: fullGuide(
+      ["如果电力与数字技术没有成为主角，这台机器会怎样用齿轮、蒸汽和手工结构解释自己？", "If electricity and digital technology were not the stars, how would this machine explain itself through gears, steam and hand-built structure?"],
+      [["mechanism","先看外露机械","Begin with exposed mechanism","齿轮、管道、压力表和铆钉把功能放到表面，机器像可以被拆解阅读。","Gears, pipes, gauges and rivets bring function to the surface, making machines readable by disassembly."],["era","再看历史混合","Then, notice historical mixing","维多利亚式服装、工业材料与未曾出现的交通工具形成架空技术史。","Victorian-inflected dress and industrial material combine with unrealized transport into an alternate technological history."],["craft","最后看手工痕迹","Finally, notice craft","黄铜、皮革、木与磨损边缘让未来物件像由工坊制造，而非无缝量产。","Brass, leather, wood and worn edges make future objects feel workshop-made rather than seamlessly mass-produced."]],
+      [[4,"机械结构明确","Clear mechanical structure"],[2,"铜木色彩克制","Restrained brass and wood color"],[5,"零件装饰密集","Dense component ornament"],[4,"情绪冒险怀旧","Adventurous, nostalgic emotion"]],
+      [["蒸汽","工坊","冒险","架空"],["Steam-powered","Workshop-made","Adventurous","Alternate-history"]],
+      [["家居","Home","观察旧钟、工具和黄铜灯具中功能部件如何同时成为装饰。","Notice how functional parts in clocks, tools and brass lamps also become ornament."],["穿搭","Clothing","用皮革、羊毛和一个机械配件建立材质层次，避免堆满无功能齿轮。","Layer leather, wool and one mechanical accessory without covering everything in functionless gears."],["摄影","Photography","在车间、车站或旧机械旁用侧光强调金属磨损与手工接合。","Use side light in workshops, stations or near old machinery to reveal wear and hand-joined construction."],["日常物件","Everyday objects","看机械表、咖啡机和自行车如何让内部结构成为可见审美。","See how mechanical watches, coffee machines and bicycles turn inner structure into visible aesthetics."]],
+      [["retrofuturism","都把历史材料与没有实现的未来技术结合。","Both combine historical materials with unrealized future technologies.","Steampunk 主要围绕蒸汽时代、工坊机械和架空历史；Retrofuturism 覆盖更广的时代未来想象。","Steampunk centers steam-age workshop mechanics and alternate history; retrofuturism spans a broader range of period futures."],["cyberpunk","都以密集技术、城市系统和改造物件建立架空世界。","Both build alternate worlds from dense technology, urban systems and modified objects.","Steampunk 偏外露机械、手工与历史冒险；Cyberpunk 偏数字网络、霓虹都市与企业权力批判。","Steampunk favors exposed mechanics, craft and historical adventure; cyberpunk favors digital networks, neon cities and critique of corporate power."]],
+      ["哪些部件真的说明机器如何工作，哪些只是把齿轮当成装饰？", "Which parts truly explain how the machine works, and which merely use gears as decoration?"]
+    ),
+    "glitch-art": fullGuide(
+      ["当图像失去正常传输后，你看到的是错误，还是媒介本身终于露出了结构？", "When an image fails to transmit normally, are you seeing an error or the medium revealing its structure?"],
+      [["break","先看断裂类型","Begin with the kind of break","像素错位、色道分离、数据块和扫描线指向不同的生成或传输故障。","Pixel displacement, channel separation, data blocks and scan lines point to different failures of generation or transmission."],["recognition","再看可辨与不可辨","Then, balance recognition and loss","主体仍保留足够轮廓供识别，破坏才会与原图产生张力。","The subject keeps enough contour to be recognized, allowing damage to create tension with the source."],["system","最后看错误是否有规则","Finally, see whether error has rules","重复位移、压缩边界或颜色偏移形成节奏，故障被组织成视觉语言。","Repeated displacement, compression boundaries or color shifts form rhythm, organizing failure into visual language."]],
+      [[3,"破坏中仍有节奏","Rhythm within disruption"],[5,"色道冲突强","Strong channel conflict"],[4,"数字噪声密集","Dense digital noise"],[4,"情绪不稳定警觉","Unstable, alert emotion"]],
+      [["断裂","错位","噪声","暴露"],["Broken","Displaced","Noisy","Revealing"]],
+      [["家居","Home","观察电视雪花、坏屏和压缩图片，让技术瑕疵成为短暂焦点而非永久噪音。","Notice static, damaged screens and compressed images, using technical flaws as brief focus rather than permanent noise."],["穿搭","Clothing","用一处错位印花或色道偏移打破整齐轮廓，保持其他部分安静。","Use one displaced print or channel shift to interrupt a clean silhouette while keeping the rest quiet."],["摄影","Photography","尝试通过反射、滚动快门或真实屏幕干扰制造失真，并记录产生条件。","Create distortion through reflection, rolling shutter or real screen interference and record its conditions."],["日常物件","Everyday objects","看二维码损坏、视频卡顿和打印错版何时仍可读，何时信息完全消失。","See when damaged QR codes, video artifacts and misprints remain readable and when information disappears."]],
+      [["generative-ai-dreamlike","都可让熟悉图像产生不稳定、混合和无法完全解释的细节。","Both can make familiar images unstable, hybrid and not fully explainable.","Glitch Art 从信号、数据和设备故障的结构出发；AI 梦境图像来自生成模型重组训练模式与提示。","Glitch art begins with structures of signal, data and device failure; AI dreamlike imagery comes from generative models recombining learned patterns and prompts."],["pixel-art","都让数字图像的最小单位和屏幕结构变得可见。","Both make digital image units and screen structure visible.","Glitch Art 通过错误、损坏和错位打断图像；Pixel Art 主动以像素网格精确构造可读形体。","Glitch art interrupts images through error, corruption and displacement; pixel art deliberately constructs legible forms on a pixel grid."]],
+      ["如果修复这个错误，作品会变得更完整，还是会失去它真正想揭示的东西？", "If the error were repaired, would the work become more complete or lose what it truly reveals?"]
+    ),
+    "pixel-art": fullGuide(
+      ["只用有限方格时，哪几个像素决定了这个表情、动作或材质仍能被认出？", "With only a limited grid, which pixels make the expression, action or material recognizable?"],
+      [["grid","先看像素网格","Begin with the pixel grid","边缘以阶梯状取舍，每一个方格都参与轮廓，而不是缩小后的模糊图片。","Edges are deliberately stepped, with every square shaping the contour rather than forming a blurred reduced image."],["cluster","再看像素簇","Then, read pixel clusters","颜色成组构成亮面、中间调和阴影，单个噪点会破坏体积。","Grouped colors build light, midtone and shadow; isolated noise can break volume."],["motion","最后看有限帧动作","Finally, notice limited-frame motion","少量关键姿势通过清楚重心与剪影让动作成立。","A few key poses make movement work through clear balance and silhouette."]],
+      [[5,"网格秩序严格","Strict grid order"],[3,"有限色板明确","Clear limited palette"],[2,"细节高度压缩","Highly compressed detail"],[3,"情绪直接有节奏","Direct, rhythmic emotion"]],
+      [["方格","精炼","怀旧","可读"],["Gridded","Economical","Nostalgic","Legible"]],
+      [["家居","Home","用小方砖或收纳格观察图案如何在有限网格中保持轮廓。","Use small tiles or storage grids to see how a motif keeps its outline within a limited grid."],["穿搭","Clothing","选择像素图案时看远距离剪影是否仍清楚，避免只依赖细碎噪点。","For pixel patterns, check whether the silhouette remains clear at distance rather than relying on scattered noise."],["摄影","Photography","把照片缩小后手动限制色板，观察哪些细节必须保留才能辨认。","Reduce a photo and manually limit its palette, noticing which details must remain for recognition."],["日常物件","Everyday objects","看图标、电子屏和十字绣如何在格点限制中用最少单位传递形象。","See how icons, displays and cross-stitch use minimal units to communicate forms under grid limits."]],
+      [["voxel-art","都以离散网格单位构造形体并主动展示数字结构。","Both construct form from discrete grid units and visibly embrace digital structure.","Pixel Art 在二维方格上组织轮廓与色块；Voxel Art 用立方体体素建立三维体积、光照与空间。","Pixel art organizes contours and color fields on a 2D grid; voxel art uses cubic voxels for 3D volume, lighting and space."],["glitch-art","都可让像素、扫描与数字媒介结构成为画面主题。","Both can make pixels, scanning and digital medium structure the subject.","Pixel Art 精确安排每个像素以建立可读形体；Glitch Art 借故障、错位和数据破坏打断原有形体。","Pixel art precisely places pixels to build legible form; glitch art disrupts existing form through failure, displacement and data corruption."]],
+      ["哪一个最小像素簇承担了最多的辨认信息？", "Which smallest cluster carries the most recognition?"]
+    ),
+    "voxel-art": fullGuide(
+      ["当世界由同样大小的立方体组成时，光、尺度和轮廓怎样让它不只是堆积？", "When a world is built from equal cubes, how do light, scale and silhouette keep it from becoming a pile?"],
+      [["volume","先看体素体积","Begin with voxel volume","立方单位沿三轴堆叠，表面阶梯和空洞共同塑造形体。","Cubic units stack on three axes, with stepped surfaces and voids shaping form together."],["silhouette","再看远处轮廓","Then, read the distant silhouette","复杂细节被压缩后，大轮廓仍需区分角色、建筑和地形。","After detail is compressed, large silhouettes must still distinguish characters, buildings and terrain."],["light","最后看块面光照","Finally, notice block lighting","每个立方表面的明暗关系让材质、深度和时间可读。","Value differences across cube faces make material, depth and time readable."]],
+      [[5,"三维网格秩序强","Strong 3D grid order"],[3,"色彩按块组织","Color organized by blocks"],[3,"颗粒细节明显","Visible granular detail"],[3,"情绪玩具般具体","Tangible, toy-like emotion"]],
+      [["立方","模块","颗粒","世界"],["Cubic","Modular","Granular","World-built"]],
+      [["家居","Home","用同尺寸收纳盒测试堆叠、留洞与高低变化如何建立空间。","Use equal storage boxes to test how stacking, voids and height changes create space."],["穿搭","Clothing","用方格纹和块面层叠强调结构，保持人体整体轮廓。","Use checks and block layers to emphasize structure while preserving the overall body silhouette."],["摄影","Photography","从高处拍密集建筑或货架，让单位、阴影和路径形成可读系统。","Photograph dense buildings or shelves from above so units, shadows and paths form a readable system."],["日常物件","Everyday objects","观察积木、像素雕塑和三维地图如何用重复单元表达复杂体积。","Notice how blocks, pixel sculptures and 3D maps express complex volume through repeated units."]],
+      [["pixel-art","都通过离散网格与有限单位主动显示数字构成。","Both visibly construct digital form through discrete grids and limited units.","Voxel Art 在三维空间堆成立方体并处理体积光；Pixel Art 在二维平面安排像素簇与轮廓。","Voxel art stacks cubes in 3D and handles volumetric light; pixel art arranges clusters and contours in 2D."],["low-poly","都用简化几何减少细节并突出整体体积。","Both simplify geometry to reduce detail and emphasize overall volume.","Voxel Art 的基本单位固定为立方体网格；Low Poly 使用大小、角度不同的多边形面近似形体。","Voxel art uses a fixed cubic grid; low poly approximates form with polygon faces of varied sizes and angles."]],
+      ["哪些立方体是在说明结构，哪些只是增加表面颗粒？", "Which cubes explain structure, and which merely add surface grain?"]
+    ),
+    "low-poly": fullGuide(
+      ["减少曲面之后，哪些折面反而让身体、山脉或物件的方向更清楚？", "After curves are reduced, which facets make the direction of a body, mountain or object clearer?"],
+      [["facet","先看折面方向","Begin with facet direction","少量多边形近似曲面，每个面的转折都参与体积。","A small number of polygons approximate curves, with each turn contributing to volume."],["silhouette","再看大轮廓","Then, read the large silhouette","细节被删减后，比例和外缘必须足以辨认对象。","Once detail is removed, proportion and outer edge must carry recognition."],["light","最后看面与光","Finally, see face and light","平面着色让光按几何面跳变，产生水晶般清楚结构。","Flat shading makes light jump across geometric faces, producing crystal-clear structure."]],
+      [[4,"几何结构清楚","Clear geometric structure"],[3,"色彩分面明显","Color changes by facet"],[1,"细节装饰很少","Very little detail ornament"],[3,"情绪简练轻盈","Economical, light emotion"]],
+      [["折面","简化","晶体","轻量"],["Faceted","Reduced","Crystalline","Lightweight"]],
+      [["家居","Home","观察折纸灯、切面花瓶和多面家具怎样借转折捕捉光。","Notice how folded lamps, faceted vases and polygonal furniture catch light through turns."],["穿搭","Clothing","用结构折线和硬挺面料建立折面感，不必加入复杂图案。","Use structural folds and crisp fabric for a faceted feel without complex pattern."],["摄影","Photography","用硬侧光拍岩石、纸雕或建筑，让大面转折比纹理更清楚。","Use hard side light on rocks, paper sculpture or architecture so major planes read more clearly than texture."],["日常物件","Everyday objects","看游戏模型、包装结构和纸艺如何在有限面数中保留辨识度。","See how game models, package structures and papercraft preserve recognition with limited faces."]],
+      [["voxel-art","都减少几何细节，以离散表面突出体积与轮廓。","Both reduce geometric detail and emphasize volume and silhouette through discrete surfaces.","Low Poly 使用不规则多边形面逼近形体；Voxel Art 由规则立方体网格堆叠体积。","Low poly approximates form with irregular polygon faces; voxel art stacks volume from a regular cubic grid."],["3d-abstract-cgi","都使用数字三维建模、材质与灯光组织形体。","Both use digital 3D modeling, material and lighting to organize form.","Low Poly 以有限面数和可见折面为核心；3D Abstract CGI 可使用高精度曲面、流体与复杂程序材质。","Low poly centers limited polygons and visible facets; 3D abstract CGI may use refined curves, fluids and complex procedural materials."]],
+      ["如果增加更多多边形，形体会更准确，还是会失去现在的清楚节奏？", "Would more polygons make the form more accurate, or erase its current clear rhythm?"]
+    ),
+    glassmorphism: fullGuide(
+      ["你是先看到半透明面板，还是先通过它感知后面的空间层次？", "Do you see the translucent panel first, or perceive the space behind it through the panel?"],
+      [["blur","先看背景模糊","Begin with background blur","面板保留后景颜色与光，却抹去细节，使前后层可以同时存在。","Panels retain background color and light while removing detail, allowing front and back layers to coexist."],["edge","再看亮边","Then, notice bright edges","细边框、内高光和柔和阴影让透明面有厚度，不会完全消失。","Fine borders, inner highlights and soft shadow give translucent surfaces thickness so they do not disappear."],["hierarchy","最后看层级是否清楚","Finally, check hierarchy","文字和操作必须有稳定对比；玻璃效果应说明层次，而非覆盖所有内容。","Text and controls need stable contrast; the glass effect should explain layers rather than cover everything."]],
+      [[4,"界面层级清楚","Clear interface hierarchy"],[4,"背景色透入面板","Background color enters panels"],[3,"光泽边缘适中","Moderate glossy edges"],[3,"情绪轻盈科技","Light, technological emotion"]],
+      [["通透","悬浮","柔光","分层"],["Translucent","Floating","Soft-lit","Layered"]],
+      [["家居","Home","看磨砂玻璃隔断怎样让光通过，同时隐藏杂乱细节。","See how frosted partitions transmit light while hiding visual clutter."],["穿搭","Clothing","用一层半透明材质覆盖清楚底层颜色，确保身体轮廓仍可读。","Layer one translucent material over a clear base color while keeping the body silhouette readable."],["摄影","Photography","隔着雾面玻璃拍摄，让色块透出而细节退后。","Photograph through frosted glass so color fields remain while detail recedes."],["日常物件","Everyday objects","观察系统界面、导视牌和透明包装何时通过层次帮助理解，何时降低可读性。","Notice when interfaces, signs and clear packaging use layering to aid understanding and when they reduce readability."]],
+      [["neumorphism","都以细腻光影让界面控件显得具有物理表面。","Both use subtle light and shadow to give interface controls a physical surface.","Glassmorphism 依靠透明、模糊和叠层；Neumorphism 让控件像从同色背景凸起或凹入。","Glassmorphism relies on transparency, blur and overlap; neumorphism makes controls rise from or sink into a same-color ground."],["holographic","都利用光、透明感与颜色变化制造未来表面。","Both use light, translucency and color shifts for futuristic surfaces.","Glassmorphism 主要组织界面层级并保持可读；Holographic 以视角色散、虹彩与动态光变作为主要视觉事件。","Glassmorphism mainly organizes interface hierarchy and readability; holographic style centers angle-dependent iridescence and shifting light."]],
+      ["透明效果是在帮助你理解前后关系，还是只是让界面显得更复杂？", "Is transparency helping you understand depth, or merely making the interface more complex?"]
+    ),
+    neumorphism: fullGuide(
+      ["这个按钮是浮在背景上，还是像从同一块柔软材料里被压出来？", "Is this button floating above the background, or pressed from the same soft material?"],
+      [["surface","先看同色表面","Begin with the same-color surface","控件与背景几乎同色，形状主要依靠光影而非边框区分。","Control and background are nearly the same color, separated mainly by light and shadow rather than borders."],["shadow","再看双向阴影","Then, read paired shadows","一侧亮、一侧暗制造凸起或凹陷，但对比过低会让操作消失。","A light side and dark side create relief or recess, but low contrast can make actions disappear."],["state","最后看按压状态","Finally, check pressed state","光影方向与深浅需要明确变化，用户才能感到控件可操作。","Shadow direction and depth must change clearly for controls to feel operable."]],
+      [[5,"控件秩序规则","Regular control order"],[1,"近单色色彩","Near-monochrome color"],[2,"柔和浮雕效果","Soft relief effect"],[2,"情绪安静柔软","Quiet, soft emotion"]],
+      [["柔软","浮雕","单色","触感"],["Soft","Embossed","Monochrome","Tactile"]],
+      [["家居","Home","观察同色墙面开关和嵌入式把手如何靠阴影提示功能。","Notice how same-color switches and recessed handles rely on shadow to signal function."],["穿搭","Clothing","用同色不同厚度的层叠产生触感，保留缝线或边缘作为辨认线索。","Create tactility with same-color layers of different thickness, retaining seams or edges as cues."],["摄影","Photography","用宽柔光拍白色浮雕或纸面，让浅阴影仍有方向。","Use broad soft light on white relief or paper so shallow shadows retain direction."],["日常物件","Everyday objects","看遥控器、键盘和触控面板如何同时用形状、文字与反馈保证可用。","See how remotes, keyboards and touch panels combine shape, labels and feedback for usability."]],
+      [["glassmorphism","都以柔和光影和简洁面板赋予数字界面物理感。","Both use soft light and simple panels to give digital interfaces physical presence.","Neumorphism 依靠同色凸凹；Glassmorphism 依靠透明模糊与背景叠层。","Neumorphism relies on same-color relief; glassmorphism relies on translucent blur and background layering."],["claymorphism","都让控件像柔软材料塑成，并强调圆角与体积。","Both make controls feel molded from soft material, emphasizing rounded volume.","Neumorphism 的起伏浅且与背景同色；Claymorphism 使用更独立、饱满、常有彩色的三维块体。","Neumorphism uses shallow relief continuous with the background; claymorphism uses more separate, plump and often colorful 3D masses."]],
+      ["不看文字时，你仍能确定哪些元素能点击、哪些只是背景吗？", "Without reading labels, can you still tell what is clickable and what is merely background?"]
+    ),
+    claymorphism: fullGuide(
+      ["这些物体为什么像刚被手捏出来，同时又保持数字界面的整齐？", "Why do these objects feel freshly hand-molded while remaining orderly as a digital interface?"],
+      [["volume","先看饱满体积","Begin with plump volume","圆角、鼓起表面和厚边让图形像柔软黏土块，而不是平面图标。","Rounded corners, bulging surfaces and thick edges make shapes feel like soft clay rather than flat icons."],["shadow","再看短而软的影子","Then, notice short soft shadows","接触阴影把物体稳稳放在表面上，体积可爱但不漂浮。","Contact shadows seat objects firmly on a surface, keeping the cute volume from floating."],["color","最后看分块色彩","Finally, read blocked color","每个体块常用一组低饱和或糖果色，颜色帮助分辨功能与角色。","Each mass often uses a muted or candy-like color family, helping distinguish functions and characters."]],
+      [[4,"模块排列清楚","Clear modular arrangement"],[4,"柔和色块丰富","Rich soft color blocks"],[3,"体积装饰明显","Visible volumetric ornament"],[4,"情绪友好活泼","Friendly, playful emotion"]],
+      [["柔软","饱满","亲切","玩具感"],["Soft","Plump","Friendly","Toy-like"]],
+      [["家居","Home","观察陶器、软包家具和圆角收纳如何用饱满体积减少距离感。","Notice how ceramics, upholstered furniture and rounded storage use plump volume to reduce distance."],["穿搭","Clothing","用厚实软材质与圆润配件形成触感，避免全身都像同一块材料。","Use thick soft material and rounded accessories for tactility without making the whole look one material."],["摄影","Photography","用柔光拍黏土、食物或软玩具，让接触阴影保持清楚。","Use soft light on clay, food or plush objects while keeping contact shadows clear."],["日常物件","Everyday objects","看儿童应用、三维图标和包装角色怎样用体积让操作显得亲近。","See how children's apps, 3D icons and package mascots use volume to make interaction approachable."]],
+      [["neumorphism","都用圆角、柔光与阴影让数字控件具有触感。","Both use rounding, soft light and shadow to make digital controls tactile.","Claymorphism 的物体独立、厚实且常有多色；Neumorphism 与同色背景连续，起伏更浅。","Claymorphism uses separate, thick and often multicolored objects; neumorphism remains continuous with a same-color background and shallower relief."],["warm-3d-animation","都使用圆润三维形体、柔软材质和亲切角色感。","Both use rounded 3D forms, soft materials and approachable character feeling.","Claymorphism 常是界面、图标或静态视觉处理；Warm 3D Animation 通过角色表演、镜头、时间和声音建立情感。","Claymorphism is often an interface, icon or static treatment; warm 3D animation builds feeling through performance, camera, time and sound."]],
+      ["这种柔软体积是在帮助理解功能，还是只是在增加可爱感？", "Is the soft volume helping you understand function, or only adding cuteness?"]
+    ),
+    holographic: fullGuide(
+      ["当视角改变时，颜色像留在物体表面，还是像光本身正在移动？", "As the viewpoint changes, does color stay on the surface or seem to move with the light itself?"],
+      [["shift","先看虹彩偏移","Begin with iridescent shift","青、紫、粉、绿随角度滑动，同一表面不能用单一固有色描述。","Cyan, violet, pink and green slide with angle, so one surface cannot be described by a single local color."],["depth","再看光层深度","Then, notice layers of light","反射、透明与衍射般色带叠加，让薄面看起来有多层空间。","Reflection, transparency and diffraction-like bands overlap, giving a thin surface layered depth."],["anchor","最后找稳定锚点","Finally, find a stable anchor","黑白文字或哑光形体固定阅读，防止所有元素同时闪烁。","Black-white type or matte forms anchor reading so not everything shimmers at once."]],
+      [[3,"流动中保留层级","Hierarchy within flow"],[5,"虹彩变化强烈","Intense iridescent change"],[4,"光泽效果丰富","Rich optical effects"],[4,"情绪未来梦幻","Futuristic, dreamlike emotion"]],
+      [["虹彩","变色","光层","未来"],["Iridescent","Color-shifting","Light-layered","Futuristic"]],
+      [["家居","Home","用一件虹彩物件对比哑光背景，让光变成为焦点而不是噪音。","Contrast one iridescent object with a matte background so shifting light becomes focus rather than noise."],["穿搭","Clothing","选择小面积变色材质，并用中性色稳定整体轮廓。","Use a small area of color-shifting material and stabilize the silhouette with neutrals."],["摄影","Photography","改变光源和拍摄角度记录同一表面的色变，不用后期替代真实反射。","Change light and viewpoint to record one surface shifting color rather than replacing real reflection in post."],["日常物件","Everyday objects","看防伪膜、光盘和虹彩包装如何用角度变化传递真伪或吸引注意。","See how security foils, discs and iridescent packs use angle change to signal authenticity or attract attention."]],
+      [["liquid-metal","都以高反射、动态高光和未来材质吸引视线。","Both attract through high reflection, moving highlights and futuristic material.","Holographic 以虹彩和视角色散为核心；Liquid Metal 以镜面金属的流动体积与变形为核心。","Holographic style centers iridescence and angle-dependent color; liquid metal centers reflective metallic volume and deformation."],["glassmorphism","都可使用透明、柔光和叠层制造轻盈科技感。","Both can use translucency, soft light and layering for a light technological feel.","Holographic 让颜色随角度成为主视觉；Glassmorphism 用磨砂透明面板组织界面层级，必须优先保证可读。","Holographic style makes angle-shifting color the event; glassmorphism organizes interface hierarchy with frosted panels and must prioritize readability."]],
+      ["如果颜色停止随角度变化，这个对象还会显得特别吗？", "If the color stopped shifting with angle, would the object still feel distinctive?"]
+    ),
+    "liquid-metal": fullGuide(
+      ["这块金属是在维持一个物体，还是正处于融化、拉伸和重新成形之间？", "Is this metal holding an object, or caught between melting, stretching and reforming?"],
+      [["flow","先看连续流动","Begin with continuous flow","表面没有明显接缝，凸起、滴落和拉伸像同一团物质受力变形。","The surface has no obvious seams; bulges, drips and stretches deform as one substance under force."],["reflection","再看镜面环境","Then, read mirrored surroundings","高光与暗部沿曲面急速移动，周围颜色被压缩成金属反射。","Highlights and darks race across curves, compressing surrounding color into metallic reflection."],["tension","最后看软硬矛盾","Finally, feel the soft-hard contradiction","金属的重量与液体的柔性同时存在，制造不稳定的触觉想象。","Metallic weight and liquid flexibility coexist, creating unstable tactile imagination."]],
+      [[3,"形体秩序流动","Fluid formal order"],[3,"颜色来自环境反射","Color comes from surroundings"],[4,"镜面效果强","Strong mirror effect"],[4,"情绪陌生感强","Strong uncanny emotion"]],
+      [["流体","镜面","变形","重量"],["Fluid","Mirrored","Deforming","Weighty"]],
+      [["家居","Home","观察不锈钢器皿与弧面镜如何把房间颜色压进反射。","Notice how stainless vessels and curved mirrors compress room colors into reflection."],["穿搭","Clothing","用一件流线金属配饰对比柔软织物，突出软硬关系。","Contrast one streamlined metal accessory with soft textile to emphasize hard-soft relation."],["摄影","Photography","用长条柔光拍弧形金属，让高光连续描述表面转折。","Use a long soft light on curved metal so a continuous highlight describes surface turns."],["日常物件","Everyday objects","看水银般字形、汽车曲面和镀铬包装怎样借反射制造运动。","See how mercury-like lettering, vehicle curves and chrome packaging create motion through reflection."]],
+      [["holographic","都使用光变、高反射与未来表面制造视觉吸引。","Both use shifting light, high reflection and futuristic surfaces.","Liquid Metal 强调可变形的镜面体积；Holographic 强调薄层材料随角度产生虹彩色变。","Liquid metal emphasizes deformable mirrored volume; holographic style emphasizes iridescent color shifts across thin layered material."],["3d-abstract-cgi","都依赖数字三维材质、灯光和难以在现实中稳定存在的形体。","Both rely on digital 3D material, light and forms difficult to sustain physically.","Liquid Metal 围绕一种流动金属材质展开；3D Abstract CGI 可组合玻璃、布料、粒子、流体与多种抽象系统。","Liquid metal develops one flowing metallic material; 3D abstract CGI may combine glass, cloth, particles, fluids and many abstract systems."]],
+      ["你的眼睛是沿着物体轮廓移动，还是被反射的高光牵着走？", "Does your eye follow the object's outline, or the highlight reflected across it?"]
+    ),
+    "3d-abstract-cgi": fullGuide(
+      ["当对象没有现实名称时，你仍能从重量、材质和运动方向感到它遵循什么规则吗？", "When an object has no real-world name, can weight, material and motion still reveal its rules?"],
+      [["form","先看形体家族","Begin with the family of forms","球体、管状、布面或粒子按共同尺度与方向组合，不是任意堆放。","Spheres, tubes, cloth-like sheets or particles combine through shared scale and direction rather than random accumulation."],["material","再看材质冲突","Then, compare materials","玻璃、橡胶、金属与毛绒的反射和形变差异构成主要叙事。","Differences in reflection and deformation among glass, rubber, metal and fuzz become the main narrative."],["light","最后看灯光建立空间","Finally, let light build space","背景可极简，但投影、接触光和景深让抽象形体拥有可信位置。","The setting may be minimal, but cast shadow, contact light and depth of field give abstract forms credible placement."]],
+      [[4,"抽象系统有秩序","Ordered abstract system"],[4,"材质色彩丰富","Rich material color"],[4,"表面细节明显","Strong surface detail"],[3,"情绪奇异沉浸","Strange, immersive emotion"]],
+      [["合成","材质","悬浮","实验"],["Synthetic","Material-led","Floating","Experimental"]],
+      [["家居","Home","把不同触感但同一色系的物件并置，观察材质而非用途如何建立关系。","Place objects of different textures in one color family and see how material, not use, creates relation."],["穿搭","Clothing","组合哑光、透明与反光材质时，只保留一个主轮廓和一处重点。","When combining matte, clear and reflective materials, retain one main silhouette and focal point."],["摄影","Photography","拍摄玻璃、布和金属的接触处，让材质差异成为主题。","Photograph contact points among glass, cloth and metal, making material difference the subject."],["日常物件","Everyday objects","看动态品牌片、专辑封面和展览视觉如何用无名形体表达声音或概念。","See how motion branding, album covers and exhibition graphics use unnamed forms to express sound or ideas."]],
+      [["low-poly","都使用数字三维、灯光与简化形体建立视觉系统。","Both use digital 3D, lighting and simplified form to build visual systems.","Low Poly 以有限多边形和可见折面为约束；3D Abstract CGI 可追求光滑曲面、流体、粒子和复杂材质实验。","Low poly is constrained by limited polygons and visible facets; 3D abstract CGI may pursue smooth curves, fluids, particles and complex material experiments."],["liquid-metal","都可创造现实中难以稳定存在的高反射三维形体。","Both can create highly reflective 3D forms difficult to sustain in reality.","3D Abstract CGI 是宽泛的抽象数字影像语言；Liquid Metal 集中表现镜面金属如液体般流动与变形。","3D abstract CGI is a broad abstract digital language; liquid metal concentrates mirrored metal flowing and deforming like liquid."]],
+      ["即使不知道对象是什么，哪一种材质线索让你相信它有重量？", "Even without knowing what the object is, which material cue makes you believe it has weight?"]
+    ),
+    "fractal-art": fullGuide(
+      ["你看到的是同一个形状不断缩小重现，还是每一层都在产生新的差异？", "Are you seeing one shape repeat at smaller scales, or new differences emerging at every level?"],
+      [["repeat","先看跨尺度重复","Begin with repetition across scale","枝杈、旋涡或边界在大结构和小细节中保持相似规律。","Branches, spirals or boundaries retain related rules in both large structure and small detail."],["depth","再看无尽深入","Then, sense endless depth","层层细节让视线像可以持续放大，中心与边缘都不是终点。","Nested detail makes the view feel endlessly magnifiable, with neither center nor edge as final."],["parameter","最后看颜色如何标记规律","Finally, see color mark rules","渐变和色带常对应迭代层次或数值区间，而不只是表面装饰。","Gradients and bands often correspond to iteration or value ranges rather than surface decoration."]],
+      [[5,"数学重复秩序强","Strong mathematical repetition"],[5,"色带变化丰富","Rich color banding"],[5,"微观细节极密","Extremely dense micro-detail"],[4,"情绪宏大催眠","Vast, hypnotic emotion"]],
+      [["递归","无尽","分形","催眠"],["Recursive","Endless","Fractal","Hypnotic"]],
+      [["家居","Home","观察蕨叶、罗马花椰菜和树枝怎样在不同尺度重复相似分叉。","Notice how fern leaves, Romanesco and branches repeat similar branching at different scales."],["穿搭","Clothing","使用分形图案时保留大片安静区域，让跨尺度细节有呼吸。","When using fractal pattern, keep broad quiet areas so cross-scale detail can breathe."],["摄影","Photography","靠近拍摄裂纹、海岸或云层，再与远景比较相似结构。","Photograph cracks, coastlines or clouds close up, then compare their structure with a distant view."],["日常物件","Everyday objects","看生成壁纸、数据图像和自然纹理如何用规则产生难以手工逐项绘制的复杂度。","See how generated wallpapers, data images and natural textures use rules to create complexity impractical to draw item by item."]],
+      [["op-art","都以重复、数学关系和视觉持续运动吸引眼睛。","Both engage the eye through repetition, mathematical relation and persistent visual movement.","Fractal Art 以递归和跨尺度自相似生成复杂结构；Op Art 主要在平面几何对比中制造振动、深度与错觉。","Fractal art generates complexity through recursion and self-similarity across scales; Op Art produces vibration, depth and illusion mainly through planar geometric contrast."],["3d-abstract-cgi","都可由程序规则生成复杂、非具象且沉浸的数字形体。","Both can use procedural rules for complex, nonfigurative and immersive digital forms.","Fractal Art 的核心是迭代与跨尺度结构；3D Abstract CGI 更广泛地组织建模、材质、粒子和物理模拟。","Fractal art centers iteration and cross-scale structure; 3D abstract CGI more broadly organizes modeling, materials, particles and simulation."]],
+      ["你愿意继续放大的原因，是期待相同规律，还是期待规律突然变化？", "Do you keep zooming to find the same rule, or to see where the rule suddenly changes?"]
+    ),
+    "generative-ai-dreamlike": fullGuide(
+      ["这幅图最像梦的地方，是不可能的组合，还是每个局部都合理、整体却无法解释？", "What feels most dreamlike: the impossible combination, or the way each detail seems plausible while the whole cannot be explained?"],
+      [["hybrid","先看混合对象","Begin with hybrid objects","人物、建筑、植物与材质平滑融合，类别边界像在生成过程中被重新协商。","People, architecture, plants and materials blend smoothly, as if categories were renegotiated during generation."],["logic","再看局部逻辑断裂","Then, find local breaks in logic","手、文字、重复结构或空间连接可能似是而非，暴露统计相似而非真实因果。","Hands, lettering, repeated structures or spatial joins may be plausible yet wrong, revealing statistical resemblance rather than physical causality."],["authorship","最后问选择来自哪里","Finally, ask where choices came from","提示、模型、训练素材、筛选与后期共同形成结果，不能把所有决定归给一个自动按钮。","Prompt, model, training material, selection and post-production jointly shape the result; choices cannot be assigned to one automatic button."]],
+      [[2,"梦境秩序流动","Fluid dream logic"],[5,"色彩变化自由","Free-ranging color"],[5,"细节繁密混合","Dense hybrid detail"],[5,"情绪奇异强烈","Intense uncanny emotion"]],
+      [["混合","梦境","似真","生成"],["Hybrid","Dreamlike","Plausible","Generated"]],
+      [["家居","Home","把生成图当灵感时核对真实材料、尺度和用途，不让奇观替代可生活性。","When using generated imagery as inspiration, verify real material, scale and use rather than letting spectacle replace livability."],["穿搭","Clothing","从生成形象提取颜色或轮廓，不直接复制可能来自不明来源的具体设计。","Extract color or silhouette from generated imagery rather than directly copying a specific design of unclear provenance."],["摄影","Photography","把真实照片与生成图并排，观察光源、手部、文字和空间连接的证据差异。","Compare a real photo with a generated image, checking evidence in light, hands, lettering and spatial joins."],["日常物件","Everyday objects","留意图像是否标注生成方式、来源与编辑过程，特别是在新闻、教育和商业语境。","Notice whether images disclose generation, sources and editing, especially in news, education and commerce."]],
+      [["surrealism","都把不相容对象、梦境联想和变形空间放在一起。","Both combine incompatible objects, dream association and transformed space.","Surrealism 是有具体历史、艺术家与思想脉络的现代艺术运动；AI 梦境图像是当代生成技术的视觉结果，不能仅因奇异就等同于超现实主义。","Surrealism is a modern movement with specific history, artists and ideas; AI dreamlike imagery is a contemporary generative result and is not automatically Surrealism because it looks strange."],["glitch-art","都可能暴露数字媒介的不稳定，并产生似真而错误的细节。","Both can expose digital instability and produce plausible but incorrect details.","AI 梦境感来自模型生成与模式重组；Glitch Art 来自或模拟信号、数据、压缩与设备故障。","AI dreamlikeness comes from model generation and pattern recombination; glitch art comes from or simulates signal, data, compression and device failure."]],
+      ["你欣赏的是图像的陌生结果，还是也能辨认提示、模型、来源和筛选如何共同塑造它？", "Are you admiring only the strange result, or can you also recognize how prompt, model, sources and selection shaped it?"]
+    )
+  });
+
+  addIllustrationGuides();
 })();

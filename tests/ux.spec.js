@@ -1155,6 +1155,18 @@ const batchThreeGuideIds = [
   "basquiat"
 ];
 
+const completionGuideIds = [
+  "renoir", "xieyi", "yamato-e", "persian-miniature", "tibetan-thangka",
+  "thai-temple-mural", "byzantine-icon", "native-american-art", "russian-lubok", "celtic-art",
+  "healing-animation", "cinematic-anime", "classic-disney", "warm-3d-animation", "dreamworks-cartoon",
+  "anime", "manga", "shonen", "shojo", "american-comic-book",
+  "ligne-claire", "graphic-novel", "noir-illustration", "childrens-picture-book", "fashion-illustration",
+  "botanical-illustration", "scientific-illustration", "isometric-illustration", "flat-illustration",
+  "cyberpunk", "vaporwave", "synthwave", "y2k", "retrofuturism", "afrofuturism", "steampunk",
+  "glitch-art", "pixel-art", "voxel-art", "low-poly", "glassmorphism", "neumorphism", "claymorphism",
+  "holographic", "liquid-metal", "3d-abstract-cgi", "fractal-art", "generative-ai-dreamlike"
+];
+
 const original32GuideFingerprints = {
   "swiss-style": "b6f70828",
   "art-deco": "e556a3de",
@@ -1245,7 +1257,7 @@ const original52GuideFingerprints = {
   "color-field-painting": "c174b8f0"
 };
 
-const enhancedGuideIds = [...originalEnhancedGuideIds, ...batchOneGuideIds, ...batchTwoGuideIds, ...batchThreeGuideIds];
+const enhancedGuideIds = [...originalEnhancedGuideIds, ...batchOneGuideIds, ...batchTwoGuideIds, ...batchThreeGuideIds, ...completionGuideIds];
 const editorialAuditBaseline = JSON.parse(fs.readFileSync(
   path.join(__dirname, "..", "scripts", "aesthetic-guide-audit-baseline.json"),
   "utf8"
@@ -1353,7 +1365,7 @@ test("the E1 corpus freeze records every changed Guide and keeps structural gate
     id,
     crypto.createHash("sha256").update(guide).digest("hex")
   ]));
-  const changedIds = Object.keys(currentFingerprints)
+  const changedIds = Object.keys(editorialAuditBaseline.fingerprints)
     .filter((id) => currentFingerprints[id] !== editorialAuditBaseline.fingerprints[id])
     .sort();
   const approvedIds = [...new Set(editorialAuditBaseline.approvedRevisions.map((item) => item.styleId))].sort();
@@ -1364,8 +1376,8 @@ test("the E1 corpus freeze records every changed Guide and keeps structural gate
     posterComplete: corpus.posterComplete,
     posterTotal: corpus.posterTotal
   }).toEqual({
-    guideCount: 72,
-    fallbackCount: 48,
+    guideCount: 120,
+    fallbackCount: 0,
     posterComplete: 20,
     posterTotal: 20
   });
@@ -1376,6 +1388,7 @@ test("the E1 corpus freeze records every changed Guide and keeps structural gate
   expect(corpus.invalidComparisons).toEqual([]);
   expect(corpus.selfComparisons).toEqual([]);
   expect(changedIds).toEqual(approvedIds);
+  expect(completionGuideIds.every((id) => !editorialAuditBaseline.fingerprints[id] && currentFingerprints[id])).toBe(true);
   expect(editorialAuditBaseline.approvedRevisions.every((item) => (
     item.styleId && item.field && item.issue && item.reason && item.before && item.after && item.source
   ))).toBe(true);
@@ -1529,7 +1542,7 @@ test("batch two respects editorial lengths scene order and prohibited wording", 
   expect(violations).toEqual([]);
 });
 
-test("batch three expands guide coverage to 72 with 48 fallback styles and full poster coverage", async ({ page }) => {
+test("batch three remains complete after expansion to 120 guides with no fallbacks", async ({ page }) => {
   await page.goto("/");
   const coverage = await page.evaluate((batchIds) => {
     const guides = window.StyleAtlasAesthetic.guides;
@@ -1544,8 +1557,8 @@ test("batch three expands guide coverage to 72 with 48 fallback styles and full 
     };
   }, batchThreeGuideIds);
   expect(coverage).toEqual({
-    guideCount: 72,
-    fallbackCount: 48,
+    guideCount: 120,
+    fallbackCount: 0,
     missing: [],
     posterComplete: 20,
     posterTotal: 20
@@ -1900,23 +1913,23 @@ test("a locked guide routes Guided Looking to Plus without starting a purchase",
   expect(purchaseMessages).toEqual([]);
 });
 
-test("non-pilot styles use a stable fallback guide", async ({ page }) => {
+test("formerly fallback styles now use complete guides", async ({ page }) => {
   await page.goto("/#cyberpunk");
-  const fallback = await page.evaluate(() => window.StyleAtlasAesthetic.getGuide("cyberpunk"));
-  expect(fallback.enhanced).toBe(false);
-  expect(fallback.observe.length).toBeGreaterThanOrEqual(3);
-  expect(fallback.profile).toBeNull();
-  expect(fallback.everydayLife.length).toBeGreaterThan(0);
-  expect(fallback.comparisons.length).toBeGreaterThan(0);
+  const guide = await page.evaluate(() => window.StyleAtlasAesthetic.getGuide("cyberpunk"));
+  expect(guide.enhanced).toBe(true);
+  expect(guide.observe).toHaveLength(3);
+  expect(Object.keys(guide.profile).sort()).toEqual(["color", "emotion", "order", "ornament"]);
+  expect(guide.everydayLife).toHaveLength(4);
+  expect(guide.comparisons).toHaveLength(2);
 });
 
-test("fallback detail contains no undefined values or empty profile scale", async ({ page }) => {
+test("a formerly fallback detail renders its complete profile after Plus unlock", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/#cyberpunk");
   await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   await expect(page.locator("#detailContent")).not.toContainText("undefined");
-  await expect(page.locator(".profile-pending")).toBeVisible();
-  await expect(page.locator(".profile-scale")).toHaveCount(0);
+  await expect(page.locator(".profile-pending")).toHaveCount(0);
+  await expect(page.locator(".profile-scale")).toHaveCount(4);
 });
 
 test("recognition module presents at least three explained observation cards", async ({ page }) => {
