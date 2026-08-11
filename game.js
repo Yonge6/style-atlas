@@ -9,9 +9,10 @@
     nativeShell: false,
     externalGalleryEnabled: true,
     submissionMode: "web",
-    publicBaseURL: "https://yonge6.github.io/style-atlas/"
+    publicBaseURL: "https://style-atlas.wonderelian.com/"
   }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
   const APP_STORE_URL = "https://apps.apple.com/cn/app/%E8%99%BE%E5%AD%90%E6%9B%B0%E8%89%BA%E6%9C%AF%E9%A3%8E%E6%A0%BC%E5%9B%BE%E9%89%B4/id6787447019";
+  const SHARE_QR_SRC = "assets/brand/style-atlas-site-qr.png";
   const ACCESS_CONFIG = {
     freeFullStyleLimit: 20,
     maxFreeSaved: 20,
@@ -2549,6 +2550,75 @@
     canvas.height = 0;
   }
 
+  function drawShareFrame(ctx, width, height) {
+    const scale = width / 1080;
+    const inset = 36 * scale;
+    ctx.save();
+    ctx.strokeStyle = "rgba(244, 207, 118, 0.64)";
+    ctx.lineWidth = Math.max(2, 2 * scale);
+    ctx.strokeRect(inset, inset, width - inset * 2, height - inset * 2);
+
+    const label = "VISUAL STYLE NOTE";
+    ctx.font = `800 ${20 * scale}px sans-serif`;
+    const labelWidth = ctx.measureText(label).width;
+    const labelX = 62 * scale;
+    const labelY = 62 * scale;
+    roundRect(ctx, labelX - 18 * scale, labelY - 30 * scale, labelWidth + 36 * scale, 52 * scale, 8 * scale);
+    ctx.fillStyle = "rgba(10, 9, 7, 0.78)";
+    ctx.fill();
+    ctx.fillStyle = "#f4cf76";
+    ctx.fillText(label, labelX, labelY + 7 * scale);
+    ctx.restore();
+  }
+
+  async function drawShareFooter(ctx, width, height, top) {
+    const scale = width / 1080;
+    const pad = 64 * scale;
+    const footerTop = Math.round(top);
+    const qrPlateSize = 196 * scale;
+    const qrPlateX = width - pad - qrPlateSize;
+    const qrPlateY = footerTop + (height - footerTop - qrPlateSize) / 2;
+    const qrInset = 14 * scale;
+    const productName = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Xiazishuo Style Atlas";
+    const invitation = store.lang === "zh" ? "扫码看懂这种美" : "SCAN TO EXPLORE THIS STYLE";
+    const collection = store.lang === "zh"
+      ? "120 种艺术与设计风格 · 72 篇深度指南"
+      : "120 ART & DESIGN STYLES · 72 IN-DEPTH GUIDES";
+
+    ctx.save();
+    ctx.fillStyle = "rgba(10, 9, 7, 0.96)";
+    ctx.fillRect(0, footerTop, width, height - footerTop);
+    ctx.fillStyle = "rgba(244, 207, 118, 0.52)";
+    ctx.fillRect(pad, footerTop, width - pad * 2, Math.max(2, 2 * scale));
+
+    ctx.fillStyle = "#f4cf76";
+    ctx.font = `800 ${22 * scale}px sans-serif`;
+    ctx.fillText(productName, pad, footerTop + 62 * scale);
+    ctx.fillStyle = "#fff6dc";
+    ctx.font = `700 ${38 * scale}px Georgia`;
+    ctx.fillText(invitation, pad, footerTop + 120 * scale);
+    ctx.fillStyle = "rgba(255, 246, 220, 0.72)";
+    ctx.font = `700 ${18 * scale}px sans-serif`;
+    ctx.fillText(collection, pad, footerTop + 164 * scale);
+    ctx.fillStyle = "rgba(244, 207, 118, 0.78)";
+    ctx.font = `600 ${17 * scale}px sans-serif`;
+    ctx.fillText("style-atlas.wonderelian.com", pad, footerTop + 205 * scale);
+
+    roundRect(ctx, qrPlateX, qrPlateY, qrPlateSize, qrPlateSize, 14 * scale);
+    ctx.fillStyle = "#fffaf0";
+    ctx.fill();
+    const qrImage = await loadImage(SHARE_QR_SRC);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(
+      qrImage,
+      qrPlateX + qrInset,
+      qrPlateY + qrInset,
+      qrPlateSize - qrInset * 2,
+      qrPlateSize - qrInset * 2
+    );
+    ctx.restore();
+  }
+
   async function coverCardBlob(style, ratio = "9:16") {
     const sizes = {
       "9:16": [1080, 1920],
@@ -2573,6 +2643,7 @@
     shade.addColorStop(1, "rgba(0,0,0,0.82)");
     ctx.fillStyle = shade;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const footerTop = canvas.height - Math.max(282, canvas.width * 0.3);
     ctx.fillStyle = "#fff6dc";
     const titleSize = Math.max(72, Math.min(126, canvas.width * 0.1, canvas.height * 0.12));
     ctx.font = `700 ${titleSize}px Georgia`;
@@ -2580,7 +2651,7 @@
     const titleLines = wrappedLines(ctx, style.name.en, canvas.width - 128);
     ctx.fillStyle = "#f4cf76";
     const subtitleSize = Math.max(34, Math.min(52, canvas.width * 0.043));
-    const subtitleY = canvas.height - 72;
+    const subtitleY = footerTop - 50;
     const titleLastY = subtitleY - subtitleSize * 1.55;
     const titleFirstY = titleLastY - Math.max(0, titleLines.length - 1) * titleLineHeight;
     ctx.fillStyle = "#fff6dc";
@@ -2589,7 +2660,8 @@
     ctx.fillStyle = "#f4cf76";
     ctx.font = `800 ${subtitleSize}px sans-serif`;
     wrap(ctx, style.name.zh, 68, subtitleY, canvas.width - 136, subtitleSize * 1.18);
-    drawWatermark(ctx, canvas.width, canvas.height);
+    drawShareFrame(ctx, canvas.width, canvas.height);
+    await drawShareFooter(ctx, canvas.width, canvas.height, footerTop);
     return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
@@ -2673,8 +2745,14 @@
       ctx.fillRect(68, dividerY, 944, 2);
       ctx.fillStyle = "#3f3422";
       ctx.font = "40px sans-serif";
-      wrap(ctx, style.summary[store.lang], 68, dividerY + 76, 920, 58);
-      drawWatermark(ctx, canvas.width, canvas.height);
+      const fullSummaryLines = wrappedLines(ctx, style.summary[store.lang], 920);
+      const summaryLines = fullSummaryLines.slice(0, 2);
+      if (fullSummaryLines.length > summaryLines.length) {
+        summaryLines[summaryLines.length - 1] = `${summaryLines.at(-1).replace(/[.,，。;；:\s]+$/, "")}…`;
+      }
+      summaryLines.forEach((line, index) => ctx.fillText(line, 68, dividerY + 76 + index * 58));
+      drawShareFrame(ctx, canvas.width, canvas.height);
+      await drawShareFooter(ctx, canvas.width, canvas.height, 2110);
       return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
