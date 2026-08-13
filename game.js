@@ -304,6 +304,8 @@
       drawerSupportNote: "有余则助，无余亦安",
       drawerWorksTitle: "沿途所作",
       drawerWorksHeading: "观世界，也向内认识自己。",
+      drawerWorkYixiuTitle: "一休冥想",
+      drawerWorkYixiuNote: "停一会儿，呼吸，也回到自己。",
       drawerWorkWendaoTitle: "三慢问道",
       drawerWorkWendaoNote: "慢读《道德经》，也慢慢认识自己。",
       drawerWorkXiaziTitle: "虾子曰",
@@ -537,6 +539,8 @@
       drawerSupportNote: "Give freely, or simply explore in peace",
       drawerWorksTitle: "WORKS ALONG THE WAY",
       drawerWorksHeading: "See the world and know yourself.",
+      drawerWorkYixiuTitle: "Yixiu Meditation",
+      drawerWorkYixiuNote: "Pause, breathe, and return to yourself.",
       drawerWorkWendaoTitle: "Wendao",
       drawerWorkWendaoNote: "Read the Tao Te Ching slowly, and come to know yourself.",
       drawerWorkXiaziTitle: "Xiazi Says",
@@ -3695,6 +3699,8 @@
     $("drawerSupport").hidden = hasNativeBridge();
     $("drawerWorksTitle").textContent = t("drawerWorksTitle");
     $("drawerWorksHeading").textContent = t("drawerWorksHeading");
+    $("drawerWorkYixiuTitle").textContent = t("drawerWorkYixiuTitle");
+    $("drawerWorkYixiuNote").textContent = t("drawerWorkYixiuNote");
     $("drawerWorkWendaoTitle").textContent = t("drawerWorkWendaoTitle");
     $("drawerWorkWendaoNote").textContent = t("drawerWorkWendaoNote");
     $("drawerWorkXiaziTitle").textContent = t("drawerWorkXiaziTitle");
