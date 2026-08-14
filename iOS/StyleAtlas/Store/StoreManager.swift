@@ -31,14 +31,34 @@ enum StoreActionResult {
     case failed(StoreErrorCode, debugMessage: String?)
 }
 
+enum PlusPlan: String, CaseIterable {
+    case annual
+    case annualAuto = "annual_auto"
+
+    var productID: String {
+        switch self {
+        case .annual:
+            return "xiazishuo_style_atlas_plus_annual"
+        case .annualAuto:
+            return "xiazishuo_style_atlas_plus_annual_auto"
+        }
+    }
+}
+
 private struct StoreTimeoutError: Error {}
 
 @MainActor
 final class StoreManager: ObservableObject {
-    static let plusProductID = "xiazishuo_style_atlas_plus_lifetime"
+    static let legacyLifetimeProductID = "xiazishuo_style_atlas_plus_lifetime"
+    static let purchasableProductIDs = Set(PlusPlan.allCases.map(\.productID))
+    static let entitlementProductIDs = purchasableProductIDs.union([legacyLifetimeProductID])
 
-    @Published private(set) var plusProduct: Product?
+    @Published private(set) var productsByPlan: [PlusPlan: Product] = [:]
     @Published private(set) var lastErrorCode: StoreErrorCode?
+
+    var productDisplayPrices: [String: String] {
+        Dictionary(uniqueKeysWithValues: productsByPlan.map { ($0.key.rawValue, $0.value.displayPrice) })
+    }
 
     var isOperationInFlight: Bool {
         storeOperationInFlight
@@ -65,7 +85,7 @@ final class StoreManager: ObservableObject {
     }
 
     func start() async {
-        logger.info("operation=start status=started product=\(Self.plusProductID, privacy: .public)")
+        logger.info("operation=start status=started products=annual,annual_auto")
         listenForTransactions()
         await refreshEntitlements()
         await loadProducts()
@@ -73,21 +93,24 @@ final class StoreManager: ObservableObject {
 
     @discardableResult
     func loadProducts() async -> Bool {
-        logger.info("operation=loadProducts status=started product=\(Self.plusProductID, privacy: .public)")
+        logger.info("operation=loadProducts status=started products=annual,annual_auto")
         do {
-            plusProduct = try await withTimeout {
-                try await Product.products(for: [Self.plusProductID]).first
+            let products = try await withTimeout {
+                try await Product.products(for: Array(Self.purchasableProductIDs))
             }
-            guard plusProduct != nil else {
+            productsByPlan = Dictionary(uniqueKeysWithValues: PlusPlan.allCases.compactMap { plan in
+                products.first(where: { $0.id == plan.productID }).map { (plan, $0) }
+            })
+            guard productsByPlan.count == PlusPlan.allCases.count else {
                 recordFailure(
                     operation: "loadProducts",
                     code: .productUnavailable,
-                    debugMessage: "Product.products returned no matching product."
+                    debugMessage: "Product.products did not return both annual Plus products."
                 )
                 return false
             }
             lastErrorCode = nil
-            logger.info("operation=loadProducts status=succeeded product=\(Self.plusProductID, privacy: .public)")
+            logger.info("operation=loadProducts status=succeeded count=2")
             return true
         } catch is StoreTimeoutError {
             recordFailure(
@@ -106,7 +129,7 @@ final class StoreManager: ObservableObject {
         }
     }
 
-    func purchasePlus() async -> StoreActionResult {
+    func purchasePlus(plan: PlusPlan) async -> StoreActionResult {
         guard !storeOperationInFlight else {
             logger.notice("operation=purchase status=blocked errorCode=\(StoreErrorCode.operationInProgress.rawValue, privacy: .public)")
             return .unavailable(.operationInProgress, debugMessage: nil)
@@ -114,8 +137,8 @@ final class StoreManager: ObservableObject {
         storeOperationInFlight = true
         defer { storeOperationInFlight = false }
 
-        guard let product = plusProduct else {
-            guard await loadProducts(), let product = plusProduct else {
+        guard let product = productsByPlan[plan] else {
+            guard await loadProducts(), let product = productsByPlan[plan] else {
                 let code = lastErrorCode ?? .productUnavailable
                 return .unavailable(code, debugMessage: nil)
             }
@@ -132,12 +155,12 @@ final class StoreManager: ObservableObject {
         storeOperationInFlight = true
         defer { storeOperationInFlight = false }
 
-        logger.info("operation=restore status=started product=\(Self.plusProductID, privacy: .public)")
+        logger.info("operation=restore status=started")
         do {
             try await AppStore.sync()
             await refreshEntitlements()
             if entitlementManager.hasPlus {
-                logger.info("operation=restore status=succeeded product=\(Self.plusProductID, privacy: .public)")
+                logger.info("operation=restore status=succeeded")
                 return .restored
             }
             logger.info("operation=restore status=empty errorCode=\(StoreErrorCode.noPurchaseToRestore.rawValue, privacy: .public)")
@@ -166,25 +189,26 @@ final class StoreManager: ObservableObject {
                     )
                     return .failed(.purchaseVerificationFailed, debugMessage: nil)
                 }
-                guard transaction.productID == Self.plusProductID else {
+                guard Self.purchasableProductIDs.contains(transaction.productID) else {
                     recordFailure(
                         operation: "purchase",
                         code: .purchaseVerificationFailed,
-                        debugMessage: "Verified transaction product ID did not match Plus."
+                        debugMessage: "Verified transaction product ID did not match a purchasable Plus plan."
                     )
                     await transaction.finish()
                     return .failed(.purchaseVerificationFailed, debugMessage: nil)
                 }
-                entitlementManager.hasPlus = transaction.revocationDate == nil
+                let hasActiveAccess = isActive(transaction)
                 await transaction.finish()
-                guard entitlementManager.hasPlus else {
+                guard hasActiveAccess else {
                     recordFailure(
                         operation: "purchase",
                         code: .purchaseVerificationFailed,
-                        debugMessage: "Verified transaction was already revoked."
+                        debugMessage: "Verified transaction was revoked or expired."
                     )
                     return .failed(.purchaseVerificationFailed, debugMessage: nil)
                 }
+                entitlementManager.hasPlus = true
                 lastErrorCode = nil
                 logger.info("operation=purchase status=succeeded product=\(product.id, privacy: .public)")
                 return .purchased
@@ -213,7 +237,7 @@ final class StoreManager: ObservableObject {
     }
 
     func refreshEntitlements() async {
-        logger.info("operation=refreshEntitlements status=started product=\(Self.plusProductID, privacy: .public)")
+        logger.info("operation=refreshEntitlements status=started")
         var hasPlus = false
         for await result in Transaction.currentEntitlements {
             guard case .verified(let transaction) = result else {
@@ -224,14 +248,39 @@ final class StoreManager: ObservableObject {
                 )
                 continue
             }
-            guard transaction.productID == Self.plusProductID else { continue }
-            hasPlus = transaction.revocationDate == nil
-            if !hasPlus {
-                logger.notice("operation=refreshEntitlements status=revoked product=\(transaction.productID, privacy: .public)")
+            guard Self.entitlementProductIDs.contains(transaction.productID) else { continue }
+            if isActive(transaction) {
+                hasPlus = true
+                break
+            }
+            logger.notice("operation=refreshEntitlements status=inactive product=\(transaction.productID, privacy: .public)")
+        }
+        if !hasPlus {
+            for await result in Transaction.all {
+                guard case .verified(let transaction) = result,
+                      transaction.productID == PlusPlan.annual.productID else { continue }
+                if isActive(transaction) {
+                    hasPlus = true
+                    break
+                }
             }
         }
         entitlementManager.hasPlus = hasPlus
         logger.info("operation=refreshEntitlements status=completed entitlement=\(hasPlus, privacy: .public)")
+    }
+
+    private func isActive(_ transaction: Transaction) -> Bool {
+        guard transaction.revocationDate == nil else { return false }
+        if transaction.productID == PlusPlan.annual.productID {
+            var calendar = Calendar(identifier: .gregorian)
+            calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? .current
+            guard let expirationDate = calendar.date(byAdding: .year, value: 1, to: transaction.purchaseDate) else {
+                return false
+            }
+            return expirationDate > Date()
+        }
+        guard let expirationDate = transaction.expirationDate else { return true }
+        return expirationDate > Date()
     }
 
     private func listenForTransactions() {
@@ -257,7 +306,7 @@ final class StoreManager: ObservableObject {
     private func recordFailure(operation: String, code: StoreErrorCode, debugMessage: String?) {
         lastErrorCode = code
         logger.error(
-            "operation=\(operation, privacy: .public) status=failed errorCode=\(code.rawValue, privacy: .public) product=\(Self.plusProductID, privacy: .public)"
+            "operation=\(operation, privacy: .public) status=failed errorCode=\(code.rawValue, privacy: .public)"
         )
 #if DEBUG
         if let debugMessage {

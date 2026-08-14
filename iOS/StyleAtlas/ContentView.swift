@@ -19,7 +19,7 @@ struct ContentView: View {
         WebViewContainer(
             bridge: bridge,
             hasPlus: entitlementManager.hasPlus,
-            productDisplayPrice: storeManager.plusProduct?.displayPrice,
+            productDisplayPrices: storeManager.productDisplayPrices,
             textScale: textScale
         )
             .ignoresSafeArea()

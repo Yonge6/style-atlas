@@ -206,12 +206,37 @@
         </div>
       </div>
       <div class="plus-action-bar">
+        <fieldset id="plusPlanPicker" class="plus-plan-picker">
+          <legend id="plusPlanPickerLegend">选择方案</legend>
+          <label class="plus-plan-option" data-plan-option="annual_auto">
+            <input type="radio" name="plus-plan" value="annual_auto" checked />
+            <span class="plus-plan-main">
+              <strong id="plusAnnualAutoTitle">连续包年</strong>
+              <small id="plusAnnualAutoNote">每年自动续订，可随时取消</small>
+            </span>
+            <span class="plus-plan-price"><b id="plusAnnualAutoPrice">载入价格…</b><em id="plusAnnualAutoBadge">推荐</em></span>
+          </label>
+          <label class="plus-plan-option" data-plan-option="annual">
+            <input type="radio" name="plus-plan" value="annual" />
+            <span class="plus-plan-main">
+              <strong id="plusAnnualTitle">年费</strong>
+              <small id="plusAnnualNote">1 年使用期，到期不自动续订</small>
+            </span>
+            <span class="plus-plan-price"><b id="plusAnnualPrice">载入价格…</b></span>
+          </label>
+        </fieldset>
         <div class="plus-price">
           <span id="plusLaunchPrice">价格以 App Store 显示为准</span>
           <small id="plusRegularPrice" hidden></small>
         </div>
         <p id="plusFootnote" class="plus-footnote">下载 App 后可在应用内解锁 Plus</p>
+        <p id="plusRenewalDisclosure" class="plus-renewal-disclosure"></p>
         <button id="plusCta" class="copy-btn plus-cta" type="button" data-action="purchase-plus">前往 App Store 查看 Plus</button>
+        <p class="plus-legal-links">
+          <a id="plusTermsLink" href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener" data-action="open-legal">使用条款</a>
+          <span aria-hidden="true">·</span>
+          <a id="plusPrivacyLink" href="https://style-atlas.wonderelian.com/privacy.html" target="_blank" rel="noopener" data-action="open-legal">隐私政策</a>
+        </p>
       </div>
       <button id="plusRestoreBtn" class="copy-btn plus-restore" type="button" data-action="restore-purchases" hidden>恢复购买</button>
       <button id="plusCloseBtn" class="plus-close" type="button" data-action="close-plus" aria-label="关闭 Plus"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>

@@ -4,7 +4,7 @@ import WebKit
 struct WebViewContainer: UIViewRepresentable {
     @ObservedObject var bridge: WebViewBridge
     let hasPlus: Bool
-    let productDisplayPrice: String?
+    let productDisplayPrices: [String: String]
     let textScale: Double
 
     func makeUIView(context: Context) -> WKWebView {
@@ -51,10 +51,10 @@ struct WebViewContainer: UIViewRepresentable {
 
     func updateUIView(_ webView: WKWebView, context: Context) {
         context.coordinator.hasPlus = hasPlus
-        context.coordinator.productDisplayPrice = productDisplayPrice
+        context.coordinator.productDisplayPrices = productDisplayPrices
         context.coordinator.textScale = textScale
         bridge.injectPlusAccess(hasPlus)
-        bridge.injectProductPrice(productDisplayPrice)
+        bridge.injectProductPrices(productDisplayPrices)
         bridge.injectTextScale(textScale)
     }
 
@@ -62,7 +62,7 @@ struct WebViewContainer: UIViewRepresentable {
         Coordinator(
             bridge: bridge,
             hasPlus: hasPlus,
-            productDisplayPrice: productDisplayPrice,
+            productDisplayPrices: productDisplayPrices,
             textScale: textScale
         )
     }
@@ -70,19 +70,19 @@ struct WebViewContainer: UIViewRepresentable {
     final class Coordinator: NSObject, WKNavigationDelegate {
         private let bridge: WebViewBridge
         var hasPlus: Bool
-        var productDisplayPrice: String?
+        var productDisplayPrices: [String: String]
         var textScale: Double
 
-        init(bridge: WebViewBridge, hasPlus: Bool, productDisplayPrice: String?, textScale: Double) {
+        init(bridge: WebViewBridge, hasPlus: Bool, productDisplayPrices: [String: String], textScale: Double) {
             self.bridge = bridge
             self.hasPlus = hasPlus
-            self.productDisplayPrice = productDisplayPrice
+            self.productDisplayPrices = productDisplayPrices
             self.textScale = textScale
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             bridge.injectPlusAccess(hasPlus)
-            bridge.injectProductPrice(productDisplayPrice)
+            bridge.injectProductPrices(productDisplayPrices)
             bridge.injectTextScale(textScale)
         }
     }

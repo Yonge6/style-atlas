@@ -6,10 +6,10 @@ This is the first iOS shell for Xiazishuo Style Atlas. It includes a minimal Xco
 
 - SwiftUI shell files are provided.
 - `WKWebView` loads bundled `Resources/Web/index.html`.
-- StoreKit 2 non-consumable purchase and restore flow is enabled for the 1.1 build.
+- StoreKit 2 supports the V1.5 one-year pass and annual auto-renewing Plus plans while preserving legacy lifetime entitlements.
 - Web can call native `purchasePlus` and `restorePurchases`.
 - Native can inject `window.StyleAtlasNativeBridge.setPlusAccess(true / false)`.
-- Native injects the localized StoreKit price into the Plus paywall.
+- Native injects both localized StoreKit prices into the Plus paywall.
 - No Stripe, external payment, login, backend, AI image generation, or social features.
 - Simulator build has been verified with Xcode 26.6 and iOS 26.5 Simulator.
 
@@ -113,14 +113,13 @@ Use the included:
 Resources/StoreKit/StyleAtlas.storekit
 ```
 
-Product:
+Products:
 
-- Product ID: `xiazishuo_style_atlas_plus_lifetime`
-- Type: Non-Consumable
-- Reference Name: `Xiazishuo Style Atlas Plus`
-- Price: `$3.99` for local testing
+- `xiazishuo_style_atlas_plus_annual`: non-renewing one-year pass, `$29.99` in the local configuration; the app calculates one Gregorian year from the verified purchase date.
+- `xiazishuo_style_atlas_plus_annual_auto`: annual auto-renewing subscription, `$19.99` in the local configuration and selected by default.
+- `xiazishuo_style_atlas_plus_lifetime`: legacy non-consumable entitlement retained only for existing purchasers.
 
-If Xcode cannot recognize the included `.storekit` file, create a new StoreKit Configuration in Xcode and enter the same product values above. The product ID must stay exactly the same.
+If Xcode cannot recognize the included `.storekit` file, create a new StoreKit Configuration in Xcode and enter the same product values above. All Product IDs must stay exactly the same.
 
 In Xcode:
 
@@ -131,7 +130,7 @@ In Xcode:
 
 ## Runtime Mode
 
-iOS 1.0 shipped in `freeLaunch` mode. The current 1.1 development build injects this runtime config at document start:
+iOS 1.0 shipped in `freeLaunch` mode. The current subscription development branch injects this runtime config at document start:
 
 ```js
 window.STYLE_ATLAS_RUNTIME_CONFIG = {
@@ -143,9 +142,10 @@ window.STYLE_ATLAS_RUNTIME_CONFIG = {
 
 This enables the native StoreKit 2 flow while keeping the web version unchanged:
 
-- the native app shows Unlock Plus and Restore Purchases
+- the native app shows both annual Plus plans and Restore Purchases
 - the web version cannot initiate a purchase
-- Plus is a non-consumable lifetime entitlement
+- new customers choose a one-year pass or annual auto-renewing subscription
+- existing lifetime purchasers keep permanent Plus access
 - GitHub Pages still defaults to `submissionMode: "web"`
 
 ## App Store Assets
@@ -166,7 +166,7 @@ The 1.0 App Store release used:
 submissionMode="freeLaunch"
 ```
 
-The current 1.1 development build uses `submissionMode="iap"`. It must not be submitted until the matching App Store Connect product, Sandbox purchase, Restore Purchases, and IAP review metadata are complete.
+The current development build uses `submissionMode="iap"`. It must not be submitted until both matching App Store Connect products, Sandbox purchase, Restore Purchases, and subscription review metadata are complete.
 
 The final app icon is also wired into `Assets.xcassets/AppIcon.appiconset` for Xcode. The supplied launch screen artwork is preserved as a source asset; the current project can continue using the system-generated launch screen for the free launch. To use the custom image later, configure a `LaunchScreen.storyboard` or a SwiftUI launch screen in Xcode and reference `assets/app-store/final/launch/launch-screen.png`.
 
@@ -180,15 +180,17 @@ Before uploading screenshots to App Store Connect, confirm the required screensh
 
 ## IAP Release Checklist
 
-Before shipping the 1.1 IAP update:
+Before shipping the subscription update:
 
-1. Create the App Store Connect IAP product:
-   `xiazishuo_style_atlas_plus_lifetime`
+1. Create the App Store Connect Plus products:
+   `xiazishuo_style_atlas_plus_annual`
+   `xiazishuo_style_atlas_plus_annual_auto`
+   Keep `xiazishuo_style_atlas_plus_lifetime` for legacy entitlement verification.
 2. Complete IAP metadata.
 3. Test Sandbox purchase.
 4. Test Restore Purchases.
 5. Confirm `WebView/WebViewContainer.swift` remains in `submissionMode: "iap"`.
-6. Update the App Store description and review notes to disclose the non-consumable Plus purchase.
+6. Update the App Store description and review notes to disclose both annual Plus plans and the automatic-renewal terms.
 
 ## Local Purchase Test
 
@@ -196,10 +198,11 @@ The shared Xcode scheme selects `StyleAtlas.storekit` for local StoreKit testing
 
 1. Launch the app from Xcode.
 2. Open Plus Paywall in the web UI.
-3. Tap `Unlock Plus`.
-4. Confirm the StoreKit local purchase sheet.
-5. Verify locked style archives unlock.
-6. Tap Restore Purchases and verify entitlement refresh.
+3. Confirm the annual auto-renewing subscription is selected by default and shows `$19.99`.
+4. Tap `Start annual subscription` and confirm the StoreKit local purchase sheet.
+5. Verify locked style archives unlock and Restore Purchases retains access.
+6. Reset StoreKit transactions, select the non-renewing one-year pass, and confirm it shows `$29.99`.
+7. Verify purchase, restore, expiry and legacy lifetime migration independently before release.
 
 ## Native Bridge Test
 
@@ -271,13 +274,14 @@ StoreKit local purchase for future IAP mode:
 
 1. Switch `submissionMode` to `iap`.
 2. Open Plus Paywall.
-3. Tap `Unlock Plus`.
-4. StoreKit local purchase sheet appears.
-5. Successful purchase unlocks locked content.
-6. Export watermark disappears.
-7. Saved style limit is removed.
-8. Restarting the app keeps Plus.
-9. `Restore Purchases` restores Plus.
+3. Confirm the annual auto-renewing plan is selected by default, or select the one-year pass.
+4. Start the selected plan.
+5. StoreKit local purchase sheet appears for the matching Product ID.
+6. Successful purchase unlocks locked content.
+7. Export watermark disappears.
+8. Saved style limit is removed.
+9. Restarting the app keeps active Plus access.
+10. `Restore Purchases` restores active annual or legacy lifetime access.
 
 Language:
 
@@ -318,7 +322,7 @@ If StoreKit 2 is working:
 
 - Paywall can show the purchase button.
 - Restore Purchases must be visible and working.
-- App Review Notes should say: `Plus is a non-consumable in-app purchase powered by StoreKit 2.`
+- App Review Notes should identify the non-renewing one-year pass, the annual auto-renewing subscription, and the retained legacy lifetime entitlement.
 
 Never add external payment links inside the app.
 

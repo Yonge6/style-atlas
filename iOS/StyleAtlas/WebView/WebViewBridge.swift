@@ -51,15 +51,26 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         bridgeLogger.info("operation=\(type, privacy: .public) status=received")
         switch type {
         case "purchasePlus":
+            let rawPlan = (body["payload"] as? [String: Any])?["plan"] as? String
+            let plan = PlusPlan(rawValue: rawPlan ?? "") ?? .annualAuto
             Task {
                 injectStoreAction("purchasing")
-                injectStoreResult(await storeManager.purchasePlus())
+                injectStoreResult(await storeManager.purchasePlus(plan: plan))
             }
         case "restorePurchases":
             Task {
                 injectStoreAction("restoring")
                 injectStoreResult(await storeManager.restorePurchases())
             }
+        case "openExternalURL":
+            guard let payload = body["payload"] as? [String: Any],
+                  let rawURL = payload["url"] as? String,
+                  let url = URL(string: rawURL),
+                  ["https", "http"].contains(url.scheme?.lowercased() ?? "") else {
+                bridgeLogger.notice("operation=openExternalURL status=ignored")
+                return
+            }
+            UIApplication.shared.open(url)
         case "hapticFeedback":
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         case "readBundledAsset":
@@ -96,11 +107,11 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         webView?.evaluateJavaScript(js)
     }
 
-    func injectProductPrice(_ price: String?) {
-        guard let data = try? JSONEncoder().encode(price ?? ""),
+    func injectProductPrices(_ prices: [String: String]) {
+        guard let data = try? JSONEncoder().encode(prices),
               let value = String(data: data, encoding: .utf8) else { return }
-        bridgeLogger.info("operation=setProductPrice status=injecting product=\(StoreManager.plusProductID, privacy: .public)")
-        webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setProductPrice(\(value))")
+        bridgeLogger.info("operation=setProductPrices status=injecting count=\(prices.count, privacy: .public)")
+        webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setProductPrices(\(value))")
     }
 
     func injectTextScale(_ scale: Double) {

@@ -10,7 +10,28 @@
     ]
   },
   "identifier": "StyleAtlas",
-  "nonRenewingSubscriptions": [],
+  "nonRenewingSubscriptions": [
+    {
+      "displayPrice": "29.99",
+      "familyShareable": false,
+      "internalID": "style-atlas-plus-annual",
+      "localizations": [
+        {
+          "description": "Full Plus access for one year. No automatic renewal.",
+          "displayName": "Style Atlas Plus One-Year Pass",
+          "locale": "en_US"
+        },
+        {
+          "description": "解锁完整 Style Atlas Plus 权益一年，到期不自动续订。",
+          "displayName": "Style Atlas Plus 年费",
+          "locale": "zh_Hans"
+        }
+      ],
+      "productID": "xiazishuo_style_atlas_plus_annual",
+      "referenceName": "Style Atlas Plus One-Year Pass",
+      "subscriptionPeriod": "P1Y"
+    }
+  ],
   "products": [
     {
       "displayPrice": "1.00",
@@ -18,18 +39,18 @@
       "internalID": "xiazishuo-style-atlas-plus-lifetime",
       "localizations": [
         {
-          "description": "Unlock all complete style archives, unlimited saved styles, HD watermark-free export, multi-ratio export, and complete style expression.",
-          "displayName": "Xiazishuo Style Atlas Plus",
+          "description": "Legacy lifetime entitlement retained for existing purchasers.",
+          "displayName": "Style Atlas Plus Legacy Lifetime",
           "locale": "en_US"
         },
         {
-          "description": "解锁全部完整风格档案、无限收藏、高清无水印保存、多比例导出和完整风格表达词。",
-          "displayName": "虾子曰艺术风格图鉴 Plus",
+          "description": "仅用于保留既有购买用户的永久权益。",
+          "displayName": "Style Atlas Plus 旧版永久权益",
           "locale": "zh_Hans"
         }
       ],
       "productID": "xiazishuo_style_atlas_plus_lifetime",
-      "referenceName": "Xiazishuo Style Atlas Plus",
+      "referenceName": "Style Atlas Plus Legacy Lifetime",
       "type": "NonConsumable"
     }
   ],
@@ -55,7 +76,53 @@
     ],
     "_timeRate": 0
   },
-  "subscriptionGroups": [],
+  "subscriptionGroups": [
+    {
+      "id": "style-atlas-plus-subscription-group",
+      "localizations": [
+        {
+          "description": "Annual access to the complete Style Atlas Plus learning experience.",
+          "displayName": "Style Atlas Plus",
+          "locale": "en_US"
+        },
+        {
+          "description": "按年使用完整的 Style Atlas Plus 学习体验。",
+          "displayName": "Style Atlas Plus",
+          "locale": "zh_Hans"
+        }
+      ],
+      "name": "Style Atlas Plus",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "19.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "style-atlas-plus-annual-auto",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Full Plus access, billed yearly until cancelled.",
+              "displayName": "Style Atlas Plus Annual",
+              "locale": "en_US"
+            },
+            {
+              "description": "完整 Style Atlas Plus 权益，按年付费并自动续订，可随时取消。",
+              "displayName": "Style Atlas Plus 连续包年",
+              "locale": "zh_Hans"
+            }
+          ],
+          "productID": "xiazishuo_style_atlas_plus_annual_auto",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Style Atlas Plus Annual Auto-Renewable",
+          "subscriptionGroupID": "style-atlas-plus-subscription-group",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        }
+      ]
+    }
+  ],
   "version": {
     "major": 4,
     "minor": 0

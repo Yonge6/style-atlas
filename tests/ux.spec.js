@@ -21,7 +21,11 @@ async function installNativeMock(page) {
     window.STYLE_ATLAS_RUNTIME_CONFIG = {
       nativeShell: true,
       externalGalleryEnabled: false,
-      submissionMode: "iap"
+      submissionMode: "iap",
+      iapDisplayPrices: {
+        annual: "¥99.00",
+        annual_auto: "¥66.00"
+      }
     };
   });
 }
@@ -354,11 +358,11 @@ test("Plus modal traps Tab focus", async ({ page }) => {
   await openPlus(page);
   await expect(page.locator("#plusPanel")).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.locator("#plusCta")).toBeFocused();
+  await expect(page.locator("input[name='plus-plan'][value='annual_auto']")).toBeFocused();
   await page.keyboard.press("Shift+Tab");
   await expect(page.locator("#plusCloseBtn")).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.locator("#plusCta")).toBeFocused();
+  await expect(page.locator("input[name='plus-plan'][value='annual_auto']")).toBeFocused();
 });
 
 test("Plus modal Escape closes and restores trigger focus", async ({ page }) => {
@@ -431,15 +435,51 @@ test("restoring state disables restore and purchase controls", async ({ page }) 
 test("native paywall uses StoreKit display price and posts purchase and restore", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrice("¥1.00"));
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({
+    annual: "¥99.00",
+    annual_auto: "¥66.00"
+  }));
   await openPlus(page);
-  await expect(page.locator("#plusLaunchPrice")).toContainText("¥1.00");
-  await expect(page.locator("#plusLaunchPrice")).not.toContainText("¥28");
+  await expect(page.locator("#plusLaunchPrice")).toContainText("¥66.00");
+  await expect(page.locator("input[name='plus-plan'][value='annual_auto']")).toBeChecked();
   await page.locator("#plusCta").click();
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("purchasePlus");
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.payload?.plan)).toBe("annual_auto");
   await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
   await page.locator("#plusRestoreBtn").click();
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("restorePurchases");
+});
+
+test("Plus plan picker switches to the non-renewing one-year pass", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({
+    annual: "$29.99",
+    annual_auto: "$19.99"
+  }));
+  await openPlus(page);
+  await page.locator("input[name='plus-plan'][value='annual']").check();
+  await expect(page.locator("#plusLaunchPrice")).toContainText("$29.99");
+  await expect(page.locator("#plusRenewalDisclosure")).toContainText("到期不自动续订");
+  await expect(page.locator("#plusCta")).toHaveText("购买一年 Plus");
+  await page.locator("#plusCta").click();
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.payload?.plan)).toBe("annual");
+});
+
+test("English annual subscription discloses renewal and legal links", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.evaluate(() => {
+    localStorage.setItem("styleAtlasLang", "en");
+    window.StyleAtlasNativeBridge.setProductPrices({ annual: "$29.99", annual_auto: "$19.99" });
+  });
+  await page.reload();
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "$29.99", annual_auto: "$19.99" }));
+  await openPlus(page);
+  await expect(page.locator("#plusAnnualAutoTitle")).toHaveText("Annual subscription");
+  await expect(page.locator("#plusRenewalDisclosure")).toContainText("renews automatically");
+  await expect(page.locator("#plusTermsLink")).toHaveAttribute("href", /apple\.com\/legal/);
+  await expect(page.locator("#plusPrivacyLink")).toHaveAttribute("href", /style-atlas\.wonderelian\.com\/privacy\.html/);
 });
 
 test("compact viewport does not overflow", async ({ page }) => {
@@ -1013,7 +1053,7 @@ test("Plus actions remain within the panel at 150 percent text size", async ({ p
 test("Plus close control stays at the panel top-right and purchase is the primary action", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrice("¥1.00"));
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "¥99.00", annual_auto: "¥66.00" }));
   await openPlus(page);
   const layout = await page.locator("#plusPanel").evaluate((panel) => {
     const panelBox = panel.getBoundingClientRect();
@@ -2230,7 +2270,7 @@ test("Plus purchase and restore actions remain wired after detail polish", async
   await installNativeMock(page);
   await page.goto("/#swiss-style");
   await openPlus(page);
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrice("$4.99"));
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "$29.99", annual_auto: "$19.99" }));
   await page.locator("#plusCta").click();
   await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
   await page.locator("#plusRestoreBtn").click();
@@ -2490,7 +2530,7 @@ test("StoreKit purchase restore and all export ratios survive preview work", asy
   await expect(page.locator("[data-action='export-ratio']")).toHaveCount(4);
   await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(false));
   await openPlus(page);
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrice("$4.99"));
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "$29.99", annual_auto: "$19.99" }));
   await page.locator("#plusCta").click();
   await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
   await page.locator("#plusRestoreBtn").click();
