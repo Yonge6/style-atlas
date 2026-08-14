@@ -782,7 +782,7 @@ test("preparing export disables every export control", async ({ page }) => {
     window.StyleAtlasNativeBridge.setPlusAccess(true);
     const original = HTMLCanvasElement.prototype.toBlob;
     HTMLCanvasElement.prototype.toBlob = function delayed(callback, ...args) {
-      setTimeout(() => original.call(this, callback, ...args), 250);
+      setTimeout(() => original.call(this, callback, ...args), 1500);
     };
   });
   await page.locator("[data-action='export-ratio'][data-ratio='9:16']").click();
