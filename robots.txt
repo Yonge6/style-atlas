@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://style-atlas.wonderelian.com/sitemap.xml

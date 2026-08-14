@@ -1,37 +1,70 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="description" content="探索 120 种艺术与设计风格，通过 120 篇深度指南、看图引导、审美画像与风格对比，学习看懂一种美。" />
-  <meta name="apple-itunes-app" content="app-id=6787447019" />
-  <title>虾子曰艺术风格图鉴</title>
+  <meta name="description" content="Explore 120 art and design styles, train your visual taste, compare creative references, and create clearer covers, social posts, and marketing visuals." />
+  <meta name="apple-itunes-app" content="app-id=6787447019, app-argument=https://apps.apple.com/app/id6787447019" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Style Atlas" />
+  <meta property="og:title" content="Style Atlas: Art &amp; Design" />
+  <meta property="og:description" content="Train your visual taste with 120 art and design styles, guided looking, comparisons, and practical creative references." />
+  <meta property="og:url" content="https://style-atlas.wonderelian.com/" />
+  <meta property="og:image" content="https://style-atlas.wonderelian.com/assets/brand/app-icon.png" />
+  <meta property="og:image:alt" content="Style Atlas: Art &amp; Design app icon" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@WonderElian" />
+  <meta name="twitter:title" content="Style Atlas: Art &amp; Design" />
+  <meta name="twitter:description" content="Train your visual taste with 120 art and design styles and practical creative references." />
+  <meta name="twitter:image" content="https://style-atlas.wonderelian.com/assets/brand/app-icon.png" />
+  <link rel="canonical" href="https://style-atlas.wonderelian.com/" />
+  <title>Style Atlas: Art &amp; Design | Visual Inspiration</title>
   <link rel="icon" type="image/png" href="./assets/brand/app-icon.png" />
   <link rel="stylesheet" href="./styles.css?v=20260809-drawer-trim" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Style Atlas: Art & Design",
+      "alternateName": "Style Atlas",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "iOS",
+      "description": "An iPhone app for training visual taste, exploring 120 art and design styles, and finding clearer creative references.",
+      "url": "https://style-atlas.wonderelian.com/",
+      "downloadUrl": "https://apps.apple.com/app/id6787447019",
+      "image": "https://style-atlas.wonderelian.com/assets/brand/app-icon.png",
+      "author": {
+        "@type": "Organization",
+        "name": "WonderElian",
+        "url": "https://wonderelian.com/"
+      }
+    }
+  </script>
 </head>
 <body>
-  <div id="appShell" class="app-shell" aria-label="虾子曰艺术风格图鉴">
-    <header class="topbar" aria-label="虾子曰艺术风格图鉴顶部导航">
-      <button id="backBtn" class="icon-btn hidden" type="button" aria-label="返回"><span class="ui-icon ui-icon-arrow-left" aria-hidden="true"></span></button>
+  <div id="appShell" class="app-shell" aria-label="Style Atlas: Art &amp; Design">
+    <header class="topbar" aria-label="Style Atlas navigation">
+      <button id="backBtn" class="icon-btn hidden" type="button" aria-label="Back"><span class="ui-icon ui-icon-arrow-left" aria-hidden="true"></span></button>
       <div class="brand">
         <img class="brand-icon" src="./assets/brand/app-icon.png" alt="" aria-hidden="true" width="42" height="42" />
         <strong class="brand-copy">
-          <span class="brand-primary">虾子曰</span>
-          <span class="brand-secondary">艺术风格图鉴</span>
+          <span class="brand-primary">Style Atlas</span>
+          <span class="brand-secondary">Art &amp; Design</span>
         </strong>
       </div>
       <div class="top-actions">
-        <button id="searchOpenBtn" class="icon-btn" type="button" aria-label="搜索"><span class="ui-icon ui-icon-search" aria-hidden="true"></span></button>
+        <button id="searchOpenBtn" class="icon-btn" type="button" aria-label="Search"><span class="ui-icon ui-icon-search" aria-hidden="true"></span></button>
         <button id="langBtn" class="lang-toggle" type="button">EN｜中文</button>
-        <button id="drawerBtn" class="icon-btn" type="button" aria-label="菜单" aria-controls="drawer" aria-expanded="false"><span class="ui-icon ui-icon-menu" aria-hidden="true"></span></button>
+        <button id="drawerBtn" class="icon-btn" type="button" aria-label="Menu" aria-controls="drawer" aria-expanded="false"><span class="ui-icon ui-icon-menu" aria-hidden="true"></span></button>
       </div>
     </header>
 
     <main id="mainContent">
       <section id="homeView" class="view active" aria-labelledby="homeViewTitle" aria-hidden="false">
-        <h1 id="homeViewTitle" class="sr-only">今日推荐</h1>
+        <h1 id="homeViewTitle" class="sr-only">Art and Design Style Atlas</h1>
         <div class="section-head">
-          <p id="todayLabel">今日推荐</p>
+          <p id="todayLabel">Today's Pick</p>
         </div>
 
         <div id="deckStage" class="deck-stage">
@@ -136,7 +169,7 @@
           <p id="drawerDownloadKicker" class="drawer-kicker">iPhone App</p>
           <h2 id="drawerDownloadTitle">带走完整风格图鉴</h2>
           <p id="drawerDownloadNote">120 篇深度指南、中英双语与离线浏览，都装进口袋里。</p>
-          <a id="downloadAppNav" class="nav-btn download-nav" href="https://apps.apple.com/cn/app/%E8%99%BE%E5%AD%90%E6%9B%B0%E8%89%BA%E6%9C%AF%E9%A3%8E%E6%A0%BC%E5%9B%BE%E9%89%B4/id6787447019" target="_blank" rel="noopener" data-action="download-app">
+          <a id="downloadAppNav" class="nav-btn download-nav" href="https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&amp;ct=Website%20Organic&amp;mt=8" target="_blank" rel="noopener" data-action="download-app">
             <span class="drawer-row-icon"><span class="ui-icon ui-icon-smartphone" aria-hidden="true"></span></span>
             <span class="drawer-row-copy"><strong id="drawerDownloadCta">前往 App Store 下载</strong><small id="drawerDownloadCtaNote">免费下载 · iPhone</small></span>
             <span class="ui-icon ui-icon-arrow-right drawer-row-arrow" aria-hidden="true"></span>
