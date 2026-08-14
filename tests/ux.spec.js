@@ -247,16 +247,16 @@ test("Chinese brand is exact across product surfaces", async ({ page }) => {
 test("English brand is exact across product surfaces", async ({ page }) => {
   await page.goto("/");
   await page.locator("#langBtn").click();
-  await expect(page).toHaveTitle("Xiazishuo Style Atlas");
-  await expect(page.locator("#appShell")).toHaveAttribute("aria-label", "Xiazishuo Style Atlas");
-  await expect(page.locator(".brand-primary")).toHaveText("Xiazishuo");
-  await expect(page.locator(".brand-secondary")).toHaveText("Style Atlas");
+  await expect(page).toHaveTitle("Style Atlas: Art & Design");
+  await expect(page.locator("#appShell")).toHaveAttribute("aria-label", "Style Atlas: Art & Design");
+  await expect(page.locator(".brand-primary")).toHaveText("Style Atlas");
+  await expect(page.locator(".brand-secondary")).toHaveText("Art & Design");
   await page.locator("#drawerBtn").click();
   await expect(page.locator(".drawer-head strong")).toHaveText("Your Style Atlas");
   await expect(page.locator(".plus-nav")).toHaveCount(0);
   await expect(page.locator("#downloadAppNav")).toContainText("Download on the App Store");
   await page.locator("[data-view='about']").click();
-  await expect(page.locator("#aboutContent")).toContainText("About Xiazishuo Style Atlas");
+  await expect(page.locator("#aboutContent")).toContainText("About Style Atlas");
 });
 
 test("Chinese purchase failure never exposes Native English debug text", async ({ page }) => {

@@ -11,7 +11,7 @@
     submissionMode: "web",
     publicBaseURL: "https://yonge6.github.io/style-atlas/"
   }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
-  const APP_STORE_URL = "https://apps.apple.com/cn/app/%E8%99%BE%E5%AD%90%E6%9B%B0%E8%89%BA%E6%9C%AF%E9%A3%8E%E6%A0%BC%E5%9B%BE%E9%89%B4/id6787447019";
+  const APP_STORE_URL = "https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&ct=Website%20Organic&mt=8";
   const ACCESS_CONFIG = {
     freeFullStyleLimit: 20,
     maxFreeSaved: 20,
@@ -522,12 +522,12 @@
     },
     en: {
       today: "Today's Pick",
-      brandTitle: "Xiazishuo Style Atlas",
-      brandSubtitle: "Style Atlas",
-      headerBrandTitle: "Xiazishuo",
-      headerBrandSubtitle: "Style Atlas",
-      productName: "Xiazishuo Style Atlas",
-      drawerEyebrow: "XIAZISHUO · STYLE ATLAS",
+      brandTitle: "Style Atlas: Art & Design",
+      brandSubtitle: "Art & Design",
+      headerBrandTitle: "Style Atlas",
+      headerBrandSubtitle: "Art & Design",
+      productName: "Style Atlas: Art & Design",
+      drawerEyebrow: "WONDERELIAN · STYLE ATLAS",
       drawerTitle: "Your Style Atlas",
       drawerSavedTitle: "Saved styles",
       drawerSavedNote: (n) => `${n} saved ${n === 1 ? "style" : "styles"}`,
@@ -663,7 +663,7 @@
       exportSharing: "Opening the system share sheet…",
       exportComplete: "Image is ready",
       lockedPreview: "The full archive includes deeper origins, recognition methods, cases and style expression.",
-      plus: "Xiazishuo Style Atlas Plus",
+      plus: "Style Atlas Plus",
       unlockTitle: "Unlock the full style archive",
       unlockBody: "The Hero and introduction are free to browse. Plus opens the complete path from observation to expression.",
       unlockCta: "See what Plus unlocks",
@@ -744,23 +744,23 @@
       highResLocked: "HD watermark-free export is a Plus preview feature."
       ,
       about: "About",
-      aboutTitle: "About Xiazishuo Style Atlas",
-      aboutBody: "Xiazishuo Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
+      aboutTitle: "About Style Atlas",
+      aboutBody: "Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
       aboutFor: "For anyone building visual taste, social media creators, designers, AI creators, brand builders, content creators, design students, and art lovers.",
       aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
       aboutPlus: "Plus offers a one-year pass and an annual auto-renewing subscription. Both unlock the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
       appFeaturesTitle: "Learn to see a style in the app",
       appFeatures: ["Explore 120 art and design styles", "Read 120 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
       safetyTitle: "Copyright And Style Safety",
-      safetyBody: "Xiazishuo Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
+      safetyBody: "Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
       screenshotsTitle: "App Store Screenshot Kit",
       screenshotSlides: [
         ["Learn one visual style a day", "Today's Pick"],
-        ["120 global visual styles", "Xiazishuo Style Atlas"],
+        ["120 global visual styles", "Style Atlas: Art & Design"],
         ["Understand why each style works", "Deep Archive"],
         ["Build your taste archive", "Saved Styles"],
         ["Save beautiful style cards", "Export"],
-        ["Unlock the full style archive", "Xiazishuo Style Atlas Plus"]
+        ["Unlock the full style archive", "Style Atlas Plus"]
       ]
     }
   };
@@ -2277,7 +2277,7 @@
         <p>${escapeHtml(t("aboutFree"))}</p>
       </section>
       <section class="detail-section">
-        <h2>${store.lang === "zh" ? "虾子曰艺术风格图鉴 Plus" : "Xiazishuo Style Atlas Plus"}</h2>
+        <h2>${store.lang === "zh" ? "虾子曰艺术风格图鉴 Plus" : "Style Atlas Plus"}</h2>
         <p>${escapeHtml(isFreeLaunchMode() ? `${t("plusFutureBody")} ${t("aboutPlus")}` : t("aboutPlus"))}</p>
       </section>
       <section class="detail-section">
@@ -2904,7 +2904,7 @@
 
   function drawWatermark(ctx, width, height) {
     if (!ACCESS_CONFIG.freeExportWatermark || hasPlusAccess()) return;
-    const watermark = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Xiazishuo Style Atlas";
+    const watermark = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Style Atlas";
     ctx.save();
     ctx.globalAlpha = 0.62;
     ctx.textAlign = "right";
