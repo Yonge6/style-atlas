@@ -3279,6 +3279,30 @@ body.detail-mode {
   text-align: center;
 }
 
+.drawer-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 14px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(243, 212, 134, 0.14);
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.drawer-legal-links a {
+  color: #bba878;
+  text-underline-offset: 3px;
+}
+
+.drawer-legal-links + .drawer-footer {
+  margin-top: 14px;
+  padding-top: 0;
+  border-top: 0;
+}
+
 .toast {
   position: fixed;
   right: 22px;
