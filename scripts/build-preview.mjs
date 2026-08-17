@@ -30,7 +30,6 @@ await Promise.all([
   cp(path.join(root, "assets", "contact"), path.join(output, "assets", "contact"), { recursive: true }),
   cp(path.join(root, "assets", "examples"), path.join(output, "assets", "examples"), { recursive: true }),
   cp(path.join(root, "assets", "icons"), path.join(output, "assets", "icons"), { recursive: true }),
-  cp(path.join(root, "assets", "support"), path.join(output, "assets", "support"), { recursive: true }),
   cp(path.join(root, "assets", "styles"), path.join(output, "assets", "styles"), {
     recursive: true,
     filter: (source) => !path.extname(source) || path.extname(source) === ".webp"

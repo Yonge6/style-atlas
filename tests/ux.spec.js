@@ -638,23 +638,24 @@ test("home image request budget stays below fifteen style covers", async ({ page
   expect(requested.size).toBeLessThan(120);
 });
 
-test("drawer QR images load only when their overlays are opened", async ({ page }) => {
+test("drawer video channel QR loads only when its overlay is opened", async ({ page }) => {
   const requested = [];
   page.on("request", (request) => {
-    if (/\/(video-channel\.jpg|wechat-appreciation-code\.png)(?:\?|$)/.test(request.url())) requested.push(request.url());
+    if (/\/video-channel\.jpg(?:\?|$)/.test(request.url())) requested.push(request.url());
   });
   await page.goto("/");
   expect(requested).toEqual([]);
 
   await page.locator("#drawerBtn").click();
-  await page.locator("[data-action='show-support']").click();
-  await expect.poll(() => requested.some((url) => url.endsWith("wechat-appreciation-code.png"))).toBe(true);
-
-  await page.goto("/");
-  await page.locator("#drawerBtn").click();
   await page.locator("#drawerContact summary").click();
   await page.locator("[data-action='show-video-channel']").click();
   await expect.poll(() => requested.some((url) => url.endsWith("video-channel.jpg"))).toBe(true);
+});
+
+test("donation content is absent from the web experience", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#drawerSupport, #supportModal, [data-action='show-support']")).toHaveCount(0);
+  await expect(page.locator("body")).not.toContainText(/随喜相助|Support the journey|donation/i);
 });
 
 test("current deck image is high priority and adjacent cards are decoded", async ({ page }) => {
