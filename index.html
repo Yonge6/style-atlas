@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Explore 120 art and design styles, train your visual taste, compare creative references, and create clearer covers, social posts, and marketing visuals." />
+  <meta name="apple-itunes-app" content="app-id=6787447019, app-argument=https://apps.apple.com/app/id6787447019" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Style Atlas" />
+  <meta property="og:title" content="Style Atlas: Art &amp; Design" />
+  <meta property="og:description" content="Train your visual taste with 120 art and design styles, guided looking, comparisons, and practical creative references." />
+  <meta property="og:url" content="https://style-atlas.wonderelian.com/" />
+  <meta property="og:image" content="https://style-atlas.wonderelian.com/assets/brand/app-icon.png" />
+  <meta property="og:image:alt" content="Style Atlas: Art &amp; Design app icon" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@WonderElian" />
+  <meta name="twitter:title" content="Style Atlas: Art &amp; Design" />
+  <meta name="twitter:description" content="Train your visual taste with 120 art and design styles and practical creative references." />
+  <meta name="twitter:image" content="https://style-atlas.wonderelian.com/assets/brand/app-icon.png" />
+  <link rel="canonical" href="https://style-atlas.wonderelian.com/" />
+  <title>Style Atlas: Art &amp; Design | Visual Inspiration</title>
+  <link rel="icon" type="image/png" href="./assets/brand/app-icon.png" />
+  <link rel="stylesheet" href="./styles.css?v=20260809-drawer-trim" />
+  <script src="/analytics.js" defer></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Style Atlas: Art & Design",
+      "alternateName": "Style Atlas",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "iOS",
+      "description": "An iPhone app for training visual taste, exploring 120 art and design styles, and finding clearer creative references.",
+      "url": "https://style-atlas.wonderelian.com/",
+      "downloadUrl": "https://apps.apple.com/app/id6787447019",
+      "image": "https://style-atlas.wonderelian.com/assets/brand/app-icon.png",
+      "author": {
+        "@type": "Organization",
+        "name": "WonderElian",
+        "url": "https://wonderelian.com/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="appShell" class="app-shell" aria-label="Style Atlas: Art &amp; Design">
+    <header class="topbar" aria-label="Style Atlas navigation">
+      <button id="backBtn" class="icon-btn hidden" type="button" aria-label="Back"><span class="ui-icon ui-icon-arrow-left" aria-hidden="true"></span></button>
+      <div class="brand">
+        <img class="brand-icon" src="./assets/brand/app-icon.png" alt="" aria-hidden="true" width="42" height="42" />
+        <strong class="brand-copy">
+          <span class="brand-primary">Style Atlas</span>
+          <span class="brand-secondary">Art &amp; Design</span>
+        </strong>
+      </div>
+      <div class="top-actions">
+        <button id="searchOpenBtn" class="icon-btn" type="button" aria-label="Search"><span class="ui-icon ui-icon-search" aria-hidden="true"></span></button>
+        <button id="langBtn" class="lang-toggle" type="button">EN｜中文</button>
+        <button id="drawerBtn" class="icon-btn" type="button" aria-label="Menu" aria-controls="drawer" aria-expanded="false"><span class="ui-icon ui-icon-menu" aria-hidden="true"></span></button>
+      </div>
+    </header>
+
+    <main id="mainContent">
+      <section id="homeView" class="view active" aria-labelledby="homeViewTitle" aria-hidden="false">
+        <h1 id="homeViewTitle" class="sr-only">Art and Design Style Atlas</h1>
+        <div class="section-head">
+          <p id="todayLabel">Today's Pick</p>
+        </div>
+
+        <div id="deckStage" class="deck-stage">
+          <article id="prevGhost" class="style-card cover-card ghost-card prev" aria-hidden="true"></article>
+          <article id="nextGhost" class="style-card cover-card ghost-card next" aria-hidden="true"></article>
+          <article id="styleDeck" class="style-card cover-card live-card" tabindex="0" role="group" aria-roledescription="风格卡片" aria-label="今日推荐卡片" aria-keyshortcuts="ArrowLeft ArrowRight Enter Space"></article>
+        </div>
+        <p id="deckAnnouncement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+
+        <div class="deck-controls">
+          <button id="prevBtn" class="arrow-btn" type="button" aria-label="上一个风格">←</button>
+          <button id="randomBtn" class="small-action random-control" type="button"><span class="ui-icon ui-icon-shuffle" aria-hidden="true"></span><span>随机</span></button>
+          <button id="nextBtn" class="arrow-btn" type="button" aria-label="下一个风格">→</button>
+        </div>
+
+        <section class="category-strip" aria-labelledby="categoryTitle">
+          <h2 id="categoryTitle">分类</h2>
+          <div id="categoryChips" class="category-cards"></div>
+        </section>
+
+        <section class="editorial-resources" aria-labelledby="editorialResourcesTitle">
+          <header>
+            <p>Free visual education</p>
+            <h2 id="editorialResourcesTitle">Guides &amp; comparisons</h2>
+          </header>
+          <div class="editorial-resource-grid">
+            <a href="./guides/visual-hierarchy-checklist/">
+              <span>Practical guide</span>
+              <strong>Visual hierarchy checklist for social media covers</strong>
+              <small>Run a clear 30-second test before you publish.</small>
+            </a>
+            <a href="./compare/art-nouveau-vs-art-deco/">
+              <span>Style comparison</span>
+              <strong>Art Nouveau vs. Art Deco</strong>
+              <small>Separate organic flow from geometric glamour at a glance.</small>
+            </a>
+          </div>
+        </section>
+      </section>
+
+      <section id="detailView" class="view" aria-label="风格详情" aria-hidden="true" inert>
+        <article id="detailContent" class="detail"></article>
+      </section>
+
+      <section id="searchView" class="view" aria-labelledby="searchViewTitle" aria-hidden="true" inert>
+        <h1 id="searchViewTitle" class="sr-only">搜索风格</h1>
+        <div class="search-panel">
+          <label for="searchInput" id="searchLabel">搜索风格</label>
+          <div class="search-box">
+            <input id="searchInput" type="search" aria-labelledby="searchLabel" enterkeyhint="search" autocomplete="off" placeholder="瑞士、Ukiyo-e、海报、复古..." />
+            <button id="clearSearchBtn" type="button" aria-label="清除搜索"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
+          </div>
+          <div id="filterChips" class="chip-row filters"></div>
+        </div>
+        <h2 id="searchResultsTitle" class="sr-only">120 个搜索结果</h2>
+        <div id="searchResults" class="result-list" role="region" aria-labelledby="searchResultsTitle"></div>
+      </section>
+
+      <section id="savedView" class="view" aria-labelledby="savedViewTitle" aria-hidden="true" inert>
+        <h1 id="savedViewTitle" class="sr-only">收藏</h1>
+        <div class="saved-head">
+          <p id="savedCount">已收藏 0 个风格</p>
+          <button id="copyListBtn" class="small-action" type="button">复制清单</button>
+        </div>
+        <h2 id="savedResultsTitle" class="sr-only">已收藏风格列表</h2>
+        <div id="savedList" class="result-list" role="region" aria-labelledby="savedResultsTitle"></div>
+      </section>
+
+      <section id="aboutView" class="view" aria-label="关于" aria-hidden="true" inert>
+        <article id="aboutContent" class="detail"></article>
+      </section>
+
+      <section id="screenshotsView" class="view" aria-label="App Store Screenshot Kit" aria-hidden="true" inert>
+        <article id="screenshotsContent" class="screenshot-kit"></article>
+      </section>
+    </main>
+
+    <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
+    <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true" inert>
+      <div class="drawer-head">
+        <div class="drawer-brand">
+          <img src="./assets/brand/app-icon.png" alt="" aria-hidden="true" width="48" height="48" />
+          <div>
+            <p id="drawerEyebrow">虾子曰 · STYLE ATLAS</p>
+            <strong id="drawerTitle">你的风格图鉴</strong>
+          </div>
+        </div>
+        <button id="drawerCloseBtn" class="icon-btn" type="button" aria-label="关闭菜单"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
+      </div>
+      <div class="drawer-body">
+        <nav class="drawer-nav" aria-label="风格图鉴导航">
+          <button id="drawerSavedBtn" class="nav-btn drawer-row" type="button" data-view="saved">
+            <span class="drawer-row-icon"><span class="ui-icon ui-icon-bookmark" aria-hidden="true"></span></span>
+            <span class="drawer-row-copy"><strong>我的收藏</strong><small id="drawerSavedNote">0 个已收藏风格</small></span>
+            <span class="ui-icon ui-icon-chevron-right drawer-row-arrow" aria-hidden="true"></span>
+          </button>
+          <button id="drawerAboutBtn" class="nav-btn drawer-row" type="button" data-view="about">
+            <span class="drawer-row-icon"><span class="ui-icon ui-icon-info" aria-hidden="true"></span></span>
+            <span class="drawer-row-copy"><strong>关于图鉴</strong><small>认识产品、内容范围与使用方式</small></span>
+            <span class="ui-icon ui-icon-chevron-right drawer-row-arrow" aria-hidden="true"></span>
+          </button>
+          <details id="drawerContact" class="drawer-contact">
+            <summary class="drawer-row">
+              <span class="drawer-row-icon"><span class="ui-icon ui-icon-mail" aria-hidden="true"></span></span>
+              <span class="drawer-row-copy"><strong id="drawerContactTitle">联系我们</strong><small id="drawerContactNote">邮箱与社交媒体</small></span>
+              <span class="ui-icon ui-icon-chevron-down drawer-row-arrow" aria-hidden="true"></span>
+            </summary>
+            <div class="drawer-contact-list" aria-label="联系方式">
+              <a href="https://wonderelian.com/" target="_blank" rel="noopener noreferrer"><span>WonderElian</span><strong>wonderelian.com</strong></a>
+              <a href="mailto:hustyy986@gmail.com"><span>邮箱</span><strong>hustyy986@gmail.com</strong></a>
+              <a href="https://xhslink.cn/m/3OF5qu7Peui" target="_blank" rel="noopener"><span>小红书</span><strong>打开主页</strong></a>
+              <a href="https://v.douyin.com/d9L1thkye0Y/" target="_blank" rel="noopener"><span>抖音</span><strong>打开主页</strong></a>
+              <a href="https://x.com/yongyuan1?s=11" target="_blank" rel="noopener"><span>X</span><strong>@yongyuan1</strong></a>
+              <a href="https://www.tiktok.com/@wonderelian?_r=1&_t=ZP-98Tvaldfrpe" target="_blank" rel="noopener"><span>TikTok</span><strong>@wonderelian</strong></a>
+              <button id="drawerVideoChannelBtn" type="button" data-action="show-video-channel"><span id="drawerVideoChannelLabel">视频号</span><strong id="drawerVideoChannelValue">查看二维码</strong></button>
+            </div>
+          </details>
+        </nav>
+
+        <section class="drawer-download" aria-labelledby="drawerDownloadTitle">
+          <p id="drawerDownloadKicker" class="drawer-kicker">iPhone App</p>
+          <h2 id="drawerDownloadTitle">带走完整风格图鉴</h2>
+          <p id="drawerDownloadNote">120 篇深度指南、中英双语与离线浏览，都装进口袋里。</p>
+          <a id="downloadAppNav" class="nav-btn download-nav" href="https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&amp;ct=Website%20Organic&amp;mt=8" target="_blank" rel="noopener" data-action="download-app">
+            <span class="drawer-row-icon"><span class="ui-icon ui-icon-smartphone" aria-hidden="true"></span></span>
+            <span class="drawer-row-copy"><strong id="drawerDownloadCta">前往 App Store 下载</strong><small id="drawerDownloadCtaNote">免费下载 · iPhone</small></span>
+            <span class="ui-icon ui-icon-arrow-right drawer-row-arrow" aria-hidden="true"></span>
+          </a>
+          <a id="reviewAppNav" class="drawer-review-link" href="itms-apps://itunes.apple.com/app/id6787447019?action=write-review">
+            <span class="ui-icon ui-icon-star" aria-hidden="true"></span>
+            <span><strong id="drawerReviewCta">已经安装？去评分与评价</strong><small id="drawerReviewCtaNote">你的反馈会帮助图鉴继续完善</small></span>
+            <span class="ui-icon ui-icon-external-link" aria-hidden="true"></span>
+          </a>
+        </section>
+
+        <section id="drawerSupport" class="drawer-support" aria-labelledby="drawerSupportTitle">
+          <p id="drawerSupportKicker" class="drawer-kicker">有余相助</p>
+          <h2 id="drawerSupportTitle">随喜相助</h2>
+          <p id="drawerSupportCopy">若这份风格图鉴于你有用，可以让一份心意继续支持内容维护；也可以把它留给自己。</p>
+          <button id="drawerSupportBtn" class="drawer-support-button" type="button" data-action="show-support">
+            <span class="drawer-row-icon"><span class="ui-icon ui-icon-hand-heart" aria-hidden="true"></span></span>
+            <span class="drawer-row-copy"><strong id="drawerSupportCta">随喜相助</strong><small id="drawerSupportNote">有余则助，无余亦安</small></span>
+            <span class="ui-icon ui-icon-chevron-right drawer-row-arrow" aria-hidden="true"></span>
+          </button>
+        </section>
+
+        <section class="drawer-works" aria-labelledby="drawerWorksTitle">
+          <header>
+            <p id="drawerWorksTitle" class="drawer-kicker">沿途所作</p>
+            <h2 id="drawerWorksHeading">观世界，也向内认识自己。</h2>
+          </header>
+          <div class="drawer-work-list">
+            <a class="drawer-work-card" href="https://yixiu.wonderelian.com/" target="_blank" rel="noopener">
+              <span class="drawer-work-index" aria-hidden="true">一</span>
+              <span class="drawer-row-copy"><strong id="drawerWorkYixiuTitle">一休冥想</strong><small id="drawerWorkYixiuNote">停一会儿，呼吸，也回到自己。</small></span>
+              <span class="ui-icon ui-icon-external-link drawer-row-arrow" aria-hidden="true"></span>
+            </a>
+            <a class="drawer-work-card" href="https://human-design.wonderelian.com/" target="_blank" rel="noopener">
+              <span class="drawer-work-index" aria-hidden="true">二</span>
+              <span class="drawer-row-copy"><strong id="drawerWorkHumanTitle">不二 认识自己</strong><small id="drawerWorkHumanNote">从另一种视角认识自己的运行方式。</small></span>
+              <span class="ui-icon ui-icon-external-link drawer-row-arrow" aria-hidden="true"></span>
+            </a>
+            <a class="drawer-work-card" href="https://wendao.wonderelian.com/" target="_blank" rel="noopener">
+              <span class="drawer-work-index" aria-hidden="true">三</span>
+              <span class="drawer-row-copy"><strong id="drawerWorkWendaoTitle">三慢问道</strong><small id="drawerWorkWendaoNote">慢读《道德经》，也慢慢认识自己。</small></span>
+              <span class="ui-icon ui-icon-external-link drawer-row-arrow" aria-hidden="true"></span>
+            </a>
+            <a class="drawer-work-card" href="https://xiazishuo.com/" target="_blank" rel="noopener">
+              <span class="drawer-work-index" aria-hidden="true">四</span>
+              <span class="drawer-row-copy"><strong id="drawerWorkXiaziTitle">虾子曰</strong><small id="drawerWorkXiaziNote">每天用全球热点与双语海报，把昨天的世界讲清楚。</small></span>
+              <span class="ui-icon ui-icon-external-link drawer-row-arrow" aria-hidden="true"></span>
+            </a>
+          </div>
+        </section>
+
+        <nav class="drawer-legal-links" aria-label="Pricing, terms and policies">
+          <a href="./pricing.html">Pricing / 价格</a>
+          <a href="./terms.html">Terms / 条款</a>
+          <a href="./privacy.html">Privacy / 隐私</a>
+          <a href="./refund.html">Refunds / 退款</a>
+        </nav>
+        <p id="drawerFooter" class="drawer-footer">120 种风格 · 120 篇深度指南 · 中英双语</p>
+      </div>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="plusModal" class="plus-modal" hidden>
+    <div id="plusPanel" class="plus-panel" role="dialog" aria-modal="true" aria-labelledby="plusTitle" aria-describedby="plusSubtitle plusGentleNote" tabindex="-1">
+      <p id="plusKicker" class="plus-kicker">虾子曰艺术风格图鉴 Plus</p>
+      <h2 id="plusTitle">虾子曰艺术风格图鉴 Plus</h2>
+      <p id="plusSubtitle" class="plus-subtitle">建立你的私人审美资料库。</p>
+      <p id="plusGentleNote" class="plus-subtitle plus-note">免费版可以先认识风格，Plus 帮你建立完整审美资料库。</p>
+      <ul id="plusBenefits" class="plus-benefits"></ul>
+      <div class="plan-compare">
+        <div>
+          <h3 id="freePlanTitle">免费版</h3>
+          <ul id="freePlanList"></ul>
+        </div>
+        <div>
+          <h3 id="plusPlanTitle">Plus</h3>
+          <ul id="plusPlanList"></ul>
+        </div>
+      </div>
+      <div class="plus-action-bar">
+        <div class="plus-price">
+          <span id="plusLaunchPrice">价格以 App Store 显示为准</span>
+          <small id="plusRegularPrice" hidden></small>
+        </div>
+        <p id="plusFootnote" class="plus-footnote">下载 App 后可在应用内解锁 Plus</p>
+        <button id="plusCta" class="copy-btn plus-cta" type="button" data-action="purchase-plus">前往 App Store 查看 Plus</button>
+      </div>
+      <button id="plusRestoreBtn" class="copy-btn plus-restore" type="button" data-action="restore-purchases" hidden>恢复购买</button>
+      <button id="plusCloseBtn" class="plus-close" type="button" data-action="close-plus" aria-label="关闭 Plus"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
+    </div>
+  </div>
+  <div id="supportModal" class="support-modal" hidden>
+    <div id="supportPanel" class="support-panel" role="dialog" aria-modal="true" aria-labelledby="supportTitle" aria-describedby="supportCopy" tabindex="-1">
+      <button id="supportCloseBtn" class="support-close" type="button" data-action="close-support" aria-label="关闭随喜相助"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
+      <figure>
+        <figcaption>
+          <p id="supportKicker" class="drawer-kicker">有余相助</p>
+          <h2 id="supportTitle">随喜相助</h2>
+          <p id="supportCopy">阅读、停留与分享，本身已经是同行。若仍有余力，也可以随喜相助。</p>
+        </figcaption>
+        <img id="supportImage" data-src="./assets/support/wechat-appreciation-code.png?v=20260813" alt="微信赞赏码" width="588" height="588" />
+        <p id="supportRecognition">长按二维码，识别并支付</p>
+        <div class="support-links">
+          <a id="supportCodeLink" href="./assets/support/wechat-appreciation-code.png?v=20260813" target="_blank" rel="noopener">单独打开二维码</a>
+          <a id="supportPosterLink" href="./assets/support/wechat-appreciation.webp?v=20260813" target="_blank" rel="noopener">查看完整赞赏海报</a>
+        </div>
+      </figure>
+    </div>
+  </div>
+  <div id="videoChannelModal" class="support-modal" hidden>
+    <div id="videoChannelPanel" class="support-panel video-channel-panel" role="dialog" aria-modal="true" aria-labelledby="videoChannelTitle" aria-describedby="videoChannelCaption" tabindex="-1">
+      <button id="videoChannelCloseBtn" class="support-close" type="button" data-action="close-video-channel" aria-label="关闭视频号二维码"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
+      <figure>
+        <figcaption>
+          <p id="videoChannelKicker" class="drawer-kicker">微信视频号</p>
+          <h2 id="videoChannelTitle">关注视频号</h2>
+        </figcaption>
+        <img id="videoChannelImage" data-src="./assets/contact/video-channel.jpg" alt="三慢问道视频号二维码" width="686" height="624" />
+        <p id="videoChannelCaption">扫码关注视频号</p>
+      </figure>
+    </div>
+  </div>
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" aria-describedby="lightboxDescription" tabindex="-1" hidden>
+    <h2 id="lightboxTitle" class="sr-only">图片预览</h2>
+    <p id="lightboxDescription" class="sr-only"></p>
+    <img id="lightboxImage" alt="" />
+    <div class="lightbox-actions">
+      <button id="saveLightboxBtn" class="copy-btn" type="button" data-action="save-lightbox" data-export-control>保存</button>
+      <button id="shareLightboxBtn" class="copy-btn" type="button" data-action="share-lightbox" data-export-control>分享</button>
+    </div>
+    <button id="lightboxCloseBtn" class="lightbox-close" type="button" data-action="close-lightbox" aria-label="关闭图片预览"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
+  </div>
+  <div id="guidedOverlay" class="guided-overlay" hidden>
+    <div id="guidedPanel" class="guided-panel" role="dialog" aria-modal="true" aria-labelledby="guidedTitle" aria-describedby="guidedText" tabindex="-1">
+      <div class="guided-visual image-slot">
+        <img id="guidedImage" alt="" decoding="async" />
+        <div class="guided-shade"></div>
+      </div>
+      <button id="guidedCloseBtn" class="guided-close" type="button" data-action="close-guided" aria-label="关闭看图引导"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
+      <div id="guidedStage" class="guided-stage" aria-live="polite" aria-atomic="true">
+        <div class="guided-progress" aria-hidden="true">
+          <span id="guidedStepLabel"></span>
+          <span id="guidedDots" class="guided-dots"></span>
+        </div>
+        <p id="guidedKicker" class="guided-kicker"></p>
+        <h2 id="guidedTitle" tabindex="-1"></h2>
+        <p id="guidedText"></p>
+        <div class="guided-actions">
+          <button id="guidedPrevBtn" class="guided-prev" type="button" data-action="previous-guided"></button>
+          <button id="guidedNextBtn" class="guided-next" type="button" data-action="next-guided"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="./data-core.js"></script>
+  <script src="./data-styles.js"></script>
+  <script src="./data-refined.js"></script>
+  <script src="./data-aesthetic-guides.js"></script>
+  <script src="./examples.js"></script>
+  <script src="./game.js?v=20260813-buer-work"></script>
+</body>
+</html>
