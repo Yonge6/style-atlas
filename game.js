@@ -298,10 +298,6 @@
       drawerReviewCtaNote: "你的反馈会帮助图鉴继续完善",
       drawerContactTitle: "联系我们",
       drawerContactNote: "邮箱与社交媒体",
-      drawerSupportKicker: "有余相助",
-      drawerSupportTitle: "随喜相助",
-      drawerSupportCopy: "若这份风格图鉴于你有用，可以让一份心意继续支持内容维护；也可以把它留给自己。",
-      drawerSupportNote: "有余则助，无余亦安",
       drawerWorksTitle: "沿途所作",
       drawerWorksHeading: "观世界，也向内认识自己。",
       drawerWorkYixiuTitle: "一休冥想",
@@ -312,10 +308,6 @@
       drawerWorkXiaziNote: "每天用全球热点与双语海报，把昨天的世界讲清楚。",
       drawerWorkHumanTitle: "不二 认识自己",
       drawerWorkHumanNote: "从另一种视角认识自己的运行方式。",
-      supportCopy: "阅读、停留与分享，本身已经是同行。若仍有余力，也可以随喜相助。",
-      supportRecognition: "长按二维码，识别并支付",
-      supportCodeLink: "单独打开二维码",
-      supportPosterLink: "查看完整赞赏海报",
       drawerFooter: "120 种风格 · 120 篇深度指南 · 中英双语",
       positioning: "探索 120 种艺术与设计风格，每一种都提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
       valueLine: "跟着看图引导观察构图、色彩与线条，再用审美画像、日常观察和风格对比建立自己的审美词库。",
@@ -533,10 +525,6 @@
       drawerReviewCtaNote: "Your review helps the atlas keep improving",
       drawerContactTitle: "Contact",
       drawerContactNote: "Email and social channels",
-      drawerSupportKicker: "IF YOU HAVE SOMETHING TO SPARE",
-      drawerSupportTitle: "Support the journey",
-      drawerSupportCopy: "If the atlas has helped, you may support its continued care—or keep that care for what your own life needs.",
-      drawerSupportNote: "Give freely, or simply explore in peace",
       drawerWorksTitle: "WORKS ALONG THE WAY",
       drawerWorksHeading: "See the world and know yourself.",
       drawerWorkYixiuTitle: "Yixiu Meditation",
@@ -547,10 +535,6 @@
       drawerWorkXiaziNote: "Global stories and bilingual posters make yesterday's world clearer.",
       drawerWorkHumanTitle: "Bu Er · Know Yourself",
       drawerWorkHumanNote: "A different lens on how you move through life.",
-      supportCopy: "Reading, pausing, and sharing are already forms of participation. If you still have something to spare, you may offer support.",
-      supportRecognition: "Press and hold the QR code to recognize and pay",
-      supportCodeLink: "Open QR code",
-      supportPosterLink: "View complete support poster",
       drawerFooter: "120 styles · 120 in-depth guides · Bilingual",
       positioning: "Explore 120 art and design styles, each with a complete in-depth guide.\nMove from seeing a style to truly understanding it in three minutes a day.",
       valueLine: "Follow guided looking prompts, then build recognition through aesthetic profiles, everyday observations, and side-by-side comparisons.",
@@ -803,9 +787,6 @@
     plusCta: $("plusCta"),
     plusRestoreBtn: $("plusRestoreBtn"),
     plusCloseBtn: $("plusCloseBtn"),
-    supportModal: $("supportModal"),
-    supportPanel: $("supportPanel"),
-    supportCloseBtn: $("supportCloseBtn"),
     videoChannelModal: $("videoChannelModal"),
     videoChannelPanel: $("videoChannelPanel"),
     videoChannelCloseBtn: $("videoChannelCloseBtn"),
@@ -1180,7 +1161,6 @@
     if (container !== dom.plusModal && !dom.plusModal.hidden) closePlus(false);
     if (container !== dom.lightbox && !dom.lightbox.hidden) closeImage(false);
     if (container !== dom.guidedOverlay && !dom.guidedOverlay.hidden) closeGuided(false);
-    if (container !== dom.supportModal && !dom.supportModal.hidden) closeSupport(false);
     if (container !== dom.videoChannelModal && !dom.videoChannelModal.hidden) closeVideoChannel(false);
     if (store.drawerOpen) setDrawer(false, false);
     store.overlayReturnFocus = intendedReturnFocus;
@@ -1262,19 +1242,6 @@
 
   function loadDeferredImage(image) {
     if (!image?.src && image?.dataset.src) image.src = image.dataset.src;
-  }
-
-  function showSupport() {
-    const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const returnFocus = activeElement?.closest("#drawer") ? dom.drawerBtn : activeElement;
-    if (store.drawerOpen) setDrawer(false, false);
-    loadDeferredImage($("supportImage"));
-    if (dom.supportModal.hidden) openOverlay(dom.supportModal, dom.supportPanel, returnFocus);
-  }
-
-  function closeSupport(restoreFocus = true) {
-    if (dom.supportModal.hidden) return;
-    closeOverlay(dom.supportModal, restoreFocus);
   }
 
   function showVideoChannel() {
@@ -3514,8 +3481,6 @@
       if (action === "save-lightbox") return saveImage();
       if (action === "show-plus") return showPlus();
       if (action === "close-plus") return closePlus();
-      if (action === "show-support") return showSupport();
-      if (action === "close-support") return closeSupport();
       if (action === "show-video-channel") return showVideoChannel();
       if (action === "close-video-channel") return closeVideoChannel();
       if (action === "plus-export") return canExportHighRes() ? saveShareCard() : showPlus("highResLocked");
@@ -3546,9 +3511,6 @@
 
     dom.plusModal.addEventListener("click", (event) => {
       if (event.target === dom.plusModal) closePlus();
-    });
-    dom.supportModal.addEventListener("click", (event) => {
-      if (!event.target.closest("#supportPanel")) closeSupport();
     });
     dom.videoChannelModal.addEventListener("click", (event) => {
       if (!event.target.closest("#videoChannelPanel")) closeVideoChannel();
@@ -3612,16 +3574,13 @@
     document.addEventListener("keydown", (event) => {
       const overlay = !dom.videoChannelModal.hidden
         ? dom.videoChannelModal
-        : (!dom.supportModal.hidden
-          ? dom.supportModal
-          : (!dom.plusModal.hidden
-            ? dom.plusModal
-            : (!dom.lightbox.hidden ? dom.lightbox : (!dom.guidedOverlay.hidden ? dom.guidedOverlay : (store.drawerOpen ? dom.drawer : null)))));
+        : (!dom.plusModal.hidden
+          ? dom.plusModal
+          : (!dom.lightbox.hidden ? dom.lightbox : (!dom.guidedOverlay.hidden ? dom.guidedOverlay : (store.drawerOpen ? dom.drawer : null))));
       if (!overlay) return;
       if (event.key === "Escape") {
         event.preventDefault();
         if (!dom.videoChannelModal.hidden) closeVideoChannel();
-        else if (!dom.supportModal.hidden) closeSupport();
         else if (!dom.plusModal.hidden) closePlus();
         else if (!dom.lightbox.hidden) closeImage();
         else if (!dom.guidedOverlay.hidden) closeGuided();
@@ -3691,12 +3650,6 @@
     $("drawerDownloadCtaNote").textContent = t("drawerDownloadCtaNote");
     $("drawerReviewCta").textContent = t("drawerReviewCta");
     $("drawerReviewCtaNote").textContent = t("drawerReviewCtaNote");
-    $("drawerSupportKicker").textContent = t("drawerSupportKicker");
-    $("drawerSupportTitle").textContent = t("drawerSupportTitle");
-    $("drawerSupportCopy").textContent = t("drawerSupportCopy");
-    $("drawerSupportCta").textContent = t("drawerSupportTitle");
-    $("drawerSupportNote").textContent = t("drawerSupportNote");
-    $("drawerSupport").hidden = hasNativeBridge();
     $("drawerWorksTitle").textContent = t("drawerWorksTitle");
     $("drawerWorksHeading").textContent = t("drawerWorksHeading");
     $("drawerWorkYixiuTitle").textContent = t("drawerWorkYixiuTitle");
@@ -3707,14 +3660,6 @@
     $("drawerWorkXiaziNote").textContent = t("drawerWorkXiaziNote");
     $("drawerWorkHumanTitle").textContent = t("drawerWorkHumanTitle");
     $("drawerWorkHumanNote").textContent = t("drawerWorkHumanNote");
-    $("supportKicker").textContent = t("drawerSupportKicker");
-    $("supportTitle").textContent = t("drawerSupportTitle");
-    $("supportCopy").textContent = t("supportCopy");
-    $("supportRecognition").textContent = t("supportRecognition");
-    $("supportCodeLink").textContent = t("supportCodeLink");
-    $("supportPosterLink").textContent = t("supportPosterLink");
-    dom.supportPanel.querySelector("img").alt = store.lang === "zh" ? "微信赞赏码" : "WeChat appreciation code";
-    dom.supportCloseBtn.setAttribute("aria-label", store.lang === "zh" ? "关闭随喜相助" : "Close support");
     $("drawerFooter").textContent = t("drawerFooter");
     $("downloadAppNav").setAttribute("aria-label", t("downloadOnAppStore"));
     $("downloadAppNav").hidden = hasNativeBridge();

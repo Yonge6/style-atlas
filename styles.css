@@ -3071,7 +3071,6 @@ body.detail-mode {
 
 .drawer-row:focus-visible,
 .download-nav:focus-visible,
-.drawer-support-button:focus-visible,
 .drawer-work-card:focus-visible {
   outline: 2px solid var(--gold-2);
   outline-offset: 3px;
@@ -3198,44 +3197,18 @@ body.detail-mode {
   outline-offset: 3px;
 }
 
-.drawer-support,
 .drawer-works {
   margin-top: 34px;
   padding-top: 26px;
   border-top: 1px solid rgba(243, 212, 134, 0.2);
 }
 
-.drawer-support h2,
 .drawer-works h2 {
   margin: 0;
   color: #f6e9c8;
   font-size: 24px;
   font-weight: 620;
   line-height: 1.22;
-}
-
-.drawer-support > p:not(.drawer-kicker) {
-  margin: 12px 0 0;
-  color: #a99c7c;
-  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
-  font-size: 13px;
-  line-height: 1.65;
-}
-
-.drawer-support-button {
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) 18px;
-  gap: 13px;
-  align-items: center;
-  width: 100%;
-  min-height: 76px;
-  margin-top: 18px;
-  padding: 10px 13px;
-  border: 1px solid rgba(218, 174, 83, 0.4);
-  border-radius: 8px;
-  background: #1a180f;
-  color: #f0e2bd;
-  text-align: left;
 }
 
 .drawer-work-list {
@@ -3647,36 +3620,6 @@ html[data-native-large-text] .guided-stage {
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 12px;
   text-align: center;
-}
-
-#supportRecognition {
-  margin: 0;
-  color: #c7b78e;
-  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
-  font-size: 12px;
-  text-align: center;
-}
-
-.support-links {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
-  margin-top: 18px;
-}
-
-.support-links a {
-  display: grid;
-  min-height: 44px;
-  place-items: center;
-  padding: 8px;
-  border: 1px solid rgba(218, 174, 83, 0.34);
-  border-radius: 6px;
-  color: #e2c979;
-  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
-  font-size: 11px;
-  line-height: 1.35;
-  text-align: center;
-  text-decoration: none;
 }
 
 .support-close {
