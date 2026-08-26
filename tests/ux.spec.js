@@ -236,7 +236,15 @@ test("Chinese brand is exact across product surfaces", async ({ page }) => {
   await expect(page.locator(".drawer-head strong")).toHaveText("你的风格图鉴");
   await expect(page.locator(".drawer-nav [data-view='detail']")).toHaveCount(0);
   await expect(page.locator(".plus-nav")).toHaveCount(0);
+  await expect(page.locator(".drawer-download")).toBeVisible();
   await expect(page.locator("#downloadAppNav")).toContainText("前往 App Store 下载");
+  await expect(page.locator(".drawer-work-card .drawer-row-copy strong")).toHaveText([
+    "WonderElian",
+    "一休冥想",
+    "不二 认识自己",
+    "三慢问道",
+    "虾子曰"
+  ]);
   await page.locator("[data-view='about']").click();
   await expect(page.locator("#aboutContent")).toContainText("关于虾子曰艺术风格图鉴");
   await page.goto("/#screenshots");
@@ -254,9 +262,30 @@ test("English brand is exact across product surfaces", async ({ page }) => {
   await page.locator("#drawerBtn").click();
   await expect(page.locator(".drawer-head strong")).toHaveText("Your Style Atlas");
   await expect(page.locator(".plus-nav")).toHaveCount(0);
+  await expect(page.locator(".drawer-download")).toBeVisible();
   await expect(page.locator("#downloadAppNav")).toContainText("Download on the App Store");
+  await expect(page.locator(".drawer-work-card .drawer-row-copy strong")).toHaveText([
+    "WonderElian",
+    "Yixiu Meditation",
+    "Bu'er · Know Yourself",
+    "Wendao",
+    "Xiazi Says"
+  ]);
   await page.locator("[data-view='about']").click();
   await expect(page.locator("#aboutContent")).toContainText("About Style Atlas");
+});
+
+test("native drawer omits download promotion but keeps the rating action", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.locator("#drawerBtn").click();
+  await expect(page.locator(".drawer-download")).toBeVisible();
+  await expect(page.locator("#drawerDownloadKicker")).toBeHidden();
+  await expect(page.locator("#drawerDownloadTitle")).toBeHidden();
+  await expect(page.locator("#drawerDownloadNote")).toBeHidden();
+  await expect(page.getByText("前往 App Store 下载", { exact: true })).toBeHidden();
+  await expect(page.locator("#reviewAppNav")).toBeVisible();
+  await expect(page.locator("#reviewAppNav")).toContainText("去评分与评价");
 });
 
 test("Chinese purchase failure never exposes Native English debug text", async ({ page }) => {
@@ -1072,6 +1101,32 @@ test("Plus close control stays at the panel top-right and purchase is the primar
   expect(layout.closeRight).toBeLessThanOrEqual(24);
   expect(layout.ctaBackground).toBe("rgb(221, 180, 85)");
   expect(layout.ctaHeight).toBeGreaterThanOrEqual(50);
+});
+
+test("Plus plan choices and purchase action stay visible on the first mobile frame", async ({ page }) => {
+  await installNativeMock(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "¥99.00", annual_auto: "¥66.00" }));
+  await openPlus(page);
+  const layout = await page.locator("#plusPanel").evaluate((panel) => {
+    const panelBox = panel.getBoundingClientRect();
+    const actionBox = panel.querySelector(".plus-action-bar").getBoundingClientRect();
+    const options = [...panel.querySelectorAll(".plus-plan-option")].map((option) => option.getBoundingClientRect().toJSON());
+    const ctaBox = panel.querySelector("#plusCta").getBoundingClientRect();
+    return {
+      panel: panelBox.toJSON(),
+      action: actionBox.toJSON(),
+      options,
+      cta: ctaBox.toJSON(),
+      viewportHeight: window.innerHeight
+    };
+  });
+  const visibleBottom = Math.min(layout.panel.bottom, layout.viewportHeight);
+  expect(layout.options).toHaveLength(2);
+  expect(layout.options.every((box) => box.top >= layout.action.top && box.bottom <= visibleBottom)).toBe(true);
+  expect(layout.cta.top).toBeGreaterThanOrEqual(layout.action.top);
+  expect(layout.cta.bottom).toBeLessThanOrEqual(visibleBottom + 0.5);
 });
 
 test("safe area environment variables cover header overlays and page bottom", async ({ page }) => {

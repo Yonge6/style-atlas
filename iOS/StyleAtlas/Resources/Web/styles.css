@@ -3071,6 +3071,10 @@ body.detail-mode {
   border-top: 1px solid rgba(243, 212, 134, 0.2);
 }
 
+.drawer-download > [hidden] {
+  display: none !important;
+}
+
 .download-nav {
   min-height: 76px;
   margin-top: 18px;
@@ -3479,11 +3483,13 @@ html[data-native-large-text] .guided-stage {
 
 .plus-panel {
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: min(100%, 430px);
   max-height: calc(100dvh - 36px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-  overflow-y: auto;
+  overflow: hidden;
   overscroll-behavior: contain;
-  padding: 24px 20px 0;
+  padding: 0;
   border: 1px solid var(--line-strong);
   border-radius: 12px;
   background:
@@ -3491,6 +3497,14 @@ html[data-native-large-text] .guided-stage {
     var(--panel);
   color: var(--paper);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.68);
+}
+
+.plus-scroll-content {
+  min-height: 0;
+  padding: 22px 20px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .support-panel {
@@ -3650,7 +3664,7 @@ html[data-native-large-text] .guided-stage {
 }
 
 .plus-subtitle {
-  margin: 10px 48px 16px 0;
+  margin: 8px 48px 12px 0;
   color: #d8c694;
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 14px;
@@ -3658,7 +3672,8 @@ html[data-native-large-text] .guided-stage {
 }
 
 .plus-note {
-  margin-top: -8px;
+  margin-top: -6px;
+  margin-bottom: 12px;
   color: #bfae83;
 }
 
@@ -3680,8 +3695,8 @@ html[data-native-large-text] .guided-stage {
 }
 
 .plus-benefits li {
-  min-height: 78px;
-  padding: 12px;
+  min-height: 58px;
+  padding: 10px;
   background: #15130f;
   overflow-wrap: anywhere;
   counter-increment: plus-benefit;
@@ -3689,7 +3704,7 @@ html[data-native-large-text] .guided-stage {
 
 .plus-benefits li::before {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   color: #c99b3d;
   content: "0" counter(plus-benefit);
   font-size: 9px;
@@ -3700,12 +3715,12 @@ html[data-native-large-text] .guided-stage {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 10px;
 }
 
 .plan-compare > div {
   min-width: 0;
-  padding: 12px;
+  padding: 10px;
   border: 1px solid rgba(243, 212, 134, 0.16);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.035);
@@ -3717,7 +3732,7 @@ html[data-native-large-text] .guided-stage {
 }
 
 .plan-compare h3 {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   color: var(--gold-2);
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 13px;
@@ -3725,7 +3740,7 @@ html[data-native-large-text] .guided-stage {
 
 .plan-compare ul {
   display: grid;
-  gap: 7px;
+  gap: 5px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -3746,13 +3761,15 @@ html[data-native-large-text] .guided-stage {
 
 .plus-plan-picker {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  margin: 0 0 14px;
+  margin: 0 0 10px;
   padding: 0;
   border: 0;
 }
 
 .plus-plan-picker legend {
+  grid-column: 1 / -1;
   margin-bottom: 8px;
   color: #d8c694;
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
@@ -3763,11 +3780,10 @@ html[data-native-large-text] .guided-stage {
 .plus-plan-option {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: center;
-  min-height: 66px;
-  padding: 11px 12px 11px 44px;
+  gap: 7px;
+  align-content: start;
+  min-height: 92px;
+  padding: 12px;
   border: 1px solid rgba(243, 212, 134, 0.2);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
@@ -3783,7 +3799,8 @@ html[data-native-large-text] .guided-stage {
 
 .plus-plan-option input {
   position: absolute;
-  left: 14px;
+  top: 13px;
+  left: 12px;
   width: 18px;
   height: 18px;
   margin: 0;
@@ -3798,6 +3815,7 @@ html[data-native-large-text] .guided-stage {
 
 .plus-plan-main {
   gap: 4px;
+  padding-left: 27px;
 }
 
 .plus-plan-main strong,
@@ -3813,9 +3831,12 @@ html[data-native-large-text] .guided-stage {
 }
 
 .plus-plan-price {
-  justify-items: end;
-  gap: 5px;
-  text-align: right;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-left: 27px;
+  text-align: left;
 }
 
 .plus-plan-price em {
@@ -3834,7 +3855,7 @@ html[data-native-large-text] .guided-stage {
 }
 
 .plus-footnote {
-  margin: 5px 0 12px;
+  margin: 3px 0 7px;
   color: #b8a77d;
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 12px;
@@ -3842,7 +3863,7 @@ html[data-native-large-text] .guided-stage {
 }
 
 .plus-renewal-disclosure {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   color: #a99971;
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 10px;
@@ -3853,7 +3874,7 @@ html[data-native-large-text] .guided-stage {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin: 12px 0 0;
+  margin: 8px 0 0;
   color: #8f815e;
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 11px;
@@ -3865,8 +3886,11 @@ html[data-native-large-text] .guided-stage {
 }
 
 .plus-action-bar {
-  margin: 18px -20px 0;
-  padding: 14px 20px max(18px, env(safe-area-inset-bottom));
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 12px 20px max(14px, env(safe-area-inset-bottom));
   border-top: 1px solid rgba(243, 212, 134, 0.22);
   background: rgba(12, 10, 7, 0.98);
   box-shadow: 0 -16px 32px rgba(0, 0, 0, 0.38);
@@ -3904,7 +3928,7 @@ html[data-native-large-text] .guided-stage {
 
 .plus-restore {
   width: 100%;
-  margin: 8px 0 18px;
+  margin: 8px 0 0;
   border-color: rgba(243, 212, 134, 0.22);
   background: rgba(255, 246, 220, 0.04);
 }

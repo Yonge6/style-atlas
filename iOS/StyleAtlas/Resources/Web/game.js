@@ -303,13 +303,17 @@
       drawerSupportCopy: "若这份风格图鉴于你有用，可以让一份心意继续支持内容维护；也可以把它留给自己。",
       drawerSupportNote: "有余则助，无余亦安",
       drawerWorksTitle: "沿途所作",
-      drawerWorksHeading: "观世界，也向内认识自己。",
+      drawerWorksHeading: "观世界，识自己，也学习看见美。",
+      drawerWorkWonderTitle: "WonderElian",
+      drawerWorkWonderNote: "WonderElian 是永歌 Elian 的个人创作空间。这里记录作品，也记录关于设计、AI、产品，以及如何慢慢成为自己的思考与探索。",
+      drawerWorkYixiuTitle: "一休冥想",
+      drawerWorkYixiuNote: "打开真实的山间溪流，让没有音乐和人声的自然声，陪你读完眼前这一章；也可以在 iPhone 后台继续播放。",
       drawerWorkWendaoTitle: "三慢问道",
       drawerWorkWendaoNote: "慢读《道德经》，也慢慢认识自己。",
       drawerWorkXiaziTitle: "虾子曰",
-      drawerWorkXiaziNote: "每天用全球热点与双语海报，把昨天的世界讲清楚。",
-      drawerWorkHumanTitle: "人类图",
-      drawerWorkHumanNote: "从另一种视角认识自己的运行方式。",
+      drawerWorkXiaziNote: "每天用 9 个全球热点与 18 张双语海报，把昨天的复杂世界讲清楚。",
+      drawerWorkHumanTitle: "不二 认识自己",
+      drawerWorkHumanNote: "从出生信息生成中英双语人类图与基础解读，换一个角度认识自己的运行方式。",
       supportCopy: "阅读、停留与分享，本身已经是同行。若仍有余力，也可以随喜相助。",
       supportRecognition: "长按二维码，识别并支付",
       supportCodeLink: "单独打开二维码",
@@ -441,11 +445,11 @@
       freeExport: "普通清晰度 · 带水印",
       plusExport: "高清无水印 · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "从看见到看懂，完整打开每一种风格。",
-      plusBenefits: ["完整观察与 Guided Looking", "Profile、Everyday 与 Comparison", "风格表达词与创作提示", "历史语境、人物与参考作品", "高清无水印和四种比例导出", "无限收藏"],
+      plusBenefits: ["120 篇完整档案与 Guided Looking", "Profile、Comparison、历史与创作表达", "无限收藏与高清多比例导出"],
       freePlan: "免费版",
       plusPlan: "Plus",
-      freePlanItems: ["浏览全部 120 个主图与简介", "阅读 20 个完整风格档案", "收藏 20 个并普通清晰度导出"],
-      plusPlanItems: ["解锁其余完整档案与全部学习模块", "无限收藏", "高清无水印四比例导出", "两种年度方案可选"],
+      freePlanItems: ["120 个主图与简介", "20 篇完整档案"],
+      plusPlanItems: ["全部 120 篇深度指南", "全部学习、收藏与高清导出"],
       appStorePrice: "价格以 App Store 显示为准",
       appStoreCta: "前往 App Store 查看 Plus",
       downloadApp: "下载 App",
@@ -460,7 +464,7 @@
       annualAutoBadge: "推荐",
       annualTitle: "年费",
       annualNote: "1 年使用期，到期不自动续订",
-      annualAutoDisclosure: "订阅期为 1 年。确认购买后将从 Apple ID 账户扣款；除非在当前订阅期结束前至少 24 小时取消，否则将自动续订。可在 Apple ID 的“订阅”中管理或取消。",
+      annualAutoDisclosure: "连续包年：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
       annualDisclosure: "购买后可使用 Plus 1 年，到期不自动续订。如需继续使用，可再次购买年费方案。",
       subscribePlus: "开启连续包年",
       buyAnnualPlus: "购买一年 Plus",
@@ -547,13 +551,17 @@
       drawerSupportCopy: "If the atlas has helped, you may support its continued care—or keep that care for what your own life needs.",
       drawerSupportNote: "Give freely, or simply explore in peace",
       drawerWorksTitle: "WORKS ALONG THE WAY",
-      drawerWorksHeading: "See the world and know yourself.",
+      drawerWorksHeading: "See the world, know yourself, and learn to see beauty.",
+      drawerWorkWonderTitle: "WonderElian",
+      drawerWorkWonderNote: "An independent creative world from Wuhan, connecting visual culture, wellbeing, and real life through design, AI, and digital products.",
+      drawerWorkYixiuTitle: "Yixiu Meditation",
+      drawerWorkYixiuNote: "Play a real mountain stream—no music, no talking—while you read, then continue in the background on iPhone.",
       drawerWorkWendaoTitle: "Wendao",
       drawerWorkWendaoNote: "Read the Tao Te Ching slowly, and come to know yourself.",
       drawerWorkXiaziTitle: "Xiazi Says",
-      drawerWorkXiaziNote: "Global stories and bilingual posters make yesterday's world clearer.",
-      drawerWorkHumanTitle: "Human Design",
-      drawerWorkHumanNote: "A different lens on how you move through life.",
+      drawerWorkXiaziNote: "Nine global stories and eighteen bilingual posters make yesterday's complex world easier to see.",
+      drawerWorkHumanTitle: "Bu'er · Know Yourself",
+      drawerWorkHumanNote: "Turn birth details into a bilingual chart and foundational reading—a different lens on how you move through life.",
       supportCopy: "Reading, pausing, and sharing are already forms of participation. If you still have something to spare, you may offer support.",
       supportRecognition: "Press and hold the QR code to recognize and pay",
       supportCodeLink: "Open QR code",
@@ -684,11 +692,11 @@
       freeExport: "Standard clarity · watermarked",
       plusExport: "HD watermark-free · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "Go from seeing to understanding with every style fully open.",
-      plusBenefits: ["Complete observation and Guided Looking", "Profile, Everyday, and Comparison", "Style vocabulary and creative prompts", "Historical context, figures, and references", "HD watermark-free export in four ratios", "Unlimited saved styles"],
+      plusBenefits: ["120 complete guides with Guided Looking", "Profile, comparison, context, and creative expression", "Unlimited saves and HD multi-ratio export"],
       freePlan: "Free",
       plusPlan: "Plus",
-      freePlanItems: ["Browse all 120 hero images and introductions", "Read 20 complete style archives", "Save 20 styles with standard export"],
-      plusPlanItems: ["Unlock all remaining archives and learning modules", "Unlimited saved styles", "HD watermark-free export in four ratios", "Choose either annual plan"],
+      freePlanItems: ["120 hero images and introductions", "20 complete style archives"],
+      plusPlanItems: ["All 120 in-depth guides", "All learning tools, saves, and HD export"],
       appStorePrice: "Price shown in the App Store",
       appStoreCta: "View Plus on the App Store",
       downloadApp: "Download App",
@@ -703,7 +711,7 @@
       annualAutoBadge: "Recommended",
       annualTitle: "One-year pass",
       annualNote: "1 year of access, no automatic renewal",
-      annualAutoDisclosure: "Subscription period: 1 year. Payment is charged to your Apple ID at confirmation. It renews automatically unless cancelled at least 24 hours before the end of the current period. Manage or cancel in your Apple ID subscriptions.",
+      annualAutoDisclosure: "Annual subscription: charged to your Apple ID at confirmation and renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
       annualDisclosure: "Includes 1 year of Plus access and does not renew automatically. Purchase another one-year pass to continue after it expires.",
       subscribePlus: "Start annual subscription",
       buyAnnualPlus: "Buy one year of Plus",
@@ -3687,6 +3695,10 @@
     $("drawerSupport").hidden = hasNativeBridge();
     $("drawerWorksTitle").textContent = t("drawerWorksTitle");
     $("drawerWorksHeading").textContent = t("drawerWorksHeading");
+    $("drawerWorkWonderTitle").textContent = t("drawerWorkWonderTitle");
+    $("drawerWorkWonderNote").textContent = t("drawerWorkWonderNote");
+    $("drawerWorkYixiuTitle").textContent = t("drawerWorkYixiuTitle");
+    $("drawerWorkYixiuNote").textContent = t("drawerWorkYixiuNote");
     $("drawerWorkWendaoTitle").textContent = t("drawerWorkWendaoTitle");
     $("drawerWorkWendaoNote").textContent = t("drawerWorkWendaoNote");
     $("drawerWorkXiaziTitle").textContent = t("drawerWorkXiaziTitle");
@@ -3703,9 +3715,13 @@
     dom.supportCloseBtn.setAttribute("aria-label", store.lang === "zh" ? "关闭随喜相助" : "Close support");
     $("drawerFooter").textContent = t("drawerFooter");
     $("downloadAppNav").setAttribute("aria-label", t("downloadOnAppStore"));
-    $("downloadAppNav").hidden = hasNativeBridge();
+    const nativeShell = hasNativeBridge();
+    $("drawerDownloadKicker").hidden = nativeShell;
+    $("drawerDownloadTitle").hidden = nativeShell;
+    $("drawerDownloadNote").hidden = nativeShell;
+    $("downloadAppNav").hidden = nativeShell;
     $("reviewAppNav").setAttribute("aria-label", t("drawerReviewCta"));
-    $("reviewAppNav").hidden = hasNativeBridge();
+    $("reviewAppNav").hidden = false;
   }
 
   function renderAll() {
