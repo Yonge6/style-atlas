@@ -299,15 +299,17 @@
       drawerContactTitle: "联系我们",
       drawerContactNote: "邮箱与社交媒体",
       drawerWorksTitle: "沿途所作",
-      drawerWorksHeading: "观世界，也向内认识自己。",
+      drawerWorksHeading: "观世界，识自己，也学习看见美。",
+      drawerWorkWonderTitle: "WonderElian",
+      drawerWorkWonderNote: "WonderElian 是永歌 Elian 的个人创作空间。这里记录作品，也记录关于设计、AI、产品，以及如何慢慢成为自己的思考与探索。",
       drawerWorkYixiuTitle: "一休冥想",
-      drawerWorkYixiuNote: "停一会儿，呼吸，也回到自己。",
+      drawerWorkYixiuNote: "打开真实的山间溪流，让没有音乐和人声的自然声，陪你读完眼前这一章；也可以在 iPhone 后台继续播放。",
       drawerWorkWendaoTitle: "三慢问道",
       drawerWorkWendaoNote: "慢读《道德经》，也慢慢认识自己。",
       drawerWorkXiaziTitle: "虾子曰",
-      drawerWorkXiaziNote: "每天用全球热点与双语海报，把昨天的世界讲清楚。",
+      drawerWorkXiaziNote: "每天用 9 个全球热点与 18 张双语海报，把昨天的复杂世界讲清楚。",
       drawerWorkHumanTitle: "不二 认识自己",
-      drawerWorkHumanNote: "从另一种视角认识自己的运行方式。",
+      drawerWorkHumanNote: "从出生信息生成中英双语人类图与基础解读，换一个角度认识自己的运行方式。",
       drawerFooter: "120 种风格 · 120 篇深度指南 · 中英双语",
       positioning: "探索 120 种艺术与设计风格，每一种都提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
       valueLine: "跟着看图引导观察构图、色彩与线条，再用审美画像、日常观察和风格对比建立自己的审美词库。",
@@ -526,15 +528,17 @@
       drawerContactTitle: "Contact",
       drawerContactNote: "Email and social channels",
       drawerWorksTitle: "WORKS ALONG THE WAY",
-      drawerWorksHeading: "See the world and know yourself.",
+      drawerWorksHeading: "See the world, know yourself, and learn to see beauty.",
+      drawerWorkWonderTitle: "WonderElian",
+      drawerWorkWonderNote: "An independent creative world from Wuhan, connecting visual culture, wellbeing, and real life through design, AI, and digital products.",
       drawerWorkYixiuTitle: "Yixiu Meditation",
-      drawerWorkYixiuNote: "Pause, breathe, and return to yourself.",
+      drawerWorkYixiuNote: "Play a real mountain stream—no music, no talking—while you read, then continue in the background on iPhone.",
       drawerWorkWendaoTitle: "Wendao",
       drawerWorkWendaoNote: "Read the Tao Te Ching slowly, and come to know yourself.",
       drawerWorkXiaziTitle: "Xiazi Says",
-      drawerWorkXiaziNote: "Global stories and bilingual posters make yesterday's world clearer.",
-      drawerWorkHumanTitle: "Bu Er · Know Yourself",
-      drawerWorkHumanNote: "A different lens on how you move through life.",
+      drawerWorkXiaziNote: "Nine global stories and eighteen bilingual posters make yesterday's complex world easier to see.",
+      drawerWorkHumanTitle: "Bu'er · Know Yourself",
+      drawerWorkHumanNote: "Turn birth details into a bilingual chart and foundational reading—a different lens on how you move through life.",
       drawerFooter: "120 styles · 120 in-depth guides · Bilingual",
       positioning: "Explore 120 art and design styles, each with a complete in-depth guide.\nMove from seeing a style to truly understanding it in three minutes a day.",
       valueLine: "Follow guided looking prompts, then build recognition through aesthetic profiles, everyday observations, and side-by-side comparisons.",
@@ -3652,6 +3656,8 @@
     $("drawerReviewCtaNote").textContent = t("drawerReviewCtaNote");
     $("drawerWorksTitle").textContent = t("drawerWorksTitle");
     $("drawerWorksHeading").textContent = t("drawerWorksHeading");
+    $("drawerWorkWonderTitle").textContent = t("drawerWorkWonderTitle");
+    $("drawerWorkWonderNote").textContent = t("drawerWorkWonderNote");
     $("drawerWorkYixiuTitle").textContent = t("drawerWorkYixiuTitle");
     $("drawerWorkYixiuNote").textContent = t("drawerWorkYixiuNote");
     $("drawerWorkWendaoTitle").textContent = t("drawerWorkWendaoTitle");
