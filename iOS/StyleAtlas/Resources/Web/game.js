@@ -1926,7 +1926,7 @@
         </div>
         <div class="chip-row">${style.tags[lang].slice(0, 3).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>
         <div class="hero-actions">
-          <button class="guided-entry" type="button" data-action="open-guided">${escapeHtml(t("guidedEntry"))}</button>
+          <button class="guided-entry" type="button" data-action="open-guided"><span>${escapeHtml(t("guidedEntry"))}</span>${iconMarkup("arrow-right")}</button>
         </div>
       </section>`}
       ${locked ? renderLockedArchive(style, guide) : `
@@ -2644,10 +2644,11 @@
     const titleSize = Math.max(72, Math.min(126, canvas.width * 0.1, canvas.height * 0.12));
     ctx.font = `700 ${titleSize}px Georgia`;
     const titleLineHeight = titleSize * 0.92;
+    const qrLayout = shareQRCodeLayout(canvas.width, canvas.height);
     const titleLines = wrappedLines(ctx, style.name.en, canvas.width - 128);
     ctx.fillStyle = "#f4cf76";
     const subtitleSize = Math.max(34, Math.min(52, canvas.width * 0.043));
-    const subtitleY = canvas.height - 72;
+    const subtitleY = qrLayout.y - 34;
     const titleLastY = subtitleY - subtitleSize * 1.55;
     const titleFirstY = titleLastY - Math.max(0, titleLines.length - 1) * titleLineHeight;
     ctx.fillStyle = "#fff6dc";
@@ -2656,8 +2657,8 @@
     ctx.fillStyle = "#f4cf76";
     ctx.font = `800 ${subtitleSize}px sans-serif`;
     wrap(ctx, style.name.zh, 68, subtitleY, canvas.width - 136, subtitleSize * 1.18);
-    await drawShareQRCode(ctx, canvas.width);
-    drawWatermark(ctx, canvas.width, canvas.height);
+    await drawShareQRCode(ctx, qrLayout);
+    drawWatermark(ctx, canvas.width, canvas.height, qrLayout.width + 88);
     return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
@@ -2741,9 +2742,11 @@
       ctx.fillRect(68, dividerY, 944, 2);
       ctx.fillStyle = "#3f3422";
       ctx.font = "40px sans-serif";
-      wrap(ctx, style.summary[store.lang], 68, dividerY + 76, 920, 58);
-      await drawShareQRCode(ctx, canvas.width);
-      drawWatermark(ctx, canvas.width, canvas.height);
+      const qrLayout = shareQRCodeLayout(canvas.width, canvas.height);
+      const summaryLines = wrappedLines(ctx, style.summary[store.lang], qrLayout.x - 104).slice(0, 3);
+      summaryLines.forEach((line, index) => ctx.fillText(line, 68, dividerY + 76 + index * 58));
+      await drawShareQRCode(ctx, qrLayout);
+      drawWatermark(ctx, canvas.width, canvas.height, qrLayout.width + 88);
       return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
@@ -2902,28 +2905,39 @@
     ctx.closePath();
   }
 
-  async function drawShareQRCode(ctx, canvasWidth) {
+  function shareQRCodeLayout(canvasWidth, canvasHeight) {
+    const size = Math.round(Math.min(154, canvasWidth * 0.143));
+    const padding = 12;
+    const labelHeight = 28;
+    const width = size + padding * 2;
+    const height = size + padding * 2 + labelHeight;
+    return {
+      size,
+      padding,
+      labelHeight,
+      width,
+      height,
+      x: canvasWidth - width - 44,
+      y: canvasHeight - height - 44
+    };
+  }
+
+  async function drawShareQRCode(ctx, layout) {
     const qr = await loadImage("./assets/styles/style-atlas-h5-qr.png");
-    const size = Math.round(Math.min(250, canvasWidth * 0.232));
-    const padding = 18;
-    const labelHeight = 38;
-    const panelWidth = size + padding * 2;
-    const panelHeight = size + padding * 2 + labelHeight;
-    const x = canvasWidth - panelWidth - 54;
-    const y = 54;
+    const { size, padding, width, height, x, y } = layout;
     ctx.save();
     ctx.shadowColor = "rgba(0, 0, 0, 0.34)";
-    ctx.shadowBlur = 28;
-    ctx.shadowOffsetY = 10;
-    roundRect(ctx, x, y, panelWidth, panelHeight, 24);
+    ctx.shadowBlur = 18;
+    ctx.shadowOffsetY = 6;
+    roundRect(ctx, x, y, width, height, 18);
     ctx.fillStyle = "#fff8e7";
     ctx.fill();
     ctx.shadowColor = "transparent";
     ctx.drawImage(qr, x + padding, y + padding, size, size);
     ctx.fillStyle = "#493816";
-    ctx.font = "700 17px sans-serif";
+    ctx.font = "700 12px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("style-atlas.wonderelian.com", x + panelWidth / 2, y + panelHeight - 18);
+    ctx.fillText("style-atlas.wonderelian.com", x + width / 2, y + height - 12);
     ctx.restore();
   }
 
@@ -2966,7 +2980,7 @@
     return y + Math.max(0, lines.length - 1) * lineHeight;
   }
 
-  function drawWatermark(ctx, width, height) {
+  function drawWatermark(ctx, width, height, rightInset = 60) {
     if (!ACCESS_CONFIG.freeExportWatermark || hasPlusAccess()) return;
     const watermark = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Xiazishuo Style Atlas";
     ctx.save();
@@ -2975,7 +2989,7 @@
     ctx.fillStyle = "#493816";
     ctx.font = "700 20px sans-serif";
     const textWidth = ctx.measureText(watermark).width;
-    const textX = width - 60;
+    const textX = width - rightInset;
     const textY = height - 24;
     ctx.fillRect(textX - textWidth - 54, textY - 8, 34, 2);
     ctx.beginPath();

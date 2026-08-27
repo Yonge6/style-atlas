@@ -3,21 +3,21 @@
   --page-pad: clamp(10px, 4vw, 18px);
   --topbar-content-height: 64px;
   --topbar-height: calc(var(--topbar-content-height) + env(safe-area-inset-top));
-  --bg: #080806;
-  --panel: #15130f;
+  --bg: #0b0a08;
+  --panel: #191711;
   --paper: #f3e7c9;
   --paper-2: #dac28f;
   --ink: #16120c;
   --text: #f8edcf;
-  --muted: #a99a77;
+  --muted: #b8a980;
   --gold: #d9aa45;
   --gold-2: #f3d486;
   --line: rgba(243, 212, 134, 0.22);
   --line-strong: rgba(243, 212, 134, 0.48);
   --danger: #d45f55;
   --radius: 8px;
-  --museum-charcoal: #11100d;
-  --museum-ink: #0c0c0a;
+  --museum-charcoal: #17150f;
+  --museum-ink: #12110e;
   --museum-burgundy: #4b302f;
   --museum-olive: #34382c;
   --museum-blue: #303842;
@@ -1262,17 +1262,42 @@ body.detail-mode {
 }
 
 .guided-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
   width: 100%;
-  min-height: 48px;
-  padding: 0 16px;
-  border: 1px solid #7b5416;
+  min-height: 54px;
+  padding: 0 18px;
+  border: 1px solid #efc35c;
   border-radius: 6px;
-  background: #17140e;
-  color: #f5d887;
+  background: #d9aa45;
+  color: #171109;
+  box-shadow: 0 8px 24px rgba(217, 170, 69, 0.2);
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 850;
   text-align: left;
+  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.guided-entry .ui-icon {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+}
+
+.guided-entry:active {
+  background: #efc35c;
+  box-shadow: 0 4px 12px rgba(217, 170, 69, 0.18);
+  transform: translateY(1px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .guided-entry:hover {
+    background: #e7b94f;
+    box-shadow: 0 10px 28px rgba(217, 170, 69, 0.28);
+  }
 }
 
 .detail-hero .overview-copy-btn,
