@@ -4093,6 +4093,16 @@ html[data-native-large-text] .guided-stage {
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.62);
 }
 
+.lightbox-hint {
+  max-width: min(100%, 430px);
+  margin: -2px 0 0;
+  color: #f1dfb2;
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
 .lightbox-close {
   position: absolute;
   top: max(14px, env(safe-area-inset-top));

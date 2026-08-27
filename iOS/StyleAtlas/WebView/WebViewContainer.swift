@@ -15,7 +15,7 @@ struct WebViewContainer: UIViewRepresentable {
           nativeShell: true,
           externalGalleryEnabled: false,
           submissionMode: "iap",
-          publicBaseURL: "https://yonge6.github.io/style-atlas/"
+          publicBaseURL: "https://style-atlas.wonderelian.com/"
         };
         """
         config.userContentController.addUserScript(WKUserScript(

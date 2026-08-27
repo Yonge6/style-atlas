@@ -161,6 +161,7 @@ test("native shell ignores compatibility mouse drags and consumes one touch swip
 test("home omits the retired introduction and random uses a card transition", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#positioningCopy")).toHaveCount(0);
+  await expect(page.locator(".editorial-resources")).toHaveCount(0);
 
   const before = await page.locator("#styleDeck .cover-top > span").textContent();
   await page.locator("#randomBtn").click();
@@ -222,7 +223,10 @@ test("native file mode requests a clean bundled image before canvas export", asy
   await page.locator("#styleDeck [data-action='share']").click();
   await expect.poll(async () => page.evaluate(() => window.__nativeMessages.map((message) => message.type))).toContain("shareImage");
   const messages = await page.evaluate(() => window.__nativeMessages);
-  expect(messages.filter((message) => message.type === "readBundledAsset")).toHaveLength(1);
+  expect(messages.filter((message) => message.type === "readBundledAsset").map((message) => message.payload.filename)).toEqual([
+    expect.stringMatching(/\.webp$/),
+    "style-atlas-h5-qr.png"
+  ]);
   expect(messages.filter((message) => message.type === "shareImage")).toHaveLength(1);
 });
 
@@ -634,6 +638,24 @@ test("home share card omits the top style number and product name", async ({ pag
   const canvasText = await page.evaluate(() => window.__canvasText);
   expect(canvasText).not.toContain(styleNumber);
   expect(canvasText.filter((value) => value === "虾子曰艺术风格图鉴")).toHaveLength(1);
+  expect(canvasText).toContain("style-atlas.wonderelian.com");
+});
+
+test("WeChat H5 share opens a QR share image for long press instead of failing", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "userAgent", {
+      configurable: true,
+      value: "Mozilla/5.0 MicroMessenger/8.0.50"
+    });
+  });
+  await page.goto("/#swiss-style");
+  await page.locator(".detail-hero [data-action='share']").click();
+  await expect(page.locator("#lightbox")).toBeVisible();
+  await expect(page.locator("#lightboxImage")).toHaveAttribute("src", /^data:image\/png;base64,/);
+  await expect(page.locator("#lightboxHint")).toBeVisible();
+  await expect(page.locator("#lightboxHint")).toContainText("长按图片保存或发送给朋友");
+  await expect(page.locator("#saveLightboxBtn")).toBeHidden();
+  await expect(page.locator("#shareLightboxBtn")).toBeHidden();
 });
 
 test("detail overview uses a bottom-right icon copy control and hides free preview label", async ({ page }) => {

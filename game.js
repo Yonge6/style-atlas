@@ -9,7 +9,7 @@
     nativeShell: false,
     externalGalleryEnabled: true,
     submissionMode: "web",
-    publicBaseURL: "https://yonge6.github.io/style-atlas/"
+    publicBaseURL: "https://style-atlas.wonderelian.com/"
   }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
   const APP_STORE_URL = "https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&ct=Website%20Organic&mt=8";
   const ACCESS_CONFIG = {
@@ -401,6 +401,7 @@
       cardSaved: "分享卡片已保存",
       saveFailed: "保存失败，请稍后重试",
       shareFailed: "分享失败，请稍后重试",
+      wechatShareHint: "分享图已生成，长按图片保存或发送给朋友",
       copyFailed: "复制失败，请长按手动复制",
       savedEmpty: "还没有收藏。先从今日风格或搜索里保存喜欢的风格。",
       styleCount: (n) => `${n} 种风格`,
@@ -641,6 +642,7 @@
       cardSaved: "Share card saved",
       saveFailed: "Could not save. Please try again.",
       shareFailed: "Could not share. Please try again.",
+      wechatShareHint: "Your share image is ready. Press and hold to save or send it.",
       copyFailed: "Could not copy. Please press and hold to copy.",
       savedEmpty: "Nothing saved yet. Start from Today's Pick or Search.",
       styleCount: (n) => `${n} styles`,
@@ -770,6 +772,7 @@
     lightboxImage: $("lightboxImage"),
     lightboxTitle: $("lightboxTitle"),
     lightboxDescription: $("lightboxDescription"),
+    lightboxHint: $("lightboxHint"),
     lightboxCloseBtn: $("lightboxCloseBtn"),
     saveLightboxBtn: $("saveLightboxBtn"),
     shareLightboxBtn: $("shareLightboxBtn"),
@@ -2620,6 +2623,7 @@
     ctx.fillStyle = "#f4cf76";
     ctx.font = `800 ${subtitleSize}px sans-serif`;
     wrap(ctx, style.name.zh, 68, subtitleY, canvas.width - 136, subtitleSize * 1.18);
+    await drawShareQRCode(ctx, canvas.width);
     drawWatermark(ctx, canvas.width, canvas.height);
     return await canvasBlob(canvas);
     } finally {
@@ -2705,6 +2709,7 @@
       ctx.fillStyle = "#3f3422";
       ctx.font = "40px sans-serif";
       wrap(ctx, style.summary[store.lang], 68, dividerY + 76, 920, 58);
+      await drawShareQRCode(ctx, canvas.width);
       drawWatermark(ctx, canvas.width, canvas.height);
       return await canvasBlob(canvas);
     } finally {
@@ -2724,11 +2729,15 @@
     return new File([blob], name, { type: blob.type || "image/png" });
   }
 
-  function openImage(src, alt) {
+  function openImage(src, alt, sharePreview = false) {
     dom.lightboxImage.src = src;
     dom.lightboxImage.alt = alt || "";
     dom.lightboxTitle.textContent = t("imagePreview");
     dom.lightboxDescription.textContent = alt || activeStyle().name[store.lang];
+    dom.lightboxHint.textContent = sharePreview ? t("wechatShareHint") : "";
+    dom.lightboxHint.hidden = !sharePreview;
+    dom.saveLightboxBtn.hidden = sharePreview;
+    dom.shareLightboxBtn.hidden = sharePreview;
     dom.lightboxCloseBtn.setAttribute("aria-label", t("closePreview"));
     dom.saveLightboxBtn.textContent = t("saveCard");
     dom.shareLightboxBtn.textContent = t("share");
@@ -2739,6 +2748,10 @@
   function closeImage(restoreFocus = true) {
     if (dom.lightbox.hidden) return;
     dom.lightboxImage.removeAttribute("src");
+    dom.lightboxHint.hidden = true;
+    dom.lightboxHint.textContent = "";
+    dom.saveLightboxBtn.hidden = false;
+    dom.shareLightboxBtn.hidden = false;
     delete dom.lightbox.dataset.src;
     closeOverlay(dom.lightbox, restoreFocus);
   }
@@ -2750,6 +2763,10 @@
       if (hasNativeBridge()) {
         const dataURL = await blobToDataURL(file);
         if (postNativeMessage("shareImage", { dataURL, filename: file.name })) return NATIVE_EXPORT_PENDING;
+      }
+      if (isWeChatBrowser()) {
+        openImage(await blobToDataURL(file), t("wechatShareHint"), true);
+        return;
       }
       if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
         await navigator.share({ title: activeStyle().name[store.lang], files: [file] });
@@ -2775,14 +2792,24 @@
   }
 
   async function shareStyle(style = activeStyle()) {
-    const publicBase = new URL(window.STYLE_ATLAS_RUNTIME_CONFIG.publicBaseURL, "https://yonge6.github.io/style-atlas/");
-    const url = `${publicBase.href.replace(/#.*$/, "").replace(/\/?$/, "/")}#${style.id}`;
+    const publicBase = new URL(window.STYLE_ATLAS_RUNTIME_CONFIG.publicBaseURL, "https://style-atlas.wonderelian.com/");
+    publicBase.hash = "";
+    publicBase.search = "";
+    publicBase.searchParams.set("review", "detail");
+    publicBase.searchParams.set("style", style.id);
+    publicBase.searchParams.set("lang", store.lang);
+    publicBase.searchParams.set("section", "see");
+    const url = publicBase.href;
     const payload = { title: style.name[store.lang], text: style.summary[store.lang], url };
     return runExportOperation(async () => {
       const file = await coverFile(style);
       if (hasNativeBridge()) {
         const dataURL = await blobToDataURL(file);
         if (postNativeMessage("shareImage", { dataURL, filename: file.name })) return NATIVE_EXPORT_PENDING;
+      }
+      if (isWeChatBrowser()) {
+        openImage(await blobToDataURL(file), t("wechatShareHint"), true);
+        return;
       }
       if (navigator.share) {
         if (!navigator.canShare || navigator.canShare({ files: [file] })) {
@@ -2840,6 +2867,35 @@
     ctx.arcTo(x, y + height, x, y, radius);
     ctx.arcTo(x, y, x + width, y, radius);
     ctx.closePath();
+  }
+
+  async function drawShareQRCode(ctx, canvasWidth) {
+    const qr = await loadImage("./assets/styles/style-atlas-h5-qr.png");
+    const size = Math.round(Math.min(250, canvasWidth * 0.232));
+    const padding = 18;
+    const labelHeight = 38;
+    const panelWidth = size + padding * 2;
+    const panelHeight = size + padding * 2 + labelHeight;
+    const x = canvasWidth - panelWidth - 54;
+    const y = 54;
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 0, 0, 0.34)";
+    ctx.shadowBlur = 28;
+    ctx.shadowOffsetY = 10;
+    roundRect(ctx, x, y, panelWidth, panelHeight, 24);
+    ctx.fillStyle = "#fff8e7";
+    ctx.fill();
+    ctx.shadowColor = "transparent";
+    ctx.drawImage(qr, x + padding, y + padding, size, size);
+    ctx.fillStyle = "#493816";
+    ctx.font = "700 17px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("style-atlas.wonderelian.com", x + panelWidth / 2, y + panelHeight - 18);
+    ctx.restore();
+  }
+
+  function isWeChatBrowser() {
+    return /MicroMessenger/i.test(navigator.userAgent || "");
   }
 
   function wrappedLines(ctx, textValue, maxWidth) {
