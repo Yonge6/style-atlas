@@ -869,75 +869,6 @@ main {
   font-size: 20px;
 }
 
-.editorial-resources {
-  margin-top: 34px;
-  padding: 22px 0 10px;
-  border-top: 1px solid var(--line);
-}
-
-.editorial-resources > header p {
-  margin: 0 0 8px;
-  color: var(--gold);
-  font: 700 0.72rem/1.2 ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.editorial-resources > header h2 {
-  margin: 0;
-  font-size: clamp(1.35rem, 4vw, 1.85rem);
-}
-
-.editorial-resource-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.editorial-resource-grid a {
-  min-height: 152px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  color: var(--text);
-  background: linear-gradient(145deg, rgba(243, 212, 134, 0.1), rgba(21, 19, 15, 0.96));
-  text-decoration: none;
-}
-
-.editorial-resource-grid a:hover,
-.editorial-resource-grid a:focus-visible {
-  border-color: var(--gold-2);
-}
-
-.editorial-resource-grid span {
-  color: var(--gold);
-  font: 700 0.68rem/1.2 ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.editorial-resource-grid strong {
-  margin-top: 15px;
-  font-size: 1.12rem;
-  line-height: 1.25;
-}
-
-.editorial-resource-grid small {
-  margin-top: auto;
-  padding-top: 14px;
-  color: var(--muted);
-  font: 400 0.86rem/1.5 ui-sans-serif, system-ui, sans-serif;
-}
-
-@media (max-width: 620px) {
-  .editorial-resource-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .category-strip h2,
 .detail h2 {
   margin: 0 0 12px;
@@ -3996,6 +3927,16 @@ html[data-native-large-text] .guided-stage {
   border-radius: 14px;
   object-fit: contain;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.62);
+}
+
+.lightbox-hint {
+  max-width: min(100%, 430px);
+  margin: -2px 0 0;
+  color: #f1dfb2;
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
 }
 
 .lightbox-close {
