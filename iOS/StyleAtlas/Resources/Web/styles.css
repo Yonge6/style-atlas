@@ -3,21 +3,21 @@
   --page-pad: clamp(10px, 4vw, 18px);
   --topbar-content-height: 64px;
   --topbar-height: calc(var(--topbar-content-height) + env(safe-area-inset-top));
-  --bg: #0b0a08;
-  --panel: #191711;
+  --bg: #0f0e0b;
+  --panel: #201d17;
   --paper: #f3e7c9;
   --paper-2: #dac28f;
   --ink: #16120c;
   --text: #f8edcf;
-  --muted: #b8a980;
+  --muted: #c5b792;
   --gold: #d9aa45;
   --gold-2: #f3d486;
-  --line: rgba(243, 212, 134, 0.22);
+  --line: rgba(243, 212, 134, 0.28);
   --line-strong: rgba(243, 212, 134, 0.48);
   --danger: #d45f55;
   --radius: 8px;
-  --museum-charcoal: #17150f;
-  --museum-ink: #12110e;
+  --museum-charcoal: #1d1a14;
+  --museum-ink: #171510;
   --museum-burgundy: #4b302f;
   --museum-olive: #34382c;
   --museum-blue: #303842;
@@ -37,7 +37,7 @@ body {
   overflow-x: hidden;
   background:
     linear-gradient(90deg, rgba(243, 212, 134, 0.05) 1px, transparent 1px) 0 0 / 28px 28px,
-    radial-gradient(circle at 50% 0, rgba(217, 170, 69, 0.18), transparent 360px),
+    radial-gradient(circle at 50% 0, rgba(217, 170, 69, 0.22), transparent 360px),
     var(--bg);
   color: var(--text);
   overscroll-behavior-y: none;
@@ -1703,21 +1703,21 @@ body.detail-mode {
 .why-feels,
 .prompt-section,
 .explore-section {
-  background: #12110e;
+  background: #211e17;
 }
 
 .profile-section,
 .export-section {
-  background: #0f1110;
+  background: #1b1f1c;
 }
 
 .everyday-section {
-  background: #10110e;
+  background: #1c201a;
 }
 
 .comparison-section,
 .similar-section {
-  background: #101114;
+  background: #1b1d22;
 }
 
 .detail h2 {
@@ -1742,7 +1742,7 @@ body.detail-mode {
 .detail-see-tools {
   margin-top: -22px;
   padding-top: 22px;
-  background: #0e0e0c;
+  background: #181611;
 }
 
 .detail-see-tools .memory-anchor {
@@ -1764,7 +1764,7 @@ body.detail-mode {
 
 .detail-section p {
   margin: 0;
-  color: #dbcba4;
+  color: #e7d8b3;
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 16px;
   line-height: 1.7;
@@ -1773,7 +1773,7 @@ body.detail-mode {
 .detail-list {
   margin: 0;
   padding-left: 18px;
-  color: #dbcba4;
+  color: #e7d8b3;
   font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
   font-size: 15px;
   line-height: 1.65;

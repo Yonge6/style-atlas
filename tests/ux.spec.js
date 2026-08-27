@@ -2055,7 +2055,7 @@ test("recognition module presents at least three explained observation cards", a
   const cards = page.locator(".recognition-grid .observation-card");
   expect(await cards.count()).toBeGreaterThanOrEqual(3);
   await expect(cards.first()).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
-  await expect(cards.first().locator("p")).toHaveCSS("color", "rgb(219, 203, 164)");
+  await expect(cards.first().locator("p")).toHaveCSS("color", "rgb(231, 216, 179)");
   for (const card of await cards.all()) {
     await expect(card.locator("h3")).not.toHaveText("");
     await expect(card.locator("p")).not.toHaveText("");
