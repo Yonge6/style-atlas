@@ -1838,7 +1838,7 @@
         </div>
         <div class="chip-row">${style.tags[lang].slice(0, 3).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>
         <div class="hero-actions">
-          <button class="guided-entry" type="button" data-action="open-guided">${escapeHtml(t("guidedEntry"))}</button>
+          <button class="guided-entry" type="button" data-action="open-guided"><span>${escapeHtml(t("guidedEntry"))}</span>${iconMarkup("arrow-right")}</button>
         </div>
       </section>`}
       ${locked ? renderLockedArchive(style, guide) : `
@@ -2553,10 +2553,10 @@
     const scale = width / 1080;
     const pad = 64 * scale;
     const footerTop = Math.round(top);
-    const qrPlateSize = 196 * scale;
+    const qrPlateSize = 148 * scale;
     const qrPlateX = width - pad - qrPlateSize;
-    const qrPlateY = footerTop + (height - footerTop - qrPlateSize) / 2;
-    const qrInset = 14 * scale;
+    const qrPlateY = height - pad - qrPlateSize;
+    const qrInset = 10 * scale;
     const productName = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Xiazishuo Style Atlas";
     const invitation = store.lang === "zh" ? "扫码看懂这种美" : "SCAN TO EXPLORE THIS STYLE";
     const collection = store.lang === "zh"
