@@ -2578,9 +2578,6 @@
     ctx.fillStyle = "rgba(255, 246, 220, 0.72)";
     ctx.font = `700 ${18 * scale}px sans-serif`;
     ctx.fillText(collection, pad, footerTop + 164 * scale);
-    ctx.fillStyle = "rgba(244, 207, 118, 0.78)";
-    ctx.font = `600 ${17 * scale}px sans-serif`;
-    ctx.fillText("style-atlas.wonderelian.com", pad, footerTop + 205 * scale);
 
     roundRect(ctx, qrPlateX, qrPlateY, qrPlateSize, qrPlateSize, 14 * scale);
     ctx.fillStyle = "#fffaf0";
