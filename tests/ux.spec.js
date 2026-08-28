@@ -6,6 +6,12 @@ const { pathToFileURL } = require("node:url");
 
 test.use({ viewport: { width: 390, height: 844 }, locale: "zh-CN" });
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    if (!localStorage.getItem("styleAtlasLang")) localStorage.setItem("styleAtlasLang", "zh");
+  });
+});
+
 async function installNativeMock(page) {
   await page.addInitScript(() => {
     window.__nativeMessages = [];
@@ -23,12 +29,23 @@ async function installNativeMock(page) {
       externalGalleryEnabled: false,
       submissionMode: "iap",
       iapDisplayPrices: {
-        annual: "¥99.00",
-        annual_auto: "¥66.00"
+        monthly_auto: "$9.99",
+        annual_auto: "$89.99",
+        annual_trial_eligible: "true"
       }
     };
   });
 }
+
+test("first launch defaults to English even when the device locale is Chinese", async ({ browser }) => {
+  const context = await browser.newContext({ locale: "zh-CN", viewport: { width: 390, height: 844 } });
+  const page = await context.newPage();
+  await page.goto("http://127.0.0.1:8765/");
+  await expect(page.locator(".brand-primary")).toHaveText("Style Atlas");
+  await expect(page.locator("#langBtn")).toHaveText("中文");
+  await expect(page.locator("#todayLabel")).toHaveText("Today's Pick");
+  await context.close();
+});
 
 async function openPlus(page) {
   let trigger = page.locator("[data-action='show-plus']").first();
@@ -342,8 +359,8 @@ test("localStorage exceptions do not break the app", async ({ page }) => {
     };
   });
   await page.goto("/");
-  await expect(page.locator(".brand-primary")).toHaveText("虾子曰");
-  await expect(page.locator(".brand-secondary")).toHaveText("艺术风格图鉴");
+  await expect(page.locator(".brand-primary")).toHaveText("Style Atlas");
+  await expect(page.locator(".brand-secondary")).toHaveText("Art & Design");
   await page.locator("#searchOpenBtn").click();
   await page.locator("#searchInput").fill("Swiss");
   await expect(page.locator("#searchResults .result-card")).toHaveCount(1);
@@ -469,12 +486,14 @@ test("native paywall uses StoreKit display price and posts purchase and restore"
   await installNativeMock(page);
   await page.goto("/");
   await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({
-    annual: "¥99.00",
-    annual_auto: "¥66.00"
+    monthly_auto: "$9.99",
+    annual_auto: "$89.99",
+    annual_trial_eligible: "true"
   }));
   await openPlus(page);
-  await expect(page.locator("#plusLaunchPrice")).toContainText("¥66.00");
+  await expect(page.locator("#plusLaunchPrice")).toContainText("$89.99");
   await expect(page.locator("input[name='plus-plan'][value='annual_auto']")).toBeChecked();
+  await expect(page.locator("#plusCta")).toHaveText("开始 7 天免费试用");
   await page.locator("#plusCta").click();
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("purchasePlus");
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.payload?.plan)).toBe("annual_auto");
@@ -483,20 +502,22 @@ test("native paywall uses StoreKit display price and posts purchase and restore"
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("restorePurchases");
 });
 
-test("Plus plan picker switches to the non-renewing one-year pass", async ({ page }) => {
+test("Plus plan picker switches to the auto-renewing monthly plan", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
   await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({
-    annual: "$29.99",
-    annual_auto: "$19.99"
+    monthly_auto: "$9.99",
+    annual_auto: "$89.99",
+    annual_trial_eligible: "true"
   }));
   await openPlus(page);
-  await page.locator("input[name='plus-plan'][value='annual']").check();
-  await expect(page.locator("#plusLaunchPrice")).toContainText("$29.99");
-  await expect(page.locator("#plusRenewalDisclosure")).toContainText("到期不自动续订");
-  await expect(page.locator("#plusCta")).toHaveText("购买一年 Plus");
+  await page.locator("input[name='plus-plan'][value='monthly_auto']").check();
+  await expect(page.locator("#plusLaunchPrice")).toContainText("$9.99");
+  await expect(page.locator("#plusLaunchPrice")).toContainText("月");
+  await expect(page.locator("#plusRenewalDisclosure")).toContainText("按月自动续订");
+  await expect(page.locator("#plusCta")).toHaveText("开启连续包月");
   await page.locator("#plusCta").click();
-  await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.payload?.plan)).toBe("annual");
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.payload?.plan)).toBe("monthly_auto");
 });
 
 test("English annual subscription discloses renewal and legal links", async ({ page }) => {
@@ -504,12 +525,15 @@ test("English annual subscription discloses renewal and legal links", async ({ p
   await page.goto("/");
   await page.evaluate(() => {
     localStorage.setItem("styleAtlasLang", "en");
-    window.StyleAtlasNativeBridge.setProductPrices({ annual: "$29.99", annual_auto: "$19.99" });
+    window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" });
   });
   await page.reload();
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "$29.99", annual_auto: "$19.99" }));
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
   await openPlus(page);
   await expect(page.locator("#plusAnnualAutoTitle")).toHaveText("Annual subscription");
+  await expect(page.locator("#plusAnnualAutoNote")).toContainText("7-day free trial");
+  await expect(page.locator("#plusLaunchPrice")).toContainText("$89.99");
+  await expect(page.locator("#plusCta")).toHaveText("Start 7-day free trial");
   await expect(page.locator("#plusRenewalDisclosure")).toContainText("renews automatically");
   await expect(page.locator("#plusTermsLink")).toHaveAttribute("href", /apple\.com\/legal/);
   await expect(page.locator("#plusPrivacyLink")).toHaveAttribute("href", /style-atlas\.wonderelian\.com\/privacy\.html/);
@@ -600,7 +624,7 @@ test("Plus export renders pure artwork without any canvas text", async ({ page }
   expect(await page.evaluate(() => window.__canvasText)).toEqual([]);
 });
 
-test("detail share card omits the metadata row and style tags", async ({ page }) => {
+test("detail share card omits metadata, style tags and the QR caption", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/#swiss-style");
   const tags = await page.locator(".detail-hero .chip").allTextContents();
@@ -618,10 +642,12 @@ test("detail share card omits the metadata row and style tags", async ({ page })
   expect(canvasText.join(" ")).toContain("Swiss Style");
   expect(canvasText).not.toContain("#1");
   expect(canvasText.join(" ")).not.toContain("Free");
+  expect(canvasText).not.toContain("虾子曰艺术风格图鉴");
+  expect(canvasText).not.toContain("Style Atlas");
   tags.forEach((tag) => expect(canvasText).not.toContain(tag));
 });
 
-test("home share card omits the top style number and product name", async ({ page }) => {
+test("home share card omits the top style number, product name and QR caption", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
   const styleNumber = await page.locator("#styleDeck .cover-top > span").textContent();
@@ -637,7 +663,8 @@ test("home share card omits the top style number and product name", async ({ pag
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("shareImage");
   const canvasText = await page.evaluate(() => window.__canvasText);
   expect(canvasText).not.toContain(styleNumber);
-  expect(canvasText.filter((value) => value === "虾子曰艺术风格图鉴")).toHaveLength(1);
+  expect(canvasText).not.toContain("虾子曰艺术风格图鉴");
+  expect(canvasText).not.toContain("Style Atlas");
   expect(canvasText).not.toContain("style-atlas.wonderelian.com");
 });
 
@@ -1105,7 +1132,7 @@ test("Plus actions remain within the panel at 150 percent text size", async ({ p
 test("Plus close control stays at the panel top-right and purchase is the primary action", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "¥99.00", annual_auto: "¥66.00" }));
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
   await openPlus(page);
   const layout = await page.locator("#plusPanel").evaluate((panel) => {
     const panelBox = panel.getBoundingClientRect();
@@ -1129,7 +1156,7 @@ test("Plus plan choices and purchase action stay visible on the first mobile fra
   await installNativeMock(page);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "¥99.00", annual_auto: "¥66.00" }));
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
   await openPlus(page);
   const layout = await page.locator("#plusPanel").evaluate((panel) => {
     const panelBox = panel.getBoundingClientRect();
@@ -2115,7 +2142,7 @@ test("detail remains usable when localStorage is unavailable", async ({ page }) 
     Storage.prototype.removeItem = () => { throw new Error("storage disabled"); };
   });
   await page.goto("/#swiss-style");
-  await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
+  await expect(page.locator("#detailTitle")).toHaveText("Swiss Style");
   await expect(page.locator("#detailContent")).not.toContainText("undefined");
   await expect(page.locator(".detail-section-nav button")).toHaveCount(5);
 });
@@ -2348,7 +2375,7 @@ test("Plus purchase and restore actions remain wired after detail polish", async
   await installNativeMock(page);
   await page.goto("/#swiss-style");
   await openPlus(page);
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "$29.99", annual_auto: "$19.99" }));
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
   await page.locator("#plusCta").click();
   await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
   await page.locator("#plusRestoreBtn").click();
@@ -2608,7 +2635,7 @@ test("StoreKit purchase restore and all export ratios survive preview work", asy
   await expect(page.locator("[data-action='export-ratio']")).toHaveCount(4);
   await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(false));
   await openPlus(page);
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ annual: "$29.99", annual_auto: "$19.99" }));
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
   await page.locator("#plusCta").click();
   await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
   await page.locator("#plusRestoreBtn").click();

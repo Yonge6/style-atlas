@@ -11,7 +11,7 @@
     submissionMode: "web",
     publicBaseURL: "https://style-atlas.wonderelian.com/"
   }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
-  const APP_STORE_URL = "https://apps.apple.com/cn/app/%E8%99%BE%E5%AD%90%E6%9B%B0%E8%89%BA%E6%9C%AF%E9%A3%8E%E6%A0%BC%E5%9B%BE%E9%89%B4/id6787447019";
+  const APP_STORE_URL = "https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&ct=Website%20Organic&mt=8";
   const ACCESS_CONFIG = {
     freeFullStyleLimit: 20,
     maxFreeSaved: 20,
@@ -57,7 +57,7 @@
   };
   const readLang = () => {
     const stored = readStorage("styleAtlasLang");
-    return ["zh", "en"].includes(stored) ? stored : (navigator.language.startsWith("zh") ? "zh" : "en");
+    return ["zh", "en"].includes(stored) ? stored : "en";
   };
   const readArray = (key) => {
     try {
@@ -298,10 +298,6 @@
       drawerReviewCtaNote: "你的反馈会帮助图鉴继续完善",
       drawerContactTitle: "联系我们",
       drawerContactNote: "邮箱与社交媒体",
-      drawerSupportKicker: "有余相助",
-      drawerSupportTitle: "随喜相助",
-      drawerSupportCopy: "若这份风格图鉴于你有用，可以让一份心意继续支持内容维护；也可以把它留给自己。",
-      drawerSupportNote: "有余则助，无余亦安",
       drawerWorksTitle: "沿途所作",
       drawerWorksHeading: "观世界，识自己，也学习看见美。",
       drawerWorkWonderTitle: "WonderElian",
@@ -314,10 +310,6 @@
       drawerWorkXiaziNote: "每天用 9 个全球热点与 18 张双语海报，把昨天的复杂世界讲清楚。",
       drawerWorkHumanTitle: "不二 认识自己",
       drawerWorkHumanNote: "从出生信息生成中英双语人类图与基础解读，换一个角度认识自己的运行方式。",
-      supportCopy: "阅读、停留与分享，本身已经是同行。若仍有余力，也可以随喜相助。",
-      supportRecognition: "长按二维码，识别并支付",
-      supportCodeLink: "单独打开二维码",
-      supportPosterLink: "查看完整赞赏海报",
       drawerFooter: "120 种风格 · 120 篇深度指南 · 中英双语",
       positioning: "探索 120 种艺术与设计风格，每一种都提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
       valueLine: "跟着看图引导观察构图、色彩与线条，再用审美画像、日常观察和风格对比建立自己的审美词库。",
@@ -462,13 +454,16 @@
       planPicker: "选择方案",
       annualAutoTitle: "连续包年",
       annualAutoNote: "每年自动续订，可随时取消",
+      annualAutoTrialNote: "符合资格的新订阅用户可试用 7 天，之后每年自动续订",
       annualAutoBadge: "推荐",
-      annualTitle: "年费",
-      annualNote: "1 年使用期，到期不自动续订",
-      annualAutoDisclosure: "连续包年：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
-      annualDisclosure: "购买后可使用 Plus 1 年，到期不自动续订。如需继续使用，可再次购买年费方案。",
-      subscribePlus: "开启连续包年",
-      buyAnnualPlus: "购买一年 Plus",
+      monthlyAutoTitle: "连续包月",
+      monthlyAutoNote: "每月自动续订，可随时取消",
+      annualAutoDisclosure: "连续包年：符合资格的新订阅用户可享 7 天免费试用；试用结束后从 Apple ID 扣款。除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
+      annualAutoStandardDisclosure: "连续包年：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
+      monthlyAutoDisclosure: "连续包月：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按月自动续订。可在 Apple ID 的“订阅”中管理或取消。",
+      subscribeAnnualPlus: "开始 7 天免费试用",
+      buyAnnualPlus: "开启连续包年",
+      subscribeMonthlyPlus: "开启连续包月",
       termsOfUse: "使用条款",
       privacyPolicy: "隐私政策",
       priceLoading: "正在载入 App Store 价格…",
@@ -510,7 +505,7 @@
       aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 120 种视觉语言整理成可以观察、理解、比较和表达的完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和创作表达。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
       aboutFor: "适合希望提升审美的人、自媒体人、设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
       aboutFree: "App 可免费下载，包含每日推荐、120 种风格浏览、双语搜索、收藏，以及 20 个可使用全部学习模块的免费完整风格档案。",
-      aboutPlus: "Plus 提供年费与连续包年两种年度方案，解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
+      aboutPlus: "Plus 提供连续包月与连续包年两种自动续订方案；符合资格的新订阅用户选择包年可享 7 天免费试用。Plus 解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
       appFeaturesTitle: "在 App 里看懂一种美",
       appFeatures: ["浏览 120 种艺术与设计风格", "阅读 120 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用风格表达词把理解带进创作", "支持中英文、离线浏览与多比例导出"],
       safetyTitle: "版权与风格安全说明",
@@ -527,12 +522,12 @@
     },
     en: {
       today: "Today's Pick",
-      brandTitle: "Xiazishuo Style Atlas",
-      brandSubtitle: "Style Atlas",
-      headerBrandTitle: "Xiazishuo",
-      headerBrandSubtitle: "Style Atlas",
-      productName: "Xiazishuo Style Atlas",
-      drawerEyebrow: "XIAZISHUO · STYLE ATLAS",
+      brandTitle: "Style Atlas: Art & Design",
+      brandSubtitle: "Art & Design",
+      headerBrandTitle: "Style Atlas",
+      headerBrandSubtitle: "Art & Design",
+      productName: "Style Atlas: Art & Design",
+      drawerEyebrow: "WONDERELIAN · STYLE ATLAS",
       drawerTitle: "Your Style Atlas",
       drawerSavedTitle: "Saved styles",
       drawerSavedNote: (n) => `${n} saved ${n === 1 ? "style" : "styles"}`,
@@ -547,10 +542,6 @@
       drawerReviewCtaNote: "Your review helps the atlas keep improving",
       drawerContactTitle: "Contact",
       drawerContactNote: "Email and social channels",
-      drawerSupportKicker: "IF YOU HAVE SOMETHING TO SPARE",
-      drawerSupportTitle: "Support the journey",
-      drawerSupportCopy: "If the atlas has helped, you may support its continued care—or keep that care for what your own life needs.",
-      drawerSupportNote: "Give freely, or simply explore in peace",
       drawerWorksTitle: "WORKS ALONG THE WAY",
       drawerWorksHeading: "See the world, know yourself, and learn to see beauty.",
       drawerWorkWonderTitle: "WonderElian",
@@ -563,10 +554,6 @@
       drawerWorkXiaziNote: "Nine global stories and eighteen bilingual posters make yesterday's complex world easier to see.",
       drawerWorkHumanTitle: "Bu'er · Know Yourself",
       drawerWorkHumanNote: "Turn birth details into a bilingual chart and foundational reading—a different lens on how you move through life.",
-      supportCopy: "Reading, pausing, and sharing are already forms of participation. If you still have something to spare, you may offer support.",
-      supportRecognition: "Press and hold the QR code to recognize and pay",
-      supportCodeLink: "Open QR code",
-      supportPosterLink: "View complete support poster",
       drawerFooter: "120 styles · 120 in-depth guides · Bilingual",
       positioning: "Explore 120 art and design styles, each with a complete in-depth guide.\nMove from seeing a style to truly understanding it in three minutes a day.",
       valueLine: "Follow guided looking prompts, then build recognition through aesthetic profiles, everyday observations, and side-by-side comparisons.",
@@ -673,7 +660,7 @@
       exportSharing: "Opening the system share sheet…",
       exportComplete: "Image is ready",
       lockedPreview: "The full archive includes deeper origins, recognition methods, cases and style expression.",
-      plus: "Xiazishuo Style Atlas Plus",
+      plus: "Style Atlas Plus",
       unlockTitle: "Unlock the full style archive",
       unlockBody: "The Hero and introduction are free to browse. Plus opens the complete path from observation to expression.",
       unlockCta: "See what Plus unlocks",
@@ -710,13 +697,16 @@
       planPicker: "Choose a plan",
       annualAutoTitle: "Annual subscription",
       annualAutoNote: "Renews yearly until cancelled",
+      annualAutoTrialNote: "7-day free trial for eligible new subscribers, then renews yearly",
       annualAutoBadge: "Recommended",
-      annualTitle: "One-year pass",
-      annualNote: "1 year of access, no automatic renewal",
-      annualAutoDisclosure: "Annual subscription: charged to your Apple ID at confirmation and renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
-      annualDisclosure: "Includes 1 year of Plus access and does not renew automatically. Purchase another one-year pass to continue after it expires.",
-      subscribePlus: "Start annual subscription",
-      buyAnnualPlus: "Buy one year of Plus",
+      monthlyAutoTitle: "Monthly subscription",
+      monthlyAutoNote: "Renews monthly until cancelled",
+      annualAutoDisclosure: "Annual subscription: eligible new subscribers receive a 7-day free trial, then payment is charged to the Apple ID. It renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
+      annualAutoStandardDisclosure: "Annual subscription: charged to your Apple ID at confirmation and renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
+      monthlyAutoDisclosure: "Monthly subscription: charged to your Apple ID at confirmation and renews automatically each month unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
+      subscribeAnnualPlus: "Start 7-day free trial",
+      buyAnnualPlus: "Start annual subscription",
+      subscribeMonthlyPlus: "Start monthly subscription",
       termsOfUse: "Terms of Use",
       privacyPolicy: "Privacy Policy",
       priceLoading: "Loading App Store price…",
@@ -754,23 +744,23 @@
       highResLocked: "HD watermark-free export is a Plus preview feature."
       ,
       about: "About",
-      aboutTitle: "About Xiazishuo Style Atlas",
-      aboutBody: "Xiazishuo Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
+      aboutTitle: "About Style Atlas",
+      aboutBody: "Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
       aboutFor: "For anyone building visual taste, social media creators, designers, AI creators, brand builders, content creators, design students, and art lovers.",
       aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
-      aboutPlus: "Plus offers a one-year pass and an annual auto-renewing subscription. Both unlock the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
+      aboutPlus: "Plus offers monthly and annual auto-renewing subscriptions. Eligible new subscribers receive a 7-day free trial with the annual plan. Plus unlocks the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
       appFeaturesTitle: "Learn to see a style in the app",
       appFeatures: ["Explore 120 art and design styles", "Read 120 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
       safetyTitle: "Copyright And Style Safety",
-      safetyBody: "Xiazishuo Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
+      safetyBody: "Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
       screenshotsTitle: "App Store Screenshot Kit",
       screenshotSlides: [
         ["Learn one visual style a day", "Today's Pick"],
-        ["120 global visual styles", "Xiazishuo Style Atlas"],
+        ["120 global visual styles", "Style Atlas: Art & Design"],
         ["Understand why each style works", "Deep Archive"],
         ["Build your taste archive", "Saved Styles"],
         ["Save beautiful style cards", "Export"],
-        ["Unlock the full style archive", "Xiazishuo Style Atlas Plus"]
+        ["Unlock the full style archive", "Style Atlas Plus"]
       ]
     }
   };
@@ -832,9 +822,9 @@
     plusAnnualAutoNote: $("plusAnnualAutoNote"),
     plusAnnualAutoPrice: $("plusAnnualAutoPrice"),
     plusAnnualAutoBadge: $("plusAnnualAutoBadge"),
-    plusAnnualTitle: $("plusAnnualTitle"),
-    plusAnnualNote: $("plusAnnualNote"),
-    plusAnnualPrice: $("plusAnnualPrice"),
+    plusMonthlyAutoTitle: $("plusMonthlyAutoTitle"),
+    plusMonthlyAutoNote: $("plusMonthlyAutoNote"),
+    plusMonthlyAutoPrice: $("plusMonthlyAutoPrice"),
     plusLaunchPrice: $("plusLaunchPrice"),
     plusRegularPrice: $("plusRegularPrice"),
     plusFootnote: $("plusFootnote"),
@@ -844,9 +834,6 @@
     plusCta: $("plusCta"),
     plusRestoreBtn: $("plusRestoreBtn"),
     plusCloseBtn: $("plusCloseBtn"),
-    supportModal: $("supportModal"),
-    supportPanel: $("supportPanel"),
-    supportCloseBtn: $("supportCloseBtn"),
     videoChannelModal: $("videoChannelModal"),
     videoChannelPanel: $("videoChannelPanel"),
     videoChannelCloseBtn: $("videoChannelCloseBtn"),
@@ -1221,7 +1208,6 @@
     if (container !== dom.plusModal && !dom.plusModal.hidden) closePlus(false);
     if (container !== dom.lightbox && !dom.lightbox.hidden) closeImage(false);
     if (container !== dom.guidedOverlay && !dom.guidedOverlay.hidden) closeGuided(false);
-    if (container !== dom.supportModal && !dom.supportModal.hidden) closeSupport(false);
     if (container !== dom.videoChannelModal && !dom.videoChannelModal.hidden) closeVideoChannel(false);
     if (store.drawerOpen) setDrawer(false, false);
     store.overlayReturnFocus = intendedReturnFocus;
@@ -1269,30 +1255,33 @@
     dom.freePlanList.innerHTML = t("freePlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     dom.plusPlanList.innerHTML = t("plusPlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     const iapDisplayPrices = window.STYLE_ATLAS_RUNTIME_CONFIG?.iapDisplayPrices || {};
-    const selectedPlan = store.selectedPlusPlan === "annual" ? "annual" : "annual_auto";
+    const selectedPlan = store.selectedPlusPlan === "monthly_auto" ? "monthly_auto" : "annual_auto";
+    const annualTrialEligible = String(iapDisplayPrices.annual_trial_eligible) === "true";
     const selectedPrice = iapDisplayPrices[selectedPlan] || "";
     dom.plusPlanPickerLegend.textContent = t("planPicker");
     dom.plusAnnualAutoTitle.textContent = t("annualAutoTitle");
-    dom.plusAnnualAutoNote.textContent = t("annualAutoNote");
+    dom.plusAnnualAutoNote.textContent = t(annualTrialEligible ? "annualAutoTrialNote" : "annualAutoNote");
     dom.plusAnnualAutoBadge.textContent = t("annualAutoBadge");
-    dom.plusAnnualTitle.textContent = t("annualTitle");
-    dom.plusAnnualNote.textContent = t("annualNote");
+    dom.plusMonthlyAutoTitle.textContent = t("monthlyAutoTitle");
+    dom.plusMonthlyAutoNote.textContent = t("monthlyAutoNote");
     dom.plusAnnualAutoPrice.textContent = iapDisplayPrices.annual_auto || t("priceLoading");
-    dom.plusAnnualPrice.textContent = iapDisplayPrices.annual || t("priceLoading");
+    dom.plusMonthlyAutoPrice.textContent = iapDisplayPrices.monthly_auto || t("priceLoading");
     dom.plusPlanPicker.querySelectorAll("input[name='plus-plan']").forEach((input) => {
       input.checked = input.value === selectedPlan;
       input.disabled = !iapReady || hasPlusAccess();
     });
     dom.plusPlanPicker.hidden = freeLaunch || web;
     dom.plusLaunchPrice.textContent = iapReady
-      ? `${selectedPrice || t("priceLoading")} / ${store.lang === "zh" ? "年" : "year"}`
+      ? `${selectedPrice || t("priceLoading")} / ${selectedPlan === "monthly_auto" ? (store.lang === "zh" ? "月" : "month") : (store.lang === "zh" ? "年" : "year")}`
       : t("appStorePrice");
     dom.plusRegularPrice.textContent = "";
     dom.plusLaunchPrice.parentElement.hidden = freeLaunch;
     dom.plusRegularPrice.hidden = true;
     dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : (iapReady ? t("iapFootnote") : t("appStoreFootnote"));
     dom.plusRenewalDisclosure.textContent = iapReady
-      ? t(selectedPlan === "annual_auto" ? "annualAutoDisclosure" : "annualDisclosure")
+      ? t(selectedPlan === "annual_auto"
+        ? (annualTrialEligible ? "annualAutoDisclosure" : "annualAutoStandardDisclosure")
+        : "monthlyAutoDisclosure")
       : "";
     dom.plusRenewalDisclosure.hidden = !iapReady;
     dom.plusTermsLink.textContent = t("termsOfUse");
@@ -1308,7 +1297,9 @@
         ? t("purchaseLoading")
         : (storeAction === "pending"
           ? t("purchasePending")
-          : (iapReady ? t(selectedPlan === "annual_auto" ? "subscribePlus" : "buyAnnualPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"))))));
+          : (iapReady ? t(selectedPlan === "annual_auto"
+            ? (annualTrialEligible ? "subscribeAnnualPlus" : "buyAnnualPlus")
+            : "subscribeMonthlyPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"))))));
     dom.plusCta.disabled = web ? false : (hasPlusAccess() || !iapReady || !selectedPrice || isStoreBusy);
     dom.plusRestoreBtn.hidden = !iapReady || hasPlusAccess();
     dom.plusRestoreBtn.textContent = storeAction === "restoring" ? t("restoreLoading") : t("restorePurchases");
@@ -1324,19 +1315,6 @@
 
   function loadDeferredImage(image) {
     if (!image?.src && image?.dataset.src) image.src = image.dataset.src;
-  }
-
-  function showSupport() {
-    const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const returnFocus = activeElement?.closest("#drawer") ? dom.drawerBtn : activeElement;
-    if (store.drawerOpen) setDrawer(false, false);
-    loadDeferredImage($("supportImage"));
-    if (dom.supportModal.hidden) openOverlay(dom.supportModal, dom.supportPanel, returnFocus);
-  }
-
-  function closeSupport(restoreFocus = true) {
-    if (dom.supportModal.hidden) return;
-    closeOverlay(dom.supportModal, restoreFocus);
   }
 
   function showVideoChannel() {
@@ -2288,7 +2266,7 @@
         <p>${escapeHtml(t("aboutFree"))}</p>
       </section>
       <section class="detail-section">
-        <h2>${store.lang === "zh" ? "虾子曰艺术风格图鉴 Plus" : "Xiazishuo Style Atlas Plus"}</h2>
+        <h2>${store.lang === "zh" ? "虾子曰艺术风格图鉴 Plus" : "Style Atlas Plus"}</h2>
         <p>${escapeHtml(isFreeLaunchMode() ? `${t("plusFutureBody")} ${t("aboutPlus")}` : t("aboutPlus"))}</p>
       </section>
       <section class="detail-section">
@@ -2658,7 +2636,6 @@
     ctx.font = `800 ${subtitleSize}px sans-serif`;
     wrap(ctx, style.name.zh, 68, subtitleY, canvas.width - 136, subtitleSize * 1.18);
     await drawShareQRCode(ctx, qrLayout);
-    drawWatermark(ctx, canvas.width, canvas.height, qrLayout.width + 88);
     return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
@@ -2746,7 +2723,6 @@
       const summaryLines = wrappedLines(ctx, style.summary[store.lang], qrLayout.x - 104).slice(0, 3);
       summaryLines.forEach((line, index) => ctx.fillText(line, 68, dividerY + 76 + index * 58));
       await drawShareQRCode(ctx, qrLayout);
-      drawWatermark(ctx, canvas.width, canvas.height, qrLayout.width + 88);
       return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
@@ -2972,25 +2948,6 @@
     const lines = wrappedLines(ctx, textValue, maxWidth);
     lines.forEach((line, index) => ctx.fillText(line, centered ? x : x, y + index * lineHeight));
     return y + Math.max(0, lines.length - 1) * lineHeight;
-  }
-
-  function drawWatermark(ctx, width, height, rightInset = 60) {
-    if (!ACCESS_CONFIG.freeExportWatermark || hasPlusAccess()) return;
-    const watermark = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Xiazishuo Style Atlas";
-    ctx.save();
-    ctx.globalAlpha = 0.62;
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#493816";
-    ctx.font = "700 20px sans-serif";
-    const textWidth = ctx.measureText(watermark).width;
-    const textX = width - rightInset;
-    const textY = height - 24;
-    ctx.fillRect(textX - textWidth - 54, textY - 8, 34, 2);
-    ctx.beginPath();
-    ctx.arc(textX - textWidth - 9, textY - 9, 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillText(watermark, textX, textY);
-    ctx.restore();
   }
 
   function toast(message) {
@@ -3567,8 +3524,6 @@
       if (action === "save-lightbox") return saveImage();
       if (action === "show-plus") return showPlus();
       if (action === "close-plus") return closePlus();
-      if (action === "show-support") return showSupport();
-      if (action === "close-support") return closeSupport();
       if (action === "show-video-channel") return showVideoChannel();
       if (action === "close-video-channel") return closeVideoChannel();
       if (action === "plus-export") return canExportHighRes() ? saveShareCard() : showPlus("highResLocked");
@@ -3599,16 +3554,13 @@
 
     dom.plusPlanPicker.addEventListener("change", (event) => {
       const input = event.target.closest("input[name='plus-plan']");
-      if (!input || !["annual", "annual_auto"].includes(input.value)) return;
+      if (!input || !["monthly_auto", "annual_auto"].includes(input.value)) return;
       store.selectedPlusPlan = input.value;
       showPlus(store.plusReasonKey || "plusSubtitle");
     });
 
     dom.plusModal.addEventListener("click", (event) => {
       if (event.target === dom.plusModal) closePlus();
-    });
-    dom.supportModal.addEventListener("click", (event) => {
-      if (!event.target.closest("#supportPanel")) closeSupport();
     });
     dom.videoChannelModal.addEventListener("click", (event) => {
       if (!event.target.closest("#videoChannelPanel")) closeVideoChannel();
@@ -3672,16 +3624,13 @@
     document.addEventListener("keydown", (event) => {
       const overlay = !dom.videoChannelModal.hidden
         ? dom.videoChannelModal
-        : (!dom.supportModal.hidden
-          ? dom.supportModal
-          : (!dom.plusModal.hidden
-            ? dom.plusModal
-            : (!dom.lightbox.hidden ? dom.lightbox : (!dom.guidedOverlay.hidden ? dom.guidedOverlay : (store.drawerOpen ? dom.drawer : null)))));
+        : (!dom.plusModal.hidden
+          ? dom.plusModal
+          : (!dom.lightbox.hidden ? dom.lightbox : (!dom.guidedOverlay.hidden ? dom.guidedOverlay : (store.drawerOpen ? dom.drawer : null))));
       if (!overlay) return;
       if (event.key === "Escape") {
         event.preventDefault();
         if (!dom.videoChannelModal.hidden) closeVideoChannel();
-        else if (!dom.supportModal.hidden) closeSupport();
         else if (!dom.plusModal.hidden) closePlus();
         else if (!dom.lightbox.hidden) closeImage();
         else if (!dom.guidedOverlay.hidden) closeGuided();
@@ -3751,12 +3700,6 @@
     $("drawerDownloadCtaNote").textContent = t("drawerDownloadCtaNote");
     $("drawerReviewCta").textContent = t("drawerReviewCta");
     $("drawerReviewCtaNote").textContent = t("drawerReviewCtaNote");
-    $("drawerSupportKicker").textContent = t("drawerSupportKicker");
-    $("drawerSupportTitle").textContent = t("drawerSupportTitle");
-    $("drawerSupportCopy").textContent = t("drawerSupportCopy");
-    $("drawerSupportCta").textContent = t("drawerSupportTitle");
-    $("drawerSupportNote").textContent = t("drawerSupportNote");
-    $("drawerSupport").hidden = hasNativeBridge();
     $("drawerWorksTitle").textContent = t("drawerWorksTitle");
     $("drawerWorksHeading").textContent = t("drawerWorksHeading");
     $("drawerWorkWonderTitle").textContent = t("drawerWorkWonderTitle");
@@ -3769,14 +3712,6 @@
     $("drawerWorkXiaziNote").textContent = t("drawerWorkXiaziNote");
     $("drawerWorkHumanTitle").textContent = t("drawerWorkHumanTitle");
     $("drawerWorkHumanNote").textContent = t("drawerWorkHumanNote");
-    $("supportKicker").textContent = t("drawerSupportKicker");
-    $("supportTitle").textContent = t("drawerSupportTitle");
-    $("supportCopy").textContent = t("supportCopy");
-    $("supportRecognition").textContent = t("supportRecognition");
-    $("supportCodeLink").textContent = t("supportCodeLink");
-    $("supportPosterLink").textContent = t("supportPosterLink");
-    dom.supportPanel.querySelector("img").alt = store.lang === "zh" ? "微信赞赏码" : "WeChat appreciation code";
-    dom.supportCloseBtn.setAttribute("aria-label", store.lang === "zh" ? "关闭随喜相助" : "Close support");
     $("drawerFooter").textContent = t("drawerFooter");
     $("downloadAppNav").setAttribute("aria-label", t("downloadOnAppStore"));
     const nativeShell = hasNativeBridge();
@@ -3857,8 +3792,9 @@
     setProductPrices(value) {
       const prices = value && typeof value === "object" ? value : {};
       window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrices = {
-        annual: String(prices.annual || ""),
-        annual_auto: String(prices.annual_auto || "")
+        monthly_auto: String(prices.monthly_auto || ""),
+        annual_auto: String(prices.annual_auto || ""),
+        annual_trial_eligible: String(prices.annual_trial_eligible || "false")
       };
       if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
       return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrices;

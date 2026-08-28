@@ -57,7 +57,7 @@
   };
   const readLang = () => {
     const stored = readStorage("styleAtlasLang");
-    return ["zh", "en"].includes(stored) ? stored : (navigator.language.startsWith("zh") ? "zh" : "en");
+    return ["zh", "en"].includes(stored) ? stored : "en";
   };
   const readArray = (key) => {
     try {
@@ -454,13 +454,16 @@
       planPicker: "选择方案",
       annualAutoTitle: "连续包年",
       annualAutoNote: "每年自动续订，可随时取消",
+      annualAutoTrialNote: "符合资格的新订阅用户可试用 7 天，之后每年自动续订",
       annualAutoBadge: "推荐",
-      annualTitle: "年费",
-      annualNote: "1 年使用期，到期不自动续订",
-      annualAutoDisclosure: "连续包年：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
-      annualDisclosure: "购买后可使用 Plus 1 年，到期不自动续订。如需继续使用，可再次购买年费方案。",
-      subscribePlus: "开启连续包年",
-      buyAnnualPlus: "购买一年 Plus",
+      monthlyAutoTitle: "连续包月",
+      monthlyAutoNote: "每月自动续订，可随时取消",
+      annualAutoDisclosure: "连续包年：符合资格的新订阅用户可享 7 天免费试用；试用结束后从 Apple ID 扣款。除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
+      annualAutoStandardDisclosure: "连续包年：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
+      monthlyAutoDisclosure: "连续包月：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按月自动续订。可在 Apple ID 的“订阅”中管理或取消。",
+      subscribeAnnualPlus: "开始 7 天免费试用",
+      buyAnnualPlus: "开启连续包年",
+      subscribeMonthlyPlus: "开启连续包月",
       termsOfUse: "使用条款",
       privacyPolicy: "隐私政策",
       priceLoading: "正在载入 App Store 价格…",
@@ -502,7 +505,7 @@
       aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 120 种视觉语言整理成可以观察、理解、比较和表达的完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和创作表达。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
       aboutFor: "适合希望提升审美的人、自媒体人、设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
       aboutFree: "App 可免费下载，包含每日推荐、120 种风格浏览、双语搜索、收藏，以及 20 个可使用全部学习模块的免费完整风格档案。",
-      aboutPlus: "Plus 提供年费与连续包年两种年度方案，解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
+      aboutPlus: "Plus 提供连续包月与连续包年两种自动续订方案；符合资格的新订阅用户选择包年可享 7 天免费试用。Plus 解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
       appFeaturesTitle: "在 App 里看懂一种美",
       appFeatures: ["浏览 120 种艺术与设计风格", "阅读 120 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用风格表达词把理解带进创作", "支持中英文、离线浏览与多比例导出"],
       safetyTitle: "版权与风格安全说明",
@@ -694,13 +697,16 @@
       planPicker: "Choose a plan",
       annualAutoTitle: "Annual subscription",
       annualAutoNote: "Renews yearly until cancelled",
+      annualAutoTrialNote: "7-day free trial for eligible new subscribers, then renews yearly",
       annualAutoBadge: "Recommended",
-      annualTitle: "One-year pass",
-      annualNote: "1 year of access, no automatic renewal",
-      annualAutoDisclosure: "Annual subscription: charged to your Apple ID at confirmation and renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
-      annualDisclosure: "Includes 1 year of Plus access and does not renew automatically. Purchase another one-year pass to continue after it expires.",
-      subscribePlus: "Start annual subscription",
-      buyAnnualPlus: "Buy one year of Plus",
+      monthlyAutoTitle: "Monthly subscription",
+      monthlyAutoNote: "Renews monthly until cancelled",
+      annualAutoDisclosure: "Annual subscription: eligible new subscribers receive a 7-day free trial, then payment is charged to the Apple ID. It renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
+      annualAutoStandardDisclosure: "Annual subscription: charged to your Apple ID at confirmation and renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
+      monthlyAutoDisclosure: "Monthly subscription: charged to your Apple ID at confirmation and renews automatically each month unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
+      subscribeAnnualPlus: "Start 7-day free trial",
+      buyAnnualPlus: "Start annual subscription",
+      subscribeMonthlyPlus: "Start monthly subscription",
       termsOfUse: "Terms of Use",
       privacyPolicy: "Privacy Policy",
       priceLoading: "Loading App Store price…",
@@ -742,7 +748,7 @@
       aboutBody: "Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
       aboutFor: "For anyone building visual taste, social media creators, designers, AI creators, brand builders, content creators, design students, and art lovers.",
       aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
-      aboutPlus: "Plus offers a one-year pass and an annual auto-renewing subscription. Both unlock the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
+      aboutPlus: "Plus offers monthly and annual auto-renewing subscriptions. Eligible new subscribers receive a 7-day free trial with the annual plan. Plus unlocks the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
       appFeaturesTitle: "Learn to see a style in the app",
       appFeatures: ["Explore 120 art and design styles", "Read 120 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
       safetyTitle: "Copyright And Style Safety",
@@ -816,9 +822,9 @@
     plusAnnualAutoNote: $("plusAnnualAutoNote"),
     plusAnnualAutoPrice: $("plusAnnualAutoPrice"),
     plusAnnualAutoBadge: $("plusAnnualAutoBadge"),
-    plusAnnualTitle: $("plusAnnualTitle"),
-    plusAnnualNote: $("plusAnnualNote"),
-    plusAnnualPrice: $("plusAnnualPrice"),
+    plusMonthlyAutoTitle: $("plusMonthlyAutoTitle"),
+    plusMonthlyAutoNote: $("plusMonthlyAutoNote"),
+    plusMonthlyAutoPrice: $("plusMonthlyAutoPrice"),
     plusLaunchPrice: $("plusLaunchPrice"),
     plusRegularPrice: $("plusRegularPrice"),
     plusFootnote: $("plusFootnote"),
@@ -1249,30 +1255,33 @@
     dom.freePlanList.innerHTML = t("freePlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     dom.plusPlanList.innerHTML = t("plusPlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     const iapDisplayPrices = window.STYLE_ATLAS_RUNTIME_CONFIG?.iapDisplayPrices || {};
-    const selectedPlan = store.selectedPlusPlan === "annual" ? "annual" : "annual_auto";
+    const selectedPlan = store.selectedPlusPlan === "monthly_auto" ? "monthly_auto" : "annual_auto";
+    const annualTrialEligible = String(iapDisplayPrices.annual_trial_eligible) === "true";
     const selectedPrice = iapDisplayPrices[selectedPlan] || "";
     dom.plusPlanPickerLegend.textContent = t("planPicker");
     dom.plusAnnualAutoTitle.textContent = t("annualAutoTitle");
-    dom.plusAnnualAutoNote.textContent = t("annualAutoNote");
+    dom.plusAnnualAutoNote.textContent = t(annualTrialEligible ? "annualAutoTrialNote" : "annualAutoNote");
     dom.plusAnnualAutoBadge.textContent = t("annualAutoBadge");
-    dom.plusAnnualTitle.textContent = t("annualTitle");
-    dom.plusAnnualNote.textContent = t("annualNote");
+    dom.plusMonthlyAutoTitle.textContent = t("monthlyAutoTitle");
+    dom.plusMonthlyAutoNote.textContent = t("monthlyAutoNote");
     dom.plusAnnualAutoPrice.textContent = iapDisplayPrices.annual_auto || t("priceLoading");
-    dom.plusAnnualPrice.textContent = iapDisplayPrices.annual || t("priceLoading");
+    dom.plusMonthlyAutoPrice.textContent = iapDisplayPrices.monthly_auto || t("priceLoading");
     dom.plusPlanPicker.querySelectorAll("input[name='plus-plan']").forEach((input) => {
       input.checked = input.value === selectedPlan;
       input.disabled = !iapReady || hasPlusAccess();
     });
     dom.plusPlanPicker.hidden = freeLaunch || web;
     dom.plusLaunchPrice.textContent = iapReady
-      ? `${selectedPrice || t("priceLoading")} / ${store.lang === "zh" ? "年" : "year"}`
+      ? `${selectedPrice || t("priceLoading")} / ${selectedPlan === "monthly_auto" ? (store.lang === "zh" ? "月" : "month") : (store.lang === "zh" ? "年" : "year")}`
       : t("appStorePrice");
     dom.plusRegularPrice.textContent = "";
     dom.plusLaunchPrice.parentElement.hidden = freeLaunch;
     dom.plusRegularPrice.hidden = true;
     dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : (iapReady ? t("iapFootnote") : t("appStoreFootnote"));
     dom.plusRenewalDisclosure.textContent = iapReady
-      ? t(selectedPlan === "annual_auto" ? "annualAutoDisclosure" : "annualDisclosure")
+      ? t(selectedPlan === "annual_auto"
+        ? (annualTrialEligible ? "annualAutoDisclosure" : "annualAutoStandardDisclosure")
+        : "monthlyAutoDisclosure")
       : "";
     dom.plusRenewalDisclosure.hidden = !iapReady;
     dom.plusTermsLink.textContent = t("termsOfUse");
@@ -1288,7 +1297,9 @@
         ? t("purchaseLoading")
         : (storeAction === "pending"
           ? t("purchasePending")
-          : (iapReady ? t(selectedPlan === "annual_auto" ? "subscribePlus" : "buyAnnualPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"))))));
+          : (iapReady ? t(selectedPlan === "annual_auto"
+            ? (annualTrialEligible ? "subscribeAnnualPlus" : "buyAnnualPlus")
+            : "subscribeMonthlyPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"))))));
     dom.plusCta.disabled = web ? false : (hasPlusAccess() || !iapReady || !selectedPrice || isStoreBusy);
     dom.plusRestoreBtn.hidden = !iapReady || hasPlusAccess();
     dom.plusRestoreBtn.textContent = storeAction === "restoring" ? t("restoreLoading") : t("restorePurchases");
@@ -2625,7 +2636,6 @@
     ctx.font = `800 ${subtitleSize}px sans-serif`;
     wrap(ctx, style.name.zh, 68, subtitleY, canvas.width - 136, subtitleSize * 1.18);
     await drawShareQRCode(ctx, qrLayout);
-    drawWatermark(ctx, canvas.width, canvas.height, qrLayout.width + 88);
     return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
@@ -2713,7 +2723,6 @@
       const summaryLines = wrappedLines(ctx, style.summary[store.lang], qrLayout.x - 104).slice(0, 3);
       summaryLines.forEach((line, index) => ctx.fillText(line, 68, dividerY + 76 + index * 58));
       await drawShareQRCode(ctx, qrLayout);
-      drawWatermark(ctx, canvas.width, canvas.height, qrLayout.width + 88);
       return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
@@ -2939,25 +2948,6 @@
     const lines = wrappedLines(ctx, textValue, maxWidth);
     lines.forEach((line, index) => ctx.fillText(line, centered ? x : x, y + index * lineHeight));
     return y + Math.max(0, lines.length - 1) * lineHeight;
-  }
-
-  function drawWatermark(ctx, width, height, rightInset = 60) {
-    if (!ACCESS_CONFIG.freeExportWatermark || hasPlusAccess()) return;
-    const watermark = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Style Atlas";
-    ctx.save();
-    ctx.globalAlpha = 0.62;
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#493816";
-    ctx.font = "700 20px sans-serif";
-    const textWidth = ctx.measureText(watermark).width;
-    const textX = width - rightInset;
-    const textY = height - 24;
-    ctx.fillRect(textX - textWidth - 54, textY - 8, 34, 2);
-    ctx.beginPath();
-    ctx.arc(textX - textWidth - 9, textY - 9, 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillText(watermark, textX, textY);
-    ctx.restore();
   }
 
   function toast(message) {
@@ -3564,7 +3554,7 @@
 
     dom.plusPlanPicker.addEventListener("change", (event) => {
       const input = event.target.closest("input[name='plus-plan']");
-      if (!input || !["annual", "annual_auto"].includes(input.value)) return;
+      if (!input || !["monthly_auto", "annual_auto"].includes(input.value)) return;
       store.selectedPlusPlan = input.value;
       showPlus(store.plusReasonKey || "plusSubtitle");
     });
@@ -3802,8 +3792,9 @@
     setProductPrices(value) {
       const prices = value && typeof value === "object" ? value : {};
       window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrices = {
-        annual: String(prices.annual || ""),
-        annual_auto: String(prices.annual_auto || "")
+        monthly_auto: String(prices.monthly_auto || ""),
+        annual_auto: String(prices.annual_auto || ""),
+        annual_trial_eligible: String(prices.annual_trial_eligible || "false")
       };
       if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
       return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrices;

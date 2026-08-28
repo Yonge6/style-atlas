@@ -6,7 +6,7 @@ This is the first iOS shell for Xiazishuo Style Atlas. It includes a minimal Xco
 
 - SwiftUI shell files are provided.
 - `WKWebView` loads bundled `Resources/Web/index.html`.
-- StoreKit 2 supports the V1.5 one-year pass and annual auto-renewing Plus plans while preserving legacy lifetime entitlements.
+- StoreKit 2 supports the V1.6 monthly and annual auto-renewing Plus plans while preserving legacy one-year and lifetime entitlements.
 - Web can call native `purchasePlus` and `restorePurchases`.
 - Native can inject `window.StyleAtlasNativeBridge.setPlusAccess(true / false)`.
 - Native injects both localized StoreKit prices into the Plus paywall.
@@ -115,8 +115,9 @@ Resources/StoreKit/StyleAtlas.storekit
 
 Products:
 
-- `xiazishuo_style_atlas_plus_annual`: non-renewing one-year pass, `$29.99` in the local configuration; the app calculates one Gregorian year from the verified purchase date.
-- `xiazishuo_style_atlas_plus_annual_auto`: annual auto-renewing subscription, `$19.99` in the local configuration and selected by default.
+- `xiazishuo_style_atlas_plus_monthly_auto`: monthly auto-renewing subscription, `$9.99` in the local configuration.
+- `xiazishuo_style_atlas_plus_annual_auto`: annual auto-renewing subscription, `$89.99` in the local configuration, selected by default, with a 7-day introductory free trial for eligible new subscribers.
+- `xiazishuo_style_atlas_plus_annual`: legacy non-renewing one-year entitlement retained only for prior purchasers.
 - `xiazishuo_style_atlas_plus_lifetime`: legacy non-consumable entitlement retained only for existing purchasers.
 
 If Xcode cannot recognize the included `.storekit` file, create a new StoreKit Configuration in Xcode and enter the same product values above. All Product IDs must stay exactly the same.
@@ -142,10 +143,11 @@ window.STYLE_ATLAS_RUNTIME_CONFIG = {
 
 This enables the native StoreKit 2 flow while keeping the web version unchanged:
 
-- the native app shows both annual Plus plans and Restore Purchases
+- the native app shows monthly and annual auto-renewing Plus plans and Restore Purchases
 - the web version cannot initiate a purchase
-- new customers choose a one-year pass or annual auto-renewing subscription
-- existing lifetime purchasers keep permanent Plus access
+- new customers choose a monthly subscription or an annual subscription
+- eligible new subscribers see the annual 7-day free trial; ineligible customers see the standard annual purchase action
+- existing one-year-pass and lifetime purchasers keep their valid Plus access
 - GitHub Pages still defaults to `submissionMode: "web"`
 
 ## App Store Assets
@@ -183,14 +185,14 @@ Before uploading screenshots to App Store Connect, confirm the required screensh
 Before shipping the subscription update:
 
 1. Create the App Store Connect Plus products:
-   `xiazishuo_style_atlas_plus_annual`
+   `xiazishuo_style_atlas_plus_monthly_auto`
    `xiazishuo_style_atlas_plus_annual_auto`
-   Keep `xiazishuo_style_atlas_plus_lifetime` for legacy entitlement verification.
+   Keep `xiazishuo_style_atlas_plus_annual` and `xiazishuo_style_atlas_plus_lifetime` for legacy entitlement verification only.
 2. Complete IAP metadata.
 3. Test Sandbox purchase.
 4. Test Restore Purchases.
 5. Confirm `WebView/WebViewContainer.swift` remains in `submissionMode: "iap"`.
-6. Update the App Store description and review notes to disclose both annual Plus plans and the automatic-renewal terms.
+6. Update the App Store description and review notes to disclose both subscription periods, the annual introductory offer, and the automatic-renewal terms.
 
 ## Local Purchase Test
 
@@ -198,11 +200,11 @@ The shared Xcode scheme selects `StyleAtlas.storekit` for local StoreKit testing
 
 1. Launch the app from Xcode.
 2. Open Plus Paywall in the web UI.
-3. Confirm the annual auto-renewing subscription is selected by default and shows `$19.99`.
-4. Tap `Start annual subscription` and confirm the StoreKit local purchase sheet.
+3. Confirm the annual auto-renewing subscription is selected by default, shows `$89.99`, and offers a 7-day free trial for an eligible fresh StoreKit account.
+4. Tap `Start 7-day free trial` and confirm the StoreKit local purchase sheet.
 5. Verify locked style archives unlock and Restore Purchases retains access.
-6. Reset StoreKit transactions, select the non-renewing one-year pass, and confirm it shows `$29.99`.
-7. Verify purchase, restore, expiry and legacy lifetime migration independently before release.
+6. Reset StoreKit transactions, select the monthly subscription, and confirm it shows `$9.99` and renews monthly.
+7. Verify purchase, restore, cancellation, trial eligibility, expiry, and both legacy entitlement migrations independently before release.
 
 ## Native Bridge Test
 
@@ -274,14 +276,14 @@ StoreKit local purchase for future IAP mode:
 
 1. Switch `submissionMode` to `iap`.
 2. Open Plus Paywall.
-3. Confirm the annual auto-renewing plan is selected by default, or select the one-year pass.
+3. Confirm the annual auto-renewing plan is selected by default, or select the monthly subscription.
 4. Start the selected plan.
 5. StoreKit local purchase sheet appears for the matching Product ID.
 6. Successful purchase unlocks locked content.
 7. Export watermark disappears.
 8. Saved style limit is removed.
 9. Restarting the app keeps active Plus access.
-10. `Restore Purchases` restores active annual or legacy lifetime access.
+10. `Restore Purchases` restores active monthly, annual, or legacy access.
 
 Language:
 
@@ -322,7 +324,7 @@ If StoreKit 2 is working:
 
 - Paywall can show the purchase button.
 - Restore Purchases must be visible and working.
-- App Review Notes should identify the non-renewing one-year pass, the annual auto-renewing subscription, and the retained legacy lifetime entitlement.
+- App Review Notes should identify the monthly and annual auto-renewing subscriptions, the annual introductory offer, and both retained legacy entitlement types.
 
 Never add external payment links inside the app.
 

@@ -32,13 +32,13 @@ enum StoreActionResult {
 }
 
 enum PlusPlan: String, CaseIterable {
-    case annual
+    case monthlyAuto = "monthly_auto"
     case annualAuto = "annual_auto"
 
     var productID: String {
         switch self {
-        case .annual:
-            return "xiazishuo_style_atlas_plus_annual"
+        case .monthlyAuto:
+            return "xiazishuo_style_atlas_plus_monthly_auto"
         case .annualAuto:
             return "xiazishuo_style_atlas_plus_annual_auto"
         }
@@ -49,15 +49,19 @@ private struct StoreTimeoutError: Error {}
 
 @MainActor
 final class StoreManager: ObservableObject {
+    static let legacyAnnualProductID = "xiazishuo_style_atlas_plus_annual"
     static let legacyLifetimeProductID = "xiazishuo_style_atlas_plus_lifetime"
     static let purchasableProductIDs = Set(PlusPlan.allCases.map(\.productID))
-    static let entitlementProductIDs = purchasableProductIDs.union([legacyLifetimeProductID])
+    static let entitlementProductIDs = purchasableProductIDs.union([legacyAnnualProductID, legacyLifetimeProductID])
 
     @Published private(set) var productsByPlan: [PlusPlan: Product] = [:]
+    @Published private(set) var annualTrialEligible = false
     @Published private(set) var lastErrorCode: StoreErrorCode?
 
     var productDisplayPrices: [String: String] {
-        Dictionary(uniqueKeysWithValues: productsByPlan.map { ($0.key.rawValue, $0.value.displayPrice) })
+        var prices = Dictionary(uniqueKeysWithValues: productsByPlan.map { ($0.key.rawValue, $0.value.displayPrice) })
+        prices["annual_trial_eligible"] = annualTrialEligible ? "true" : "false"
+        return prices
     }
 
     var isOperationInFlight: Bool {
@@ -85,7 +89,7 @@ final class StoreManager: ObservableObject {
     }
 
     func start() async {
-        logger.info("operation=start status=started products=annual,annual_auto")
+        logger.info("operation=start status=started products=monthly_auto,annual_auto")
         listenForTransactions()
         await refreshEntitlements()
         await loadProducts()
@@ -93,7 +97,7 @@ final class StoreManager: ObservableObject {
 
     @discardableResult
     func loadProducts() async -> Bool {
-        logger.info("operation=loadProducts status=started products=annual,annual_auto")
+        logger.info("operation=loadProducts status=started products=monthly_auto,annual_auto")
         do {
             let products = try await withTimeout {
                 try await Product.products(for: Array(Self.purchasableProductIDs))
@@ -105,10 +109,11 @@ final class StoreManager: ObservableObject {
                 recordFailure(
                     operation: "loadProducts",
                     code: .productUnavailable,
-                    debugMessage: "Product.products did not return both annual Plus products."
+                    debugMessage: "Product.products did not return both auto-renewing Plus products."
                 )
                 return false
             }
+            annualTrialEligible = await productsByPlan[.annualAuto]?.subscription?.isEligibleForIntroOffer ?? false
             lastErrorCode = nil
             logger.info("operation=loadProducts status=succeeded count=2")
             return true
@@ -258,7 +263,7 @@ final class StoreManager: ObservableObject {
         if !hasPlus {
             for await result in Transaction.all {
                 guard case .verified(let transaction) = result,
-                      transaction.productID == PlusPlan.annual.productID else { continue }
+                      transaction.productID == Self.legacyAnnualProductID else { continue }
                 if isActive(transaction) {
                     hasPlus = true
                     break
@@ -271,7 +276,7 @@ final class StoreManager: ObservableObject {
 
     private func isActive(_ transaction: Transaction) -> Bool {
         guard transaction.revocationDate == nil else { return false }
-        if transaction.productID == PlusPlan.annual.productID {
+        if transaction.productID == Self.legacyAnnualProductID {
             var calendar = Calendar(identifier: .gregorian)
             calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? .current
             guard let expirationDate = calendar.date(byAdding: .year, value: 1, to: transaction.purchaseDate) else {

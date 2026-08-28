@@ -81,12 +81,12 @@
       "id": "style-atlas-plus-subscription-group",
       "localizations": [
         {
-          "description": "Annual access to the complete Style Atlas Plus learning experience.",
+          "description": "Monthly or annual access to the complete Style Atlas Plus learning experience.",
           "displayName": "Style Atlas Plus",
           "locale": "en_US"
         },
         {
-          "description": "按年使用完整的 Style Atlas Plus 学习体验。",
+          "description": "按月或按年使用完整的 Style Atlas Plus 学习体验。",
           "displayName": "Style Atlas Plus",
           "locale": "zh_Hans"
         }
@@ -96,19 +96,50 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "19.99",
+          "displayPrice": "9.99",
           "familyShareable": false,
           "groupNumber": 1,
-          "internalID": "style-atlas-plus-annual-auto",
+          "internalID": "style-atlas-plus-monthly-auto",
           "introductoryOffer": null,
           "localizations": [
             {
-              "description": "Full Plus access, billed yearly until cancelled.",
+              "description": "Full Plus access, billed monthly until cancelled.",
+              "displayName": "Style Atlas Plus Monthly",
+              "locale": "en_US"
+            },
+            {
+              "description": "完整 Style Atlas Plus 权益，按月付费并自动续订，可随时取消。",
+              "displayName": "Style Atlas Plus 连续包月",
+              "locale": "zh_Hans"
+            }
+          ],
+          "productID": "xiazishuo_style_atlas_plus_monthly_auto",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Style Atlas Plus Monthly Auto-Renewable",
+          "subscriptionGroupID": "style-atlas-plus-subscription-group",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "89.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "style-atlas-plus-annual-auto",
+          "introductoryOffer": {
+            "internalID": "style-atlas-plus-annual-seven-day-trial",
+            "paymentMode": "free",
+            "subscriptionPeriod": "P1W"
+          },
+          "localizations": [
+            {
+              "description": "Full Plus access with a 7-day free trial for eligible new subscribers, then billed yearly until cancelled.",
               "displayName": "Style Atlas Plus Annual",
               "locale": "en_US"
             },
             {
-              "description": "完整 Style Atlas Plus 权益，按年付费并自动续订，可随时取消。",
+              "description": "完整 Style Atlas Plus 权益，符合资格的新订阅用户可享 7 天免费试用，之后按年付费并自动续订，可随时取消。",
               "displayName": "Style Atlas Plus 连续包年",
               "locale": "zh_Hans"
             }

@@ -21,8 +21,7 @@ required_web_files=(
   "assets/icons/menu.svg"
   "assets/icons/search.svg"
   "assets/icons/shuffle.svg"
-  "assets/support/wechat-appreciation-code.png"
-  "assets/support/wechat-appreciation.webp"
+  "assets/styles/style-atlas-h5-qr.png"
 )
 
 for file in "${required_web_files[@]}"; do
