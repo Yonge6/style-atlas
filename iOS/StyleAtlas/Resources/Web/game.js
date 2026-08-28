@@ -2908,13 +2908,11 @@
   function shareQRCodeLayout(canvasWidth, canvasHeight) {
     const size = Math.round(Math.min(154, canvasWidth * 0.143));
     const padding = 12;
-    const labelHeight = 28;
     const width = size + padding * 2;
-    const height = size + padding * 2 + labelHeight;
+    const height = size + padding * 2;
     return {
       size,
       padding,
-      labelHeight,
       width,
       height,
       x: canvasWidth - width - 44,
@@ -2934,10 +2932,6 @@
     ctx.fill();
     ctx.shadowColor = "transparent";
     ctx.drawImage(qr, x + padding, y + padding, size, size);
-    ctx.fillStyle = "#493816";
-    ctx.font = "700 12px sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("style-atlas.wonderelian.com", x + width / 2, y + height - 12);
     ctx.restore();
   }
 

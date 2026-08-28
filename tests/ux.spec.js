@@ -638,7 +638,7 @@ test("home share card omits the top style number and product name", async ({ pag
   const canvasText = await page.evaluate(() => window.__canvasText);
   expect(canvasText).not.toContain(styleNumber);
   expect(canvasText.filter((value) => value === "虾子曰艺术风格图鉴")).toHaveLength(1);
-  expect(canvasText).toContain("style-atlas.wonderelian.com");
+  expect(canvasText).not.toContain("style-atlas.wonderelian.com");
 });
 
 test("WeChat H5 share opens a QR share image for long press instead of failing", async ({ page }) => {
