@@ -336,6 +336,7 @@ test("iPhone WeChat download surfaces show browser guidance and copy the App Sto
   await expect(page.getByRole("dialog", { name: "请在默认浏览器中打开" })).toContainText("在默认浏览器中打开");
   await page.locator("#wechatDownloadCopyBtn").click();
   await expect(page.locator("#wechatDownloadStatus")).toContainText("已复制");
+  await expect(page.locator("#toast")).not.toHaveClass(/show/);
   await expect.poll(() => page.evaluate(() => sessionStorage.getItem("copiedAppStoreLink"))).toBe(
     "https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&ct=Website%20Organic&mt=8"
   );
