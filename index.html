@@ -21,7 +21,7 @@
   <link rel="canonical" href="https://style-atlas.wonderelian.com/" />
   <title>Style Atlas: Art &amp; Design | Visual Inspiration</title>
   <link rel="icon" type="image/png" href="./assets/brand/app-icon.png" />
-  <link rel="stylesheet" href="./styles.css?v=20260828-share-qr-clean" />
+  <link rel="stylesheet" href="./styles.css?v=20260903-wechat-download" />
   <script src="/analytics.js" defer></script>
   <script type="application/ld+json">
     {
@@ -258,6 +258,23 @@
       <button id="plusCloseBtn" class="plus-close" type="button" data-action="close-plus" aria-label="关闭 Plus"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
     </div>
   </div>
+  <div id="wechatDownloadGuide" class="wechat-download-guide" hidden>
+    <div class="wechat-download-pointer" aria-hidden="true">
+      <span>···</span>
+      <span class="wechat-download-pointer-arrow">↗</span>
+    </div>
+    <div id="wechatDownloadPanel" class="wechat-download-panel" role="dialog" aria-modal="true" aria-labelledby="wechatDownloadTitle" aria-describedby="wechatDownloadBody" tabindex="-1">
+      <button id="wechatDownloadCloseBtn" class="wechat-download-close" type="button" data-action="close-wechat-download" aria-label="关闭提示"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
+      <p id="wechatDownloadKicker" class="drawer-kicker">微信内打开</p>
+      <h2 id="wechatDownloadTitle">请在默认浏览器中打开</h2>
+      <p id="wechatDownloadBody">点击右上角 ···，选择“在默认浏览器中打开”，再点击下载即可前往 App Store。</p>
+      <div class="wechat-download-actions">
+        <button id="wechatDownloadGotItBtn" class="copy-btn wechat-download-primary" type="button" data-action="close-wechat-download">知道了</button>
+        <button id="wechatDownloadCopyBtn" class="copy-btn wechat-download-secondary" type="button" data-action="copy-app-store-link">复制 App Store 链接</button>
+      </div>
+      <p id="wechatDownloadStatus" class="wechat-download-status" role="status" aria-live="polite"></p>
+    </div>
+  </div>
   <div id="videoChannelModal" class="support-modal" hidden>
     <div id="videoChannelPanel" class="support-panel video-channel-panel" role="dialog" aria-modal="true" aria-labelledby="videoChannelTitle" aria-describedby="videoChannelCaption" tabindex="-1">
       <button id="videoChannelCloseBtn" class="support-close" type="button" data-action="close-video-channel" aria-label="关闭视频号二维码"><span class="ui-icon ui-icon-x" aria-hidden="true"></span></button>
@@ -309,6 +326,6 @@
   <script src="./data-refined.js"></script>
   <script src="./data-aesthetic-guides.js"></script>
   <script src="./examples.js"></script>
-  <script src="./game.js?v=20260828-share-qr-clean"></script>
+  <script src="./game.js?v=20260903-wechat-download"></script>
 </body>
 </html>
