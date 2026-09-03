@@ -1178,7 +1178,7 @@
   }
 
   async function copyAppStoreLink() {
-    const copied = await copyText(APP_STORE_URL);
+    const copied = await copyText(APP_STORE_URL, false);
     dom.wechatDownloadStatus.textContent = t(copied ? "wechatDownloadCopied" : "wechatDownloadCopyFailed");
   }
 
@@ -2475,7 +2475,7 @@
     if (store.view === "detail") window.scrollTo(0, scrollPosition);
   }
 
-  async function copyText(value) {
+  async function copyText(value, notify = true) {
     try {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(value);
@@ -2490,10 +2490,10 @@
         if (!document.execCommand("copy")) throw new Error("copy failed");
         input.remove();
       }
-      toast(t("copied"));
+      if (notify) toast(t("copied"));
       return true;
     } catch {
-      toast(t("copyFailed"));
+      if (notify) toast(t("copyFailed"));
       return false;
     }
   }
