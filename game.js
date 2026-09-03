@@ -296,6 +296,14 @@
       drawerDownloadCtaNote: "免费下载 · iPhone",
       drawerReviewCta: "已经安装？去评分与评价",
       drawerReviewCtaNote: "你的反馈会帮助图鉴继续完善",
+      wechatDownloadKicker: "微信内打开",
+      wechatDownloadTitle: "请在默认浏览器中打开",
+      wechatDownloadBody: "点击右上角 ···，选择“在默认浏览器中打开”，再点击下载即可前往 App Store。",
+      wechatDownloadGotIt: "知道了",
+      wechatDownloadCopy: "复制 App Store 链接",
+      wechatDownloadCopied: "已复制，可粘贴到 Safari 打开",
+      wechatDownloadCopyFailed: "复制失败，请长按链接复制",
+      wechatDownloadClose: "关闭提示",
       drawerContactTitle: "联系我们",
       drawerContactNote: "邮箱与社交媒体",
       drawerWorksTitle: "沿途所作",
@@ -540,6 +548,14 @@
       drawerDownloadCtaNote: "Free download · iPhone",
       drawerReviewCta: "Already installed? Rate the app",
       drawerReviewCtaNote: "Your review helps the atlas keep improving",
+      wechatDownloadKicker: "OPEN FROM WECHAT",
+      wechatDownloadTitle: "Open in your default browser",
+      wechatDownloadBody: "Tap ··· in the top-right, choose “Open in Default Browser,” then tap download again to open the App Store.",
+      wechatDownloadGotIt: "Got it",
+      wechatDownloadCopy: "Copy App Store link",
+      wechatDownloadCopied: "Copied. Paste the link into Safari to continue.",
+      wechatDownloadCopyFailed: "Could not copy. Press and hold the link to copy it.",
+      wechatDownloadClose: "Close instructions",
       drawerContactTitle: "Contact",
       drawerContactNote: "Email and social channels",
       drawerWorksTitle: "WORKS ALONG THE WAY",
@@ -834,6 +850,12 @@
     plusCta: $("plusCta"),
     plusRestoreBtn: $("plusRestoreBtn"),
     plusCloseBtn: $("plusCloseBtn"),
+    wechatDownloadGuide: $("wechatDownloadGuide"),
+    wechatDownloadPanel: $("wechatDownloadPanel"),
+    wechatDownloadCloseBtn: $("wechatDownloadCloseBtn"),
+    wechatDownloadGotItBtn: $("wechatDownloadGotItBtn"),
+    wechatDownloadCopyBtn: $("wechatDownloadCopyBtn"),
+    wechatDownloadStatus: $("wechatDownloadStatus"),
     videoChannelModal: $("videoChannelModal"),
     videoChannelPanel: $("videoChannelPanel"),
     videoChannelCloseBtn: $("videoChannelCloseBtn"),
@@ -1150,9 +1172,11 @@
     const panel = $("a11yDebugPanel");
     if (!panel) return;
     const focus = document.activeElement;
-    const overlay = !dom.plusModal.hidden
-      ? "Plus"
-      : (!dom.lightbox.hidden ? "Lightbox" : (!dom.guidedOverlay.hidden ? "Guided Looking" : (store.drawerOpen ? "Drawer" : "None")));
+    const overlay = !dom.wechatDownloadGuide.hidden
+      ? "WeChat Download"
+      : (!dom.plusModal.hidden
+        ? "Plus"
+        : (!dom.lightbox.hidden ? "Lightbox" : (!dom.guidedOverlay.hidden ? "Guided Looking" : (store.drawerOpen ? "Drawer" : "None"))));
     panel.textContent = [
       `View: ${store.view}`,
       `Focus: ${focus?.id || focus?.tagName || "None"}`,
@@ -1176,9 +1200,36 @@
     return Boolean(window.webkit?.messageHandlers?.styleAtlas);
   }
 
-  function openAppStore() {
+  function isIPhoneWeChatBrowser() {
+    const userAgent = navigator.userAgent || "";
+    return /MicroMessenger/i.test(userAgent) && /iPhone/i.test(userAgent);
+  }
+
+  function showWechatDownloadGuide(returnFocus = null) {
+    const activeElement = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    const focusTarget = activeElement?.closest("#drawer") ? dom.drawerBtn : activeElement;
+    dom.wechatDownloadStatus.textContent = "";
+    if (dom.wechatDownloadGuide.hidden) openOverlay(dom.wechatDownloadGuide, dom.wechatDownloadPanel, focusTarget);
+  }
+
+  function closeWechatDownloadGuide(restoreFocus = true) {
+    if (dom.wechatDownloadGuide.hidden) return;
+    closeOverlay(dom.wechatDownloadGuide, restoreFocus);
+  }
+
+  async function copyAppStoreLink() {
+    const copied = await copyText(APP_STORE_URL);
+    dom.wechatDownloadStatus.textContent = t(copied ? "wechatDownloadCopied" : "wechatDownloadCopyFailed");
+  }
+
+  function openAppStore(returnFocus = null) {
+    const source = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     if (store.drawerOpen) setDrawer(false, false);
     if (!dom.plusModal.hidden) closePlus(false);
+    if (!hasNativeBridge() && isIPhoneWeChatBrowser()) {
+      showWechatDownloadGuide(source);
+      return;
+    }
     window.location.assign(APP_STORE_URL);
   }
 
@@ -1209,6 +1260,7 @@
     if (container !== dom.lightbox && !dom.lightbox.hidden) closeImage(false);
     if (container !== dom.guidedOverlay && !dom.guidedOverlay.hidden) closeGuided(false);
     if (container !== dom.videoChannelModal && !dom.videoChannelModal.hidden) closeVideoChannel(false);
+    if (container !== dom.wechatDownloadGuide && !dom.wechatDownloadGuide.hidden) closeWechatDownloadGuide(false);
     if (store.drawerOpen) setDrawer(false, false);
     store.overlayReturnFocus = intendedReturnFocus;
     store.overlayScrollY = window.scrollY;
@@ -2259,7 +2311,7 @@
           ${t("appFeatures").map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
         </ul>
         <p>${escapeHtml(t("downloadAppNote"))}</p>
-        <a class="copy-btn app-store-link" href="${APP_STORE_URL}" target="_blank" rel="noopener">${escapeHtml(t("downloadOnAppStore"))}<span aria-hidden="true">↗</span></a>
+        <a class="copy-btn app-store-link" href="${APP_STORE_URL}" target="_blank" rel="noopener" data-action="download-app">${escapeHtml(t("downloadOnAppStore"))}<span aria-hidden="true">↗</span></a>
       </section>
       <section class="detail-section">
         <h2>${store.lang === "zh" ? "免费版能做什么" : "What Free Includes"}</h2>
@@ -3481,7 +3533,8 @@
 
     document.body.addEventListener("click", (event) => {
       const row = event.target.closest("[data-style]");
-      const action = event.target.closest("[data-action]")?.dataset.action;
+      const actionTarget = event.target.closest("[data-action]");
+      const action = actionTarget?.dataset.action;
       const id = event.target.closest("[data-id]")?.dataset.id;
       const ratio = event.target.closest("[data-ratio]")?.dataset.ratio;
       const filter = event.target.closest("[data-filter]")?.dataset.filter;
@@ -3491,6 +3544,11 @@
       }
       if (action === "save") return toggleSaved();
       if (action === "share") return shareStyle();
+      if (action === "download-app") {
+        event.preventDefault();
+        event.stopPropagation();
+        return openAppStore(actionTarget);
+      }
       if (action === "open-image") {
         const img = event.target.closest("[data-action='open-image']")?.querySelector("img") || event.target.closest("img");
         if (!img) return;
@@ -3498,7 +3556,7 @@
       }
       if (action === "open-style" && id) return openDetail(id, store.view, event.target.closest("[data-return-section]")?.dataset.returnSection || "");
       if (action === "purchase-plus") {
-        if (!hasNativeBridge()) return openAppStore();
+        if (!hasNativeBridge()) return openAppStore(actionTarget);
         if (!isIapMode()) return toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
         if (["purchasing", "restoring", "pending"].includes(window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction)) return;
         setStoreActionFromNative("purchasing");
@@ -3524,6 +3582,8 @@
       if (action === "save-lightbox") return saveImage();
       if (action === "show-plus") return showPlus();
       if (action === "close-plus") return closePlus();
+      if (action === "close-wechat-download") return closeWechatDownloadGuide();
+      if (action === "copy-app-store-link") return copyAppStoreLink();
       if (action === "show-video-channel") return showVideoChannel();
       if (action === "close-video-channel") return closeVideoChannel();
       if (action === "plus-export") return canExportHighRes() ? saveShareCard() : showPlus("highResLocked");
@@ -3562,6 +3622,9 @@
     dom.plusModal.addEventListener("click", (event) => {
       if (event.target === dom.plusModal) closePlus();
     });
+    dom.wechatDownloadGuide.addEventListener("click", (event) => {
+      if (event.target === dom.wechatDownloadGuide) closeWechatDownloadGuide();
+    });
     dom.videoChannelModal.addEventListener("click", (event) => {
       if (!event.target.closest("#videoChannelPanel")) closeVideoChannel();
     });
@@ -3594,9 +3657,6 @@
     document.querySelectorAll(".nav-btn").forEach((button) => {
       button.addEventListener("click", (event) => {
         if (button.dataset.action === "download-app") {
-          event.preventDefault();
-          event.stopPropagation();
-          openAppStore();
           return;
         }
         if (button.dataset.action === "show-plus") {
@@ -3622,15 +3682,18 @@
       copyText(list || t("productName"));
     });
     document.addEventListener("keydown", (event) => {
-      const overlay = !dom.videoChannelModal.hidden
-        ? dom.videoChannelModal
-        : (!dom.plusModal.hidden
+      const overlay = !dom.wechatDownloadGuide.hidden
+        ? dom.wechatDownloadGuide
+        : (!dom.videoChannelModal.hidden
+          ? dom.videoChannelModal
+          : (!dom.plusModal.hidden
           ? dom.plusModal
-          : (!dom.lightbox.hidden ? dom.lightbox : (!dom.guidedOverlay.hidden ? dom.guidedOverlay : (store.drawerOpen ? dom.drawer : null))));
+          : (!dom.lightbox.hidden ? dom.lightbox : (!dom.guidedOverlay.hidden ? dom.guidedOverlay : (store.drawerOpen ? dom.drawer : null)))));
       if (!overlay) return;
       if (event.key === "Escape") {
         event.preventDefault();
-        if (!dom.videoChannelModal.hidden) closeVideoChannel();
+        if (!dom.wechatDownloadGuide.hidden) closeWechatDownloadGuide();
+        else if (!dom.videoChannelModal.hidden) closeVideoChannel();
         else if (!dom.plusModal.hidden) closePlus();
         else if (!dom.lightbox.hidden) closeImage();
         else if (!dom.guidedOverlay.hidden) closeGuided();
@@ -3700,6 +3763,12 @@
     $("drawerDownloadCtaNote").textContent = t("drawerDownloadCtaNote");
     $("drawerReviewCta").textContent = t("drawerReviewCta");
     $("drawerReviewCtaNote").textContent = t("drawerReviewCtaNote");
+    $("wechatDownloadKicker").textContent = t("wechatDownloadKicker");
+    $("wechatDownloadTitle").textContent = t("wechatDownloadTitle");
+    $("wechatDownloadBody").textContent = t("wechatDownloadBody");
+    dom.wechatDownloadGotItBtn.textContent = t("wechatDownloadGotIt");
+    dom.wechatDownloadCopyBtn.textContent = t("wechatDownloadCopy");
+    dom.wechatDownloadCloseBtn.setAttribute("aria-label", t("wechatDownloadClose"));
     $("drawerWorksTitle").textContent = t("drawerWorksTitle");
     $("drawerWorksHeading").textContent = t("drawerWorksHeading");
     $("drawerWorkWonderTitle").textContent = t("drawerWorkWonderTitle");

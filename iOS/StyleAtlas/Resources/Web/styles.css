@@ -3284,6 +3284,124 @@ body.detail-mode {
   display: none;
 }
 
+.wechat-download-guide {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  padding: max(92px, calc(env(safe-area-inset-top) + 72px)) 18px max(22px, env(safe-area-inset-bottom));
+  background: rgba(2, 2, 1, 0.82);
+  backdrop-filter: blur(12px);
+}
+
+.wechat-download-guide[hidden] {
+  display: none;
+}
+
+.wechat-download-pointer {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  right: max(18px, env(safe-area-inset-right));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f2ca68;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  animation: wechat-pointer-nudge 1.4s ease-in-out infinite;
+}
+
+.wechat-download-pointer-arrow {
+  font-size: 30px;
+}
+
+.wechat-download-panel {
+  position: relative;
+  width: min(100%, 390px);
+  padding: 28px 24px 22px;
+  border: 1px solid rgba(235, 199, 112, 0.52);
+  border-radius: 8px;
+  background: #15130e;
+  color: #f5e8c7;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.72);
+}
+
+.wechat-download-panel:focus {
+  outline: none;
+}
+
+.wechat-download-panel h2 {
+  margin: 8px 0 12px;
+  color: #fff0c9;
+  font-size: 25px;
+  line-height: 1.22;
+}
+
+.wechat-download-panel > p:not(.drawer-kicker):not(.wechat-download-status) {
+  margin: 0;
+  color: #cfc09b;
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.wechat-download-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(235, 199, 112, 0.34);
+  border-radius: 50%;
+  background: #0c0b08;
+  color: #eadcb9;
+}
+
+.wechat-download-actions {
+  display: grid;
+  gap: 9px;
+  margin-top: 22px;
+}
+
+.wechat-download-actions .copy-btn {
+  width: 100%;
+  min-height: 48px;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.wechat-download-primary {
+  border-color: #e0ac36;
+  background: #e0ac36;
+  color: #171007;
+  font-weight: 800;
+}
+
+.wechat-download-secondary {
+  background: #1c1912;
+  color: #f1d892;
+}
+
+.wechat-download-status {
+  min-height: 19px;
+  margin: 10px 0 0;
+  color: #d8bd78;
+  font-family: ui-sans-serif, system-ui, "PingFang SC", sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@keyframes wechat-pointer-nudge {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(4px, -4px); }
+}
+
 .guided-overlay {
   position: fixed;
   inset: 0;

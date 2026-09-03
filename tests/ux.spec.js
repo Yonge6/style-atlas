@@ -309,6 +309,59 @@ test("native drawer omits download promotion but keeps the rating action", async
   await expect(page.locator("#reviewAppNav")).toContainText("去评分与评价");
 });
 
+test("iPhone WeChat download surfaces show browser guidance and copy the App Store link", async ({ browser }) => {
+  const context = await browser.newContext({
+    locale: "zh-CN",
+    viewport: { width: 390, height: 844 },
+    userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 MicroMessenger/8.0.50"
+  });
+  await context.addInitScript(() => {
+    localStorage.setItem("styleAtlasLang", "zh");
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        async writeText(value) {
+          sessionStorage.setItem("copiedAppStoreLink", value);
+        }
+      }
+    });
+  });
+  const page = await context.newPage();
+  await page.goto("http://127.0.0.1:8765/");
+
+  await page.locator("#drawerBtn").click();
+  await page.locator("#downloadAppNav").click();
+  await expect(page).toHaveURL("http://127.0.0.1:8765/");
+  await expect(page.locator("#wechatDownloadGuide")).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "请在默认浏览器中打开" })).toContainText("在默认浏览器中打开");
+  await page.locator("#wechatDownloadCopyBtn").click();
+  await expect(page.locator("#wechatDownloadStatus")).toContainText("已复制");
+  await expect.poll(() => page.evaluate(() => sessionStorage.getItem("copiedAppStoreLink"))).toBe(
+    "https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&ct=Website%20Organic&mt=8"
+  );
+  await page.locator("#wechatDownloadGotItBtn").click();
+
+  await page.locator("#drawerBtn").click();
+  await page.locator("#drawerAboutBtn").click();
+  await page.locator("#aboutContent .app-store-link").click();
+  await expect(page.locator("#wechatDownloadGuide")).toBeVisible();
+  await page.locator("#wechatDownloadCloseBtn").click();
+
+  await page.goto("http://127.0.0.1:8765/#isometric-illustration");
+  await page.locator("[data-action='show-plus']").first().click();
+  await page.locator("#plusCta").click();
+  await expect(page.locator("#wechatDownloadGuide")).toBeVisible();
+  await context.close();
+});
+
+test("regular mobile browser still opens the App Store directly", async ({ page }) => {
+  await page.route("https://apps.apple.com/**", (route) => route.fulfill({ status: 200, body: "App Store" }));
+  await page.goto("/");
+  await page.locator("#drawerBtn").click();
+  await page.locator("#downloadAppNav").click();
+  await expect(page).toHaveURL(/https:\/\/apps\.apple\.com\/app\/apple-store\/id6787447019/);
+});
+
 test("Chinese purchase failure never exposes Native English debug text", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
