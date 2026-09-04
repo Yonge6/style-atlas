@@ -6,6 +6,7 @@ import WebKit
 final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
     weak var webView: WKWebView?
     var storeManager: StoreManager
+    let notificationManager: DailyStyleNotificationManager
 
     private let bridgeLogger = Logger(
         subsystem: Bundle.main.bundleIdentifier ?? "com.xiazishuo.styleatlas",
@@ -19,8 +20,9 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
     private var activeExportFileURL: URL?
     private var terminationObserver: NSObjectProtocol?
 
-    init(storeManager: StoreManager) {
+    init(storeManager: StoreManager, notificationManager: DailyStyleNotificationManager) {
         self.storeManager = storeManager
+        self.notificationManager = notificationManager
         super.init()
         terminationObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.willTerminateNotification,
@@ -73,6 +75,14 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
             UIApplication.shared.open(url)
         case "hapticFeedback":
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        case "setDailyReminder":
+            let enabled = (body["payload"] as? [String: Any])?["enabled"] as? Bool ?? false
+            Task {
+                await notificationManager.setEnabled(enabled)
+                injectNotificationStatus(notificationManager.status)
+            }
+        case "openNotificationSettings":
+            notificationManager.openSystemSettings()
         case "readBundledAsset":
             guard let payload = body["payload"] as? [String: Any] else {
                 resolveBundledAsset(requestID: "", dataURL: "", errorCode: "imageDecodeFailed")
@@ -119,6 +129,17 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setTextScale(\(clampedScale))")
     }
 
+    func injectNotificationStatus(_ status: DailyStyleNotificationStatus) {
+        guard let data = try? JSONEncoder().encode(status),
+              let value = String(data: data, encoding: .utf8) else { return }
+        webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.setNotificationStatus(\(value))")
+    }
+
+    func openStyle(_ styleID: String) {
+        guard let value = jsonString(styleID) else { return }
+        webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.openStyle(\(value))")
+    }
+
     func refreshAfterForeground() async {
         bridgeLogger.info("operation=foregroundRefresh status=started")
         await storeManager.refreshEntitlements()
@@ -126,6 +147,8 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         if !storeManager.isOperationInFlight {
             injectStoreAction("idle")
         }
+        await notificationManager.refreshAndReschedule()
+        injectNotificationStatus(notificationManager.status)
     }
 
     private func injectStoreResult(_ result: StoreActionResult) {

@@ -16,6 +16,22 @@
 - 保存分享卡片：用 Canvas 下载 9:16 图片
 - 中英文切换：使用 `localStorage` 记住选择
 
+## iOS 功能
+
+- 每日提醒：在 App 右上角菜单中开启或关闭；授权后按设备本地时间每天 09:00 提醒“今日风格”。提醒由设备本地调度，不依赖远程推送服务。
+- 桌面小组件：支持小号与中号 Widget，展示当日风格；点击后会通过 `styleatlas://style/<id>` 打开 App 内对应详情。
+- iPad：支持全屏、横竖屏与 Split View；iPhone 仍保持竖屏方向。
+- 通知权限被系统关闭时，菜单会显示状态并提供前往系统设置的入口。
+
+生成并校验 iOS 每日风格数据：
+
+```bash
+npm run generate:ios-daily-catalog
+npm run test:ios-features
+```
+
+iOS 工程位于 `iOS/StyleAtlas/StyleAtlas.xcodeproj`。上述功能不需要 App Group、APNs 后端，也不改变订阅或 StoreKit 配置。
+
 ## 运行方式
 
 直接打开 `index.html` 即可使用。

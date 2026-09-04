@@ -9,7 +9,8 @@
     nativeShell: false,
     externalGalleryEnabled: true,
     submissionMode: "web",
-    publicBaseURL: "https://style-atlas.wonderelian.com/"
+    publicBaseURL: "https://style-atlas.wonderelian.com/",
+    notificationStatus: { authorization: "notDetermined", enabled: false, hour: 9 }
   }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
   const APP_STORE_URL = "https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&ct=Website%20Organic&mt=8";
   const ACCESS_CONFIG = {
@@ -289,6 +290,13 @@
       drawerSavedNote: (n) => `${n} 个已收藏风格`,
       drawerAboutTitle: "关于图鉴",
       drawerAboutNote: "认识产品、内容范围与使用方式",
+      dailyReminderTitle: "每日风格提醒",
+      dailyReminderOff: "每天 09:00 推送今日风格",
+      dailyReminderOn: "已开启 · 每天 09:00",
+      dailyReminderDenied: "通知权限已关闭，点击前往系统设置",
+      dailyReminderUnavailable: "暂时无法设置通知",
+      dailyReminderStateOn: "开",
+      dailyReminderStateOff: "关",
       drawerDownloadKicker: "iPhone App",
       drawerDownloadTitle: "带走完整风格图鉴",
       drawerDownloadNote: "120 篇深度指南、中英双语与离线浏览，都装进口袋里。",
@@ -541,6 +549,13 @@
       drawerSavedNote: (n) => `${n} saved ${n === 1 ? "style" : "styles"}`,
       drawerAboutTitle: "About the atlas",
       drawerAboutNote: "Product purpose, content scope, and how it works",
+      dailyReminderTitle: "Daily style reminder",
+      dailyReminderOff: "Today's style at 09:00 every day",
+      dailyReminderOn: "On · Every day at 09:00",
+      dailyReminderDenied: "Notifications are off. Tap to open Settings.",
+      dailyReminderUnavailable: "Notifications are temporarily unavailable",
+      dailyReminderStateOn: "On",
+      dailyReminderStateOff: "Off",
       drawerDownloadKicker: "iPhone App",
       drawerDownloadTitle: "Take the complete atlas with you",
       drawerDownloadNote: "120 in-depth guides, bilingual content, and offline browsing.",
@@ -788,6 +803,7 @@
     searchOpenBtn: $("searchOpenBtn"),
     drawerBtn: $("drawerBtn"),
     drawerCloseBtn: $("drawerCloseBtn"),
+    drawerDailyReminderBtn: $("drawerDailyReminderBtn"),
     drawer: $("drawer"),
     drawerBackdrop: $("drawerBackdrop"),
     lightbox: $("lightbox"),
@@ -1198,6 +1214,54 @@
 
   function hasNativeBridge() {
     return Boolean(window.webkit?.messageHandlers?.styleAtlas);
+  }
+
+  function notificationStatus() {
+    const value = window.STYLE_ATLAS_RUNTIME_CONFIG?.notificationStatus;
+    return value && typeof value === "object"
+      ? value
+      : { authorization: "notDetermined", enabled: false, hour: 9 };
+  }
+
+  function renderDailyReminderRow() {
+    if (!dom.drawerDailyReminderBtn) return;
+    const nativeShell = hasNativeBridge();
+    dom.drawerDailyReminderBtn.hidden = !nativeShell;
+    if (!nativeShell) return;
+    const status = notificationStatus();
+    const noteKey = status.authorization === "denied"
+      ? "dailyReminderDenied"
+      : (status.authorization === "unavailable"
+        ? "dailyReminderUnavailable"
+        : (status.enabled ? "dailyReminderOn" : "dailyReminderOff"));
+    setDrawerRowCopy("drawerDailyReminderBtn", t("dailyReminderTitle"), t(noteKey));
+    dom.drawerDailyReminderBtn.querySelector(".drawer-reminder-state").textContent = t(
+      status.enabled ? "dailyReminderStateOn" : "dailyReminderStateOff"
+    );
+    dom.drawerDailyReminderBtn.setAttribute("aria-pressed", String(Boolean(status.enabled)));
+    dom.drawerDailyReminderBtn.setAttribute("aria-label", `${t("dailyReminderTitle")}，${t(noteKey)}`);
+    dom.drawerDailyReminderBtn.removeAttribute("aria-busy");
+  }
+
+  function setNotificationStatusFromNative(value) {
+    const status = value && typeof value === "object" ? value : {};
+    window.STYLE_ATLAS_RUNTIME_CONFIG.notificationStatus = {
+      authorization: ["notDetermined", "denied", "authorized", "unavailable"].includes(status.authorization)
+        ? status.authorization
+        : "unavailable",
+      enabled: Boolean(status.enabled),
+      hour: 9
+    };
+    renderDailyReminderRow();
+    return window.STYLE_ATLAS_RUNTIME_CONFIG.notificationStatus;
+  }
+
+  function openStyleFromNative(styleID) {
+    const id = String(styleID || "");
+    if (!validStyleIds.has(id)) return false;
+    history.replaceState(null, "", `#${id}`);
+    openDetail(id, "home");
+    return true;
   }
 
   function isIPhoneWeChatBrowser() {
@@ -3549,6 +3613,17 @@
         event.stopPropagation();
         return openAppStore(actionTarget);
       }
+      if (action === "toggle-daily-reminder") {
+        if (!hasNativeBridge()) return;
+        const status = notificationStatus();
+        if (status.authorization === "denied") {
+          postNativeMessage("openNotificationSettings");
+          return;
+        }
+        dom.drawerDailyReminderBtn.setAttribute("aria-busy", "true");
+        postNativeMessage("setDailyReminder", { enabled: !status.enabled });
+        return;
+      }
       if (action === "open-image") {
         const img = event.target.closest("[data-action='open-image']")?.querySelector("img") || event.target.closest("img");
         if (!img) return;
@@ -3739,6 +3814,7 @@
     $("drawerTitle").textContent = t("drawerTitle");
     setDrawerRowCopy("drawerSavedBtn", t("drawerSavedTitle"), t("drawerSavedNote", store.saved.length));
     setDrawerRowCopy("drawerAboutBtn", t("drawerAboutTitle"), t("drawerAboutNote"));
+    renderDailyReminderRow();
     $("drawerContactTitle").textContent = t("drawerContactTitle");
     $("drawerContactNote").textContent = t("drawerContactNote");
     $("drawerContact").querySelector(".drawer-contact-list").setAttribute("aria-label", store.lang === "zh" ? "联系方式" : "Contact methods");
@@ -3873,6 +3949,8 @@
     },
     setStoreAction: setStoreActionFromNative,
     setTextScale: setTextScaleFromNative,
+    setNotificationStatus: setNotificationStatusFromNative,
+    openStyle: openStyleFromNative,
     resolveBundledAsset: resolveBundledAssetFromNative,
     getPlusAccess: hasPlusAccess,
     postNativeMessage

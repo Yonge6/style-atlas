@@ -15,7 +15,40 @@
 		BF0000010000000000000006 /* Store/EntitlementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000106 /* Store/EntitlementManager.swift */; };
 		BF0000010000000000000007 /* Resources/Web in Resources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000107 /* Resources/Web */; };
 		BF0000010000000000000009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000110 /* Assets.xcassets */; };
+		BF000001000000000000000A /* Shared/DailyStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000112 /* Shared/DailyStyle.swift */; };
+		BF000001000000000000000B /* Notifications/DailyStyleNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000113 /* Notifications/DailyStyleNotificationManager.swift */; };
+		BF000001000000000000000C /* Resources/DailyStyles.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000114 /* Resources/DailyStyles.json */; };
+		BF000001000000000000000D /* Shared/DailyStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000112 /* Shared/DailyStyle.swift */; };
+		BF000001000000000000000E /* Widgets/StyleAtlasWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000115 /* Widgets/StyleAtlasWidgetBundle.swift */; };
+		BF000001000000000000000F /* Widgets/DailyStyleWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000116 /* Widgets/DailyStyleWidget.swift */; };
+		BF0000010000000000000010 /* Resources/DailyStyles.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000114 /* Resources/DailyStyles.json */; };
+		BF0000010000000000000011 /* Widgets/Resources/Thumbnails in Resources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000118 /* Widgets/Resources/Thumbnails */; };
+		BF0000010000000000000012 /* StyleAtlasWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000119 /* StyleAtlasWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BF0000010000000000000801 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BF0000010000000000000501 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF0000010000000000000402;
+			remoteInfo = StyleAtlasWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BF0000010000000000000207 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BF0000010000000000000012 /* StyleAtlasWidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		BF0000010000000000000101 /* StyleAtlasApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleAtlasApp.swift; sourceTree = "<group>"; };
@@ -28,10 +61,26 @@
 		BF0000010000000000000108 /* Resources/StoreKit/StyleAtlas.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Resources/StoreKit/StyleAtlas.storekit; sourceTree = "<group>"; };
 		BF0000010000000000000109 /* StyleAtlas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StyleAtlas.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF0000010000000000000110 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BF0000010000000000000111 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF0000010000000000000112 /* Shared/DailyStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/DailyStyle.swift; sourceTree = "<group>"; };
+		BF0000010000000000000113 /* Notifications/DailyStyleNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications/DailyStyleNotificationManager.swift; sourceTree = "<group>"; };
+		BF0000010000000000000114 /* Resources/DailyStyles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Resources/DailyStyles.json; sourceTree = "<group>"; };
+		BF0000010000000000000115 /* Widgets/StyleAtlasWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets/StyleAtlasWidgetBundle.swift; sourceTree = "<group>"; };
+		BF0000010000000000000116 /* Widgets/DailyStyleWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets/DailyStyleWidget.swift; sourceTree = "<group>"; };
+		BF0000010000000000000117 /* Widgets/Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Widgets/Info.plist; sourceTree = "<group>"; };
+		BF0000010000000000000118 /* Widgets/Resources/Thumbnails */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Widgets/Resources/Thumbnails; sourceTree = "<group>"; };
+		BF0000010000000000000119 /* StyleAtlasWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StyleAtlasWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		BF0000010000000000000201 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF0000010000000000000204 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -54,6 +103,14 @@
 			children = (
 				BF0000010000000000000101 /* StyleAtlasApp.swift */,
 				BF0000010000000000000102 /* ContentView.swift */,
+				BF0000010000000000000111 /* Info.plist */,
+				BF0000010000000000000112 /* Shared/DailyStyle.swift */,
+				BF0000010000000000000113 /* Notifications/DailyStyleNotificationManager.swift */,
+				BF0000010000000000000114 /* Resources/DailyStyles.json */,
+				BF0000010000000000000115 /* Widgets/StyleAtlasWidgetBundle.swift */,
+				BF0000010000000000000116 /* Widgets/DailyStyleWidget.swift */,
+				BF0000010000000000000117 /* Widgets/Info.plist */,
+				BF0000010000000000000118 /* Widgets/Resources/Thumbnails */,
 				BF0000010000000000000103 /* WebView/WebViewContainer.swift */,
 				BF0000010000000000000104 /* WebView/WebViewBridge.swift */,
 				BF0000010000000000000105 /* Store/StoreManager.swift */,
@@ -68,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				BF0000010000000000000109 /* StyleAtlas.app */,
+				BF0000010000000000000119 /* StyleAtlasWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,15 +140,34 @@
 				BF0000010000000000000202 /* Sources */,
 				BF0000010000000000000201 /* Frameworks */,
 				BF0000010000000000000203 /* Resources */,
+				BF0000010000000000000207 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BF0000010000000000000901 /* PBXTargetDependency */,
 			);
 			name = StyleAtlas;
 			productName = StyleAtlas;
 			productReference = BF0000010000000000000109 /* StyleAtlas.app */;
 			productType = "com.apple.product-type.application";
+		};
+		BF0000010000000000000402 /* StyleAtlasWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF0000010000000000000603 /* Build configuration list for PBXNativeTarget "StyleAtlasWidgetExtension" */;
+			buildPhases = (
+				BF0000010000000000000205 /* Sources */,
+				BF0000010000000000000204 /* Frameworks */,
+				BF0000010000000000000206 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StyleAtlasWidgetExtension;
+			productName = StyleAtlasWidgetExtension;
+			productReference = BF0000010000000000000119 /* StyleAtlasWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -103,6 +180,9 @@
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					BF0000010000000000000401 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					BF0000010000000000000402 = {
 						CreatedOnToolsVersion = 26.6;
 					};
 				};
@@ -122,6 +202,7 @@
 			projectRoot = "";
 			targets = (
 				BF0000010000000000000401 /* StyleAtlas */,
+				BF0000010000000000000402 /* StyleAtlasWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -133,6 +214,16 @@
 			files = (
 				BF0000010000000000000007 /* Resources/Web in Resources */,
 				BF0000010000000000000009 /* Assets.xcassets in Resources */,
+				BF000001000000000000000C /* Resources/DailyStyles.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF0000010000000000000206 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF0000010000000000000010 /* Resources/DailyStyles.json in Resources */,
+				BF0000010000000000000011 /* Widgets/Resources/Thumbnails in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,10 +240,30 @@
 				BF0000010000000000000004 /* WebView/WebViewBridge.swift in Sources */,
 				BF0000010000000000000005 /* Store/StoreManager.swift in Sources */,
 				BF0000010000000000000006 /* Store/EntitlementManager.swift in Sources */,
+				BF000001000000000000000A /* Shared/DailyStyle.swift in Sources */,
+				BF000001000000000000000B /* Notifications/DailyStyleNotificationManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF0000010000000000000205 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF000001000000000000000D /* Shared/DailyStyle.swift in Sources */,
+				BF000001000000000000000E /* Widgets/StyleAtlasWidgetBundle.swift in Sources */,
+				BF000001000000000000000F /* Widgets/DailyStyleWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BF0000010000000000000901 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF0000010000000000000402 /* StyleAtlasWidgetExtension */;
+			targetProxy = BF0000010000000000000801 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		BF0000010000000000000701 /* Debug */ = {
@@ -207,7 +318,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = L855ZVM679;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "虾子曰艺术风格图鉴";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -221,7 +333,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -232,7 +344,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = L855ZVM679;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "虾子曰艺术风格图鉴";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -246,7 +359,57 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BF0000010000000000000705 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 13;
+				DEVELOPMENT_TEAM = L855ZVM679;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xiazishuo.styleatlas.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BF0000010000000000000706 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 13;
+				DEVELOPMENT_TEAM = L855ZVM679;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xiazishuo.styleatlas.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -267,6 +430,15 @@
 			buildConfigurations = (
 				BF0000010000000000000703 /* Debug */,
 				BF0000010000000000000704 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF0000010000000000000603 /* Build configuration list for PBXNativeTarget "StyleAtlasWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF0000010000000000000705 /* Debug */,
+				BF0000010000000000000706 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

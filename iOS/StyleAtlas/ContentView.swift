@@ -5,14 +5,20 @@ struct ContentView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @StateObject private var entitlementManager: EntitlementManager
     @StateObject private var storeManager: StoreManager
+    @StateObject private var notificationManager: DailyStyleNotificationManager
     @StateObject private var bridge: WebViewBridge
 
     init() {
         let entitlements = EntitlementManager()
         let store = StoreManager(entitlementManager: entitlements)
+        let notifications = DailyStyleNotificationManager()
         _entitlementManager = StateObject(wrappedValue: entitlements)
         _storeManager = StateObject(wrappedValue: store)
-        _bridge = StateObject(wrappedValue: WebViewBridge(storeManager: store))
+        _notificationManager = StateObject(wrappedValue: notifications)
+        _bridge = StateObject(wrappedValue: WebViewBridge(
+            storeManager: store,
+            notificationManager: notifications
+        ))
     }
 
     var body: some View {
@@ -20,11 +26,13 @@ struct ContentView: View {
             bridge: bridge,
             hasPlus: entitlementManager.hasPlus,
             productDisplayPrices: storeManager.productDisplayPrices,
-            textScale: textScale
+            textScale: textScale,
+            notificationStatus: notificationManager.status
         )
             .ignoresSafeArea()
             .task {
                 await storeManager.start()
+                await notificationManager.refreshAndReschedule()
             }
             .onChange(of: entitlementManager.hasPlus) { hasPlus in
                 bridge.injectPlusAccess(hasPlus)
@@ -34,6 +42,10 @@ struct ContentView: View {
                 Task {
                     await bridge.refreshAfterForeground()
                 }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .styleAtlasOpenStyle)) { notification in
+                guard let styleID = notification.object as? String else { return }
+                bridge.openStyle(styleID)
             }
     }
 

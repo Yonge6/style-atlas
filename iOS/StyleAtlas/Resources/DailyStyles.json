@@ -1,0 +1,842 @@
+[
+  {
+    "id": "swiss-style",
+    "englishName": "Swiss Style",
+    "chineseName": "瑞士国际主义风格",
+    "category": "poster",
+    "thumbnail": "swiss-style.jpg"
+  },
+  {
+    "id": "bauhaus",
+    "englishName": "Bauhaus",
+    "chineseName": "包豪斯风格",
+    "category": "poster",
+    "thumbnail": "bauhaus.jpg"
+  },
+  {
+    "id": "art-deco",
+    "englishName": "Art Deco",
+    "chineseName": "装饰艺术风格",
+    "category": "poster",
+    "thumbnail": "art-deco.jpg"
+  },
+  {
+    "id": "art-nouveau",
+    "englishName": "Art Nouveau",
+    "chineseName": "新艺术风格",
+    "category": "poster",
+    "thumbnail": "art-nouveau.jpg"
+  },
+  {
+    "id": "constructivism",
+    "englishName": "Constructivism",
+    "chineseName": "构成主义风格",
+    "category": "poster",
+    "thumbnail": "constructivism.jpg"
+  },
+  {
+    "id": "de-stijl",
+    "englishName": "De Stijl",
+    "chineseName": "风格派",
+    "category": "poster",
+    "thumbnail": "de-stijl.jpg"
+  },
+  {
+    "id": "futurism",
+    "englishName": "Futurism",
+    "chineseName": "未来主义风格",
+    "category": "poster",
+    "thumbnail": "futurism.jpg"
+  },
+  {
+    "id": "minimalism",
+    "englishName": "Minimalism",
+    "chineseName": "极简主义风格",
+    "category": "poster",
+    "thumbnail": "minimalism.jpg"
+  },
+  {
+    "id": "brutalism",
+    "englishName": "Graphic Brutalism",
+    "chineseName": "粗野主义视觉语汇",
+    "category": "poster",
+    "thumbnail": "brutalism.jpg"
+  },
+  {
+    "id": "memphis",
+    "englishName": "Memphis",
+    "chineseName": "孟菲斯风格",
+    "category": "poster",
+    "thumbnail": "memphis.jpg"
+  },
+  {
+    "id": "editorial-typography",
+    "englishName": "Editorial Typography",
+    "chineseName": "编辑排版风格",
+    "category": "poster",
+    "thumbnail": "editorial-typography.jpg"
+  },
+  {
+    "id": "new-wave-typography",
+    "englishName": "New Wave Typography",
+    "chineseName": "新浪潮字体风格",
+    "category": "poster",
+    "thumbnail": "new-wave-typography.jpg"
+  },
+  {
+    "id": "punk-diy",
+    "englishName": "Punk DIY",
+    "chineseName": "朋克拼贴风格",
+    "category": "poster",
+    "thumbnail": "punk-diy.jpg"
+  },
+  {
+    "id": "grunge",
+    "englishName": "Grunge",
+    "chineseName": "垃圾摇滚风格",
+    "category": "poster",
+    "thumbnail": "grunge.jpg"
+  },
+  {
+    "id": "psychedelic-poster",
+    "englishName": "Psychedelic Poster",
+    "chineseName": "迷幻海报风格",
+    "category": "poster",
+    "thumbnail": "psychedelic-poster.jpg"
+  },
+  {
+    "id": "pop-art-poster",
+    "englishName": "Pop Art Poster",
+    "chineseName": "波普海报风格",
+    "category": "poster",
+    "thumbnail": "pop-art-poster.jpg"
+  },
+  {
+    "id": "corporate-modernism",
+    "englishName": "Corporate Modernism",
+    "chineseName": "企业现代主义",
+    "category": "poster",
+    "thumbnail": "corporate-modernism.jpg"
+  },
+  {
+    "id": "anti-design",
+    "englishName": "Anti-Design",
+    "chineseName": "反设计风格",
+    "category": "poster",
+    "thumbnail": "anti-design.jpg"
+  },
+  {
+    "id": "experimental-typography",
+    "englishName": "Experimental Typography",
+    "chineseName": "实验字体风格",
+    "category": "poster",
+    "thumbnail": "experimental-typography.jpg"
+  },
+  {
+    "id": "kinetic-poster",
+    "englishName": "Kinetic Poster",
+    "chineseName": "动态感海报风格",
+    "category": "poster",
+    "thumbnail": "kinetic-poster.jpg"
+  },
+  {
+    "id": "renaissance",
+    "englishName": "Renaissance",
+    "chineseName": "文艺复兴风格",
+    "category": "painting",
+    "thumbnail": "renaissance.jpg"
+  },
+  {
+    "id": "baroque",
+    "englishName": "Baroque",
+    "chineseName": "巴洛克风格",
+    "category": "painting",
+    "thumbnail": "baroque.jpg"
+  },
+  {
+    "id": "rococo",
+    "englishName": "Rococo",
+    "chineseName": "洛可可风格",
+    "category": "painting",
+    "thumbnail": "rococo.jpg"
+  },
+  {
+    "id": "neoclassicism",
+    "englishName": "Neoclassicism",
+    "chineseName": "新古典主义",
+    "category": "painting",
+    "thumbnail": "neoclassicism.jpg"
+  },
+  {
+    "id": "romanticism",
+    "englishName": "Romanticism",
+    "chineseName": "浪漫主义",
+    "category": "painting",
+    "thumbnail": "romanticism.jpg"
+  },
+  {
+    "id": "realism",
+    "englishName": "Realism",
+    "chineseName": "现实主义",
+    "category": "painting",
+    "thumbnail": "realism.jpg"
+  },
+  {
+    "id": "academic-painting",
+    "englishName": "Academic Painting",
+    "chineseName": "学院派绘画",
+    "category": "painting",
+    "thumbnail": "academic-painting.jpg"
+  },
+  {
+    "id": "pre-raphaelite",
+    "englishName": "Pre-Raphaelite",
+    "chineseName": "前拉斐尔派",
+    "category": "painting",
+    "thumbnail": "pre-raphaelite.jpg"
+  },
+  {
+    "id": "impressionism",
+    "englishName": "Impressionism",
+    "chineseName": "印象派",
+    "category": "painting",
+    "thumbnail": "impressionism.jpg"
+  },
+  {
+    "id": "post-impressionism",
+    "englishName": "Post-Impressionism",
+    "chineseName": "后印象派",
+    "category": "painting",
+    "thumbnail": "post-impressionism.jpg"
+  },
+  {
+    "id": "van-gogh",
+    "englishName": "Van Gogh",
+    "chineseName": "梵高式笔触",
+    "category": "master",
+    "thumbnail": "van-gogh.jpg"
+  },
+  {
+    "id": "monet",
+    "englishName": "Monet",
+    "chineseName": "莫奈式光影",
+    "category": "master",
+    "thumbnail": "monet.jpg"
+  },
+  {
+    "id": "renoir",
+    "englishName": "Renoir",
+    "chineseName": "雷诺阿式温暖人物",
+    "category": "master",
+    "thumbnail": "renoir.jpg"
+  },
+  {
+    "id": "cezanne",
+    "englishName": "Cezanne",
+    "chineseName": "塞尚式结构",
+    "category": "master",
+    "thumbnail": "cezanne.jpg"
+  },
+  {
+    "id": "picasso-cubism",
+    "englishName": "Picasso / Cubism",
+    "chineseName": "毕加索立体主义",
+    "category": "master",
+    "thumbnail": "picasso-cubism.jpg"
+  },
+  {
+    "id": "matisse",
+    "englishName": "Matisse",
+    "chineseName": "马蒂斯式色块",
+    "category": "master",
+    "thumbnail": "matisse.jpg"
+  },
+  {
+    "id": "dali",
+    "englishName": "Dali",
+    "chineseName": "达利式超现实",
+    "category": "master",
+    "thumbnail": "dali.jpg"
+  },
+  {
+    "id": "magritte",
+    "englishName": "Magritte",
+    "chineseName": "马格利特式观念超现实",
+    "category": "master",
+    "thumbnail": "magritte.jpg"
+  },
+  {
+    "id": "edward-hopper",
+    "englishName": "Edward Hopper",
+    "chineseName": "霍普式孤独光影",
+    "category": "master",
+    "thumbnail": "edward-hopper.jpg"
+  },
+  {
+    "id": "gustav-klimt",
+    "englishName": "Gustav Klimt",
+    "chineseName": "克里姆特式金色装饰",
+    "category": "master",
+    "thumbnail": "gustav-klimt.jpg"
+  },
+  {
+    "id": "kandinsky",
+    "englishName": "Kandinsky",
+    "chineseName": "康定斯基式抽象",
+    "category": "master",
+    "thumbnail": "kandinsky.jpg"
+  },
+  {
+    "id": "mondrian",
+    "englishName": "Mondrian",
+    "chineseName": "蒙德里安式几何",
+    "category": "master",
+    "thumbnail": "mondrian.jpg"
+  },
+  {
+    "id": "pollock",
+    "englishName": "Pollock",
+    "chineseName": "波洛克式滴画",
+    "category": "master",
+    "thumbnail": "pollock.jpg"
+  },
+  {
+    "id": "rothko",
+    "englishName": "Rothko",
+    "chineseName": "罗斯科式色域",
+    "category": "master",
+    "thumbnail": "rothko.jpg"
+  },
+  {
+    "id": "basquiat",
+    "englishName": "Basquiat",
+    "chineseName": "巴斯奎特式涂鸦表现",
+    "category": "master",
+    "thumbnail": "basquiat.jpg"
+  },
+  {
+    "id": "expressionism",
+    "englishName": "Expressionism",
+    "chineseName": "表现主义",
+    "category": "modern",
+    "thumbnail": "expressionism.jpg"
+  },
+  {
+    "id": "german-expressionism",
+    "englishName": "German Expressionism",
+    "chineseName": "德国表现主义",
+    "category": "modern",
+    "thumbnail": "german-expressionism.jpg"
+  },
+  {
+    "id": "surrealism",
+    "englishName": "Surrealism",
+    "chineseName": "超现实主义",
+    "category": "modern",
+    "thumbnail": "surrealism.jpg"
+  },
+  {
+    "id": "symbolism",
+    "englishName": "Symbolism",
+    "chineseName": "象征主义",
+    "category": "modern",
+    "thumbnail": "symbolism.jpg"
+  },
+  {
+    "id": "fauvism",
+    "englishName": "Fauvism",
+    "chineseName": "野兽派",
+    "category": "modern",
+    "thumbnail": "fauvism.jpg"
+  },
+  {
+    "id": "dada",
+    "englishName": "Dada",
+    "chineseName": "达达主义",
+    "category": "modern",
+    "thumbnail": "dada.jpg"
+  },
+  {
+    "id": "abstract-expressionism",
+    "englishName": "Abstract Expressionism",
+    "chineseName": "抽象表现主义",
+    "category": "modern",
+    "thumbnail": "abstract-expressionism.jpg"
+  },
+  {
+    "id": "color-field-painting",
+    "englishName": "Color Field Painting",
+    "chineseName": "色域绘画",
+    "category": "modern",
+    "thumbnail": "color-field-painting.jpg"
+  },
+  {
+    "id": "op-art",
+    "englishName": "Op Art",
+    "chineseName": "欧普艺术",
+    "category": "modern",
+    "thumbnail": "op-art.jpg"
+  },
+  {
+    "id": "conceptual-art",
+    "englishName": "Conceptual Art",
+    "chineseName": "观念艺术",
+    "category": "modern",
+    "thumbnail": "conceptual-art.jpg"
+  },
+  {
+    "id": "chinese-ink-painting",
+    "englishName": "Chinese Ink Painting",
+    "chineseName": "中国水墨画",
+    "category": "asian",
+    "thumbnail": "chinese-ink-painting.jpg"
+  },
+  {
+    "id": "gongbi",
+    "englishName": "Gongbi",
+    "chineseName": "工笔画",
+    "category": "asian",
+    "thumbnail": "gongbi.jpg"
+  },
+  {
+    "id": "xieyi",
+    "englishName": "Xieyi",
+    "chineseName": "写意画",
+    "category": "asian",
+    "thumbnail": "xieyi.jpg"
+  },
+  {
+    "id": "shanshui",
+    "englishName": "Shanshui",
+    "chineseName": "山水画风格",
+    "category": "asian",
+    "thumbnail": "shanshui.jpg"
+  },
+  {
+    "id": "dunhuang-mural",
+    "englishName": "Dunhuang Mural",
+    "chineseName": "敦煌壁画风格",
+    "category": "asian",
+    "thumbnail": "dunhuang-mural.jpg"
+  },
+  {
+    "id": "ukiyo-e",
+    "englishName": "Ukiyo-e",
+    "chineseName": "浮世绘风格",
+    "category": "asian",
+    "thumbnail": "ukiyo-e.jpg"
+  },
+  {
+    "id": "sumi-e",
+    "englishName": "Sumi-e",
+    "chineseName": "日本墨绘",
+    "category": "asian",
+    "thumbnail": "sumi-e.jpg"
+  },
+  {
+    "id": "nihonga",
+    "englishName": "Nihonga",
+    "chineseName": "日本岩彩画",
+    "category": "asian",
+    "thumbnail": "nihonga.jpg"
+  },
+  {
+    "id": "yamato-e",
+    "englishName": "Yamato-e",
+    "chineseName": "大和绘",
+    "category": "asian",
+    "thumbnail": "yamato-e.jpg"
+  },
+  {
+    "id": "korean-minhwa",
+    "englishName": "Korean Minhwa",
+    "chineseName": "韩国民画",
+    "category": "asian",
+    "thumbnail": "korean-minhwa.jpg"
+  },
+  {
+    "id": "indian-miniature",
+    "englishName": "Indian Miniature",
+    "chineseName": "印度细密画",
+    "category": "asian",
+    "thumbnail": "indian-miniature.jpg"
+  },
+  {
+    "id": "persian-miniature",
+    "englishName": "Persian Miniature",
+    "chineseName": "波斯细密画",
+    "category": "asian",
+    "thumbnail": "persian-miniature.jpg"
+  },
+  {
+    "id": "islamic-geometric",
+    "englishName": "Islamic Geometric",
+    "chineseName": "伊斯兰几何纹样",
+    "category": "asian",
+    "thumbnail": "islamic-geometric.jpg"
+  },
+  {
+    "id": "tibetan-thangka",
+    "englishName": "Tibetan Thangka",
+    "chineseName": "唐卡风格",
+    "category": "asian",
+    "thumbnail": "tibetan-thangka.jpg"
+  },
+  {
+    "id": "thai-temple-mural",
+    "englishName": "Thai Temple Mural",
+    "chineseName": "泰国寺庙壁画风格",
+    "category": "asian",
+    "thumbnail": "thai-temple-mural.jpg"
+  },
+  {
+    "id": "byzantine-icon",
+    "englishName": "Byzantine Icon",
+    "chineseName": "拜占庭圣像风格",
+    "category": "folk",
+    "thumbnail": "byzantine-icon.jpg"
+  },
+  {
+    "id": "mexican-muralism",
+    "englishName": "Mexican Muralism",
+    "chineseName": "墨西哥壁画风格",
+    "category": "folk",
+    "thumbnail": "mexican-muralism.jpg"
+  },
+  {
+    "id": "aboriginal-dot-painting",
+    "englishName": "Aboriginal Dot Painting",
+    "chineseName": "澳大利亚原住民点画",
+    "category": "folk",
+    "thumbnail": "aboriginal-dot-painting.jpg"
+  },
+  {
+    "id": "african-tribal-pattern",
+    "englishName": "West African Textile Pattern",
+    "chineseName": "西非织物纹样",
+    "category": "folk",
+    "thumbnail": "african-tribal-pattern.jpg"
+  },
+  {
+    "id": "native-american-art",
+    "englishName": "North American Indigenous Art",
+    "chineseName": "北美原住民艺术",
+    "category": "folk",
+    "thumbnail": "native-american-art.jpg"
+  },
+  {
+    "id": "russian-lubok",
+    "englishName": "Russian Lubok",
+    "chineseName": "俄罗斯民间版画",
+    "category": "folk",
+    "thumbnail": "russian-lubok.jpg"
+  },
+  {
+    "id": "nordic-folk-art",
+    "englishName": "Nordic Folk Art",
+    "chineseName": "北欧民俗风格",
+    "category": "folk",
+    "thumbnail": "nordic-folk-art.jpg"
+  },
+  {
+    "id": "celtic-art",
+    "englishName": "Celtic Art",
+    "chineseName": "凯尔特纹样风格",
+    "category": "folk",
+    "thumbnail": "celtic-art.jpg"
+  },
+  {
+    "id": "madhubani",
+    "englishName": "Madhubani",
+    "chineseName": "印度马杜巴尼民间画",
+    "category": "folk",
+    "thumbnail": "madhubani.jpg"
+  },
+  {
+    "id": "chinese-new-year-woodblock",
+    "englishName": "Chinese New Year Woodblock",
+    "chineseName": "年画风格",
+    "category": "folk",
+    "thumbnail": "chinese-new-year-woodblock.jpg"
+  },
+  {
+    "id": "healing-animation",
+    "englishName": "Pastoral Hand-drawn Animation",
+    "chineseName": "田园手绘动画语汇",
+    "category": "animation",
+    "thumbnail": "healing-animation.jpg"
+  },
+  {
+    "id": "cinematic-anime",
+    "englishName": "Japanese Animated Film Lighting",
+    "chineseName": "日系动画电影光影",
+    "category": "animation",
+    "thumbnail": "cinematic-anime.jpg"
+  },
+  {
+    "id": "classic-disney",
+    "englishName": "Golden Age Hand-drawn Animation",
+    "chineseName": "黄金时代手绘动画",
+    "category": "animation",
+    "thumbnail": "classic-disney.jpg"
+  },
+  {
+    "id": "warm-3d-animation",
+    "englishName": "Warm 3D Animation",
+    "chineseName": "温情三维动画语汇",
+    "category": "animation",
+    "thumbnail": "warm-3d-animation.jpg"
+  },
+  {
+    "id": "dreamworks-cartoon",
+    "englishName": "Exaggerated 3D Cartoon Comedy",
+    "chineseName": "夸张三维卡通喜剧语汇",
+    "category": "animation",
+    "thumbnail": "dreamworks-cartoon.jpg"
+  },
+  {
+    "id": "anime",
+    "englishName": "Anime",
+    "chineseName": "日漫风格",
+    "category": "animation",
+    "thumbnail": "anime.jpg"
+  },
+  {
+    "id": "manga",
+    "englishName": "Manga",
+    "chineseName": "漫画黑白风格",
+    "category": "animation",
+    "thumbnail": "manga.jpg"
+  },
+  {
+    "id": "shonen",
+    "englishName": "Shonen",
+    "chineseName": "少年漫画风格",
+    "category": "animation",
+    "thumbnail": "shonen.jpg"
+  },
+  {
+    "id": "shojo",
+    "englishName": "Shojo",
+    "chineseName": "少女漫画风格",
+    "category": "animation",
+    "thumbnail": "shojo.jpg"
+  },
+  {
+    "id": "american-comic-book",
+    "englishName": "American Comic Book",
+    "chineseName": "美式漫画风格",
+    "category": "animation",
+    "thumbnail": "american-comic-book.jpg"
+  },
+  {
+    "id": "ligne-claire",
+    "englishName": "Ligne Claire",
+    "chineseName": "清线漫画风格",
+    "category": "illustration",
+    "thumbnail": "ligne-claire.jpg"
+  },
+  {
+    "id": "graphic-novel",
+    "englishName": "Graphic Novel",
+    "chineseName": "图像小说风格",
+    "category": "illustration",
+    "thumbnail": "graphic-novel.jpg"
+  },
+  {
+    "id": "noir-illustration",
+    "englishName": "Noir Illustration",
+    "chineseName": "黑色电影插画",
+    "category": "illustration",
+    "thumbnail": "noir-illustration.jpg"
+  },
+  {
+    "id": "childrens-picture-book",
+    "englishName": "Children's Picture Book",
+    "chineseName": "儿童绘本风格",
+    "category": "illustration",
+    "thumbnail": "childrens-picture-book.jpg"
+  },
+  {
+    "id": "editorial-illustration",
+    "englishName": "Editorial Illustration",
+    "chineseName": "编辑插画风格",
+    "category": "illustration",
+    "thumbnail": "editorial-illustration.jpg"
+  },
+  {
+    "id": "fashion-illustration",
+    "englishName": "Fashion Illustration",
+    "chineseName": "时装插画风格",
+    "category": "illustration",
+    "thumbnail": "fashion-illustration.jpg"
+  },
+  {
+    "id": "botanical-illustration",
+    "englishName": "Botanical Illustration",
+    "chineseName": "植物科学插画",
+    "category": "illustration",
+    "thumbnail": "botanical-illustration.jpg"
+  },
+  {
+    "id": "scientific-illustration",
+    "englishName": "Scientific Illustration",
+    "chineseName": "科学插画风格",
+    "category": "illustration",
+    "thumbnail": "scientific-illustration.jpg"
+  },
+  {
+    "id": "isometric-illustration",
+    "englishName": "Isometric Illustration",
+    "chineseName": "等距插画风格",
+    "category": "illustration",
+    "thumbnail": "isometric-illustration.jpg"
+  },
+  {
+    "id": "flat-illustration",
+    "englishName": "Flat Vector Illustration",
+    "chineseName": "扁平矢量插画",
+    "category": "illustration",
+    "thumbnail": "flat-illustration.jpg"
+  },
+  {
+    "id": "cyberpunk",
+    "englishName": "Cyberpunk",
+    "chineseName": "赛博朋克",
+    "category": "digital",
+    "thumbnail": "cyberpunk.jpg"
+  },
+  {
+    "id": "vaporwave",
+    "englishName": "Vaporwave",
+    "chineseName": "蒸汽波",
+    "category": "digital",
+    "thumbnail": "vaporwave.jpg"
+  },
+  {
+    "id": "synthwave",
+    "englishName": "Synthwave",
+    "chineseName": "合成波",
+    "category": "digital",
+    "thumbnail": "synthwave.jpg"
+  },
+  {
+    "id": "y2k",
+    "englishName": "Y2K",
+    "chineseName": "千禧风格",
+    "category": "digital",
+    "thumbnail": "y2k.jpg"
+  },
+  {
+    "id": "retrofuturism",
+    "englishName": "Retrofuturism",
+    "chineseName": "复古未来主义",
+    "category": "digital",
+    "thumbnail": "retrofuturism.jpg"
+  },
+  {
+    "id": "solarpunk",
+    "englishName": "Solarpunk",
+    "chineseName": "太阳朋克",
+    "category": "digital",
+    "thumbnail": "solarpunk.jpg"
+  },
+  {
+    "id": "afrofuturism",
+    "englishName": "Afrofuturism",
+    "chineseName": "非洲未来主义",
+    "category": "digital",
+    "thumbnail": "afrofuturism.jpg"
+  },
+  {
+    "id": "steampunk",
+    "englishName": "Steampunk",
+    "chineseName": "蒸汽朋克",
+    "category": "digital",
+    "thumbnail": "steampunk.jpg"
+  },
+  {
+    "id": "glitch-art",
+    "englishName": "Glitch Art",
+    "chineseName": "故障艺术",
+    "category": "digital",
+    "thumbnail": "glitch-art.jpg"
+  },
+  {
+    "id": "pixel-art",
+    "englishName": "Pixel Art",
+    "chineseName": "像素艺术",
+    "category": "digital",
+    "thumbnail": "pixel-art.jpg"
+  },
+  {
+    "id": "voxel-art",
+    "englishName": "Voxel Art",
+    "chineseName": "体素风格",
+    "category": "digital",
+    "thumbnail": "voxel-art.jpg"
+  },
+  {
+    "id": "low-poly",
+    "englishName": "Low Poly",
+    "chineseName": "低多边形",
+    "category": "digital",
+    "thumbnail": "low-poly.jpg"
+  },
+  {
+    "id": "glassmorphism",
+    "englishName": "Glassmorphism",
+    "chineseName": "玻璃拟态",
+    "category": "digital",
+    "thumbnail": "glassmorphism.jpg"
+  },
+  {
+    "id": "neumorphism",
+    "englishName": "Neumorphism",
+    "chineseName": "新拟物风格",
+    "category": "digital",
+    "thumbnail": "neumorphism.jpg"
+  },
+  {
+    "id": "claymorphism",
+    "englishName": "Claymorphism",
+    "chineseName": "黏土风格",
+    "category": "digital",
+    "thumbnail": "claymorphism.jpg"
+  },
+  {
+    "id": "holographic",
+    "englishName": "Holographic",
+    "chineseName": "镭射全息风格",
+    "category": "digital",
+    "thumbnail": "holographic.jpg"
+  },
+  {
+    "id": "liquid-metal",
+    "englishName": "Liquid Metal",
+    "chineseName": "液态金属风格",
+    "category": "digital",
+    "thumbnail": "liquid-metal.jpg"
+  },
+  {
+    "id": "3d-abstract-cgi",
+    "englishName": "3D Abstract CGI",
+    "chineseName": "三维抽象",
+    "category": "digital",
+    "thumbnail": "3d-abstract-cgi.jpg"
+  },
+  {
+    "id": "fractal-art",
+    "englishName": "Fractal Art",
+    "chineseName": "分形艺术",
+    "category": "digital",
+    "thumbnail": "fractal-art.jpg"
+  },
+  {
+    "id": "generative-ai-dreamlike",
+    "englishName": "Generative AI Dreamlike",
+    "chineseName": "AI 梦境风格",
+    "category": "digital",
+    "thumbnail": "generative-ai-dreamlike.jpg"
+  }
+]

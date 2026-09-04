@@ -4,6 +4,8 @@
   "scripts": {
     "audit:guides": "node scripts/audit-aesthetic-guides.mjs",
     "build:preview": "node scripts/build-preview.mjs",
+    "generate:ios-daily-catalog": "node scripts/generate-ios-daily-catalog.mjs",
+    "test:ios-features": "node scripts/validate-ios-daily-features.mjs",
     "test:seo": "node scripts/validate-seo-pages.mjs",
     "test:ux": "npm run build:preview && playwright test"
   },

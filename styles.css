@@ -2981,6 +2981,10 @@ body.detail-mode {
   text-align: left;
 }
 
+.drawer-row[hidden] {
+  display: none;
+}
+
 .drawer-row-icon {
   display: grid;
   place-items: center;
@@ -2994,6 +2998,36 @@ body.detail-mode {
 .drawer-row-icon .ui-icon {
   width: 17px;
   height: 17px;
+}
+
+.drawer-reminder-time {
+  color: #17130a;
+  background: #e7d8b3;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.drawer-reminder-state {
+  min-width: 34px;
+  padding: 4px 7px;
+  border: 1px solid rgba(243, 212, 134, 0.26);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+  text-align: center;
+}
+
+#drawerDailyReminderBtn[aria-pressed="true"] .drawer-reminder-state {
+  border-color: rgba(243, 212, 134, 0.58);
+  color: #f3d486;
+  background: rgba(243, 212, 134, 0.1);
+}
+
+#drawerDailyReminderBtn[aria-busy="true"] {
+  opacity: 0.66;
+  pointer-events: none;
 }
 
 .drawer-row-copy {
@@ -4020,6 +4054,55 @@ html[data-native-large-text] .guided-stage {
 }
 
 @media (min-width: 700px) {
+  body:not(.detail-mode) .app-shell {
+    max-width: 840px;
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  body:not(.detail-mode) .topbar {
+    padding-right: max(24px, calc((100vw - 840px) / 2 + 24px));
+    padding-left: max(24px, calc((100vw - 840px) / 2 + 24px));
+  }
+
+  #homeView.active {
+    display: grid;
+    grid-template-columns: minmax(300px, 350px) minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    column-gap: 30px;
+    align-items: start;
+  }
+
+  #homeView .section-head {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #homeView .deck-stage {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  #homeView .deck-controls {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  #homeView .category-strip {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    min-width: 0;
+    padding-top: 8px;
+  }
+
+  #searchView,
+  #savedView,
+  #aboutView {
+    max-width: 720px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
   body.detail-mode .app-shell {
     max-width: 960px;
     padding-right: 24px;

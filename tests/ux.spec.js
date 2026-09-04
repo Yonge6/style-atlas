@@ -135,6 +135,84 @@ test("core mobile flows remain stable", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test("daily reminder control is native-only and sends the opt-in bridge command", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  await page.locator("#drawerBtn").click();
+  const reminder = page.locator("#drawerDailyReminderBtn");
+  await expect(reminder).toBeVisible();
+  await expect(reminder).toHaveAttribute("aria-pressed", "false");
+  await expect(reminder.locator("small")).toHaveText("每天 09:00 推送今日风格");
+  await reminder.click();
+  expect(await page.evaluate(() => window.__nativeMessages.at(-1))).toEqual({
+    type: "setDailyReminder",
+    payload: { enabled: true }
+  });
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setNotificationStatus({
+    authorization: "authorized",
+    enabled: true,
+    hour: 9
+  }));
+  await expect(reminder).toHaveAttribute("aria-pressed", "true");
+  await expect(reminder.locator("small")).toHaveText("已开启 · 每天 09:00");
+  await expect(reminder).not.toHaveAttribute("aria-busy", "true");
+});
+
+test("daily reminder stays hidden on web and denied state opens system settings", async ({ browser }) => {
+  const webContext = await browser.newContext({ locale: "zh-CN", viewport: { width: 390, height: 844 } });
+  const webPage = await webContext.newPage();
+  await webPage.addInitScript(() => localStorage.setItem("styleAtlasLang", "zh"));
+  await webPage.goto("http://127.0.0.1:8765/");
+  await webPage.locator("#drawerBtn").click();
+  await expect(webPage.locator("#drawerDailyReminderBtn")).toBeHidden();
+  await webContext.close();
+
+  const nativeContext = await browser.newContext({ locale: "zh-CN", viewport: { width: 390, height: 844 } });
+  const nativePage = await nativeContext.newPage();
+  await nativePage.addInitScript(() => localStorage.setItem("styleAtlasLang", "zh"));
+  await installNativeMock(nativePage);
+  await nativePage.goto("http://127.0.0.1:8765/");
+  await nativePage.evaluate(() => window.StyleAtlasNativeBridge.setNotificationStatus({
+    authorization: "denied",
+    enabled: false,
+    hour: 9
+  }));
+  await nativePage.locator("#drawerBtn").click();
+  const reminder = nativePage.locator("#drawerDailyReminderBtn");
+  await expect(reminder.locator("small")).toHaveText("通知权限已关闭，点击前往系统设置");
+  await reminder.click();
+  expect(await nativePage.evaluate(() => window.__nativeMessages.at(-1))).toEqual({
+    type: "openNotificationSettings",
+    payload: {}
+  });
+  await nativeContext.close();
+});
+
+test("native deep link bridge opens the requested style", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  expect(await page.evaluate(() => window.StyleAtlasNativeBridge.openStyle("solarpunk"))).toBe(true);
+  await expect(page.locator("#detailView")).toHaveClass(/active/);
+  await expect(page.locator("#detailTitle")).toHaveText("太阳朋克");
+  expect(await page.evaluate(() => location.hash)).toBe("#solarpunk");
+  expect(await page.evaluate(() => window.StyleAtlasNativeBridge.openStyle("missing-style"))).toBe(false);
+});
+
+for (const viewport of [
+  { width: 768, height: 1024, label: "iPad portrait" },
+  { width: 1024, height: 768, label: "iPad landscape" },
+  { width: 507, height: 768, label: "iPad split view" }
+]) {
+  test(`${viewport.label} has no horizontal overflow`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto("/");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBe(0);
+    await page.evaluate(() => window.StyleAtlasNativeBridge?.openStyle?.("swiss-style"));
+    await page.goto("/#swiss-style");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBe(0);
+  });
+}
+
 test("iOS-style touch swipe changes cards while vertical touch does not", async ({ page }) => {
   await page.goto("/");
   const before = await page.locator("#styleDeck .cover-top > span").textContent();

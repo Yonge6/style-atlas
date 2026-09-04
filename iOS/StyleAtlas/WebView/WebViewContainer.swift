@@ -6,6 +6,7 @@ struct WebViewContainer: UIViewRepresentable {
     let hasPlus: Bool
     let productDisplayPrices: [String: String]
     let textScale: Double
+    let notificationStatus: DailyStyleNotificationStatus
 
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
@@ -53,9 +54,11 @@ struct WebViewContainer: UIViewRepresentable {
         context.coordinator.hasPlus = hasPlus
         context.coordinator.productDisplayPrices = productDisplayPrices
         context.coordinator.textScale = textScale
+        context.coordinator.notificationStatus = notificationStatus
         bridge.injectPlusAccess(hasPlus)
         bridge.injectProductPrices(productDisplayPrices)
         bridge.injectTextScale(textScale)
+        bridge.injectNotificationStatus(notificationStatus)
     }
 
     func makeCoordinator() -> Coordinator {
@@ -63,7 +66,8 @@ struct WebViewContainer: UIViewRepresentable {
             bridge: bridge,
             hasPlus: hasPlus,
             productDisplayPrices: productDisplayPrices,
-            textScale: textScale
+            textScale: textScale,
+            notificationStatus: notificationStatus
         )
     }
 
@@ -72,18 +76,27 @@ struct WebViewContainer: UIViewRepresentable {
         var hasPlus: Bool
         var productDisplayPrices: [String: String]
         var textScale: Double
+        var notificationStatus: DailyStyleNotificationStatus
 
-        init(bridge: WebViewBridge, hasPlus: Bool, productDisplayPrices: [String: String], textScale: Double) {
+        init(
+            bridge: WebViewBridge,
+            hasPlus: Bool,
+            productDisplayPrices: [String: String],
+            textScale: Double,
+            notificationStatus: DailyStyleNotificationStatus
+        ) {
             self.bridge = bridge
             self.hasPlus = hasPlus
             self.productDisplayPrices = productDisplayPrices
             self.textScale = textScale
+            self.notificationStatus = notificationStatus
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             bridge.injectPlusAccess(hasPlus)
             bridge.injectProductPrices(productDisplayPrices)
             bridge.injectTextScale(textScale)
+            bridge.injectNotificationStatus(notificationStatus)
         }
     }
 }
