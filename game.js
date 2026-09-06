@@ -164,6 +164,13 @@
   Object.entries(refinedStyles || {}).forEach(([id, data]) => Object.assign(styles.find((style) => style.id === id), data));
   const validStyleIds = new Set(styles.map((style) => style.id));
   const stylesById = new Map(styles.map((style) => [style.id, style]));
+  const searchIndex = new Map(styles.map((style) => [style.id, {
+    names: [style.name.zh, style.name.en, style.pinyin].map((name) => name.toLowerCase()),
+    text: [style.name.zh, style.name.en, style.pinyin, style.keywords,
+      ...style.tags.zh, ...style.tags.en, style.summary.zh, style.summary.en,
+      catName(style.category, "zh"), catName(style.category, "en"), ...style.searchAliases
+    ].join(" ").toLowerCase()
+  }]));
   store.saved = [...new Set(store.saved.filter((id) => validStyleIds.has(id)))];
   store.recent = [...new Set(store.recent.filter((id) => validStyleIds.has(id)))].slice(0, 12);
 
@@ -266,6 +273,10 @@
   }
 
   function setPlusAccessFromNative(value) {
+    if (hasPlusAccess() === (value === true)) {
+      if (hasPlusAccess() && !dom.plusModal.hidden) closePlus();
+      return hasPlusAccess();
+    }
     ACCESS_CONFIG.plusEnabled = value === true;
     refreshStyleAccess();
     if (hasPlusAccess() && !dom.plusModal.hidden) closePlus();
@@ -1067,12 +1078,39 @@
     return [1, 2, 3].map((offset) => rawStyles[(index + offset) % rawStyles.length][0]);
   }
 
+  function dailyDateKey(now = new Date()) {
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  }
+
   function dailyIndex() {
-    const now = new Date();
-    const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const date = dailyDateKey();
     let hash = 0;
     for (const char of date) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
     return hash % styles.length;
+  }
+
+  let displayedDailyDate = dailyDateKey();
+  let displayedDailyId = styles[dailyIndex()].id;
+  let dailyRefreshTimer = 0;
+
+  function refreshDailyStyle() {
+    if (store.view !== "home" || displayedDailyDate === dailyDateKey()) return;
+    const followsDailyPick = store.activeId === displayedDailyId;
+    displayedDailyDate = dailyDateKey();
+    displayedDailyId = styles[dailyIndex()].id;
+    if (followsDailyPick) {
+      store.activeId = displayedDailyId;
+      renderHome();
+    }
+  }
+
+  function scheduleDailyRefresh() {
+    clearTimeout(dailyRefreshTimer);
+    if (document.hidden) return;
+    refreshDailyStyle();
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    dailyRefreshTimer = setTimeout(scheduleDailyRefresh, midnight - now + 100);
   }
 
   function activeStyle() {
@@ -2184,25 +2222,13 @@
     const query = store.query.trim().toLowerCase();
     const score = (style) => {
       if (!query) return 0;
-      const names = [style.name.zh, style.name.en, style.pinyin].map((item) => item.toLowerCase());
+      const { names } = searchIndex.get(style.id);
       if (names.includes(query)) return 0;
       if (names.some((name) => name.includes(query))) return 1;
       return 2;
     };
     const results = styles.filter((style) => {
-      const haystack = [
-        style.name.zh,
-        style.name.en,
-        style.pinyin,
-        style.keywords,
-        style.tags.zh.join(" "),
-        style.tags.en.join(" "),
-        style.summary.zh,
-        style.summary.en,
-        catName(style.category, "zh"),
-        catName(style.category, "en"),
-        style.searchAliases.join(" ")
-      ].join(" ").toLowerCase();
+      const haystack = searchIndex.get(style.id).text;
       return (!store.filter || style.category === store.filter) && (!query || haystack.includes(query));
     }).sort((a, b) => score(a) - score(b));
 
@@ -2349,6 +2375,7 @@
     if (shouldRender && view === "detail") renderDetail();
     if (store.drawerOpen) setDrawer(false, false);
     store.view = view;
+    refreshDailyStyle();
     document.querySelectorAll(".view").forEach((node) => {
       const active = node.id === `${view}View`;
       node.classList.toggle("active", active);
@@ -3625,6 +3652,11 @@
       flushReflection(textarea.dataset.reflectionId);
     }, true);
     window.addEventListener("pagehide", flushAllReflections);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) flushAllReflections();
+      scheduleDailyRefresh();
+    });
+    window.addEventListener("pageshow", scheduleDailyRefresh);
     window.addEventListener("beforeunload", flushAllReflections);
     window.addEventListener("scroll", () => {
       if (store.view !== "detail" || store.detailSectionScrollFrame) return;
@@ -3896,6 +3928,7 @@
   bind();
   renderAll();
   setView(store.view, false);
+  scheduleDailyRefresh();
   if (store.reviewMode === "detail") {
     const sectionId = store.reviewSection === "compare" ? "detail-compare" : (store.reviewSection ? `detail-${store.reviewSection}` : "");
     if (sectionId) {
