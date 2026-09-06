@@ -92,11 +92,21 @@ struct WebViewContainer: UIViewRepresentable {
             self.notificationStatus = notificationStatus
         }
 
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+            bridge.pageWillLoad()
+        }
+
+        func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+            bridge.pageWillLoad()
+            webView.reload()
+        }
+
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             bridge.injectPlusAccess(hasPlus)
             bridge.injectProductPrices(productDisplayPrices)
             bridge.injectTextScale(textScale)
             bridge.injectNotificationStatus(notificationStatus)
+            bridge.pageDidLoad()
         }
     }
 }

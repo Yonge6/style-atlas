@@ -198,6 +198,56 @@ test("native deep link bridge opens the requested style", async ({ page }) => {
   expect(await page.evaluate(() => window.StyleAtlasNativeBridge.openStyle("missing-style"))).toBe(false);
 });
 
+test.describe("daily pick lifecycle", () => {
+  test.use({ timezoneId: "Asia/Shanghai" });
+
+  test("daily home card advances at local midnight without reloading", async ({ page }) => {
+    await page.clock.install({ time: new Date("2026-09-05T15:59:58Z") });
+    await page.clock.pauseAt(new Date("2026-09-05T15:59:59Z"));
+    await page.goto("/");
+    await expect(page.locator("#styleDeck h2")).toHaveText("Synthwave");
+    await page.clock.runFor(1500);
+    await expect(page.locator("#styleDeck h2")).not.toHaveText("Synthwave");
+    const updated = await page.locator("#styleDeck h2").textContent();
+    await page.reload();
+    await expect(page.locator("#styleDeck h2")).toHaveText(updated);
+  });
+
+  test("foreground refresh catches a missed midnight", async ({ page }) => {
+    await page.clock.install({ time: new Date("2026-09-05T04:00:00Z") });
+    await page.goto("/");
+    await page.clock.setSystemTime(new Date("2026-09-06T04:00:00Z"));
+    await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
+    await expect(page.locator("#styleDeck h2")).not.toHaveText("Synthwave");
+  });
+
+  test("midnight and native foreground refresh preserve an open guide", async ({ page }) => {
+    await installNativeMock(page);
+    await page.clock.install({ time: new Date("2026-09-05T15:59:58Z") });
+    await page.clock.pauseAt(new Date("2026-09-05T15:59:59Z"));
+    await page.goto("/#swiss-style");
+    const title = await page.locator("#detailTitle").textContent();
+    await page.clock.runFor(1500);
+    await page.evaluate(() => window.StyleAtlasNativeBridge.refreshDailyStyle());
+    await expect(page.locator("#detailTitle")).toHaveText(title);
+    await expect(page.locator("#detailView")).toHaveClass(/active/);
+  });
+});
+
+test("unchanged native entitlement preserves the reading DOM", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/#swiss-style");
+  expect(await page.evaluate(() => {
+    const title = document.getElementById("detailTitle");
+    const hero = document.querySelector(".detail-hero img");
+    window.StyleAtlasNativeBridge.setPlusAccess(false);
+    window.StyleAtlasNativeBridge.setPlusAccess(false);
+    return Boolean(title && hero) && title === document.getElementById("detailTitle") && hero === document.querySelector(".detail-hero img");
+  })).toBe(true);
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
+  expect(await page.evaluate(() => window.StyleAtlasNativeBridge.getPlusAccess())).toBe(true);
+});
+
 for (const viewport of [
   { width: 768, height: 1024, label: "iPad portrait" },
   { width: 1024, height: 768, label: "iPad landscape" },

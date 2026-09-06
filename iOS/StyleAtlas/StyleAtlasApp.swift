@@ -2,7 +2,15 @@ import SwiftUI
 import UIKit
 import UserNotifications
 
+@MainActor
 final class StyleAtlasAppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    static var pendingStyleID: String?
+
+    static func routeStyle(_ styleID: String) {
+        pendingStyleID = styleID
+        NotificationCenter.default.post(name: .styleAtlasOpenStyle, object: styleID)
+    }
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
@@ -11,7 +19,7 @@ final class StyleAtlasAppDelegate: NSObject, UIApplicationDelegate, UNUserNotifi
         return true
     }
 
-    func userNotificationCenter(
+    nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
@@ -19,15 +27,16 @@ final class StyleAtlasAppDelegate: NSObject, UIApplicationDelegate, UNUserNotifi
         completionHandler([.banner, .sound])
     }
 
-    func userNotificationCenter(
+    nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        if let styleID = response.notification.request.content.userInfo["styleID"] as? String {
-            NotificationCenter.default.post(name: .styleAtlasOpenStyle, object: styleID)
+        let styleID = response.notification.request.content.userInfo["styleID"] as? String
+        Task { @MainActor in
+            if let styleID { Self.routeStyle(styleID) }
+            completionHandler()
         }
-        completionHandler()
     }
 }
 
@@ -43,7 +52,7 @@ struct StyleAtlasApp: App {
                           url.host == "style",
                           let styleID = url.pathComponents.last,
                           styleID != "/" else { return }
-                    NotificationCenter.default.post(name: .styleAtlasOpenStyle, object: styleID)
+                    StyleAtlasAppDelegate.routeStyle(styleID)
                 }
         }
     }

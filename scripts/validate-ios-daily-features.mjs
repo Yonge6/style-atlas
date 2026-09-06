@@ -43,7 +43,7 @@ const app = read("iOS/StyleAtlas/StyleAtlasApp.swift");
 assert.match(app, /onOpenURL/, "app must route widget deep links");
 const notifications = read("iOS/StyleAtlas/Notifications/DailyStyleNotificationManager.swift");
 assert.match(notifications, /UNUserNotificationCenter/);
-assert.match(notifications, /let hour = 9/);
+assert.match(notifications, /bySettingHour: 9,/);
 
 const widget = read("iOS/StyleAtlas/Widgets/DailyStyleWidget.swift");
 assert.match(widget, /supportedFamilies\(\[\.systemSmall, \.systemMedium\]\)/);

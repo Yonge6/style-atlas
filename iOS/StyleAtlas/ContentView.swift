@@ -31,6 +31,10 @@ struct ContentView: View {
         )
             .ignoresSafeArea()
             .task {
+                if let styleID = StyleAtlasAppDelegate.pendingStyleID {
+                    StyleAtlasAppDelegate.pendingStyleID = nil
+                    bridge.openStyle(styleID)
+                }
                 await storeManager.start()
                 await notificationManager.refreshAndReschedule()
             }
@@ -45,6 +49,7 @@ struct ContentView: View {
             }
             .onReceive(NotificationCenter.default.publisher(for: .styleAtlasOpenStyle)) { notification in
                 guard let styleID = notification.object as? String else { return }
+                StyleAtlasAppDelegate.pendingStyleID = nil
                 bridge.openStyle(styleID)
             }
     }

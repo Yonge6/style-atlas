@@ -19,6 +19,8 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
     private var exportOperationInFlight = false
     private var activeExportFileURL: URL?
     private var terminationObserver: NSObjectProtocol?
+    private var pageReady = false
+    private var pendingStyleID: String?
 
     init(storeManager: StoreManager, notificationManager: DailyStyleNotificationManager) {
         self.storeManager = storeManager
@@ -136,12 +138,32 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
     }
 
     func openStyle(_ styleID: String) {
-        guard let value = jsonString(styleID) else { return }
-        webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.openStyle(\(value))")
+        pendingStyleID = styleID
+        deliverPendingStyle()
+    }
+
+    func pageWillLoad() {
+        pageReady = false
+    }
+
+    func pageDidLoad() {
+        pageReady = true
+        deliverPendingStyle()
+    }
+
+    private func deliverPendingStyle() {
+        guard pageReady, let webView, let styleID = pendingStyleID,
+              let value = jsonString(styleID) else { return }
+        webView.evaluateJavaScript("window.StyleAtlasNativeBridge?.openStyle(\(value))") { [weak self] result, error in
+            guard let self, error == nil, result is Bool,
+                  self.pendingStyleID == styleID else { return }
+            self.pendingStyleID = nil
+        }
     }
 
     func refreshAfterForeground() async {
         bridgeLogger.info("operation=foregroundRefresh status=started")
+        _ = try? await webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.refreshDailyStyle()")
         await storeManager.refreshEntitlements()
         injectPlusAccess(storeManager.entitlementManagerHasPlus)
         if !storeManager.isOperationInFlight {
