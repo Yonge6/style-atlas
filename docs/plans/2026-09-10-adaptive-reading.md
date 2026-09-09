@@ -86,8 +86,15 @@ automation are not needed; execute the requested work directly in this worktree.
 - Native iPad Pro 13-inch simulator validated both orientations, both languages,
   and retained step 2 while rotating. Two actual 2752×2064 JPEG screenshots
   captured, with only orientation correction and format conversion.
-- The disposable Style Atlas iPad simulator was removed after preserving its
-  screenshots to recover local disk space. Other projects' simulators and all
-  user archives are untouched. A dedicated iPhone simulator is used next.
-- Build upload and remaining iPhone QA are in progress. Style Atlas 1.6 (14)
-  remains in review; no withdrawal has occurred at this checkpoint.
+- Native iPhone 17 Pro Max QA completed: portrait/landscape detail and guide,
+  safe-area controls, and step 2 retained on return to portrait.
+- Both disposable Style Atlas simulators were removed after preserving captures
+  due to low disk space. Other projects' simulators and user archives untouched.
+- Task 3 complete: build 16 uploaded and processed; old build 14 review removed
+  only after replacement readiness. Bilingual metadata and actual screenshots
+  saved. Original monthly subscription reattached; annual remains Approved.
+- Final submission `b3c41e4d-77b8-42ef-94ca-d3d640bca1d8` read back as Waiting
+  for Review for both App 1.6 (16) and Monthly Auto-Renewable, 2026-09-10 04:09.
+  Manual release and commerce settings preserved; H5 not deployed this turn.
+- Wait-and-resume heartbeat paused after completion. Duo-specific device testing
+  remains unperformed and is not claimed by the release copy.

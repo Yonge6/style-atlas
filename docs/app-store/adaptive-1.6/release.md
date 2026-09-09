@@ -52,6 +52,28 @@ App: 6787447019 · Bundle: com.xiazishuo.styleatlas.
 
 Wendao 1.8 (19) was verified Waiting for Review before this release resumed,
 as requested. Apple upload of Style Atlas 1.6 (16) succeeded on 2026-09-10.
-Processing and final review submission are pending at this checkpoint. Existing
-Style Atlas 1.6 (14) review is still retained. Preserve manual release, ratings,
-all six iPhone screenshots and the existing iPad daily-style screenshot.
+Apple processed build 16 (`0db4041b-4670-4f37-bd65-7fe731c0b33d`). Only after
+replacement readiness, the old build 14 submission was cancelled; its record
+`a4fef77e-07e2-45a6-a9d4-8b7210dfee65` now shows Removed.
+
+Final live readback on 2026-09-10 at 04:09 China time:
+
+- Submission: `b3c41e4d-77b8-42ef-94ca-d3d640bca1d8`.
+- App 1.6 (16): Waiting for Review.
+- Existing Monthly Auto-Renewable (`6806121586`): Waiting for Review in the same
+  submission. It was reattached after withdrawal of the old two-item submission.
+- Annual Auto-Renewable (`6801383415`) remains Approved; no product changes.
+- Manual release, immediate update setting, existing ratings and all six iPhone
+  screenshots preserved. English iPad has the new wide guide plus the existing
+  daily-style image. Chinese iPad now has its own actual Chinese wide screenshot,
+  replacing the previous English-language fallback, not deleting an original.
+- English upload name is `01-guided-wide.jpg`; Chinese is `atlas-zh.jpg`, matching
+  the committed Chinese screenshot bytes. A duplicate English temporary upload
+  was removed; original images and local files remain available.
+- Both locales have updated promotional text, What's New and adaptive description.
+  The stale Chinese one-off annual description was corrected to match the existing
+  monthly/yearly auto-renewing products and eligible annual 7-day trial. Product
+  IDs, prices, eligibility and entitlements were not changed.
+- The one-off wait-and-resume heartbeat was paused after successful readback.
+
+Review record: https://appstoreconnect.apple.com/apps/6787447019/distribution/reviewsubmissions/details/b3c41e4d-77b8-42ef-94ca-d3d640bca1d8
