@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { chromium, expect } from "@playwright/test";
+import { chromium } from "@playwright/test";
 
 const baseURL = process.argv[2] || "http://127.0.0.1:8766/";
 const screenshotPath = process.argv[3];
@@ -38,37 +38,9 @@ try {
     report.push({ viewport, midnight: "PASS", search: "PASS", guidePreserved: "PASS", overflow, errors });
     await context.close();
   }
-  const wechat = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 MicroMessenger/8.0.50"
-  });
-  await wechat.addInitScript(() => {
-    localStorage.setItem("styleAtlasLang", "zh");
-    Object.defineProperty(navigator, "clipboard", { configurable: true, value: {
-      async writeText(value) { window.__copiedAppLink = value; }
-    } });
-  });
-  const page = await wechat.newPage();
-  await page.goto(baseURL);
-  await page.locator("#drawerBtn").click();
-  await page.locator("#downloadAppNav").click();
-  await expect(page.locator("#wechatDownloadGuide")).toBeVisible();
-  await page.locator("#wechatDownloadCopyBtn").click();
-  await expect(page.locator("#wechatDownloadStatus")).toContainText("已复制");
-  await expect(page.locator("#toast")).not.toHaveClass(/show/);
-  assert.equal(await page.evaluate(() => window.__copiedAppLink), "https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&ct=Website%20Organic&mt=8");
-  await page.locator("#wechatDownloadGotItBtn").click();
-  await page.locator("#drawerBtn").click();
-  await page.locator("#drawerAboutBtn").click();
-  await page.locator("#aboutContent .app-store-link").click();
-  await expect(page.locator("#wechatDownloadGuide")).toBeVisible();
-  await page.locator("#wechatDownloadCloseBtn").click();
-  await page.goto(`${baseURL}#isometric-illustration`);
-  await page.locator("[data-action='show-plus']").first().click();
-  await page.locator("#plusCta").click();
-  await expect(page.locator("#wechatDownloadGuide")).toBeVisible();
-  await wechat.close();
-  console.log(JSON.stringify({ baseURL, report, wechatDownload: "3 entries PASS; copy PASS; duplicate toast absent" }, null, 2));
+  const { verifyDownloadFlow } = await import("./verify-download-flow.mjs");
+  const wechatDownload = await verifyDownloadFlow(browser, baseURL, screenshotPath ? screenshotPath.replace(/\.png$/, "-download.png") : undefined);
+  console.log(JSON.stringify({ baseURL, report, wechatDownload }, null, 2));
 } finally {
   await browser.close();
 }
