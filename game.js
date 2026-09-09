@@ -1359,6 +1359,7 @@
   }
 
   function openOverlay(container, focusTarget, returnFocus = null) {
+    captureReadingAnchor();
     const intendedReturnFocus = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     if (container !== dom.plusModal && !dom.plusModal.hidden) closePlus(false);
     if (container !== dom.lightbox && !dom.lightbox.hidden) closeImage(false);
@@ -1387,10 +1388,11 @@
     const returnFocus = store.overlayReturnFocus;
     store.overlayReturnFocus = null;
     if (restoreFocus) requestAnimationFrame(() => {
-      returnFocus?.focus();
+      returnFocus?.focus({ preventScroll: true });
       updateAccessibilityDebug();
     });
     else updateAccessibilityDebug();
+    restoreReadingAfterResize();
   }
 
   function showPlus(reasonKey = "plusSubtitle") {
@@ -2229,6 +2231,53 @@
     toast(t("reflectionCleared"));
   }
 
+  let readingViewportWidth = window.innerWidth;
+  let readingAnchor = null;
+  let readingResizeFrame = 0;
+  let readingNeedsRestore = false;
+
+  function readingIsCovered() {
+    return document.body.classList.contains("drawer-lock") || store.drawerOpen;
+  }
+
+  function captureReadingAnchor() {
+    if (store.view !== "detail" || readingIsCovered() || readingNeedsRestore ||
+        readingResizeFrame || window.innerWidth !== readingViewportWidth) return;
+    const edge = document.querySelector(".topbar").getBoundingClientRect().bottom + 20;
+    const candidate = [...dom.detailContent.querySelectorAll("h2, h3, p, li")]
+      .map((node) => ({ node, rect: node.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.width > 0 && rect.height > 0 && rect.bottom > edge && rect.top < innerHeight)
+      .sort((a, b) => Math.abs(a.rect.top - edge) - Math.abs(b.rect.top - edge))[0];
+    readingAnchor = candidate ? {
+      node: candidate.node,
+      styleID: store.activeId,
+      progress: Math.max(0, (edge - candidate.rect.top) / candidate.rect.height),
+      gap: Math.max(0, candidate.rect.top - edge)
+    } : null;
+  }
+
+  function restoreReadingAfterResize() {
+    if (!readingNeedsRestore || readingIsCovered() || readingResizeFrame) return;
+    readingResizeFrame = requestAnimationFrame(() => {
+      readingResizeFrame = 0;
+      if (readingIsCovered()) return;
+      const anchor = readingAnchor;
+      readingNeedsRestore = false;
+      if (store.view !== "detail" || !anchor?.node.isConnected || anchor.styleID !== store.activeId) return;
+      const edge = document.querySelector(".topbar").getBoundingClientRect().bottom + 20;
+      const rect = anchor.node.getBoundingClientRect();
+      window.scrollTo({ top: scrollY + rect.top + anchor.progress * rect.height - edge - anchor.gap, behavior: "instant" });
+      captureReadingAnchor();
+    });
+  }
+
+  function handleReadingViewportResize() {
+    if (window.innerWidth === readingViewportWidth) return; // Ignore keyboard / browser-bar height changes.
+    readingViewportWidth = window.innerWidth;
+    readingNeedsRestore = Boolean(readingAnchor);
+    restoreReadingAfterResize();
+  }
+
   function jumpToDetailSection(targetId, button) {
     const target = $(targetId);
     if (!target) return;
@@ -2238,6 +2287,7 @@
   }
 
   function updateCurrentDetailSection() {
+    captureReadingAnchor();
     const targets = ["detail-see", "detail-understand", "detail-apply", "detail-create", "detail-explore"]
       .map((id) => $(id))
       .filter(Boolean);
@@ -2492,6 +2542,9 @@
   }
 
   function setView(view, shouldRender = true) {
+    readingAnchor = null;
+    readingNeedsRestore = false;
+    readingViewportWidth = window.innerWidth;
     flushAllReflections();
     if (store.view === "detail" && view !== "detail") abortWikiGallery();
     if (view !== "detail" && !dom.guidedOverlay.hidden) closeGuided(false);
@@ -2546,6 +2599,7 @@
 
   function setDrawer(open, restoreFocus = true) {
     if (store.drawerOpen === open) return;
+    if (open) captureReadingAnchor();
     if (open) {
       if (!dom.plusModal.hidden) closePlus(false);
       if (!dom.lightbox.hidden) closeImage(false);
@@ -2575,10 +2629,11 @@
       const returnFocus = store.drawerReturnFocus;
       store.drawerReturnFocus = null;
       if (restoreFocus) requestAnimationFrame(() => {
-        returnFocus?.focus();
+        returnFocus?.focus({ preventScroll: true });
         updateAccessibilityDebug();
       });
       else updateAccessibilityDebug();
+      restoreReadingAfterResize();
     }
   }
 
@@ -3754,6 +3809,7 @@
       scheduleDailyRefresh();
     });
     window.addEventListener("pageshow", scheduleDailyRefresh);
+    window.addEventListener("resize", handleReadingViewportResize);
     window.addEventListener("beforeunload", flushAllReflections);
     window.addEventListener("scroll", () => {
       if (store.view !== "detail" || store.detailSectionScrollFrame) return;
@@ -3959,6 +4015,7 @@
     if (window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell !== true) return 1;
     const scale = Math.min(1.6, Math.max(0.9, Number(value) || 1));
     document.documentElement.style.zoom = String(scale);
+    document.documentElement.style.setProperty("--native-ui-scale", String(scale));
     document.documentElement.toggleAttribute("data-native-large-text", scale > 1.05);
     return scale;
   }
