@@ -1220,12 +1220,14 @@
     dom.wechatDownloadStatus.textContent = t(copied ? "wechatDownloadCopied" : "wechatDownloadCopyFailed");
   }
 
-  function openAppStore(returnFocus = null) {
-    const source = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+  function openAppStore() {
     if (store.drawerOpen) setDrawer(false, false);
     if (!dom.plusModal.hidden) closePlus(false);
     if (!hasNativeBridge() && isIPhoneWeChatBrowser()) {
-      showWechatDownloadGuide(source);
+      const destination = new URL("./download.html", window.location.href);
+      destination.search = new URLSearchParams({ lang: store.lang }).toString();
+      destination.hash = "";
+      window.location.assign(destination.href);
       return;
     }
     window.location.assign(APP_STORE_URL);
