@@ -481,14 +481,12 @@
       planPicker: "选择方案",
       annualAutoTitle: "连续包年",
       annualAutoNote: "每年自动续订，可随时取消",
-      annualAutoTrialNote: "符合资格的新订阅用户可试用 7 天，之后每年自动续订",
       annualAutoBadge: "推荐",
+      introOfferBadge: "首期优惠",
       monthlyAutoTitle: "连续包月",
       monthlyAutoNote: "每月自动续订，可随时取消",
-      annualAutoDisclosure: "连续包年：符合资格的新订阅用户可享 7 天免费试用；试用结束后从 Apple ID 扣款。除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
       annualAutoStandardDisclosure: "连续包年：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
       monthlyAutoDisclosure: "连续包月：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按月自动续订。可在 Apple ID 的“订阅”中管理或取消。",
-      subscribeAnnualPlus: "开始 7 天免费试用",
       buyAnnualPlus: "开启连续包年",
       subscribeMonthlyPlus: "开启连续包月",
       termsOfUse: "使用条款",
@@ -532,7 +530,7 @@
       aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 120 种视觉语言整理成可以观察、理解、比较和表达的完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和创作表达。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
       aboutFor: "适合希望提升审美的人、自媒体人、设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
       aboutFree: "App 可免费下载，包含每日推荐、120 种风格浏览、双语搜索、收藏，以及 20 个可使用全部学习模块的免费完整风格档案。",
-      aboutPlus: "Plus 提供连续包月与连续包年两种自动续订方案；符合资格的新订阅用户选择包年可享 7 天免费试用。Plus 解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
+      aboutPlus: "Plus 提供连续包月与连续包年两种自动续订方案；符合资格时，App Store 会显示当前首期优惠及之后的原价续费信息。Plus 解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
       appFeaturesTitle: "在 App 里看懂一种美",
       appFeatures: ["浏览 120 种艺术与设计风格", "阅读 120 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用风格表达词把理解带进创作", "支持中英文、离线浏览与多比例导出"],
       safetyTitle: "版权与风格安全说明",
@@ -739,14 +737,12 @@
       planPicker: "Choose a plan",
       annualAutoTitle: "Annual subscription",
       annualAutoNote: "Renews yearly until cancelled",
-      annualAutoTrialNote: "7-day free trial for eligible new subscribers, then renews yearly",
       annualAutoBadge: "Recommended",
+      introOfferBadge: "Intro offer",
       monthlyAutoTitle: "Monthly subscription",
       monthlyAutoNote: "Renews monthly until cancelled",
-      annualAutoDisclosure: "Annual subscription: eligible new subscribers receive a 7-day free trial, then payment is charged to the Apple ID. It renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
       annualAutoStandardDisclosure: "Annual subscription: charged to your Apple ID at confirmation and renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
       monthlyAutoDisclosure: "Monthly subscription: charged to your Apple ID at confirmation and renews automatically each month unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
-      subscribeAnnualPlus: "Start 7-day free trial",
       buyAnnualPlus: "Start annual subscription",
       subscribeMonthlyPlus: "Start monthly subscription",
       termsOfUse: "Terms of Use",
@@ -790,7 +786,7 @@
       aboutBody: "Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
       aboutFor: "For anyone building visual taste, social media creators, designers, AI creators, brand builders, content creators, design students, and art lovers.",
       aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
-      aboutPlus: "Plus offers monthly and annual auto-renewing subscriptions. Eligible new subscribers receive a 7-day free trial with the annual plan. Plus unlocks the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
+      aboutPlus: "Plus offers monthly and annual auto-renewing subscriptions. When eligible, the App Store shows the current introductory terms and the standard renewal price that follows. Plus unlocks the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
       appFeaturesTitle: "Learn to see a style in the app",
       appFeatures: ["Explore 120 art and design styles", "Read 120 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
       safetyTitle: "Copyright And Style Safety",
@@ -868,6 +864,7 @@
     plusMonthlyAutoTitle: $("plusMonthlyAutoTitle"),
     plusMonthlyAutoNote: $("plusMonthlyAutoNote"),
     plusMonthlyAutoPrice: $("plusMonthlyAutoPrice"),
+    plusMonthlyAutoBadge: $("plusMonthlyAutoBadge"),
     plusLaunchPrice: $("plusLaunchPrice"),
     plusRegularPrice: $("plusRegularPrice"),
     plusFootnote: $("plusFootnote"),
@@ -1395,6 +1392,97 @@
     restoreReadingAfterResize();
   }
 
+  function introductoryOfferFor(plan, prices) {
+    const prefix = `${plan}_intro_`;
+    const eligible = String(prices[`${prefix}eligible`]) === "true";
+    const price = String(prices[`${prefix}price`] || "").trim();
+    const unit = String(prices[`${prefix}period_unit`] || "");
+    const value = Number(prices[`${prefix}period_value`]);
+    const count = Number(prices[`${prefix}period_count`]);
+    const mode = String(prices[`${prefix}payment_mode`] || "");
+    if (!eligible || !price || !Number.isInteger(value) || value < 1 ||
+        !Number.isInteger(count) || count < 1 ||
+        !["day", "week", "month", "year"].includes(unit) ||
+        !["freeTrial", "payAsYouGo", "payUpFront"].includes(mode)) return null;
+    return { price, unit, value, count, mode, total: value * count };
+  }
+
+  function durationLabel(unit, total) {
+    if (store.lang === "zh") {
+      return `${total} ${{ day: "天", week: "周", month: "个月", year: "年" }[unit]}`;
+    }
+    return `${total} ${unit}${total === 1 ? "" : "s"}`;
+  }
+
+  function firstPeriodLabel(plan, offer) {
+    if (offer.total === 1 && offer.unit === "month" && plan === "monthly_auto") {
+      return store.lang === "zh" ? "首月" : "first month";
+    }
+    if (offer.total === 1 && offer.unit === "year" && plan === "annual_auto") {
+      return store.lang === "zh" ? "首年" : "first year";
+    }
+    const duration = durationLabel(offer.unit, offer.total);
+    return store.lang === "zh" ? `前 ${duration}` : `first ${duration}`;
+  }
+
+  function standardRenewalLabel(plan, standardPrice, sentenceStart = false) {
+    const unit = plan === "monthly_auto" ? (store.lang === "zh" ? "月" : "month") : (store.lang === "zh" ? "年" : "year");
+    if (store.lang === "zh") return `之后每${unit} ${standardPrice}`;
+    return `${sentenceStart ? "Then" : "then"} ${standardPrice}/${unit}`;
+  }
+
+  function offerNote(plan, offer, standardPrice) {
+    const firstPeriod = firstPeriodLabel(plan, offer);
+    const renewal = standardRenewalLabel(plan, standardPrice);
+    if (offer.mode === "freeTrial") {
+      const freePeriod = durationLabel(offer.unit, offer.total);
+      return store.lang === "zh" ? `免费 ${freePeriod}，${renewal}` : `Free for ${freePeriod}, ${renewal}`;
+    }
+    if (offer.mode === "payAsYouGo") {
+      const chargePeriod = durationLabel(offer.unit, offer.value);
+      return store.lang === "zh"
+        ? `${firstPeriod}每 ${chargePeriod} ${offer.price}，${renewal}`
+        : `${offer.price} every ${chargePeriod} for the ${firstPeriod}, ${renewal}`;
+    }
+    return store.lang === "zh"
+      ? `${firstPeriod} ${offer.price}，${renewal}`
+      : `${offer.price} for the ${firstPeriod}, ${renewal}`;
+  }
+
+  function offerCta(plan, offer) {
+    if (offer.mode === "freeTrial") return store.lang === "zh" ? "开始免费试用" : "Start free trial";
+    const firstPeriod = firstPeriodLabel(plan, offer);
+    return store.lang === "zh"
+      ? `以 ${offer.price} 开启${firstPeriod}`
+      : `Start ${firstPeriod} for ${offer.price}`;
+  }
+
+  function offerDisclosure(plan, offer, standardPrice) {
+    const isMonthly = plan === "monthly_auto";
+    const planName = store.lang === "zh" ? (isMonthly ? "连续包月" : "连续包年") : (isMonthly ? "Monthly subscription" : "Annual subscription");
+    const firstPeriod = firstPeriodLabel(plan, offer);
+    const renewalUnit = isMonthly ? (store.lang === "zh" ? "月" : "month") : (store.lang === "zh" ? "年" : "year");
+    let offerTerms;
+    if (offer.mode === "freeTrial") {
+      const freePeriod = durationLabel(offer.unit, offer.total);
+      offerTerms = store.lang === "zh"
+        ? `符合 Apple 优惠资格时，免费试用 ${freePeriod}`
+        : `if eligible for Apple's introductory offer, includes a free ${freePeriod} trial`;
+    } else if (offer.mode === "payAsYouGo") {
+      const chargePeriod = durationLabel(offer.unit, offer.value);
+      offerTerms = store.lang === "zh"
+        ? `符合 Apple 优惠资格时，${firstPeriod}每 ${chargePeriod}支付 ${offer.price}`
+        : `if eligible for Apple's introductory offer, charges ${offer.price} every ${chargePeriod} for the ${firstPeriod}`;
+    } else {
+      offerTerms = store.lang === "zh"
+        ? `符合 Apple 优惠资格时，${firstPeriod}预付 ${offer.price}`
+        : `if eligible for Apple's introductory offer, charges ${offer.price} up front for the ${firstPeriod}`;
+    }
+    return store.lang === "zh"
+      ? `${planName}：${offerTerms}；优惠期结束后按 ${standardPrice}/${renewalUnit}自动续订。除非到期前至少 24 小时取消，否则订阅会继续续期。可在 Apple ID 的“订阅”中管理或取消。`
+      : `${planName}: ${offerTerms}; it then renews automatically at ${standardPrice}/${renewalUnit} unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.`;
+  }
+
   function showPlus(reasonKey = "plusSubtitle") {
     const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const returnFocus = activeElement?.closest("#drawer") ? dom.drawerBtn : activeElement;
@@ -1414,32 +1502,38 @@
     dom.plusPlanList.innerHTML = t("plusPlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     const iapDisplayPrices = window.STYLE_ATLAS_RUNTIME_CONFIG?.iapDisplayPrices || {};
     const selectedPlan = store.selectedPlusPlan === "monthly_auto" ? "monthly_auto" : "annual_auto";
-    const annualTrialEligible = String(iapDisplayPrices.annual_trial_eligible) === "true";
-    const selectedPrice = iapDisplayPrices[selectedPlan] || "";
+    const monthlyOffer = iapDisplayPrices.monthly_auto ? introductoryOfferFor("monthly_auto", iapDisplayPrices) : null;
+    const annualOffer = iapDisplayPrices.annual_auto ? introductoryOfferFor("annual_auto", iapDisplayPrices) : null;
+    const offers = { monthly_auto: monthlyOffer, annual_auto: annualOffer };
+    const selectedOffer = offers[selectedPlan];
+    const standardPrice = iapDisplayPrices[selectedPlan] || "";
+    const selectedPrice = selectedOffer?.price || standardPrice;
     dom.plusPlanPickerLegend.textContent = t("planPicker");
     dom.plusAnnualAutoTitle.textContent = t("annualAutoTitle");
-    dom.plusAnnualAutoNote.textContent = t(annualTrialEligible ? "annualAutoTrialNote" : "annualAutoNote");
-    dom.plusAnnualAutoBadge.textContent = t("annualAutoBadge");
+    dom.plusAnnualAutoNote.textContent = annualOffer ? offerNote("annual_auto", annualOffer, iapDisplayPrices.annual_auto) : t("annualAutoNote");
+    dom.plusAnnualAutoBadge.textContent = annualOffer ? t("introOfferBadge") : t("annualAutoBadge");
     dom.plusMonthlyAutoTitle.textContent = t("monthlyAutoTitle");
-    dom.plusMonthlyAutoNote.textContent = t("monthlyAutoNote");
-    dom.plusAnnualAutoPrice.textContent = iapDisplayPrices.annual_auto || t("priceLoading");
-    dom.plusMonthlyAutoPrice.textContent = iapDisplayPrices.monthly_auto || t("priceLoading");
+    dom.plusMonthlyAutoNote.textContent = monthlyOffer ? offerNote("monthly_auto", monthlyOffer, iapDisplayPrices.monthly_auto) : t("monthlyAutoNote");
+    dom.plusAnnualAutoPrice.textContent = annualOffer?.price || iapDisplayPrices.annual_auto || t("priceLoading");
+    dom.plusMonthlyAutoPrice.textContent = monthlyOffer?.price || iapDisplayPrices.monthly_auto || t("priceLoading");
+    dom.plusMonthlyAutoBadge.textContent = t("introOfferBadge");
+    dom.plusMonthlyAutoBadge.hidden = !monthlyOffer;
     dom.plusPlanPicker.querySelectorAll("input[name='plus-plan']").forEach((input) => {
       input.checked = input.value === selectedPlan;
       input.disabled = !iapReady || hasPlusAccess();
     });
     dom.plusPlanPicker.hidden = freeLaunch || web;
     dom.plusLaunchPrice.textContent = iapReady
-      ? `${selectedPrice || t("priceLoading")} / ${selectedPlan === "monthly_auto" ? (store.lang === "zh" ? "月" : "month") : (store.lang === "zh" ? "年" : "year")}`
+      ? `${selectedPrice || t("priceLoading")} / ${selectedOffer ? firstPeriodLabel(selectedPlan, selectedOffer) : (selectedPlan === "monthly_auto" ? (store.lang === "zh" ? "月" : "month") : (store.lang === "zh" ? "年" : "year"))}`
       : t("appStorePrice");
-    dom.plusRegularPrice.textContent = "";
+    dom.plusRegularPrice.textContent = selectedOffer ? standardRenewalLabel(selectedPlan, standardPrice, true) : "";
     dom.plusLaunchPrice.parentElement.hidden = freeLaunch;
-    dom.plusRegularPrice.hidden = true;
+    dom.plusRegularPrice.hidden = !selectedOffer;
     dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : (iapReady ? t("iapFootnote") : t("appStoreFootnote"));
     dom.plusRenewalDisclosure.textContent = iapReady
-      ? t(selectedPlan === "annual_auto"
-        ? (annualTrialEligible ? "annualAutoDisclosure" : "annualAutoStandardDisclosure")
-        : "monthlyAutoDisclosure")
+      ? (selectedOffer
+        ? offerDisclosure(selectedPlan, selectedOffer, standardPrice)
+        : t(selectedPlan === "annual_auto" ? "annualAutoStandardDisclosure" : "monthlyAutoDisclosure"))
       : "";
     dom.plusRenewalDisclosure.hidden = !iapReady;
     dom.plusTermsLink.textContent = t("termsOfUse");
@@ -1455,9 +1549,10 @@
         ? t("purchaseLoading")
         : (storeAction === "pending"
           ? t("purchasePending")
-          : (iapReady ? t(selectedPlan === "annual_auto"
-            ? (annualTrialEligible ? "subscribeAnnualPlus" : "buyAnnualPlus")
-            : "subscribeMonthlyPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"))))));
+          : (iapReady ? (selectedOffer
+            ? offerCta(selectedPlan, selectedOffer)
+            : t(selectedPlan === "annual_auto" ? "buyAnnualPlus" : "subscribeMonthlyPlus"))
+            : (freeLaunch ? t("plusFuture") : t("comingSoon"))))));
     dom.plusCta.disabled = web ? false : (hasPlusAccess() || !iapReady || !selectedPrice || isStoreBusy);
     dom.plusRestoreBtn.hidden = !iapReady || hasPlusAccess();
     dom.plusRestoreBtn.textContent = storeAction === "restoring" ? t("restoreLoading") : t("restorePurchases");
@@ -4027,11 +4122,20 @@
     },
     setProductPrices(value) {
       const prices = value && typeof value === "object" ? value : {};
-      window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrices = {
+      const normalized = {
         monthly_auto: String(prices.monthly_auto || ""),
-        annual_auto: String(prices.annual_auto || ""),
-        annual_trial_eligible: String(prices.annual_trial_eligible || "false")
+        annual_auto: String(prices.annual_auto || "")
       };
+      ["monthly_auto", "annual_auto"].forEach((plan) => {
+        const prefix = `${plan}_intro_`;
+        normalized[`${prefix}eligible`] = String(prices[`${prefix}eligible`] || "false");
+        normalized[`${prefix}price`] = String(prices[`${prefix}price`] || "");
+        normalized[`${prefix}period_unit`] = String(prices[`${prefix}period_unit`] || "");
+        normalized[`${prefix}period_value`] = String(prices[`${prefix}period_value`] || "");
+        normalized[`${prefix}period_count`] = String(prices[`${prefix}period_count`] || "");
+        normalized[`${prefix}payment_mode`] = String(prices[`${prefix}payment_mode`] || "");
+      });
+      window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrices = normalized;
       if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
       return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrices;
     },

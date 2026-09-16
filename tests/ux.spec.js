@@ -4,6 +4,23 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 
+const PROMOTION_PRICES = {
+  monthly_auto: "$9.99",
+  annual_auto: "$89.99",
+  monthly_auto_intro_eligible: "true",
+  monthly_auto_intro_price: "$1.99",
+  monthly_auto_intro_period_unit: "month",
+  monthly_auto_intro_period_value: "1",
+  monthly_auto_intro_period_count: "1",
+  monthly_auto_intro_payment_mode: "payUpFront",
+  annual_auto_intro_eligible: "true",
+  annual_auto_intro_price: "$17.99",
+  annual_auto_intro_period_unit: "year",
+  annual_auto_intro_period_value: "1",
+  annual_auto_intro_period_count: "1",
+  annual_auto_intro_payment_mode: "payUpFront"
+};
+
 test.use({ viewport: { width: 390, height: 844 }, locale: "zh-CN" });
 
 test.beforeEach(async ({ page }) => {
@@ -30,8 +47,7 @@ async function installNativeMock(page) {
       submissionMode: "iap",
       iapDisplayPrices: {
         monthly_auto: "$9.99",
-        annual_auto: "$89.99",
-        annual_trial_eligible: "true"
+        annual_auto: "$89.99"
       }
     };
   });
@@ -627,15 +643,12 @@ test("restoring state disables restore and purchase controls", async ({ page }) 
 test("native paywall uses StoreKit display price and posts purchase and restore", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({
-    monthly_auto: "$9.99",
-    annual_auto: "$89.99",
-    annual_trial_eligible: "true"
-  }));
+  await page.evaluate((prices) => window.StyleAtlasNativeBridge.setProductPrices(prices), PROMOTION_PRICES);
   await openPlus(page);
-  await expect(page.locator("#plusLaunchPrice")).toContainText("$89.99");
+  await expect(page.locator("#plusLaunchPrice")).toContainText("$17.99");
+  await expect(page.locator("#plusRegularPrice")).toContainText("之后每年 $89.99");
   await expect(page.locator("input[name='plus-plan'][value='annual_auto']")).toBeChecked();
-  await expect(page.locator("#plusCta")).toHaveText("开始 7 天免费试用");
+  await expect(page.locator("#plusCta")).toHaveText("以 $17.99 开启首年");
   await page.locator("#plusCta").click();
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("purchasePlus");
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.payload?.plan)).toBe("annual_auto");
@@ -647,17 +660,14 @@ test("native paywall uses StoreKit display price and posts purchase and restore"
 test("Plus plan picker switches to the auto-renewing monthly plan", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({
-    monthly_auto: "$9.99",
-    annual_auto: "$89.99",
-    annual_trial_eligible: "true"
-  }));
+  await page.evaluate((prices) => window.StyleAtlasNativeBridge.setProductPrices(prices), PROMOTION_PRICES);
   await openPlus(page);
   await page.locator("input[name='plus-plan'][value='monthly_auto']").check();
-  await expect(page.locator("#plusLaunchPrice")).toContainText("$9.99");
-  await expect(page.locator("#plusLaunchPrice")).toContainText("月");
-  await expect(page.locator("#plusRenewalDisclosure")).toContainText("按月自动续订");
-  await expect(page.locator("#plusCta")).toHaveText("开启连续包月");
+  await expect(page.locator("#plusLaunchPrice")).toContainText("$1.99");
+  await expect(page.locator("#plusRegularPrice")).toContainText("之后每月 $9.99");
+  await expect(page.locator("#plusRenewalDisclosure")).toContainText("首月预付 $1.99");
+  await expect(page.locator("#plusRenewalDisclosure")).toContainText("$9.99/月自动续订");
+  await expect(page.locator("#plusCta")).toHaveText("以 $1.99 开启首月");
   await page.locator("#plusCta").click();
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.payload?.plan)).toBe("monthly_auto");
 });
@@ -665,20 +675,42 @@ test("Plus plan picker switches to the auto-renewing monthly plan", async ({ pag
 test("English annual subscription discloses renewal and legal links", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
-  await page.evaluate(() => {
+  await page.evaluate((prices) => {
     localStorage.setItem("styleAtlasLang", "en");
-    window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" });
-  });
+    window.StyleAtlasNativeBridge.setProductPrices(prices);
+  }, PROMOTION_PRICES);
   await page.reload();
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
+  await page.evaluate((prices) => window.StyleAtlasNativeBridge.setProductPrices(prices), PROMOTION_PRICES);
   await openPlus(page);
   await expect(page.locator("#plusAnnualAutoTitle")).toHaveText("Annual subscription");
-  await expect(page.locator("#plusAnnualAutoNote")).toContainText("7-day free trial");
-  await expect(page.locator("#plusLaunchPrice")).toContainText("$89.99");
-  await expect(page.locator("#plusCta")).toHaveText("Start 7-day free trial");
+  await expect(page.locator("#plusAnnualAutoNote")).toHaveText("$17.99 for the first year, then $89.99/year");
+  await expect(page.locator("#plusLaunchPrice")).toContainText("$17.99");
+  await expect(page.locator("#plusRegularPrice")).toContainText("Then $89.99/year");
+  await expect(page.locator("#plusCta")).toHaveText("Start first year for $17.99");
   await expect(page.locator("#plusRenewalDisclosure")).toContainText("renews automatically");
   await expect(page.locator("#plusTermsLink")).toHaveAttribute("href", /apple\.com\/legal/);
   await expect(page.locator("#plusPrivacyLink")).toHaveAttribute("href", /style-atlas\.wonderelian\.com\/privacy\.html/);
+});
+
+test("ineligible or incomplete offers never advertise a discount or trial", async ({ page }) => {
+  await installNativeMock(page);
+  await page.goto("/");
+  const invalidOffers = [
+    { ...PROMOTION_PRICES, annual_auto_intro_eligible: "false" },
+    { ...PROMOTION_PRICES, annual_auto_intro_price: "" },
+    { ...PROMOTION_PRICES, annual_auto_intro_period_value: "0" },
+    { ...PROMOTION_PRICES, annual_auto_intro_payment_mode: "unknown" }
+  ];
+  for (const prices of invalidOffers) {
+    await page.evaluate((value) => window.StyleAtlasNativeBridge.setProductPrices(value), prices);
+    await openPlus(page);
+    await expect(page.locator("#plusAnnualAutoPrice")).toHaveText("$89.99");
+    await expect(page.locator("#plusAnnualAutoNote")).toHaveText("每年自动续订，可随时取消");
+    await expect(page.locator("#plusCta")).toHaveText("开启连续包年");
+    await expect(page.locator("#plusPanel")).not.toContainText("免费试用");
+    await expect(page.locator("#plusPanel")).not.toContainText("$17.99");
+    await page.locator("#plusCloseBtn").click();
+  }
 });
 
 test("compact viewport does not overflow", async ({ page }) => {
@@ -1274,7 +1306,7 @@ test("Plus actions remain within the panel at 150 percent text size", async ({ p
 test("Plus close control stays at the panel top-right and purchase is the primary action", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
+  await page.evaluate((prices) => window.StyleAtlasNativeBridge.setProductPrices(prices), PROMOTION_PRICES);
   await openPlus(page);
   const layout = await page.locator("#plusPanel").evaluate((panel) => {
     const panelBox = panel.getBoundingClientRect();
@@ -1298,7 +1330,7 @@ test("Plus plan choices and purchase action stay visible on the first mobile fra
   await installNativeMock(page);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
+  await page.evaluate((prices) => window.StyleAtlasNativeBridge.setProductPrices(prices), PROMOTION_PRICES);
   await openPlus(page);
   const layout = await page.locator("#plusPanel").evaluate((panel) => {
     const panelBox = panel.getBoundingClientRect();
@@ -2517,7 +2549,7 @@ test("Plus purchase and restore actions remain wired after detail polish", async
   await installNativeMock(page);
   await page.goto("/#swiss-style");
   await openPlus(page);
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
+  await page.evaluate((prices) => window.StyleAtlasNativeBridge.setProductPrices(prices), PROMOTION_PRICES);
   await page.locator("#plusCta").click();
   await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
   await page.locator("#plusRestoreBtn").click();
@@ -2777,7 +2809,7 @@ test("StoreKit purchase restore and all export ratios survive preview work", asy
   await expect(page.locator("[data-action='export-ratio']")).toHaveCount(4);
   await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(false));
   await openPlus(page);
-  await page.evaluate(() => window.StyleAtlasNativeBridge.setProductPrices({ monthly_auto: "$9.99", annual_auto: "$89.99", annual_trial_eligible: "true" }));
+  await page.evaluate((prices) => window.StyleAtlasNativeBridge.setProductPrices(prices), PROMOTION_PRICES);
   await page.locator("#plusCta").click();
   await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("idle"));
   await page.locator("#plusRestoreBtn").click();

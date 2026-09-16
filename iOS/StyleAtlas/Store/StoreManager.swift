@@ -55,14 +55,8 @@ final class StoreManager: ObservableObject {
     static let entitlementProductIDs = purchasableProductIDs.union([legacyAnnualProductID, legacyLifetimeProductID])
 
     @Published private(set) var productsByPlan: [PlusPlan: Product] = [:]
-    @Published private(set) var annualTrialEligible = false
+    @Published private(set) var productDisplayPrices: [String: String] = [:]
     @Published private(set) var lastErrorCode: StoreErrorCode?
-
-    var productDisplayPrices: [String: String] {
-        var prices = Dictionary(uniqueKeysWithValues: productsByPlan.map { ($0.key.rawValue, $0.value.displayPrice) })
-        prices["annual_trial_eligible"] = annualTrialEligible ? "true" : "false"
-        return prices
-    }
 
     var isOperationInFlight: Bool {
         storeOperationInFlight
@@ -113,7 +107,24 @@ final class StoreManager: ObservableObject {
                 )
                 return false
             }
-            annualTrialEligible = await productsByPlan[.annualAuto]?.subscription?.isEligibleForIntroOffer ?? false
+            var displayPayload = Dictionary(
+                uniqueKeysWithValues: productsByPlan.map { ($0.key.rawValue, $0.value.displayPrice) }
+            )
+            for plan in PlusPlan.allCases {
+                guard let subscription = productsByPlan[plan]?.subscription else { continue }
+                let prefix = "\(plan.rawValue)_intro_"
+                let eligible = await subscription.isEligibleForIntroOffer
+                displayPayload["\(prefix)eligible"] = eligible ? "true" : "false"
+                guard let offer = subscription.introductoryOffer,
+                      let periodUnit = Self.periodUnitValue(offer.period.unit),
+                      let paymentMode = Self.paymentModeValue(offer.paymentMode) else { continue }
+                displayPayload["\(prefix)price"] = offer.displayPrice
+                displayPayload["\(prefix)period_unit"] = periodUnit
+                displayPayload["\(prefix)period_value"] = String(offer.period.value)
+                displayPayload["\(prefix)period_count"] = String(offer.periodCount)
+                displayPayload["\(prefix)payment_mode"] = paymentMode
+            }
+            productDisplayPrices = displayPayload
             lastErrorCode = nil
             logger.info("operation=loadProducts status=succeeded count=2")
             return true
@@ -318,6 +329,25 @@ final class StoreManager: ObservableObject {
             logger.debug("operation=\(operation, privacy: .public) debug=\(debugMessage, privacy: .private)")
         }
 #endif
+    }
+
+    private static func periodUnitValue(_ unit: Product.SubscriptionPeriod.Unit) -> String? {
+        switch unit {
+        case .day: return "day"
+        case .week: return "week"
+        case .month: return "month"
+        case .year: return "year"
+        @unknown default: return nil
+        }
+    }
+
+    private static func paymentModeValue(_ mode: Product.SubscriptionOffer.PaymentMode) -> String? {
+        switch mode {
+        case .freeTrial: return "freeTrial"
+        case .payAsYouGo: return "payAsYouGo"
+        case .payUpFront: return "payUpFront"
+        default: return nil
+        }
     }
 
     private func withTimeout<T>(
