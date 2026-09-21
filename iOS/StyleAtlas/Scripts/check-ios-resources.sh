@@ -15,6 +15,7 @@ required_web_files=(
   "data-styles.js"
   "data-refined.js"
   "data-aesthetic-guides.js"
+  "data-expansion.js"
   "examples.js"
   "assets/brand/app-icon.png"
   "assets/contact/video-channel.jpg"
@@ -37,8 +38,8 @@ else
   missing+=("Resources/Web/assets/styles/")
 fi
 
-if [[ "$webp_count" != "120" ]]; then
-  missing+=("Resources/Web/assets/styles/*.webp expected 120, found $webp_count")
+if [[ "$webp_count" != "132" ]]; then
+  missing+=("Resources/Web/assets/styles/*.webp expected 132, found $webp_count")
 fi
 
 if ((${#missing[@]})); then

@@ -11,8 +11,8 @@ const sandbox = { window: {} };
 vm.runInNewContext(source, sandbox, { filename: sourcePath });
 
 const rawStyles = sandbox.window.STYLE_ATLAS_DATA?.rawStyles;
-if (!Array.isArray(rawStyles) || rawStyles.length !== 120) {
-  throw new Error(`Expected 120 styles, received ${rawStyles?.length ?? "none"}`);
+if (!Array.isArray(rawStyles) || rawStyles.length !== 132) {
+  throw new Error(`Expected 132 styles, received ${rawStyles?.length ?? "none"}`);
 }
 
 const catalog = rawStyles.map(([id, englishName, chineseName, category]) => ({

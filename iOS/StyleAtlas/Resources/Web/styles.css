@@ -4402,3 +4402,24 @@ html[data-native-large-text] .guided-stage {
     transform: none !important;
   }
 }
+.entry-type {
+  color: var(--muted, #bdb5a5);
+  font-size: 12px;
+  letter-spacing: .04em;
+  margin: 0 0 8px;
+}
+
+.image-provenance {
+  color: var(--muted, #bdb5a5);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 12px 0 0;
+  max-width: 65ch;
+}
+
+.source-links a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}

@@ -4,6 +4,18 @@ This is the first iOS shell for Xiazishuo Style Atlas. It includes a minimal Xco
 
 ## Current Stage
 
+- Universal iPhone/iPad target; iPad supports portrait, landscape and resizable windows.
+- `exportImage` saves directly to Photos using add-only authorization. Success is
+  reported after PhotoKit confirms the write; denied access shows a Settings hint.
+- `shareImage` presents a native image share sheet with an iPad popover anchor and
+  the system Save Image action. The app requests no read access to the library.
+- 2026-09-21: 132 bilingual guides and covers, with movement/technique/language
+  labels and separately identified AI-assisted teaching illustrations and sources.
+- 345 UX tests passed. iPad Pro 13-inch iOS 26.5 Simulator verified both native
+  share-sheet Save Image and direct preview save, with new images visible in Photos.
+  The direct path uses native bundled decoding because WKWebView cannot fetch file URLs.
+- Build 18 (1.6 candidate) is archived and exported for App Store distribution.
+  Physical-device testing and App Store upload/submission are not yet verified.
 - SwiftUI shell files are provided.
 - `WKWebView` loads bundled `Resources/Web/index.html`.
 - StoreKit 2 supports the V1.6 monthly and annual auto-renewing Plus plans while preserving legacy one-year and lifetime entitlements.
@@ -78,6 +90,8 @@ It copies:
 - `data-core.js`
 - `data-styles.js`
 - `data-refined.js`
+- `data-aesthetic-guides.js`
+- `data-expansion.js`
 - `examples.js`
 - `assets/styles/*.webp`
 

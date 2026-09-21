@@ -1,0 +1,27 @@
+# 12 educational covers — generation record
+
+Generated 2026-09-21 with the built-in imagegen tool. Originals are retained in `/Users/yongyuan/.codex/generated_images/01a0a903-c439-7311-b0cc-3214167067a8/`. Exact ID-to-file mapping is in `scripts/prepare-expansion-images.mjs`. Web assets: `assets/styles/<id>.webp`; widget assets: `iOS/StyleAtlas/Widgets/Resources/Thumbnails/<id>.jpg`.
+
+All are original AI-assisted teaching illustrations, not historical artifacts or reproductions. The UI distinguishes them from the separately linked museum/institutional references. Visual review confirmed 12 distinct subjects, readable silhouettes and no counterfeit seals/signatures. Historical/process information is editorial guidance, not authentication of objects.
+
+## Prompts
+
+Rinpa: Create a single portrait 2:3 high resolution full-bleed original educational artwork for Style Atlas illustrating the Rinpa decorative visual language. Irises and elegant curving stream on aged gold leaf ground, dramatic asymmetrical spacing, flattened indigo petals and malachite leaves, restrained silver water arcs, exquisite hand-painted mineral pigment and gold texture. No frame, no text, no seals, no signatures. This is a contemporary teaching illustration, not a reproduction of an existing painting. Save a local asset for project use.
+
+The other 11 use this wrapper: Use case: stylized-concept. Create one portrait 3:5 full-bleed original educational cover artwork for Style Atlas. [SCENE] Refined composition with a strong recognizable subject and readable thumbnail. No frame, watermark, logo or signature. Contemporary educational illustration rather than authentic historical artifact. Save the resulting local file for project use.
+
+Scenes:
+
+- Blue-and-white porcelain: Chinese blue-and-white porcelain decorative language. A single elegant porcelain vase with cobalt blue peonies and scrolling leaves, encircling ornamental bands following the curved vessel, glazed white surface, warm ivory studio backdrop, painterly yet accurate ceramic material.
+- Chinese paper-cut: Chinese paper-cut craft. A single connected vermilion paper cut of paired birds nestled among curling pomegranate branches, intricately cut positive-negative shapes and structural bridges, symmetrical foundation with subtly varied leaves, ivory backing with tiny paper shadows. No characters or words.
+- Song bird-and-flower: Song dynasty academy bird-and-flower painting visual language. A small brown songbird perched on a diagonally arching flowering branch, individually articulated feathers, delicate contour lines, translucent pale washes on warm silk, asymmetry and generous empty space, intimate close observation. No calligraphy, stamps or seals.
+- Arts and Crafts: Arts and Crafts textile illustration. Original interwoven climbing stems, small birds and flowering vines in an elegant repeat, indigo, muted madder red and sage on cream, hand block printed surface, rich flat pattern not copying any existing William Morris design.
+- Mid-century modern: Mid-century modern design educational artwork. A beautiful lived-in interior with organic bent plywood chair of original design, slender tapered legs, modular walnut sideboard, sculptural lamp, geometric textile in mustard teal rust, natural light, material honesty, restrained 1950s optimism, architectural editorial illustration.
+- Vienna Secession: Vienna Secession graphic design visual language. Original vertical decorative composition with a stylized white flowering tree, black geometric border and grid, gold squares, fine linear rhythm, cream paper, tension between organic stem and rigid ornament, finely printed lithographic texture. No typography or text.
+- Sachplakat: Sachplakat object poster visual language. A single boldly simplified cobalt kettle in silhouette with small warm cream highlights, vermilion flat background, large quiet space at top for a brand name but no actual text. Early twentieth century lithographic advertising clarity, sharp silhouette, minimal detail, not Swiss grid typography.
+- Risograph: Risograph contemporary print visual language. Original still life of two pears, a blue bowl and leafy stem, fluorescent coral and cobalt spot inks on warm uncoated paper, deliberate overlapping third color, visible halftone grain, slight registration offsets, flat graphic arrangement, no gradient or photorealism.
+- Cyanotype: Cyanotype contact-print visual language. Botanical fern fronds and small delicate grasses arranged with airy asymmetrical balance, luminous white silhouettes with semi-transparent overlapping stems on deep Prussian blue sensitized paper, nuanced exposure edges, tactile archival paper. No text.
+- Linocut: Linocut relief print. A blackbird perched among branching leaves, rich black ink shapes on warm cream paper, vigorous carved white lines and carefully preserved bridges, unmistakable directional gouge marks, flat high contrast, no grayscale shading, original composition.
+- Paper collage: Paper collage illustration. A small terracotta house on a hillside beneath a large amber sun, physically cut and torn papers, visible fibrous edges and layered shadows, muted teal peach ochre and cream, playful balanced arrangement, handmade material clarity, no text.
+
+Conversion preserves the full cover composition; only widget thumbnails use a centered 3:4 crop. No artwork correction was performed with conversion tools.

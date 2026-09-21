@@ -121,7 +121,19 @@
     ["liquid-metal", "Liquid Metal", "液态金属风格", "digital", "yetai jinshu", "chrome fluid metallic"],
     ["3d-abstract-cgi", "3D Abstract CGI", "三维抽象", "digital", "sanweichouxiang", "abstract render material"],
     ["fractal-art", "Fractal Art", "分形艺术", "digital", "fenxingyishu", "recursive algorithm pattern"],
-    ["generative-ai-dreamlike", "Generative AI Dreamlike", "AI 梦境风格", "digital", "ai mengjing", "dreamlike surreal generative"]
+    ["generative-ai-dreamlike", "Generative AI Dreamlike", "AI 梦境风格", "digital", "ai mengjing", "dreamlike surreal generative"],
+    ["rinpa", "Rinpa", "琳派", "asian", "linpai", "gold screen iris decorative Japanese"],
+    ["blue-white-porcelain", "Blue-and-white Porcelain", "青花瓷装饰语汇", "asian", "qinghuaci", "cobalt porcelain glaze ceramic blue white"],
+    ["chinese-paper-cut", "Chinese Paper-cut", "中国剪纸", "folk", "zhongguojianzhi", "paper cutting red negative space folk"],
+    ["song-bird-flower", "Song Academy Bird-and-flower", "宋代院体花鸟", "asian", "songdai yuanti huaniao", "Song court silk bird flower painting"],
+    ["arts-and-crafts", "Arts and Crafts", "工艺美术运动", "poster", "gongyimeishu", "craft textile Morris handmade repeat"],
+    ["mid-century-modern", "Mid-century Modern", "世纪中期现代设计", "poster", "shijizhongqi xiandai", "modern furniture organic plywood design"],
+    ["vienna-secession", "Vienna Secession", "维也纳分离派", "poster", "weiyena fenlipai", "Vienna geometric ornament Ver Sacrum"],
+    ["sachplakat", "Sachplakat", "物体海报", "poster", "wutihaibao", "object poster Plakatstil Bernhard advertising"],
+    ["risograph", "Risograph", "Riso 孔版印刷视觉", "illustration", "kongban yinshua", "riso stencil spot ink halftone registration"],
+    ["cyanotype", "Cyanotype", "蓝晒", "illustration", "lanshai", "cyanotype photogram Prussian blue botanical"],
+    ["linocut", "Linocut", "油毡版画", "illustration", "youzhan banhua", "linoleum relief print carving ink"],
+    ["paper-collage", "Paper Collage", "纸艺拼贴", "illustration", "zhiyi pintie", "cut torn paper collage texture layers"]
   ];
 
   window.STYLE_ATLAS_DATA = Object.assign(window.STYLE_ATLAS_DATA || {}, { rawStyles });

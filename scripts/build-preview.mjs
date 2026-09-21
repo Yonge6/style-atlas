@@ -17,6 +17,7 @@ const webFiles = [
   "data-styles.js",
   "data-refined.js",
   "data-aesthetic-guides.js",
+  "data-expansion.js",
   "examples.js",
   "privacy.html"
 ];

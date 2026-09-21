@@ -221,9 +221,9 @@ test.describe("daily pick lifecycle", () => {
     await page.clock.install({ time: new Date("2026-09-05T15:59:58Z") });
     await page.clock.pauseAt(new Date("2026-09-05T15:59:59Z"));
     await page.goto("/");
-    await expect(page.locator("#styleDeck h2")).toHaveText("Synthwave");
+    await expect(page.locator("#styleDeck h2")).toHaveText("Persian Miniature");
     await page.clock.runFor(1500);
-    await expect(page.locator("#styleDeck h2")).not.toHaveText("Synthwave");
+    await expect(page.locator("#styleDeck h2")).not.toHaveText("Persian Miniature");
     const updated = await page.locator("#styleDeck h2").textContent();
     await page.reload();
     await expect(page.locator("#styleDeck h2")).toHaveText(updated);
@@ -234,7 +234,7 @@ test.describe("daily pick lifecycle", () => {
     await page.goto("/");
     await page.clock.setSystemTime(new Date("2026-09-06T04:00:00Z"));
     await page.evaluate(() => document.dispatchEvent(new Event("visibilitychange")));
-    await expect(page.locator("#styleDeck h2")).not.toHaveText("Synthwave");
+    await expect(page.locator("#styleDeck h2")).not.toHaveText("Persian Miniature");
   });
 
   test("midnight and native foreground refresh preserve an open guide", async ({ page }) => {
@@ -389,6 +389,32 @@ test("native file mode requests a clean bundled image before canvas export", asy
     "style-atlas-h5-qr.png"
   ]);
   expect(messages.filter((message) => message.type === "shareImage")).toHaveLength(1);
+});
+
+test("native file preview saves through the bundled asset bridge without fetching a file URL", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__nativeMessages = [];
+    const originalFetch = window.fetch;
+    window.fetch = (src, ...args) => {
+      if (new URL(String(src), location.href).protocol === "file:") throw new Error("WKWebView file fetch is unavailable");
+      return originalFetch(src, ...args);
+    };
+    window.webkit = { messageHandlers: { styleAtlas: { postMessage(message) {
+      window.__nativeMessages.push(message);
+      if (message.type !== "readBundledAsset") return;
+      const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1500"><rect width="900" height="1500" fill="#8b5a2b"/></svg>';
+      setTimeout(() => window.StyleAtlasNativeBridge.resolveBundledAsset(message.payload.requestId, `data:image/svg+xml;base64,${btoa(svg)}`, ""));
+    } } } };
+    window.STYLE_ATLAS_RUNTIME_CONFIG = {nativeShell: true, externalGalleryEnabled: false, submissionMode: "iap"};
+  });
+  await page.goto(pathToFileURL(path.resolve(__dirname, "..", "index.html")).href + "#rinpa");
+  await page.locator(".hero-image-button").click();
+  await page.locator("#saveLightboxBtn").click();
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.filter(m => m.type === "exportImage").length)).toBe(1);
+  expect(await page.evaluate(() => window.__nativeMessages.find(m => m.type === "readBundledAsset").payload.filename)).toBe("rinpa.webp");
+  expect(await page.evaluate(() => window.__nativeMessages.find(m => m.type === "exportImage").payload.dataURL)).toMatch(/^data:image\/png;base64,/);
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("photoSaved"));
+  await expect(page.locator("#toast")).toContainText("图片已保存到相册");
 });
 
 test("Chinese brand is exact across product surfaces", async ({ page }) => {
@@ -781,6 +807,24 @@ test("Plus export uses the requested ratio without a free watermark", async ({ p
   expect(png.readUInt32BE(20)).toBe(1440);
 });
 
+test("iPad photo save reports confirmed success and permission failures", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await installNativeMock(page);
+  await page.goto("/#baroque");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
+  const save = page.locator("[data-action='export-ratio'][data-ratio='1:1']");
+  await save.click();
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.at(-1)?.type)).toBe("exportImage");
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("exportFailed", "photoLibraryAccessDenied"));
+  await expect(page.locator("#toast")).toContainText(/设置|Settings/);
+  await expect(save).toBeEnabled();
+  await save.click();
+  await expect.poll(() => page.evaluate(() => window.__nativeMessages.filter(x => x.type === "exportImage").length)).toBe(2);
+  await page.evaluate(() => window.StyleAtlasNativeBridge.setStoreAction("photoSaved"));
+  await expect(page.locator("#toast")).toContainText(/相册|Photos/);
+  await expect(save).toBeEnabled();
+});
+
 test("Plus export renders pure artwork without any canvas text", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/#baroque");
@@ -1073,7 +1117,7 @@ for (const [ratio, width, height] of [
   });
 }
 
-test("all 120 saved styles render in a scrollable list", async ({ page }) => {
+test("all 132 saved styles render in a scrollable list", async ({ page }) => {
   await installNativeMock(page);
   await page.goto("/");
   await page.evaluate(() => {
@@ -1083,7 +1127,7 @@ test("all 120 saved styles render in a scrollable list", async ({ page }) => {
   await page.evaluate(() => window.StyleAtlasNativeBridge.setPlusAccess(true));
   await page.locator("#drawerBtn").click();
   await page.locator("[data-view='saved']").click();
-  await expect(page.locator("#savedList .result-card")).toHaveCount(120);
+  await expect(page.locator("#savedList .result-card")).toHaveCount(132);
   expect(await page.locator("#savedView").evaluate((node) => node.scrollHeight > window.innerHeight)).toBe(true);
 });
 
@@ -1250,7 +1294,7 @@ test("search input and results region have explicit accessible names", async ({ 
   await expect(page.locator("#searchInput")).toHaveAttribute("aria-labelledby", "searchLabel");
   await expect(page.locator("#searchResults")).toHaveAttribute("role", "region");
   await expect(page.locator("#searchResults")).toHaveAttribute("aria-labelledby", "searchResultsTitle");
-  await expect(page.locator("#searchResultsTitle")).toContainText("120");
+  await expect(page.locator("#searchResultsTitle")).toContainText("132");
 });
 
 test("search result opens with external keyboard activation", async ({ page }) => {
@@ -1695,10 +1739,10 @@ test("the E1 corpus freeze records every changed Guide and keeps structural gate
     posterComplete: corpus.posterComplete,
     posterTotal: corpus.posterTotal
   }).toEqual({
-    guideCount: 120,
+    guideCount: 132,
     fallbackCount: 0,
-    posterComplete: 20,
-    posterTotal: 20
+    posterComplete: 24,
+    posterTotal: 24
   });
   expect(corpus.duplicateOpeningZh).toEqual([]);
   expect(corpus.duplicateOpeningEn).toEqual([]);
@@ -1861,7 +1905,7 @@ test("batch two respects editorial lengths scene order and prohibited wording", 
   expect(violations).toEqual([]);
 });
 
-test("batch three remains complete after expansion to 120 guides with no fallbacks", async ({ page }) => {
+test("batch three remains complete after expansion to 132 guides with no fallbacks", async ({ page }) => {
   await page.goto("/");
   const coverage = await page.evaluate((batchIds) => {
     const guides = window.StyleAtlasAesthetic.guides;
@@ -1876,11 +1920,11 @@ test("batch three remains complete after expansion to 120 guides with no fallbac
     };
   }, batchThreeGuideIds);
   expect(coverage).toEqual({
-    guideCount: 120,
+    guideCount: 132,
     fallbackCount: 0,
     missing: [],
-    posterComplete: 20,
-    posterTotal: 20
+    posterComplete: 24,
+    posterTotal: 24
   });
 });
 
@@ -2101,7 +2145,7 @@ test("all batch-three guides render and complete the five-stage Guided Looking f
   }
 });
 
-test("all 120 style detail pages render without empty primary content", async ({ page }) => {
+test("all 132 style detail pages render without empty primary content", async ({ page }) => {
   test.setTimeout(60000);
   await page.goto("/#swiss-style");
   const failures = await page.evaluate(async () => {
@@ -2116,7 +2160,7 @@ test("all 120 style detail pages render without empty primary content", async ({
     }
     return { count: ids.length, invalid };
   });
-  expect(failures.count).toBe(120);
+  expect(failures.count).toBe(132);
   expect(failures.invalid).toEqual([]);
 });
 
@@ -2149,7 +2193,7 @@ test("all detail pages share the polished modules in Chinese and English", async
     }
     return { count: ids.length * 2, invalid };
   });
-  expect(failures.count).toBe(240);
+  expect(failures.count).toBe(264);
   expect(failures.invalid).toEqual([]);
 });
 

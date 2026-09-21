@@ -838,5 +838,89 @@
     "chineseName": "AI 梦境风格",
     "category": "digital",
     "thumbnail": "generative-ai-dreamlike.jpg"
+  },
+  {
+    "id": "rinpa",
+    "englishName": "Rinpa",
+    "chineseName": "琳派",
+    "category": "asian",
+    "thumbnail": "rinpa.jpg"
+  },
+  {
+    "id": "blue-white-porcelain",
+    "englishName": "Blue-and-white Porcelain",
+    "chineseName": "青花瓷装饰语汇",
+    "category": "asian",
+    "thumbnail": "blue-white-porcelain.jpg"
+  },
+  {
+    "id": "chinese-paper-cut",
+    "englishName": "Chinese Paper-cut",
+    "chineseName": "中国剪纸",
+    "category": "folk",
+    "thumbnail": "chinese-paper-cut.jpg"
+  },
+  {
+    "id": "song-bird-flower",
+    "englishName": "Song Academy Bird-and-flower",
+    "chineseName": "宋代院体花鸟",
+    "category": "asian",
+    "thumbnail": "song-bird-flower.jpg"
+  },
+  {
+    "id": "arts-and-crafts",
+    "englishName": "Arts and Crafts",
+    "chineseName": "工艺美术运动",
+    "category": "poster",
+    "thumbnail": "arts-and-crafts.jpg"
+  },
+  {
+    "id": "mid-century-modern",
+    "englishName": "Mid-century Modern",
+    "chineseName": "世纪中期现代设计",
+    "category": "poster",
+    "thumbnail": "mid-century-modern.jpg"
+  },
+  {
+    "id": "vienna-secession",
+    "englishName": "Vienna Secession",
+    "chineseName": "维也纳分离派",
+    "category": "poster",
+    "thumbnail": "vienna-secession.jpg"
+  },
+  {
+    "id": "sachplakat",
+    "englishName": "Sachplakat",
+    "chineseName": "物体海报",
+    "category": "poster",
+    "thumbnail": "sachplakat.jpg"
+  },
+  {
+    "id": "risograph",
+    "englishName": "Risograph",
+    "chineseName": "Riso 孔版印刷视觉",
+    "category": "illustration",
+    "thumbnail": "risograph.jpg"
+  },
+  {
+    "id": "cyanotype",
+    "englishName": "Cyanotype",
+    "chineseName": "蓝晒",
+    "category": "illustration",
+    "thumbnail": "cyanotype.jpg"
+  },
+  {
+    "id": "linocut",
+    "englishName": "Linocut",
+    "chineseName": "油毡版画",
+    "category": "illustration",
+    "thumbnail": "linocut.jpg"
+  },
+  {
+    "id": "paper-collage",
+    "englishName": "Paper Collage",
+    "chineseName": "纸艺拼贴",
+    "category": "illustration",
+    "thumbnail": "paper-collage.jpg"
   }
 ]

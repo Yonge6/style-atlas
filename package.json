@@ -7,6 +7,7 @@
     "generate:ios-daily-catalog": "node scripts/generate-ios-daily-catalog.mjs",
     "test:ios-features": "node scripts/validate-ios-daily-features.mjs",
     "test:seo": "node scripts/validate-seo-pages.mjs",
+    "test:expansion": "node scripts/validate-expansion.mjs",
     "test:ux": "npm run build:preview && playwright test"
   },
   "devDependencies": {

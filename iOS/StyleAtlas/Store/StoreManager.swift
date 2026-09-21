@@ -13,6 +13,7 @@ enum StoreErrorCode: String {
     case transactionUnverified
     case exportPayloadMissing
     case exportWriteFailed
+    case photoLibraryAccessDenied
     case presentationUnavailable
     case exportInProgress
     case canvasUnavailable

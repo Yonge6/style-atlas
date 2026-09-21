@@ -11,12 +11,12 @@ const exists = (relativePath) => fs.existsSync(path.join(root, relativePath));
 const sandbox = { window: {} };
 vm.runInNewContext(read("data-styles.js"), sandbox, { filename: "data-styles.js" });
 const sourceStyles = sandbox.window.STYLE_ATLAS_DATA?.rawStyles;
-assert.equal(sourceStyles?.length, 120, "canonical web catalog must contain 120 styles");
+assert.equal(sourceStyles?.length, 132, "canonical web catalog must contain 132 styles");
 
 assert.ok(exists("iOS/StyleAtlas/Resources/DailyStyles.json"), "native daily catalog is missing");
 const catalog = JSON.parse(read("iOS/StyleAtlas/Resources/DailyStyles.json"));
-assert.equal(catalog.length, 120, "native catalog must contain 120 styles");
-assert.equal(new Set(catalog.map((style) => style.id)).size, 120, "style ids must be unique");
+assert.equal(catalog.length, 132, "native catalog must contain 132 styles");
+assert.equal(new Set(catalog.map((style) => style.id)).size, 132, "style ids must be unique");
 for (let index = 0; index < sourceStyles.length; index += 1) {
   assert.deepEqual(
     [catalog[index].id, catalog[index].englishName, catalog[index].chineseName, catalog[index].category],
@@ -31,8 +31,11 @@ function dailyIndex(date) {
   return hash % catalog.length;
 }
 
-assert.equal(catalog[dailyIndex("2026-09-04")].id, "vaporwave");
-assert.equal(catalog[dailyIndex("2026-09-05")].id, "synthwave");
+assert.equal(catalog[dailyIndex("2026-09-04")].id, "indian-miniature");
+assert.equal(catalog[dailyIndex("2026-09-05")].id, "persian-miniature");
+for (const style of catalog) {
+  assert.ok(exists(`iOS/StyleAtlas/Widgets/Resources/Thumbnails/${style.thumbnail}`), `missing widget image ${style.id}`);
+}
 
 const project = read("iOS/StyleAtlas/StyleAtlas.xcodeproj/project.pbxproj");
 assert.match(project, /StyleAtlasWidgetExtension/, "widget extension target must exist");
@@ -54,4 +57,4 @@ assert.match(web, /setDailyReminder/);
 assert.match(web, /setNotificationStatus/);
 assert.match(read("index.html"), /drawerDailyReminderBtn/);
 
-console.log("IOS_DAILY_FEATURES_OK styles=120 notifications=09:00 widgets=small,medium devices=iphone,ipad");
+console.log("IOS_DAILY_FEATURES_OK styles=132 notifications=09:00 widgets=small,medium devices=iphone,ipad");

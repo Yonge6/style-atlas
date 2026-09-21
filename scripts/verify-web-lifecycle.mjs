@@ -18,9 +18,9 @@ try {
     await page.clock.pauseAt(new Date("2026-09-05T15:59:59Z"));
     await page.goto(baseURL);
     await page.locator("#styleDeck h2").waitFor();
-    assert.equal(await page.locator("#styleDeck h2").textContent(), "Synthwave");
+    assert.equal(await page.locator("#styleDeck h2").textContent(), "Persian Miniature");
     await page.clock.runFor(1500);
-    assert.notEqual(await page.locator("#styleDeck h2").textContent(), "Synthwave");
+    assert.notEqual(await page.locator("#styleDeck h2").textContent(), "Persian Miniature");
     await page.clock.resume();
     await page.locator("#searchOpenBtn").click();
     await page.locator("#searchInput").fill("Swiss");
@@ -34,8 +34,19 @@ try {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     assert.equal(overflow, 0);
     assert.deepEqual(errors, []);
+    await page.goto(new URL('#rinpa', baseURL).href);
+    await page.locator('#detailTitle').waitFor();
+    assert.equal(await page.locator('#detailTitle').textContent(), 'Rinpa');
+    assert.equal(await page.locator('.entry-type').textContent(), 'Art / design movement');
+    assert.match(await page.locator('.image-provenance').textContent(), /not a historical original/);
+    const catalog = await page.evaluate(() => ({styles: window.STYLE_ATLAS_DATA.rawStyles.length, guides: Object.keys(window.STYLE_AESTHETIC_GUIDES).length}));
+    assert.deepEqual(catalog, {styles:132,guides:132});
+    await page.locator('.detail-hero img').evaluate(img => img.decode());
+    const newStyleOverflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    assert.equal(newStyleOverflow, 0);
+    assert.deepEqual(errors, []);
     if (screenshotPath && viewport.width === 390) await page.screenshot({ path: screenshotPath });
-    report.push({ viewport, midnight: "PASS", search: "PASS", guidePreserved: "PASS", overflow, errors });
+    report.push({ viewport, midnight: "PASS", search: "PASS", guidePreserved: "PASS", newStyle: 'Rinpa', catalog, overflow, newStyleOverflow, errors });
     await context.close();
   }
   const { verifyDownloadFlow } = await import("./verify-download-flow.mjs");

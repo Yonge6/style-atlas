@@ -1,4 +1,5 @@
 import OSLog
+import Photos
 import UIKit
 import WebKit
 
@@ -107,7 +108,11 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
                 resetExportOperation(removeFile: true)
                 return
             }
-            presentImageActivity(payload: payload)
+            if type == "exportImage" {
+                Task { await saveImageToPhotos(payload: payload) }
+            } else {
+                presentImageActivity(payload: payload)
+            }
         default:
             bridgeLogger.notice("operation=\(type, privacy: .public) status=unsupported")
         }
@@ -217,6 +222,33 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         )
     }
 
+    private func saveImageToPhotos(payload: [String: Any]) async {
+        defer { resetExportOperation(removeFile: true) }
+        guard let dataURL = payload["dataURL"] as? String,
+              let comma = dataURL.firstIndex(of: ","),
+              let data = Data(base64Encoded: String(dataURL[dataURL.index(after: comma)...])),
+              let image = UIImage(data: data),
+              let png = image.pngData() else {
+            injectStoreAction("exportFailed", errorCode: .imageDecodeFailed)
+            return
+        }
+        let permission = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        guard permission == .authorized || permission == .limited else {
+            injectStoreAction("exportFailed", errorCode: .photoLibraryAccessDenied)
+            return
+        }
+        do {
+            try await PHPhotoLibrary.shared().performChanges {
+                let request = PHAssetCreationRequest.forAsset()
+                request.addResource(with: .photo, data: png, options: nil)
+            }
+            injectStoreAction("photoSaved")
+        } catch {
+            injectStoreAction("exportFailed", errorCode: .exportWriteFailed,
+                              debugMessage: error.localizedDescription)
+        }
+    }
+
     private func presentImageActivity(payload: [String: Any]) {
         guard let dataURL = payload["dataURL"] as? String,
               let commaIndex = dataURL.firstIndex(of: ","),
@@ -250,7 +282,12 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
             return
         }
 
-        let activity = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+        guard let image = UIImage(data: data) else {
+            injectStoreAction("exportFailed", errorCode: .imageDecodeFailed)
+            resetExportOperation(removeFile: true)
+            return
+        }
+        let activity = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         activity.popoverPresentationController?.sourceView = webView
         activity.popoverPresentationController?.sourceRect = CGRect(
             x: webView.bounds.midX,
@@ -258,7 +295,7 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
             width: 1,
             height: 1
         )
-        activity.completionWithItemsHandler = { [weak self] _, completed, _, error in
+        activity.completionWithItemsHandler = { [weak self] activityType, completed, _, error in
             Task { @MainActor in
                 if let error {
                     self?.exportLogger.error(
@@ -271,7 +308,7 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
                     )
                 } else if completed {
                     self?.exportLogger.info("operation=present status=completed")
-                    self?.injectStoreAction("exportComplete")
+                    self?.injectStoreAction(activityType == .saveToCameraRoll ? "photoSaved" : "exportComplete")
                 } else {
                     self?.exportLogger.info("operation=present status=cancelled")
                     self?.injectStoreAction("exportCancelled")

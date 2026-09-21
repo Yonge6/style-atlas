@@ -13,7 +13,7 @@ mkdir -p \
   "$TARGET/assets/contact" \
   "$TARGET/assets/icons"
 
-for file in index.html styles.css game.js data-core.js data-styles.js data-refined.js data-aesthetic-guides.js examples.js; do
+for file in index.html styles.css game.js data-core.js data-styles.js data-refined.js data-aesthetic-guides.js data-expansion.js examples.js; do
   cp "$WEB_ROOT/$file" "$TARGET/$file"
 done
 

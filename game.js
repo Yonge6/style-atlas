@@ -308,11 +308,11 @@
       dailyReminderUnavailable: "暂时无法设置通知",
       dailyReminderStateOn: "开",
       dailyReminderStateOff: "关",
-      drawerDownloadKicker: "iPhone App",
+      drawerDownloadKicker: "iPhone · iPad App",
       drawerDownloadTitle: "带走完整风格图鉴",
-      drawerDownloadNote: "120 篇深度指南、中英双语与离线浏览，都装进口袋里。",
+      drawerDownloadNote: "132 篇深度指南、中英双语与离线浏览，都装进口袋里。",
       drawerDownloadCta: "前往 App Store 下载",
-      drawerDownloadCtaNote: "免费下载 · iPhone",
+      drawerDownloadCtaNote: "免费下载 · iPhone 与 iPad",
       drawerReviewCta: "已经安装？去评分与评价",
       drawerReviewCtaNote: "你的反馈会帮助图鉴继续完善",
       wechatDownloadKicker: "微信内打开",
@@ -337,8 +337,8 @@
       drawerWorkXiaziNote: "每天用 9 个全球热点与 18 张双语海报，把昨天的复杂世界讲清楚。",
       drawerWorkHumanTitle: "不二 认识自己",
       drawerWorkHumanNote: "从出生信息生成中英双语人类图与基础解读，换一个角度认识自己的运行方式。",
-      drawerFooter: "120 种风格 · 120 篇深度指南 · 中英双语",
-      positioning: "探索 120 种艺术与设计风格，每一种都提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
+      drawerFooter: "132 种风格 · 132 篇深度指南 · 中英双语",
+      positioning: "探索 132 种艺术与设计风格，每一种都提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
       valueLine: "跟着看图引导观察构图、色彩与线条，再用审美画像、日常观察和风格对比建立自己的审美词库。",
       random: "随机",
       swipe: "左右滑动探索",
@@ -426,6 +426,8 @@
       removedToast: "已取消收藏",
       shared: "链接已复制",
       cardSaved: "分享卡片已保存",
+      photoSaved: "图片已保存到相册",
+      photoLibraryAccessDenied: "请在系统设置中允许添加照片，再重试保存。",
       saveFailed: "保存失败，请稍后重试",
       shareFailed: "分享失败，请稍后重试",
       wechatShareHint: "分享图已生成，长按图片保存或发送给朋友",
@@ -465,16 +467,16 @@
       freeExport: "普通清晰度 · 带水印",
       plusExport: "高清无水印 · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "从看见到看懂，完整打开每一种风格。",
-      plusBenefits: ["120 篇完整档案与 Guided Looking", "Profile、Comparison、历史与创作表达", "无限收藏与高清多比例导出"],
+      plusBenefits: ["132 篇完整档案与 Guided Looking", "Profile、Comparison、历史与创作表达", "无限收藏与高清多比例导出"],
       freePlan: "免费版",
       plusPlan: "Plus",
-      freePlanItems: ["120 个主图与简介", "20 篇完整档案"],
-      plusPlanItems: ["全部 120 篇深度指南", "全部学习、收藏与高清导出"],
+      freePlanItems: ["132 个主图与简介", "20 篇完整档案"],
+      plusPlanItems: ["全部 132 篇深度指南", "全部学习、收藏与高清导出"],
       appStorePrice: "价格以 App Store 显示为准",
       appStoreCta: "前往 App Store 查看 Plus",
       downloadApp: "下载 App",
       downloadOnAppStore: "前往 App Store 下载",
-      downloadAppNote: "免费下载 iPhone App，在完整的离线体验中继续探索、创作与导出。",
+      downloadAppNote: "免费下载 iPhone 与 iPad App，在完整的离线体验中继续探索、创作与导出。",
       comingSoon: "即将开放",
       unlockPlus: "解锁 Plus",
       restorePurchases: "恢复购买",
@@ -527,18 +529,18 @@
       ,
       about: "关于",
       aboutTitle: "关于虾子曰艺术风格图鉴",
-      aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 120 种视觉语言整理成可以观察、理解、比较和表达的完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和创作表达。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
+      aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 132 种视觉语言整理成可以观察、理解、比较和表达的完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和创作表达。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
       aboutFor: "适合希望提升审美的人、自媒体人、设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
-      aboutFree: "App 可免费下载，包含每日推荐、120 种风格浏览、双语搜索、收藏，以及 20 个可使用全部学习模块的免费完整风格档案。",
+      aboutFree: "App 可免费下载，包含每日推荐、132 种风格浏览、双语搜索、收藏，以及 20 个可使用全部学习模块的免费完整风格档案。",
       aboutPlus: "Plus 提供连续包月与连续包年两种自动续订方案；符合资格时，App Store 会显示当前首期优惠及之后的原价续费信息。Plus 解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
       appFeaturesTitle: "在 App 里看懂一种美",
-      appFeatures: ["浏览 120 种艺术与设计风格", "阅读 120 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用风格表达词把理解带进创作", "支持中英文、离线浏览与多比例导出"],
+      appFeatures: ["浏览 132 种艺术与设计风格", "阅读 132 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用风格表达词把理解带进创作", "支持中英文、离线浏览与多比例导出"],
       safetyTitle: "版权与风格安全说明",
       safetyBody: "虾子曰艺术风格图鉴鼓励学习视觉语言，而不是复制具体作品、具体角色或当代创作者的完整可识别风格。历史艺术流派可以作为学习对象，涉及当代工作室、IP 或在世创作者时，我们更建议使用通用视觉特征来表达。",
       screenshotsTitle: "App Store Screenshot Kit",
       screenshotSlides: [
         ["每天 3 分钟提升审美", "今日推荐"],
-        ["120 种全球视觉风格", "风格图鉴"],
+        ["132 种全球视觉风格", "风格图鉴"],
         ["看懂风格为什么好看", "深度档案"],
         ["建立你的审美资料库", "风格收藏"],
         ["保存好看的风格卡片", "高清导出"],
@@ -565,11 +567,11 @@
       dailyReminderUnavailable: "Notifications are temporarily unavailable",
       dailyReminderStateOn: "On",
       dailyReminderStateOff: "Off",
-      drawerDownloadKicker: "iPhone App",
+      drawerDownloadKicker: "iPhone · iPad App",
       drawerDownloadTitle: "Take the complete atlas with you",
-      drawerDownloadNote: "120 in-depth guides, bilingual content, and offline browsing.",
+      drawerDownloadNote: "132 in-depth guides, bilingual content, and offline browsing.",
       drawerDownloadCta: "Download on the App Store",
-      drawerDownloadCtaNote: "Free download · iPhone",
+      drawerDownloadCtaNote: "Free download · iPhone and iPad",
       drawerReviewCta: "Already installed? Rate the app",
       drawerReviewCtaNote: "Your review helps the atlas keep improving",
       wechatDownloadKicker: "OPEN FROM WECHAT",
@@ -594,8 +596,8 @@
       drawerWorkXiaziNote: "Nine global stories and eighteen bilingual posters make yesterday's complex world easier to see.",
       drawerWorkHumanTitle: "Bu'er · Know Yourself",
       drawerWorkHumanNote: "Turn birth details into a bilingual chart and foundational reading—a different lens on how you move through life.",
-      drawerFooter: "120 styles · 120 in-depth guides · Bilingual",
-      positioning: "Explore 120 art and design styles, each with a complete in-depth guide.\nMove from seeing a style to truly understanding it in three minutes a day.",
+      drawerFooter: "132 styles · 132 in-depth guides · Bilingual",
+      positioning: "Explore 132 art and design styles, each with a complete in-depth guide.\nMove from seeing a style to truly understanding it in three minutes a day.",
       valueLine: "Follow guided looking prompts, then build recognition through aesthetic profiles, everyday observations, and side-by-side comparisons.",
       random: "Random",
       swipe: "Swipe to explore",
@@ -683,6 +685,8 @@
       removedToast: "Removed",
       shared: "Link copied",
       cardSaved: "Share card saved",
+      photoSaved: "Image saved to Photos",
+      photoLibraryAccessDenied: "Allow adding photos in Settings, then try saving again.",
       saveFailed: "Could not save. Please try again.",
       shareFailed: "Could not share. Please try again.",
       wechatShareHint: "Your share image is ready. Press and hold to save or send it.",
@@ -721,16 +725,16 @@
       freeExport: "Standard clarity · watermarked",
       plusExport: "HD watermark-free · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "Go from seeing to understanding with every style fully open.",
-      plusBenefits: ["120 complete guides with Guided Looking", "Profile, comparison, context, and creative expression", "Unlimited saves and HD multi-ratio export"],
+      plusBenefits: ["132 complete guides with Guided Looking", "Profile, comparison, context, and creative expression", "Unlimited saves and HD multi-ratio export"],
       freePlan: "Free",
       plusPlan: "Plus",
-      freePlanItems: ["120 hero images and introductions", "20 complete style archives"],
-      plusPlanItems: ["All 120 in-depth guides", "All learning tools, saves, and HD export"],
+      freePlanItems: ["132 hero images and introductions", "20 complete style archives"],
+      plusPlanItems: ["All 132 in-depth guides", "All learning tools, saves, and HD export"],
       appStorePrice: "Price shown in the App Store",
       appStoreCta: "View Plus on the App Store",
       downloadApp: "Download App",
       downloadOnAppStore: "Download on the App Store",
-      downloadAppNote: "Download the free iPhone app for the complete offline experience, creative tools, and exports.",
+      downloadAppNote: "Download the free iPhone and iPad app for the complete offline experience, creative tools, and exports.",
       comingSoon: "Coming Soon",
       unlockPlus: "Unlock Plus",
       restorePurchases: "Restore Purchases",
@@ -783,18 +787,18 @@
       ,
       about: "About",
       aboutTitle: "About Style Atlas",
-      aboutBody: "Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
+      aboutBody: "Style Atlas organizes 132 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
       aboutFor: "For anyone building visual taste, social media creators, designers, AI creators, brand builders, content creators, design students, and art lovers.",
-      aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
+      aboutFree: "The app is free to download and includes the daily pick, all 132 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
       aboutPlus: "Plus offers monthly and annual auto-renewing subscriptions. When eligible, the App Store shows the current introductory terms and the standard renewal price that follows. Plus unlocks the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
       appFeaturesTitle: "Learn to see a style in the app",
-      appFeatures: ["Explore 120 art and design styles", "Read 120 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
+      appFeatures: ["Explore 132 art and design styles", "Read 132 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
       safetyTitle: "Copyright And Style Safety",
       safetyBody: "Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
       screenshotsTitle: "App Store Screenshot Kit",
       screenshotSlides: [
         ["Learn one visual style a day", "Today's Pick"],
-        ["120 global visual styles", "Style Atlas: Art & Design"],
+        ["132 global visual styles", "Style Atlas: Art & Design"],
         ["Understand why each style works", "Deep Archive"],
         ["Build your taste archive", "Saved Styles"],
         ["Save beautiful style cards", "Export"],
@@ -1614,6 +1618,7 @@
       "transactionUnverified",
       "exportPayloadMissing",
       "exportWriteFailed",
+      "photoLibraryAccessDenied",
       "presentationUnavailable",
       "exportInProgress",
       "canvasUnavailable",
@@ -1630,8 +1635,8 @@
     const key = knownErrorCodes.has(normalizedErrorCode)
       ? normalizedErrorCode
       : (normalizedErrorCode ? "unknown" : (statusKeys[normalized] || fallbackErrorKeys[normalized]));
-    if (normalized === "exportComplete") {
-      toast(t("exportComplete"));
+    if (normalized === "exportComplete" || normalized === "photoSaved") {
+      toast(t(normalized));
       finishExportState("completed");
     } else if (normalized === "exportFailed") {
       toast(t(key || "exportFailed"));
@@ -1705,6 +1710,15 @@
         <p>${escapeHtml(style.name.zh)}</p>
       </div>
     `;
+  }
+
+  function entryTypeLabel(style, lang = store.lang) {
+    const labels = {
+      movement: {zh: "艺术／设计流派", en: "Art / design movement"},
+      technique: {zh: "工艺技法", en: "Technique"},
+      language: {zh: "视觉语言", en: "Visual language"}
+    };
+    return (labels[style.entryType] || labels.language)[lang];
   }
 
   function renderDeck() {
@@ -2105,7 +2119,7 @@
         <div class="deep-accordions">
           ${renderAccordion(`${base}-history`, t("accordionHistory"), `<p>${escapeHtml(style.history[lang])}</p>`, true)}
           ${renderAccordion(`${base}-people`, t("accordionPeople"), `<div class="chip-row">${style.people[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>`)}
-          ${renderAccordion(`${base}-references`, t("accordionReferences"), `<ul class="detail-list">${style.references[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`)}
+          ${renderAccordion(`${base}-references`, t("accordionReferences"), `<ul class="detail-list">${style.references[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>${style.sources ? `<ul class="detail-list source-links">${style.sources.map((source) => `<li><a data-action="open-source" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)}</a></li>`).join("")}</ul>` : ""}`)}
           ${renderAccordion(`${base}-gallery`, t("accordionGallery"), `<div class="gallery-grid" id="galleryGrid"></div><p class="gallery-note">${escapeHtml(store.lang === "zh" ? "公开图库是可选补充；离线时不影响其余内容。" : "The public gallery is optional context; the rest remains available offline.")}</p>`)}
           ${renderAccordion(`${base}-context`, t("accordionContext"), `<p>${escapeHtml(style.curatorNote[lang])}</p><p>${escapeHtml(style.why[lang])}</p>`)}
         </div>
@@ -2140,9 +2154,11 @@
           </button>
         </div>
         <div class="detail-hero-copy">
+          <p class="entry-type">${escapeHtml(entryTypeLabel(style, lang))}</p>
           <h1 id="detailTitle">${escapeHtml(style.name[lang])}</h1>
           <p class="zh-name alternate-name">${escapeHtml(style.name[lang === "zh" ? "en" : "zh"])}</p>
           <p class="summary">${escapeHtml(style.summary[lang])}</p>
+          ${style.imageProvenance ? `<p class="image-provenance">${escapeHtml(lang === "zh" ? "封面为 AI 辅助创作的教学示意图，非历史原作。馆藏与机构资料请见“深入”中的参考链接。" : "AI-assisted teaching illustration, not a historical original. Collection and institutional references appear under Explore.")}</p>` : ""}
           ${locked ? `<div class="chip-row">${style.tags[lang].slice(0, 3).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>` : ""}
           <div class="hero-copy-actions">
             <button class="overview-copy-btn" type="button" data-action="copy-overview" aria-label="${escapeHtml(t("copyOverview"))}" title="${escapeHtml(t("copyOverview"))}">${iconMarkup("copy")}</button>
@@ -3030,6 +3046,20 @@
   }
 
   async function imageFile(src, name = "style-atlas-image.png") {
+    // WKWebView cannot fetch file:// assets. Decode a clean native-provided copy
+    // before making a PNG, just as the card exporter does.
+    if (hasNativeBridge() && new URL(src, location.href).protocol === "file:") {
+      const image = await loadImage(src);
+      const canvas = document.createElement("canvas");
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      try {
+        canvasContext(canvas).drawImage(image, 0, 0);
+        return new File([await canvasBlob(canvas)], name, { type: "image/png" });
+      } finally {
+        releaseCanvas(canvas);
+      }
+    }
     const response = await fetch(src);
     if (!response.ok) throw new Error("image fetch failed");
     const blob = await response.blob();
@@ -3824,7 +3854,7 @@
         if (!postNativeMessage("restorePurchases")) setStoreActionFromNative("failed", "restoreFailed");
         return;
       }
-      if (action === "open-legal") {
+      if (action === "open-legal" || action === "open-source") {
         if (!hasNativeBridge()) return;
         event.preventDefault();
         const url = event.target.closest("a[href]")?.href;
