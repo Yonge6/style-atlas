@@ -1,8 +1,21 @@
 # 132-style update — App review handoff
 
-Candidate: 1.6 (18). Public App Store lookup on 2026-09-21 still reports 1.5.
-Confirm App Store Connect state before replacing the existing 1.6 candidate.
-This file is prepared metadata, not evidence of submission or approval.
+Submitted: 1.6 (18), on 2026-09-22 at 01:39 Asia/Shanghai.
+App Store Connect submission detail independently read back **Waiting for Review**.
+This is submission evidence, not approval or public-release evidence; 1.5 remains the current distributable version.
+
+## Submission verification
+
+- Submission: `7654bfa1-b1c4-4d42-9a25-7317de9087fe`.
+- Build: `1a9a8ce3-719f-4c45-8434-fc9bdef44925` — version 18, processing state VALID, iPhone and iPad device families.
+- App version: `36b093e5-fa76-466e-a3e7-aab41d65a723` — 1.6.
+- Uploaded the verified archive below; Xcode reported EXPORT SUCCEEDED and upload succeeded. Only after processing became VALID, withdrew build 17 and selected build 18.
+- Preserved existing AFTER_APPROVAL automatic release, immediate availability to all users, and existing ratings.
+- Updated English and Simplified Chinese description, promotional text and What's New to 132 entries; retained paid first-period offer and renewal/no-trial terms. Review notes now identify build 18 and new content/Photos test paths.
+- Introductory-offer readback: each subscription has 175 territories, 2026-09-17 through 2026-10-17, PAY_UP_FRONT, one period; monthly ONE_MONTH and annual ONE_YEAR. No offer writes or schedule extensions were made.
+- Removed only three outdated candidate screenshots: English/Chinese `01-home.png` (120 styles / 72 guides), and English iPad `01-daily-style-ipad.png` (outdated category counts). Retained five iPhone and one iPad screenshot per locale. Original-resolution removed images are backed up under the evidence directory and can be re-uploaded; other screenshots were preserved.
+- Evidence: `/Volumes/LaCie/StyleAtlas-Expansion-20260921/evidence/asc-1.6-18-waiting-review.png`.
+- Review URL: https://appstoreconnect.apple.com/apps/6787447019/distribution/reviewsubmissions/details/7654bfa1-b1c4-4d42-9a25-7317de9087fe
 
 ## 更新说明
 
