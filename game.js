@@ -9,10 +9,10 @@
     nativeShell: false,
     externalGalleryEnabled: true,
     submissionMode: "web",
-    publicBaseURL: "https://style-atlas.wonderelian.com/"
+    publicBaseURL: "https://style-atlas.wonderelian.com/",
+    notificationStatus: { authorization: "notDetermined", enabled: false, hour: 9 }
   }, window.STYLE_ATLAS_RUNTIME_CONFIG || {});
   const APP_STORE_URL = "https://apps.apple.com/app/apple-store/id6787447019?pt=120014121&ct=Website%20Organic&mt=8";
-  const SHARE_QR_SRC = "assets/brand/style-atlas-site-qr.png";
   const ACCESS_CONFIG = {
     freeFullStyleLimit: 20,
     maxFreeSaved: 20,
@@ -58,7 +58,7 @@
   };
   const readLang = () => {
     const stored = readStorage("styleAtlasLang");
-    return ["zh", "en"].includes(stored) ? stored : (navigator.language.startsWith("zh") ? "zh" : "en");
+    return ["zh", "en"].includes(stored) ? stored : "en";
   };
   const readArray = (key) => {
     try {
@@ -89,6 +89,7 @@
     reviewGuidedStage: null,
     detailSectionObserver: null,
     detailSectionScrollFrame: 0,
+    selectedPlusPlan: "annual_auto",
     reflectionTimers: new Map()
   };
 
@@ -300,11 +301,18 @@
       drawerSavedNote: (n) => `${n} 个已收藏风格`,
       drawerAboutTitle: "关于图鉴",
       drawerAboutNote: "认识产品、内容范围与使用方式",
-      drawerDownloadKicker: "iPhone App",
+      dailyReminderTitle: "每日风格提醒",
+      dailyReminderOff: "每天 09:00 推送今日风格",
+      dailyReminderOn: "已开启 · 每天 09:00",
+      dailyReminderDenied: "通知权限已关闭，点击前往系统设置",
+      dailyReminderUnavailable: "暂时无法设置通知",
+      dailyReminderStateOn: "开",
+      dailyReminderStateOff: "关",
+      drawerDownloadKicker: "iPhone · iPad App",
       drawerDownloadTitle: "带走完整风格图鉴",
-      drawerDownloadNote: "120 篇深度指南、中英双语与离线浏览，都装进口袋里。",
+      drawerDownloadNote: "132 篇深度指南、中英双语与离线浏览，都装进口袋里。",
       drawerDownloadCta: "前往 App Store 下载",
-      drawerDownloadCtaNote: "免费下载 · iPhone",
+      drawerDownloadCtaNote: "免费下载 · iPhone 与 iPad",
       drawerReviewCta: "已经安装？去评分与评价",
       drawerReviewCtaNote: "你的反馈会帮助图鉴继续完善",
       wechatDownloadKicker: "微信内打开",
@@ -329,8 +337,8 @@
       drawerWorkXiaziNote: "每天用 9 个全球热点与 18 张双语海报，把昨天的复杂世界讲清楚。",
       drawerWorkHumanTitle: "不二 认识自己",
       drawerWorkHumanNote: "从出生信息生成中英双语人类图与基础解读，换一个角度认识自己的运行方式。",
-      drawerFooter: "120 种风格 · 120 篇深度指南 · 中英双语",
-      positioning: "探索 120 种艺术与设计风格，每一种都提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
+      drawerFooter: "132 种风格 · 132 篇深度指南 · 中英双语",
+      positioning: "探索 132 种艺术与设计风格，每一种都提供完整深度指南。\n每天 3 分钟，从看见一种美，到真正看懂它。",
       valueLine: "跟着看图引导观察构图、色彩与线条，再用审美画像、日常观察和风格对比建立自己的审美词库。",
       random: "随机",
       swipe: "左右滑动探索",
@@ -418,6 +426,8 @@
       removedToast: "已取消收藏",
       shared: "链接已复制",
       cardSaved: "分享卡片已保存",
+      photoSaved: "图片已保存到相册",
+      photoLibraryAccessDenied: "请在系统设置中允许添加照片，再重试保存。",
       saveFailed: "保存失败，请稍后重试",
       shareFailed: "分享失败，请稍后重试",
       wechatShareHint: "分享图已生成，长按图片保存或发送给朋友",
@@ -457,20 +467,32 @@
       freeExport: "普通清晰度 · 带水印",
       plusExport: "高清无水印 · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "从看见到看懂，完整打开每一种风格。",
-      plusBenefits: ["完整观察与 Guided Looking", "Profile、Everyday 与 Comparison", "风格表达词与创作提示", "历史语境、人物与参考作品", "高清无水印和四种比例导出", "无限收藏"],
+      plusBenefits: ["132 篇完整档案与 Guided Looking", "Profile、Comparison、历史与创作表达", "无限收藏与高清多比例导出"],
       freePlan: "免费版",
       plusPlan: "Plus",
-      freePlanItems: ["浏览全部 120 个主图与简介", "阅读 20 个完整风格档案", "收藏 20 个并普通清晰度导出"],
-      plusPlanItems: ["解锁其余完整档案与全部学习模块", "无限收藏", "高清无水印四比例导出", "一次购买，永久解锁"],
+      freePlanItems: ["132 个主图与简介", "20 篇完整档案"],
+      plusPlanItems: ["全部 132 篇深度指南", "全部学习、收藏与高清导出"],
       appStorePrice: "价格以 App Store 显示为准",
       appStoreCta: "前往 App Store 查看 Plus",
       downloadApp: "下载 App",
       downloadOnAppStore: "前往 App Store 下载",
-      downloadAppNote: "免费下载 iPhone App，在完整的离线体验中继续探索、创作与导出。",
+      downloadAppNote: "免费下载 iPhone 与 iPad App，在完整的离线体验中继续探索、创作与导出。",
       comingSoon: "即将开放",
       unlockPlus: "解锁 Plus",
       restorePurchases: "恢复购买",
-      oneTimePurchase: "一次购买，永久解锁",
+      planPicker: "选择方案",
+      annualAutoTitle: "连续包年",
+      annualAutoNote: "每年自动续订，可随时取消",
+      annualAutoBadge: "推荐",
+      introOfferBadge: "首期优惠",
+      monthlyAutoTitle: "连续包月",
+      monthlyAutoNote: "每月自动续订，可随时取消",
+      annualAutoStandardDisclosure: "连续包年：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按年自动续订。可在 Apple ID 的“订阅”中管理或取消。",
+      monthlyAutoDisclosure: "连续包月：确认购买后从 Apple ID 扣款；除非到期前至少 24 小时取消，否则按月自动续订。可在 Apple ID 的“订阅”中管理或取消。",
+      buyAnnualPlus: "开启连续包年",
+      subscribeMonthlyPlus: "开启连续包月",
+      termsOfUse: "使用条款",
+      privacyPolicy: "隐私政策",
       priceLoading: "正在载入 App Store 价格…",
       purchaseLoading: "正在连接 App Store…",
       purchaseSuccess: "Plus 已解锁",
@@ -497,7 +519,7 @@
       imageDecodeFailed: "图片读取失败，请重新打开后再试。",
       blobCreationFailed: "无法创建导出图片，请重试。",
       unknown: "操作失败，请稍后重试。",
-      iapFootnote: "购买由 Apple App Store 安全处理",
+      iapFootnote: "价格与付款均由 Apple App Store 处理",
       appStoreFootnote: "下载 App 后可在应用内解锁 Plus",
       plusFuture: "Plus 将在后续版本开放",
       plusFutureBody: "首版先提供完整的免费风格浏览、搜索、收藏和离线体验。",
@@ -507,18 +529,18 @@
       ,
       about: "关于",
       aboutTitle: "关于虾子曰艺术风格图鉴",
-      aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 120 种视觉语言整理成可以观察、理解、比较和表达的完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和创作表达。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
+      aboutBody: "虾子曰艺术风格图鉴把海报、绘画、插画、动画、民俗与数字艺术等 132 种视觉语言整理成可以观察、理解、比较和表达的完整深度指南。\n\n每篇深度指南从“看、懂、用、创作、深入”五个阶段展开，并配有看图引导、审美画像、日常观察、相近风格对比和创作表达。它不是替你生成图片，而是帮助你知道什么好看、为什么好看，以及如何清楚表达自己的视觉感受。",
       aboutFor: "适合希望提升审美的人、自媒体人、设计师、AI 创作者、品牌人、内容创作者、设计学生和艺术爱好者。",
-      aboutFree: "App 可免费下载，包含每日推荐、120 种风格浏览、双语搜索、收藏，以及 20 个可使用全部学习模块的免费完整风格档案。",
-      aboutPlus: "Plus 通过 App Store 一次购买，解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
+      aboutFree: "App 可免费下载，包含每日推荐、132 种风格浏览、双语搜索、收藏，以及 20 个可使用全部学习模块的免费完整风格档案。",
+      aboutPlus: "Plus 提供连续包月与连续包年两种自动续订方案；符合资格时，App Store 会显示当前首期优惠及之后的原价续费信息。Plus 解锁其余完整风格档案、Guided Looking、Profile、Everyday、Comparison、创作表达、深入内容、无限收藏和高清多比例导出。",
       appFeaturesTitle: "在 App 里看懂一种美",
-      appFeatures: ["浏览 120 种艺术与设计风格", "阅读 120 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用风格表达词把理解带进创作", "支持中英文、离线浏览与多比例导出"],
+      appFeatures: ["浏览 132 种艺术与设计风格", "阅读 132 篇完整深度指南", "跟随 Guided Looking 一步步观察画面", "通过 Profile、Everyday 与 Comparison 建立辨识力", "用风格表达词把理解带进创作", "支持中英文、离线浏览与多比例导出"],
       safetyTitle: "版权与风格安全说明",
       safetyBody: "虾子曰艺术风格图鉴鼓励学习视觉语言，而不是复制具体作品、具体角色或当代创作者的完整可识别风格。历史艺术流派可以作为学习对象，涉及当代工作室、IP 或在世创作者时，我们更建议使用通用视觉特征来表达。",
       screenshotsTitle: "App Store Screenshot Kit",
       screenshotSlides: [
         ["每天 3 分钟提升审美", "今日推荐"],
-        ["120 种全球视觉风格", "风格图鉴"],
+        ["132 种全球视觉风格", "风格图鉴"],
         ["看懂风格为什么好看", "深度档案"],
         ["建立你的审美资料库", "风格收藏"],
         ["保存好看的风格卡片", "高清导出"],
@@ -538,11 +560,18 @@
       drawerSavedNote: (n) => `${n} saved ${n === 1 ? "style" : "styles"}`,
       drawerAboutTitle: "About the atlas",
       drawerAboutNote: "Product purpose, content scope, and how it works",
-      drawerDownloadKicker: "iPhone App",
+      dailyReminderTitle: "Daily style reminder",
+      dailyReminderOff: "Today's style at 09:00 every day",
+      dailyReminderOn: "On · Every day at 09:00",
+      dailyReminderDenied: "Notifications are off. Tap to open Settings.",
+      dailyReminderUnavailable: "Notifications are temporarily unavailable",
+      dailyReminderStateOn: "On",
+      dailyReminderStateOff: "Off",
+      drawerDownloadKicker: "iPhone · iPad App",
       drawerDownloadTitle: "Take the complete atlas with you",
-      drawerDownloadNote: "120 in-depth guides, bilingual content, and offline browsing.",
+      drawerDownloadNote: "132 in-depth guides, bilingual content, and offline browsing.",
       drawerDownloadCta: "Download on the App Store",
-      drawerDownloadCtaNote: "Free download · iPhone",
+      drawerDownloadCtaNote: "Free download · iPhone and iPad",
       drawerReviewCta: "Already installed? Rate the app",
       drawerReviewCtaNote: "Your review helps the atlas keep improving",
       wechatDownloadKicker: "OPEN FROM WECHAT",
@@ -567,8 +596,8 @@
       drawerWorkXiaziNote: "Nine global stories and eighteen bilingual posters make yesterday's complex world easier to see.",
       drawerWorkHumanTitle: "Bu'er · Know Yourself",
       drawerWorkHumanNote: "Turn birth details into a bilingual chart and foundational reading—a different lens on how you move through life.",
-      drawerFooter: "120 styles · 120 in-depth guides · Bilingual",
-      positioning: "Explore 120 art and design styles, each with a complete in-depth guide.\nMove from seeing a style to truly understanding it in three minutes a day.",
+      drawerFooter: "132 styles · 132 in-depth guides · Bilingual",
+      positioning: "Explore 132 art and design styles, each with a complete in-depth guide.\nMove from seeing a style to truly understanding it in three minutes a day.",
       valueLine: "Follow guided looking prompts, then build recognition through aesthetic profiles, everyday observations, and side-by-side comparisons.",
       random: "Random",
       swipe: "Swipe to explore",
@@ -656,6 +685,8 @@
       removedToast: "Removed",
       shared: "Link copied",
       cardSaved: "Share card saved",
+      photoSaved: "Image saved to Photos",
+      photoLibraryAccessDenied: "Allow adding photos in Settings, then try saving again.",
       saveFailed: "Could not save. Please try again.",
       shareFailed: "Could not share. Please try again.",
       wechatShareHint: "Your share image is ready. Press and hold to save or send it.",
@@ -694,20 +725,32 @@
       freeExport: "Standard clarity · watermarked",
       plusExport: "HD watermark-free · 9:16 / 1:1 / 4:5 / 16:9",
       plusSubtitle: "Go from seeing to understanding with every style fully open.",
-      plusBenefits: ["Complete observation and Guided Looking", "Profile, Everyday, and Comparison", "Style vocabulary and creative prompts", "Historical context, figures, and references", "HD watermark-free export in four ratios", "Unlimited saved styles"],
+      plusBenefits: ["132 complete guides with Guided Looking", "Profile, comparison, context, and creative expression", "Unlimited saves and HD multi-ratio export"],
       freePlan: "Free",
       plusPlan: "Plus",
-      freePlanItems: ["Browse all 120 hero images and introductions", "Read 20 complete style archives", "Save 20 styles with standard export"],
-      plusPlanItems: ["Unlock all remaining archives and learning modules", "Unlimited saved styles", "HD watermark-free export in four ratios", "One-time purchase, lifetime access"],
+      freePlanItems: ["132 hero images and introductions", "20 complete style archives"],
+      plusPlanItems: ["All 132 in-depth guides", "All learning tools, saves, and HD export"],
       appStorePrice: "Price shown in the App Store",
       appStoreCta: "View Plus on the App Store",
       downloadApp: "Download App",
       downloadOnAppStore: "Download on the App Store",
-      downloadAppNote: "Download the free iPhone app for the complete offline experience, creative tools, and exports.",
+      downloadAppNote: "Download the free iPhone and iPad app for the complete offline experience, creative tools, and exports.",
       comingSoon: "Coming Soon",
       unlockPlus: "Unlock Plus",
       restorePurchases: "Restore Purchases",
-      oneTimePurchase: "One-time purchase, lifetime access",
+      planPicker: "Choose a plan",
+      annualAutoTitle: "Annual subscription",
+      annualAutoNote: "Renews yearly until cancelled",
+      annualAutoBadge: "Recommended",
+      introOfferBadge: "Intro offer",
+      monthlyAutoTitle: "Monthly subscription",
+      monthlyAutoNote: "Renews monthly until cancelled",
+      annualAutoStandardDisclosure: "Annual subscription: charged to your Apple ID at confirmation and renews automatically each year unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
+      monthlyAutoDisclosure: "Monthly subscription: charged to your Apple ID at confirmation and renews automatically each month unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.",
+      buyAnnualPlus: "Start annual subscription",
+      subscribeMonthlyPlus: "Start monthly subscription",
+      termsOfUse: "Terms of Use",
+      privacyPolicy: "Privacy Policy",
       priceLoading: "Loading App Store price…",
       purchaseLoading: "Connecting to the App Store…",
       purchaseSuccess: "Plus unlocked",
@@ -734,7 +777,7 @@
       imageDecodeFailed: "The image could not be read. Reopen it and try again.",
       blobCreationFailed: "The export image could not be created. Please try again.",
       unknown: "The operation could not be completed. Please try again.",
-      iapFootnote: "Purchase securely processed by Apple App Store",
+      iapFootnote: "Price and payment are handled by Apple App Store",
       appStoreFootnote: "Download the app to unlock Plus with an in-app purchase",
       plusFuture: "Plus will be available in a future version",
       plusFutureBody: "The first version focuses on free browsing, search, saved styles, and offline access.",
@@ -744,18 +787,18 @@
       ,
       about: "About",
       aboutTitle: "About Style Atlas",
-      aboutBody: "Style Atlas organizes 120 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
+      aboutBody: "Style Atlas organizes 132 visual languages across posters, painting, illustration, animation, folk art, and digital aesthetics into complete in-depth guides you can observe, understand, compare, and express.\n\nEach guide moves through See, Understand, Apply, Create, and Explore, with guided looking, aesthetic profiles, everyday observations, comparisons, and creative expression. It does not generate images for you. It helps you understand what looks good, why it works, and how to express your visual ideas clearly.",
       aboutFor: "For anyone building visual taste, social media creators, designers, AI creators, brand builders, content creators, design students, and art lovers.",
-      aboutFree: "The app is free to download and includes the daily pick, all 120 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
-      aboutPlus: "Plus is a one-time App Store purchase that unlocks the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
+      aboutFree: "The app is free to download and includes the daily pick, all 132 styles, bilingual search, saved styles, and 20 free complete archives with every learning module available.",
+      aboutPlus: "Plus offers monthly and annual auto-renewing subscriptions. When eligible, the App Store shows the current introductory terms and the standard renewal price that follows. Plus unlocks the remaining complete archives, Guided Looking, Profile, Everyday, Comparison, creative expression, deeper context, unlimited saved styles, and HD multi-ratio export.",
       appFeaturesTitle: "Learn to see a style in the app",
-      appFeatures: ["Explore 120 art and design styles", "Read 120 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
+      appFeatures: ["Explore 132 art and design styles", "Read 132 complete in-depth guides", "Follow Guided Looking prompts step by step", "Build recognition with Profile, Everyday, and Comparison", "Turn understanding into creative prompts with style vocabulary", "Use Chinese or English, browse offline, and export in multiple ratios"],
       safetyTitle: "Copyright And Style Safety",
       safetyBody: "Style Atlas encourages learning visual languages, not copying specific artworks, characters, or the fully recognizable style of contemporary creators. Historical movements can be studied directly, while contemporary studios, IPs and living creators should be described through general visual traits.",
       screenshotsTitle: "App Store Screenshot Kit",
       screenshotSlides: [
         ["Learn one visual style a day", "Today's Pick"],
-        ["120 global visual styles", "Style Atlas: Art & Design"],
+        ["132 global visual styles", "Style Atlas: Art & Design"],
         ["Understand why each style works", "Deep Archive"],
         ["Build your taste archive", "Saved Styles"],
         ["Save beautiful style cards", "Export"],
@@ -771,6 +814,7 @@
     searchOpenBtn: $("searchOpenBtn"),
     drawerBtn: $("drawerBtn"),
     drawerCloseBtn: $("drawerCloseBtn"),
+    drawerDailyReminderBtn: $("drawerDailyReminderBtn"),
     drawer: $("drawer"),
     drawerBackdrop: $("drawerBackdrop"),
     lightbox: $("lightbox"),
@@ -815,9 +859,22 @@
     freePlanList: $("freePlanList"),
     plusPlanTitle: $("plusPlanTitle"),
     plusPlanList: $("plusPlanList"),
+    plusPlanPicker: $("plusPlanPicker"),
+    plusPlanPickerLegend: $("plusPlanPickerLegend"),
+    plusAnnualAutoTitle: $("plusAnnualAutoTitle"),
+    plusAnnualAutoNote: $("plusAnnualAutoNote"),
+    plusAnnualAutoPrice: $("plusAnnualAutoPrice"),
+    plusAnnualAutoBadge: $("plusAnnualAutoBadge"),
+    plusMonthlyAutoTitle: $("plusMonthlyAutoTitle"),
+    plusMonthlyAutoNote: $("plusMonthlyAutoNote"),
+    plusMonthlyAutoPrice: $("plusMonthlyAutoPrice"),
+    plusMonthlyAutoBadge: $("plusMonthlyAutoBadge"),
     plusLaunchPrice: $("plusLaunchPrice"),
     plusRegularPrice: $("plusRegularPrice"),
     plusFootnote: $("plusFootnote"),
+    plusRenewalDisclosure: $("plusRenewalDisclosure"),
+    plusTermsLink: $("plusTermsLink"),
+    plusPrivacyLink: $("plusPrivacyLink"),
     plusCta: $("plusCta"),
     plusRestoreBtn: $("plusRestoreBtn"),
     plusCloseBtn: $("plusCloseBtn"),
@@ -1198,6 +1255,54 @@
     return Boolean(window.webkit?.messageHandlers?.styleAtlas);
   }
 
+  function notificationStatus() {
+    const value = window.STYLE_ATLAS_RUNTIME_CONFIG?.notificationStatus;
+    return value && typeof value === "object"
+      ? value
+      : { authorization: "notDetermined", enabled: false, hour: 9 };
+  }
+
+  function renderDailyReminderRow() {
+    if (!dom.drawerDailyReminderBtn) return;
+    const nativeShell = hasNativeBridge();
+    dom.drawerDailyReminderBtn.hidden = !nativeShell;
+    if (!nativeShell) return;
+    const status = notificationStatus();
+    const noteKey = status.authorization === "denied"
+      ? "dailyReminderDenied"
+      : (status.authorization === "unavailable"
+        ? "dailyReminderUnavailable"
+        : (status.enabled ? "dailyReminderOn" : "dailyReminderOff"));
+    setDrawerRowCopy("drawerDailyReminderBtn", t("dailyReminderTitle"), t(noteKey));
+    dom.drawerDailyReminderBtn.querySelector(".drawer-reminder-state").textContent = t(
+      status.enabled ? "dailyReminderStateOn" : "dailyReminderStateOff"
+    );
+    dom.drawerDailyReminderBtn.setAttribute("aria-pressed", String(Boolean(status.enabled)));
+    dom.drawerDailyReminderBtn.setAttribute("aria-label", `${t("dailyReminderTitle")}，${t(noteKey)}`);
+    dom.drawerDailyReminderBtn.removeAttribute("aria-busy");
+  }
+
+  function setNotificationStatusFromNative(value) {
+    const status = value && typeof value === "object" ? value : {};
+    window.STYLE_ATLAS_RUNTIME_CONFIG.notificationStatus = {
+      authorization: ["notDetermined", "denied", "authorized", "unavailable"].includes(status.authorization)
+        ? status.authorization
+        : "unavailable",
+      enabled: Boolean(status.enabled),
+      hour: 9
+    };
+    renderDailyReminderRow();
+    return window.STYLE_ATLAS_RUNTIME_CONFIG.notificationStatus;
+  }
+
+  function openStyleFromNative(styleID) {
+    const id = String(styleID || "");
+    if (!validStyleIds.has(id)) return false;
+    history.replaceState(null, "", `#${id}`);
+    openDetail(id, "home");
+    return true;
+  }
+
   function isIPhoneWeChatBrowser() {
     const userAgent = navigator.userAgent || "";
     return /MicroMessenger/i.test(userAgent) && /iPhone/i.test(userAgent);
@@ -1255,6 +1360,7 @@
   }
 
   function openOverlay(container, focusTarget, returnFocus = null) {
+    captureReadingAnchor();
     const intendedReturnFocus = returnFocus || (document.activeElement instanceof HTMLElement ? document.activeElement : null);
     if (container !== dom.plusModal && !dom.plusModal.hidden) closePlus(false);
     if (container !== dom.lightbox && !dom.lightbox.hidden) closeImage(false);
@@ -1283,10 +1389,102 @@
     const returnFocus = store.overlayReturnFocus;
     store.overlayReturnFocus = null;
     if (restoreFocus) requestAnimationFrame(() => {
-      returnFocus?.focus();
+      returnFocus?.focus({ preventScroll: true });
       updateAccessibilityDebug();
     });
     else updateAccessibilityDebug();
+    restoreReadingAfterResize();
+  }
+
+  function introductoryOfferFor(plan, prices) {
+    const prefix = `${plan}_intro_`;
+    const eligible = String(prices[`${prefix}eligible`]) === "true";
+    const price = String(prices[`${prefix}price`] || "").trim();
+    const unit = String(prices[`${prefix}period_unit`] || "");
+    const value = Number(prices[`${prefix}period_value`]);
+    const count = Number(prices[`${prefix}period_count`]);
+    const mode = String(prices[`${prefix}payment_mode`] || "");
+    if (!eligible || !price || !Number.isInteger(value) || value < 1 ||
+        !Number.isInteger(count) || count < 1 ||
+        !["day", "week", "month", "year"].includes(unit) ||
+        !["freeTrial", "payAsYouGo", "payUpFront"].includes(mode)) return null;
+    return { price, unit, value, count, mode, total: value * count };
+  }
+
+  function durationLabel(unit, total) {
+    if (store.lang === "zh") {
+      return `${total} ${{ day: "天", week: "周", month: "个月", year: "年" }[unit]}`;
+    }
+    return `${total} ${unit}${total === 1 ? "" : "s"}`;
+  }
+
+  function firstPeriodLabel(plan, offer) {
+    if (offer.total === 1 && offer.unit === "month" && plan === "monthly_auto") {
+      return store.lang === "zh" ? "首月" : "first month";
+    }
+    if (offer.total === 1 && offer.unit === "year" && plan === "annual_auto") {
+      return store.lang === "zh" ? "首年" : "first year";
+    }
+    const duration = durationLabel(offer.unit, offer.total);
+    return store.lang === "zh" ? `前 ${duration}` : `first ${duration}`;
+  }
+
+  function standardRenewalLabel(plan, standardPrice, sentenceStart = false) {
+    const unit = plan === "monthly_auto" ? (store.lang === "zh" ? "月" : "month") : (store.lang === "zh" ? "年" : "year");
+    if (store.lang === "zh") return `之后每${unit} ${standardPrice}`;
+    return `${sentenceStart ? "Then" : "then"} ${standardPrice}/${unit}`;
+  }
+
+  function offerNote(plan, offer, standardPrice) {
+    const firstPeriod = firstPeriodLabel(plan, offer);
+    const renewal = standardRenewalLabel(plan, standardPrice);
+    if (offer.mode === "freeTrial") {
+      const freePeriod = durationLabel(offer.unit, offer.total);
+      return store.lang === "zh" ? `免费 ${freePeriod}，${renewal}` : `Free for ${freePeriod}, ${renewal}`;
+    }
+    if (offer.mode === "payAsYouGo") {
+      const chargePeriod = durationLabel(offer.unit, offer.value);
+      return store.lang === "zh"
+        ? `${firstPeriod}每 ${chargePeriod} ${offer.price}，${renewal}`
+        : `${offer.price} every ${chargePeriod} for the ${firstPeriod}, ${renewal}`;
+    }
+    return store.lang === "zh"
+      ? `${firstPeriod} ${offer.price}，${renewal}`
+      : `${offer.price} for the ${firstPeriod}, ${renewal}`;
+  }
+
+  function offerCta(plan, offer) {
+    if (offer.mode === "freeTrial") return store.lang === "zh" ? "开始免费试用" : "Start free trial";
+    const firstPeriod = firstPeriodLabel(plan, offer);
+    return store.lang === "zh"
+      ? `以 ${offer.price} 开启${firstPeriod}`
+      : `Start ${firstPeriod} for ${offer.price}`;
+  }
+
+  function offerDisclosure(plan, offer, standardPrice) {
+    const isMonthly = plan === "monthly_auto";
+    const planName = store.lang === "zh" ? (isMonthly ? "连续包月" : "连续包年") : (isMonthly ? "Monthly subscription" : "Annual subscription");
+    const firstPeriod = firstPeriodLabel(plan, offer);
+    const renewalUnit = isMonthly ? (store.lang === "zh" ? "月" : "month") : (store.lang === "zh" ? "年" : "year");
+    let offerTerms;
+    if (offer.mode === "freeTrial") {
+      const freePeriod = durationLabel(offer.unit, offer.total);
+      offerTerms = store.lang === "zh"
+        ? `符合 Apple 优惠资格时，免费试用 ${freePeriod}`
+        : `if eligible for Apple's introductory offer, includes a free ${freePeriod} trial`;
+    } else if (offer.mode === "payAsYouGo") {
+      const chargePeriod = durationLabel(offer.unit, offer.value);
+      offerTerms = store.lang === "zh"
+        ? `符合 Apple 优惠资格时，${firstPeriod}每 ${chargePeriod}支付 ${offer.price}`
+        : `if eligible for Apple's introductory offer, charges ${offer.price} every ${chargePeriod} for the ${firstPeriod}`;
+    } else {
+      offerTerms = store.lang === "zh"
+        ? `符合 Apple 优惠资格时，${firstPeriod}预付 ${offer.price}`
+        : `if eligible for Apple's introductory offer, charges ${offer.price} up front for the ${firstPeriod}`;
+    }
+    return store.lang === "zh"
+      ? `${planName}：${offerTerms}；优惠期结束后按 ${standardPrice}/${renewalUnit}自动续订。除非到期前至少 24 小时取消，否则订阅会继续续期。可在 Apple ID 的“订阅”中管理或取消。`
+      : `${planName}: ${offerTerms}; it then renews automatically at ${standardPrice}/${renewalUnit} unless cancelled at least 24 hours before expiry. Manage or cancel in Apple ID subscriptions.`;
   }
 
   function showPlus(reasonKey = "plusSubtitle") {
@@ -1306,14 +1504,44 @@
     dom.plusPlanTitle.textContent = t("plusPlan");
     dom.freePlanList.innerHTML = t("freePlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
     dom.plusPlanList.innerHTML = t("plusPlanItems").map((item) => `<li>${escapeHtml(item)}</li>`).join("");
-    const iapDisplayPrice = window.STYLE_ATLAS_RUNTIME_CONFIG?.iapDisplayPrice;
+    const iapDisplayPrices = window.STYLE_ATLAS_RUNTIME_CONFIG?.iapDisplayPrices || {};
+    const selectedPlan = store.selectedPlusPlan === "monthly_auto" ? "monthly_auto" : "annual_auto";
+    const monthlyOffer = iapDisplayPrices.monthly_auto ? introductoryOfferFor("monthly_auto", iapDisplayPrices) : null;
+    const annualOffer = iapDisplayPrices.annual_auto ? introductoryOfferFor("annual_auto", iapDisplayPrices) : null;
+    const offers = { monthly_auto: monthlyOffer, annual_auto: annualOffer };
+    const selectedOffer = offers[selectedPlan];
+    const standardPrice = iapDisplayPrices[selectedPlan] || "";
+    const selectedPrice = selectedOffer?.price || standardPrice;
+    dom.plusPlanPickerLegend.textContent = t("planPicker");
+    dom.plusAnnualAutoTitle.textContent = t("annualAutoTitle");
+    dom.plusAnnualAutoNote.textContent = annualOffer ? offerNote("annual_auto", annualOffer, iapDisplayPrices.annual_auto) : t("annualAutoNote");
+    dom.plusAnnualAutoBadge.textContent = annualOffer ? t("introOfferBadge") : t("annualAutoBadge");
+    dom.plusMonthlyAutoTitle.textContent = t("monthlyAutoTitle");
+    dom.plusMonthlyAutoNote.textContent = monthlyOffer ? offerNote("monthly_auto", monthlyOffer, iapDisplayPrices.monthly_auto) : t("monthlyAutoNote");
+    dom.plusAnnualAutoPrice.textContent = annualOffer?.price || iapDisplayPrices.annual_auto || t("priceLoading");
+    dom.plusMonthlyAutoPrice.textContent = monthlyOffer?.price || iapDisplayPrices.monthly_auto || t("priceLoading");
+    dom.plusMonthlyAutoBadge.textContent = t("introOfferBadge");
+    dom.plusMonthlyAutoBadge.hidden = !monthlyOffer;
+    dom.plusPlanPicker.querySelectorAll("input[name='plus-plan']").forEach((input) => {
+      input.checked = input.value === selectedPlan;
+      input.disabled = !iapReady || hasPlusAccess();
+    });
+    dom.plusPlanPicker.hidden = freeLaunch || web;
     dom.plusLaunchPrice.textContent = iapReady
-      ? `${iapDisplayPrice || t("priceLoading")} · ${t("oneTimePurchase")}`
+      ? `${selectedPrice || t("priceLoading")} / ${selectedOffer ? firstPeriodLabel(selectedPlan, selectedOffer) : (selectedPlan === "monthly_auto" ? (store.lang === "zh" ? "月" : "month") : (store.lang === "zh" ? "年" : "year"))}`
       : t("appStorePrice");
-    dom.plusRegularPrice.textContent = "";
+    dom.plusRegularPrice.textContent = selectedOffer ? standardRenewalLabel(selectedPlan, standardPrice, true) : "";
     dom.plusLaunchPrice.parentElement.hidden = freeLaunch;
-    dom.plusRegularPrice.hidden = true;
+    dom.plusRegularPrice.hidden = !selectedOffer;
     dom.plusFootnote.textContent = freeLaunch ? t("plusFutureBody") : (iapReady ? t("iapFootnote") : t("appStoreFootnote"));
+    dom.plusRenewalDisclosure.textContent = iapReady
+      ? (selectedOffer
+        ? offerDisclosure(selectedPlan, selectedOffer, standardPrice)
+        : t(selectedPlan === "annual_auto" ? "annualAutoStandardDisclosure" : "monthlyAutoDisclosure"))
+      : "";
+    dom.plusRenewalDisclosure.hidden = !iapReady;
+    dom.plusTermsLink.textContent = t("termsOfUse");
+    dom.plusPrivacyLink.textContent = t("privacyPolicy");
     dom.plusCta.hidden = false;
     const storeAction = window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction || "idle";
     const isStoreBusy = ["purchasing", "restoring", "pending"].includes(storeAction);
@@ -1325,8 +1553,11 @@
         ? t("purchaseLoading")
         : (storeAction === "pending"
           ? t("purchasePending")
-          : (iapReady ? t("unlockPlus") : (freeLaunch ? t("plusFuture") : t("comingSoon"))))));
-    dom.plusCta.disabled = web ? false : (hasPlusAccess() || !iapReady || isStoreBusy);
+          : (iapReady ? (selectedOffer
+            ? offerCta(selectedPlan, selectedOffer)
+            : t(selectedPlan === "annual_auto" ? "buyAnnualPlus" : "subscribeMonthlyPlus"))
+            : (freeLaunch ? t("plusFuture") : t("comingSoon"))))));
+    dom.plusCta.disabled = web ? false : (hasPlusAccess() || !iapReady || !selectedPrice || isStoreBusy);
     dom.plusRestoreBtn.hidden = !iapReady || hasPlusAccess();
     dom.plusRestoreBtn.textContent = storeAction === "restoring" ? t("restoreLoading") : t("restorePurchases");
     dom.plusRestoreBtn.disabled = isStoreBusy;
@@ -1387,6 +1618,7 @@
       "transactionUnverified",
       "exportPayloadMissing",
       "exportWriteFailed",
+      "photoLibraryAccessDenied",
       "presentationUnavailable",
       "exportInProgress",
       "canvasUnavailable",
@@ -1403,8 +1635,8 @@
     const key = knownErrorCodes.has(normalizedErrorCode)
       ? normalizedErrorCode
       : (normalizedErrorCode ? "unknown" : (statusKeys[normalized] || fallbackErrorKeys[normalized]));
-    if (normalized === "exportComplete") {
-      toast(t("exportComplete"));
+    if (normalized === "exportComplete" || normalized === "photoSaved") {
+      toast(t(normalized));
       finishExportState("completed");
     } else if (normalized === "exportFailed") {
       toast(t(key || "exportFailed"));
@@ -1478,6 +1710,15 @@
         <p>${escapeHtml(style.name.zh)}</p>
       </div>
     `;
+  }
+
+  function entryTypeLabel(style, lang = store.lang) {
+    const labels = {
+      movement: {zh: "艺术／设计流派", en: "Art / design movement"},
+      technique: {zh: "工艺技法", en: "Technique"},
+      language: {zh: "视觉语言", en: "Visual language"}
+    };
+    return (labels[style.entryType] || labels.language)[lang];
   }
 
   function renderDeck() {
@@ -1878,7 +2119,7 @@
         <div class="deep-accordions">
           ${renderAccordion(`${base}-history`, t("accordionHistory"), `<p>${escapeHtml(style.history[lang])}</p>`, true)}
           ${renderAccordion(`${base}-people`, t("accordionPeople"), `<div class="chip-row">${style.people[lang].map((item) => `<span class="chip">${escapeHtml(item)}</span>`).join("")}</div>`)}
-          ${renderAccordion(`${base}-references`, t("accordionReferences"), `<ul class="detail-list">${style.references[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`)}
+          ${renderAccordion(`${base}-references`, t("accordionReferences"), `<ul class="detail-list">${style.references[lang].map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>${style.sources ? `<ul class="detail-list source-links">${style.sources.map((source) => `<li><a data-action="open-source" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.title)}</a></li>`).join("")}</ul>` : ""}`)}
           ${renderAccordion(`${base}-gallery`, t("accordionGallery"), `<div class="gallery-grid" id="galleryGrid"></div><p class="gallery-note">${escapeHtml(store.lang === "zh" ? "公开图库是可选补充；离线时不影响其余内容。" : "The public gallery is optional context; the rest remains available offline.")}</p>`)}
           ${renderAccordion(`${base}-context`, t("accordionContext"), `<p>${escapeHtml(style.curatorNote[lang])}</p><p>${escapeHtml(style.why[lang])}</p>`)}
         </div>
@@ -1913,9 +2154,11 @@
           </button>
         </div>
         <div class="detail-hero-copy">
+          <p class="entry-type">${escapeHtml(entryTypeLabel(style, lang))}</p>
           <h1 id="detailTitle">${escapeHtml(style.name[lang])}</h1>
           <p class="zh-name alternate-name">${escapeHtml(style.name[lang === "zh" ? "en" : "zh"])}</p>
           <p class="summary">${escapeHtml(style.summary[lang])}</p>
+          ${style.imageProvenance ? `<p class="image-provenance">${escapeHtml(lang === "zh" ? "封面为 AI 辅助创作的教学示意图，非历史原作。馆藏与机构资料请见“深入”中的参考链接。" : "AI-assisted teaching illustration, not a historical original. Collection and institutional references appear under Explore.")}</p>` : ""}
           ${locked ? `<div class="chip-row">${style.tags[lang].slice(0, 3).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>` : ""}
           <div class="hero-copy-actions">
             <button class="overview-copy-btn" type="button" data-action="copy-overview" aria-label="${escapeHtml(t("copyOverview"))}" title="${escapeHtml(t("copyOverview"))}">${iconMarkup("copy")}</button>
@@ -2099,6 +2342,53 @@
     toast(t("reflectionCleared"));
   }
 
+  let readingViewportWidth = window.innerWidth;
+  let readingAnchor = null;
+  let readingResizeFrame = 0;
+  let readingNeedsRestore = false;
+
+  function readingIsCovered() {
+    return document.body.classList.contains("drawer-lock") || store.drawerOpen;
+  }
+
+  function captureReadingAnchor() {
+    if (store.view !== "detail" || readingIsCovered() || readingNeedsRestore ||
+        readingResizeFrame || window.innerWidth !== readingViewportWidth) return;
+    const edge = document.querySelector(".topbar").getBoundingClientRect().bottom + 20;
+    const candidate = [...dom.detailContent.querySelectorAll("h2, h3, p, li")]
+      .map((node) => ({ node, rect: node.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.width > 0 && rect.height > 0 && rect.bottom > edge && rect.top < innerHeight)
+      .sort((a, b) => Math.abs(a.rect.top - edge) - Math.abs(b.rect.top - edge))[0];
+    readingAnchor = candidate ? {
+      node: candidate.node,
+      styleID: store.activeId,
+      progress: Math.max(0, (edge - candidate.rect.top) / candidate.rect.height),
+      gap: Math.max(0, candidate.rect.top - edge)
+    } : null;
+  }
+
+  function restoreReadingAfterResize() {
+    if (!readingNeedsRestore || readingIsCovered() || readingResizeFrame) return;
+    readingResizeFrame = requestAnimationFrame(() => {
+      readingResizeFrame = 0;
+      if (readingIsCovered()) return;
+      const anchor = readingAnchor;
+      readingNeedsRestore = false;
+      if (store.view !== "detail" || !anchor?.node.isConnected || anchor.styleID !== store.activeId) return;
+      const edge = document.querySelector(".topbar").getBoundingClientRect().bottom + 20;
+      const rect = anchor.node.getBoundingClientRect();
+      window.scrollTo({ top: scrollY + rect.top + anchor.progress * rect.height - edge - anchor.gap, behavior: "instant" });
+      captureReadingAnchor();
+    });
+  }
+
+  function handleReadingViewportResize() {
+    if (window.innerWidth === readingViewportWidth) return; // Ignore keyboard / browser-bar height changes.
+    readingViewportWidth = window.innerWidth;
+    readingNeedsRestore = Boolean(readingAnchor);
+    restoreReadingAfterResize();
+  }
+
   function jumpToDetailSection(targetId, button) {
     const target = $(targetId);
     if (!target) return;
@@ -2108,6 +2398,7 @@
   }
 
   function updateCurrentDetailSection() {
+    captureReadingAnchor();
     const targets = ["detail-see", "detail-understand", "detail-apply", "detail-create", "detail-explore"]
       .map((id) => $(id))
       .filter(Boolean);
@@ -2362,6 +2653,9 @@
   }
 
   function setView(view, shouldRender = true) {
+    readingAnchor = null;
+    readingNeedsRestore = false;
+    readingViewportWidth = window.innerWidth;
     flushAllReflections();
     if (store.view === "detail" && view !== "detail") abortWikiGallery();
     if (view !== "detail" && !dom.guidedOverlay.hidden) closeGuided(false);
@@ -2416,6 +2710,7 @@
 
   function setDrawer(open, restoreFocus = true) {
     if (store.drawerOpen === open) return;
+    if (open) captureReadingAnchor();
     if (open) {
       if (!dom.plusModal.hidden) closePlus(false);
       if (!dom.lightbox.hidden) closeImage(false);
@@ -2445,10 +2740,11 @@
       const returnFocus = store.drawerReturnFocus;
       store.drawerReturnFocus = null;
       if (restoreFocus) requestAnimationFrame(() => {
-        returnFocus?.focus();
+        returnFocus?.focus({ preventScroll: true });
         updateAccessibilityDebug();
       });
       else updateAccessibilityDebug();
+      restoreReadingAfterResize();
     }
   }
 
@@ -2609,72 +2905,6 @@
     canvas.height = 0;
   }
 
-  function drawShareFrame(ctx, width, height) {
-    const scale = width / 1080;
-    const inset = 36 * scale;
-    ctx.save();
-    ctx.strokeStyle = "rgba(244, 207, 118, 0.64)";
-    ctx.lineWidth = Math.max(2, 2 * scale);
-    ctx.strokeRect(inset, inset, width - inset * 2, height - inset * 2);
-
-    const label = "VISUAL STYLE NOTE";
-    ctx.font = `800 ${20 * scale}px sans-serif`;
-    const labelWidth = ctx.measureText(label).width;
-    const labelX = 62 * scale;
-    const labelY = 62 * scale;
-    roundRect(ctx, labelX - 18 * scale, labelY - 30 * scale, labelWidth + 36 * scale, 52 * scale, 8 * scale);
-    ctx.fillStyle = "rgba(10, 9, 7, 0.78)";
-    ctx.fill();
-    ctx.fillStyle = "#f4cf76";
-    ctx.fillText(label, labelX, labelY + 7 * scale);
-    ctx.restore();
-  }
-
-  async function drawShareFooter(ctx, width, height, top) {
-    const scale = width / 1080;
-    const pad = 64 * scale;
-    const footerTop = Math.round(top);
-    const qrPlateSize = 148 * scale;
-    const qrPlateX = width - pad - qrPlateSize;
-    const qrPlateY = height - pad - qrPlateSize;
-    const qrInset = 10 * scale;
-    const productName = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Xiazishuo Style Atlas";
-    const invitation = store.lang === "zh" ? "扫码看懂这种美" : "SCAN TO EXPLORE THIS STYLE";
-    const collection = store.lang === "zh"
-      ? "120 种艺术与设计风格 · 120 篇深度指南"
-      : "120 ART & DESIGN STYLES · 120 IN-DEPTH GUIDES";
-
-    ctx.save();
-    ctx.fillStyle = "rgba(10, 9, 7, 0.96)";
-    ctx.fillRect(0, footerTop, width, height - footerTop);
-    ctx.fillStyle = "rgba(244, 207, 118, 0.52)";
-    ctx.fillRect(pad, footerTop, width - pad * 2, Math.max(2, 2 * scale));
-
-    ctx.fillStyle = "#f4cf76";
-    ctx.font = `800 ${22 * scale}px sans-serif`;
-    ctx.fillText(productName, pad, footerTop + 62 * scale);
-    ctx.fillStyle = "#fff6dc";
-    ctx.font = `700 ${38 * scale}px Georgia`;
-    ctx.fillText(invitation, pad, footerTop + 120 * scale);
-    ctx.fillStyle = "rgba(255, 246, 220, 0.72)";
-    ctx.font = `700 ${18 * scale}px sans-serif`;
-    ctx.fillText(collection, pad, footerTop + 164 * scale);
-
-    roundRect(ctx, qrPlateX, qrPlateY, qrPlateSize, qrPlateSize, 14 * scale);
-    ctx.fillStyle = "#fffaf0";
-    ctx.fill();
-    const qrImage = await loadImage(SHARE_QR_SRC);
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(
-      qrImage,
-      qrPlateX + qrInset,
-      qrPlateY + qrInset,
-      qrPlateSize - qrInset * 2,
-      qrPlateSize - qrInset * 2
-    );
-    ctx.restore();
-  }
-
   async function coverCardBlob(style, ratio = "9:16") {
     const sizes = {
       "9:16": [1080, 1920],
@@ -2699,15 +2929,15 @@
     shade.addColorStop(1, "rgba(0,0,0,0.82)");
     ctx.fillStyle = shade;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    const footerTop = canvas.height - Math.max(282, canvas.width * 0.3);
     ctx.fillStyle = "#fff6dc";
     const titleSize = Math.max(72, Math.min(126, canvas.width * 0.1, canvas.height * 0.12));
     ctx.font = `700 ${titleSize}px Georgia`;
     const titleLineHeight = titleSize * 0.92;
+    const qrLayout = shareQRCodeLayout(canvas.width, canvas.height);
     const titleLines = wrappedLines(ctx, style.name.en, canvas.width - 128);
     ctx.fillStyle = "#f4cf76";
     const subtitleSize = Math.max(34, Math.min(52, canvas.width * 0.043));
-    const subtitleY = footerTop - 50;
+    const subtitleY = qrLayout.y - 34;
     const titleLastY = subtitleY - subtitleSize * 1.55;
     const titleFirstY = titleLastY - Math.max(0, titleLines.length - 1) * titleLineHeight;
     ctx.fillStyle = "#fff6dc";
@@ -2716,8 +2946,7 @@
     ctx.fillStyle = "#f4cf76";
     ctx.font = `800 ${subtitleSize}px sans-serif`;
     wrap(ctx, style.name.zh, 68, subtitleY, canvas.width - 136, subtitleSize * 1.18);
-    drawShareFrame(ctx, canvas.width, canvas.height);
-    await drawShareFooter(ctx, canvas.width, canvas.height, footerTop);
+    await drawShareQRCode(ctx, qrLayout);
     return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
@@ -2801,14 +3030,10 @@
       ctx.fillRect(68, dividerY, 944, 2);
       ctx.fillStyle = "#3f3422";
       ctx.font = "40px sans-serif";
-      const fullSummaryLines = wrappedLines(ctx, style.summary[store.lang], 920);
-      const summaryLines = fullSummaryLines.slice(0, 2);
-      if (fullSummaryLines.length > summaryLines.length) {
-        summaryLines[summaryLines.length - 1] = `${summaryLines.at(-1).replace(/[.,，。;；:\s]+$/, "")}…`;
-      }
+      const qrLayout = shareQRCodeLayout(canvas.width, canvas.height);
+      const summaryLines = wrappedLines(ctx, style.summary[store.lang], qrLayout.x - 104).slice(0, 3);
       summaryLines.forEach((line, index) => ctx.fillText(line, 68, dividerY + 76 + index * 58));
-      drawShareFrame(ctx, canvas.width, canvas.height);
-      await drawShareFooter(ctx, canvas.width, canvas.height, 2110);
+      await drawShareQRCode(ctx, qrLayout);
       return await canvasBlob(canvas);
     } finally {
       releaseCanvas(canvas);
@@ -2967,6 +3192,36 @@
     ctx.closePath();
   }
 
+  function shareQRCodeLayout(canvasWidth, canvasHeight) {
+    const size = Math.round(Math.min(154, canvasWidth * 0.143));
+    const padding = 12;
+    const width = size + padding * 2;
+    const height = size + padding * 2;
+    return {
+      size,
+      padding,
+      width,
+      height,
+      x: canvasWidth - width - 44,
+      y: canvasHeight - height - 44
+    };
+  }
+
+  async function drawShareQRCode(ctx, layout) {
+    const qr = await loadImage("./assets/styles/style-atlas-h5-qr.png");
+    const { size, padding, width, height, x, y } = layout;
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 0, 0, 0.34)";
+    ctx.shadowBlur = 18;
+    ctx.shadowOffsetY = 6;
+    roundRect(ctx, x, y, width, height, 18);
+    ctx.fillStyle = "#fff8e7";
+    ctx.fill();
+    ctx.shadowColor = "transparent";
+    ctx.drawImage(qr, x + padding, y + padding, size, size);
+    ctx.restore();
+  }
+
   function isWeChatBrowser() {
     return /MicroMessenger/i.test(navigator.userAgent || "");
   }
@@ -3004,25 +3259,6 @@
     const lines = wrappedLines(ctx, textValue, maxWidth);
     lines.forEach((line, index) => ctx.fillText(line, centered ? x : x, y + index * lineHeight));
     return y + Math.max(0, lines.length - 1) * lineHeight;
-  }
-
-  function drawWatermark(ctx, width, height) {
-    if (!ACCESS_CONFIG.freeExportWatermark || hasPlusAccess()) return;
-    const watermark = store.lang === "zh" ? "虾子曰艺术风格图鉴" : "Style Atlas";
-    ctx.save();
-    ctx.globalAlpha = 0.62;
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#493816";
-    ctx.font = "700 20px sans-serif";
-    const textWidth = ctx.measureText(watermark).width;
-    const textX = width - 60;
-    const textY = height - 24;
-    ctx.fillRect(textX - textWidth - 54, textY - 8, 34, 2);
-    ctx.beginPath();
-    ctx.arc(textX - textWidth - 9, textY - 9, 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillText(watermark, textX, textY);
-    ctx.restore();
   }
 
   function toast(message) {
@@ -3572,6 +3808,17 @@
         event.stopPropagation();
         return openAppStore(actionTarget);
       }
+      if (action === "toggle-daily-reminder") {
+        if (!hasNativeBridge()) return;
+        const status = notificationStatus();
+        if (status.authorization === "denied") {
+          postNativeMessage("openNotificationSettings");
+          return;
+        }
+        dom.drawerDailyReminderBtn.setAttribute("aria-busy", "true");
+        postNativeMessage("setDailyReminder", { enabled: !status.enabled });
+        return;
+      }
       if (action === "open-image") {
         const img = event.target.closest("[data-action='open-image']")?.querySelector("img") || event.target.closest("img");
         if (!img) return;
@@ -3583,7 +3830,7 @@
         if (!isIapMode()) return toast(isFreeLaunchMode() ? t("plusFuture") : t("comingSoon"));
         if (["purchasing", "restoring", "pending"].includes(window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction)) return;
         setStoreActionFromNative("purchasing");
-        if (!postNativeMessage("purchasePlus")) setStoreActionFromNative("unavailable", "productUnavailable");
+        if (!postNativeMessage("purchasePlus", { plan: store.selectedPlusPlan })) setStoreActionFromNative("unavailable", "productUnavailable");
         return;
       }
       if (action === "restore-purchases") {
@@ -3591,6 +3838,13 @@
         if (["purchasing", "restoring", "pending"].includes(window.STYLE_ATLAS_RUNTIME_CONFIG?.storeAction)) return;
         setStoreActionFromNative("restoring");
         if (!postNativeMessage("restorePurchases")) setStoreActionFromNative("failed", "restoreFailed");
+        return;
+      }
+      if (action === "open-legal" || action === "open-source") {
+        if (!hasNativeBridge()) return;
+        event.preventDefault();
+        const url = event.target.closest("a[href]")?.href;
+        if (url) postNativeMessage("openExternalURL", { url });
         return;
       }
       if (action === "close-lightbox") return closeImage();
@@ -3628,6 +3882,13 @@
       }
     });
 
+    dom.plusPlanPicker.addEventListener("change", (event) => {
+      const input = event.target.closest("input[name='plus-plan']");
+      if (!input || !["monthly_auto", "annual_auto"].includes(input.value)) return;
+      store.selectedPlusPlan = input.value;
+      showPlus(store.plusReasonKey || "plusSubtitle");
+    });
+
     dom.plusModal.addEventListener("click", (event) => {
       if (event.target === dom.plusModal) closePlus();
     });
@@ -3659,6 +3920,7 @@
       scheduleDailyRefresh();
     });
     window.addEventListener("pageshow", scheduleDailyRefresh);
+    window.addEventListener("resize", handleReadingViewportResize);
     window.addEventListener("beforeunload", flushAllReflections);
     window.addEventListener("scroll", () => {
       if (store.view !== "detail" || store.detailSectionScrollFrame) return;
@@ -3753,12 +4015,13 @@
     $("drawerTitle").textContent = t("drawerTitle");
     setDrawerRowCopy("drawerSavedBtn", t("drawerSavedTitle"), t("drawerSavedNote", store.saved.length));
     setDrawerRowCopy("drawerAboutBtn", t("drawerAboutTitle"), t("drawerAboutNote"));
+    renderDailyReminderRow();
     $("drawerContactTitle").textContent = t("drawerContactTitle");
     $("drawerContactNote").textContent = t("drawerContactNote");
     $("drawerContact").querySelector(".drawer-contact-list").setAttribute("aria-label", store.lang === "zh" ? "联系方式" : "Contact methods");
     const contactLabels = store.lang === "zh"
-      ? [["WonderElian", "wonderelian.com"], ["邮箱", "hustyy986@gmail.com"], ["小红书", "打开主页"], ["抖音", "打开主页"], ["X", "@yongyuan1"], ["TikTok", "@wonderelian"]]
-      : [["WonderElian", "wonderelian.com"], ["Email", "hustyy986@gmail.com"], ["RED", "Open profile"], ["Douyin", "Open profile"], ["X", "@yongyuan1"], ["TikTok", "@wonderelian"]];
+      ? [["邮箱", "hustyy986@gmail.com"], ["小红书", "打开主页"], ["抖音", "打开主页"], ["X", "@yongyuan1"], ["TikTok", "@wonderelian"]]
+      : [["Email", "hustyy986@gmail.com"], ["RED", "Open profile"], ["Douyin", "Open profile"], ["X", "@yongyuan1"], ["TikTok", "@wonderelian"]];
     $("drawerContact").querySelectorAll(".drawer-contact-list a").forEach((link, index) => {
       link.querySelector("span").textContent = contactLabels[index][0];
       link.querySelector("strong").textContent = contactLabels[index][1];
@@ -3797,9 +4060,13 @@
     $("drawerWorkHumanNote").textContent = t("drawerWorkHumanNote");
     $("drawerFooter").textContent = t("drawerFooter");
     $("downloadAppNav").setAttribute("aria-label", t("downloadOnAppStore"));
-    $("downloadAppNav").hidden = hasNativeBridge();
+    const nativeShell = hasNativeBridge();
+    $("drawerDownloadKicker").hidden = nativeShell;
+    $("drawerDownloadTitle").hidden = nativeShell;
+    $("drawerDownloadNote").hidden = nativeShell;
+    $("downloadAppNav").hidden = nativeShell;
     $("reviewAppNav").setAttribute("aria-label", t("drawerReviewCta"));
-    $("reviewAppNav").hidden = hasNativeBridge();
+    $("reviewAppNav").hidden = false;
   }
 
   function renderAll() {
@@ -3859,6 +4126,7 @@
     if (window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell !== true) return 1;
     const scale = Math.min(1.6, Math.max(0.9, Number(value) || 1));
     document.documentElement.style.zoom = String(scale);
+    document.documentElement.style.setProperty("--native-ui-scale", String(scale));
     document.documentElement.toggleAttribute("data-native-large-text", scale > 1.05);
     return scale;
   }
@@ -3868,13 +4136,33 @@
       if (window.STYLE_ATLAS_RUNTIME_CONFIG?.nativeShell !== true) return false;
       return setPlusAccessFromNative(value);
     },
-    setProductPrice(value) {
-      window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice = String(value || "");
+    setProductPrices(value) {
+      const prices = value && typeof value === "object" ? value : {};
+      const normalized = {
+        monthly_auto: String(prices.monthly_auto || ""),
+        annual_auto: String(prices.annual_auto || "")
+      };
+      ["monthly_auto", "annual_auto"].forEach((plan) => {
+        const prefix = `${plan}_intro_`;
+        normalized[`${prefix}eligible`] = String(prices[`${prefix}eligible`] || "false");
+        normalized[`${prefix}price`] = String(prices[`${prefix}price`] || "");
+        normalized[`${prefix}period_unit`] = String(prices[`${prefix}period_unit`] || "");
+        normalized[`${prefix}period_value`] = String(prices[`${prefix}period_value`] || "");
+        normalized[`${prefix}period_count`] = String(prices[`${prefix}period_count`] || "");
+        normalized[`${prefix}payment_mode`] = String(prices[`${prefix}payment_mode`] || "");
+      });
+      window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrices = normalized;
       if (!dom.plusModal.hidden) showPlus(store.plusReasonKey || "plusSubtitle");
-      return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrice;
+      return window.STYLE_ATLAS_RUNTIME_CONFIG.iapDisplayPrices;
+    },
+    setProductPrice(value) {
+      return this.setProductPrices({ annual_auto: value });
     },
     setStoreAction: setStoreActionFromNative,
     setTextScale: setTextScaleFromNative,
+    setNotificationStatus: setNotificationStatusFromNative,
+    openStyle: openStyleFromNative,
+    refreshDailyStyle,
     resolveBundledAsset: resolveBundledAssetFromNative,
     getPlusAccess: hasPlusAccess,
     postNativeMessage
