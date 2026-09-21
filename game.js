@@ -3046,6 +3046,20 @@
   }
 
   async function imageFile(src, name = "style-atlas-image.png") {
+    // WKWebView cannot fetch file:// assets. Decode a clean native-provided copy
+    // before making a PNG, just as the card exporter does.
+    if (hasNativeBridge() && new URL(src, location.href).protocol === "file:") {
+      const image = await loadImage(src);
+      const canvas = document.createElement("canvas");
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      try {
+        canvasContext(canvas).drawImage(image, 0, 0);
+        return new File([await canvasBlob(canvas)], name, { type: "image/png" });
+      } finally {
+        releaseCanvas(canvas);
+      }
+    }
     const response = await fetch(src);
     if (!response.ok) throw new Error("image fetch failed");
     const blob = await response.blob();
