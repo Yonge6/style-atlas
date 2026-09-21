@@ -14,7 +14,7 @@ This is submission evidence, not approval or public-release evidence; 1.5 remain
 - Updated English and Simplified Chinese description, promotional text and What's New to 132 entries; retained paid first-period offer and renewal/no-trial terms. Review notes now identify build 18 and new content/Photos test paths.
 - Introductory-offer readback: each subscription has 175 territories, 2026-09-17 through 2026-10-17, PAY_UP_FRONT, one period; monthly ONE_MONTH and annual ONE_YEAR. No offer writes or schedule extensions were made.
 - Removed only three outdated candidate screenshots: English/Chinese `01-home.png` (120 styles / 72 guides), and English iPad `01-daily-style-ipad.png` (outdated category counts). Retained five iPhone and one iPad screenshot per locale. Original-resolution removed images are backed up under the evidence directory and can be re-uploaded; other screenshots were preserved.
-- Evidence: `/Volumes/LaCie/StyleAtlas-Expansion-20260921/evidence/asc-1.6-18-waiting-review.png`.
+- Evidence: `/Volumes/LaCie/StyleAtlas-Expansion-20260921/evidence/asc-1.6-18-waiting-review.json` records the independently observed submission detail text. Screenshot capture did not complete; no screenshot evidence is claimed.
 - Review URL: https://appstoreconnect.apple.com/apps/6787447019/distribution/reviewsubmissions/details/7654bfa1-b1c4-4d42-9a25-7317de9087fe
 
 ## 更新说明
