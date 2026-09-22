@@ -129,8 +129,8 @@ Resources/StoreKit/StyleAtlas.storekit
 
 Products:
 
-- `xiazishuo_style_atlas_plus_monthly_auto`: monthly auto-renewing subscription, `$9.99` in the local configuration, with a paid-up-front first-month introductory offer for eligible subscribers.
-- `xiazishuo_style_atlas_plus_annual_auto`: annual auto-renewing subscription, `$89.99` in the local configuration, selected by default, with a paid-up-front first-year introductory offer for eligible subscribers.
+- `xiazishuo_style_atlas_plus_monthly_auto`: monthly auto-renewing subscription, `$9.99` in the local configuration.
+- `xiazishuo_style_atlas_plus_annual_auto`: annual auto-renewing subscription, `$89.99` in the local configuration and selected by default.
 - `xiazishuo_style_atlas_plus_annual`: legacy non-renewing one-year entitlement retained only for prior purchasers.
 - `xiazishuo_style_atlas_plus_lifetime`: legacy non-consumable entitlement retained only for existing purchasers.
 
@@ -206,7 +206,7 @@ Before shipping the subscription update:
 3. Test Sandbox purchase.
 4. Test Restore Purchases.
 5. Confirm `WebView/WebViewContainer.swift` remains in `submissionMode: "iap"`.
-6. Update the App Store description and review notes to disclose both subscription periods, any active introductory offer, the later standard price, and the automatic-renewal terms.
+6. Update the App Store description and review notes to disclose both subscription periods, current localized prices and automatic-renewal terms. Mention an introductory offer only while one is actually active.
 
 ## Local Purchase Test
 
@@ -214,11 +214,10 @@ The shared Xcode scheme selects `StyleAtlas.storekit` for local StoreKit testing
 
 1. Launch the app from Xcode.
 2. Open Plus Paywall in the web UI.
-3. Confirm the annual auto-renewing subscription is selected by default and an eligible fresh StoreKit account sees the first-year price together with the later `$89.99/year` renewal price.
-4. Start the first-year offer and confirm the StoreKit local purchase sheet repeats the same terms.
-5. Verify locked style archives unlock and Restore Purchases retains access.
-6. Reset StoreKit transactions, select the monthly subscription, and confirm the first-month price and later `$9.99/month` renewal price.
-7. Verify purchase, restore, cancellation, introductory eligibility, expiry, ineligible fallback, and both legacy entitlement migrations independently before release.
+3. Confirm the annual auto-renewing subscription is selected by default and shows the current `$89.99/year` local price without an introductory offer.
+4. Verify locked style archives unlock and Restore Purchases retains access.
+5. Reset StoreKit transactions, select the monthly subscription, and confirm the current `$9.99/month` local price without an introductory offer.
+6. Verify purchase, restore, cancellation, expiry and both legacy entitlement migrations independently before release.
 
 ## Native Bridge Test
 
@@ -338,7 +337,7 @@ If StoreKit 2 is working:
 
 - Paywall can show the purchase button.
 - Restore Purchases must be visible and working.
-- App Review Notes should identify the monthly and annual auto-renewing subscriptions, the annual introductory offer, and both retained legacy entitlement types.
+- App Review Notes should identify the monthly and annual auto-renewing subscriptions, state that no introductory offer or free trial is active, and list both retained legacy entitlement types.
 
 Never add external payment links inside the app.
 

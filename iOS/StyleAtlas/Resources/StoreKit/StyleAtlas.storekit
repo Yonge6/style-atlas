@@ -100,11 +100,6 @@
           "familyShareable": false,
           "groupNumber": 1,
           "internalID": "style-atlas-plus-monthly-auto",
-          "introductoryOffer": {
-            "internalID": "style-atlas-plus-monthly-first-month",
-            "paymentMode": "payUpFront",
-            "subscriptionPeriod": "P1M"
-          },
           "localizations": [
             {
               "description": "Full Plus access, billed monthly until cancelled.",
@@ -131,19 +126,14 @@
           "familyShareable": false,
           "groupNumber": 1,
           "internalID": "style-atlas-plus-annual-auto",
-          "introductoryOffer": {
-            "internalID": "style-atlas-plus-annual-first-year",
-            "paymentMode": "payUpFront",
-            "subscriptionPeriod": "P1Y"
-          },
           "localizations": [
             {
-              "description": "Full Plus access with an eligible first-year introductory price, then billed yearly until cancelled.",
+              "description": "Full Plus access, billed yearly until cancelled.",
               "displayName": "Style Atlas Plus Annual",
               "locale": "en_US"
             },
             {
-              "description": "完整 Style Atlas Plus 权益，符合资格时首年享优惠价，之后按年原价自动续订，可随时取消。",
+              "description": "完整 Style Atlas Plus 权益，按年付费并自动续订，可随时取消。",
               "displayName": "Style Atlas Plus 连续包年",
               "locale": "zh_Hans"
             }

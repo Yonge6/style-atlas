@@ -1,8 +1,33 @@
 # 132-style update — App review handoff
 
+## Current submission — repriced with no introductory offer
+
+Submitted: 1.6 (19), on 2026-09-22 at 15:57 Asia/Shanghai. App Store Connect
+independently reads back submission `d3feefe2-c193-4e16-aaa1-133e0d05c289`
+as **Waiting for Review**. This is submission evidence, not approval or public
+release evidence; 1.5 remains the current distributable version.
+
+- Build `66342d6f-3cb4-4377-95d5-1bff490b6df9` is VALID and
+  APP_STORE_ELIGIBLE for iPhone and iPad, with no non-exempt encryption.
+- Standard United States prices were already US$9.99/month and US$89.99/year
+  for new subscribers, so they were left unchanged.
+- Mainland China prices are scheduled for the earliest date Apple allowed,
+  2026-09-23: CNY 19.90/month and CNY 159/year.
+- Every introductory offer was removed from both subscriptions. Fresh readback
+  reports zero monthly offers and zero annual offers; no free trial is active.
+- App metadata, review notes, embedded StoreKit configuration and in-app copy
+  now describe standard localized pricing only. The automatic release-after-
+  approval setting, immediate availability and existing ratings were preserved.
+- Verified archive:
+  `/Volumes/LaCie/StyleAtlas-Repricing-20260922/StyleAtlas-1.6-19.xcarchive`.
+- Upload and archive logs:
+  `/Volumes/LaCie/StyleAtlas-Repricing-20260922/evidence/`.
+- Review URL: https://appstoreconnect.apple.com/apps/6787447019/distribution/reviewsubmissions/details/d3feefe2-c193-4e16-aaa1-133e0d05c289
+
+## Prior submission history — withdrawn
+
 Submitted: 1.6 (18), on 2026-09-22 at 01:39 Asia/Shanghai.
-App Store Connect submission detail independently read back **Waiting for Review**.
-This is submission evidence, not approval or public-release evidence; 1.5 remains the current distributable version.
+This submission was withdrawn on 2026-09-22 before build 19 was submitted.
 
 ## Submission verification
 
@@ -32,7 +57,8 @@ Each addition includes a complete bilingual guide, guided observation, related-s
 ## Review notes addition
 
 - The app remains usable without an account. Existing free/Plus boundaries and StoreKit product identifiers are unchanged.
-- The already configured paid monthly-first-month and annual-first-year offers, regular renewal terms and no-trial behavior are preserved. Do not re-create or extend the campaign merely for this content update.
+- Monthly and annual subscriptions use standard localized pricing only. There is
+  no introductory offer and no free trial.
 - Search for Rinpa or Cyanotype to inspect new content. Covers and introductions are browsable; complete premium learning modules follow existing Plus access rules.
 - On iPad, open any cover image and tap Save card. The app requests add-only Photos authorization and writes the image directly after permission. Denial shows guidance rather than a false success.
 - Share opens a native popover with an image item, including Save Image. The popover is anchored for iPad.
@@ -40,6 +66,7 @@ Each addition includes a complete bilingual guide, guided observation, related-s
 
 ## Verified artifacts
 
+- Current archive: `/Volumes/LaCie/StyleAtlas-Repricing-20260922/StyleAtlas-1.6-19.xcarchive`
 - Archive: `/Volumes/LaCie/StyleAtlas-Expansion-20260921/StyleAtlas-1.6-18-verified.xcarchive`
 - IPA: `/Volumes/LaCie/StyleAtlas-Expansion-20260921/export-verified/StyleAtlas.ipa`
 - Never use the earlier `-final` archive or `export/` IPA: those predate the native file-preview save fix. They remain only as intermediate build artifacts.

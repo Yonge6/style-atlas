@@ -1,5 +1,10 @@
 # Style Atlas 1.6 (17) — introductory promotion
 
+> Historical record: this campaign was cancelled on 2026-09-22. All monthly
+> and annual introductory offers were removed. The current 1.6 (19) submission
+> uses standard localized pricing only; see
+> `docs/releases/2026-09-21-132-styles-review.md`.
+
 App: `6787447019` · Bundle: `com.xiazishuo.styleatlas`.
 
 ## Scope
