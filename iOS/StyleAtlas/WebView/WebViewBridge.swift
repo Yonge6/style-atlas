@@ -55,17 +55,31 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
 
         bridgeLogger.info("operation=\(type, privacy: .public) status=received")
         switch type {
+        case "analyticsConsent":
+            guard message.frameInfo.isMainFrame, message.webView?.url?.isFileURL == true else { return }
+            ProductAnalytics.shared.consent((body["payload"] as? [String: Any])?["enabled"] as? Bool == true)
+        case "analyticsEvent":
+            guard message.frameInfo.isMainFrame, message.webView?.url?.isFileURL == true,
+                  let payload = body["payload"] as? [String: Any],
+                  let name = payload["name"] as? String else { return }
+            ProductAnalytics.shared.record(name, payload["parameters"] as? [String: Any] ?? [:])
         case "purchasePlus":
             let rawPlan = (body["payload"] as? [String: Any])?["plan"] as? String
             let plan = PlusPlan(rawValue: rawPlan ?? "") ?? .annualAuto
+            ProductAnalytics.shared.record("purchase_request", ["plan": plan.rawValue])
             Task {
                 injectStoreAction("purchasing")
-                injectStoreResult(await storeManager.purchasePlus(plan: plan))
+                let result = await storeManager.purchasePlus(plan: plan)
+                recordStoreResult(result, restoring: false)
+                injectStoreResult(result)
             }
         case "restorePurchases":
+            ProductAnalytics.shared.record("restore_request")
             Task {
                 injectStoreAction("restoring")
-                injectStoreResult(await storeManager.restorePurchases())
+                let result = await storeManager.restorePurchases()
+                recordStoreResult(result, restoring: true)
+                injectStoreResult(result)
             }
         case "openExternalURL":
             guard let payload = body["payload"] as? [String: Any],
@@ -166,6 +180,10 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         }
     }
 
+    func setAnalyticsForeground(_ active: Bool) {
+        webView?.evaluateJavaScript("window.StyleAtlasAnalytics?.setForeground(\(active ? "true" : "false"))")
+    }
+
     func refreshAfterForeground() async {
         bridgeLogger.info("operation=foregroundRefresh status=started")
         _ = try? await webView?.evaluateJavaScript("window.StyleAtlasNativeBridge?.refreshDailyStyle()")
@@ -176,6 +194,20 @@ final class WebViewBridge: NSObject, ObservableObject, WKScriptMessageHandler {
         }
         await notificationManager.refreshAndReschedule()
         injectNotificationStatus(notificationManager.status)
+    }
+
+    private func recordStoreResult(_ result: StoreActionResult, restoring: Bool) {
+        let status: String
+        switch result {
+        case .purchased: status = "purchased"
+        case .pending: status = "pending"
+        case .cancelled: status = "cancelled"
+        case .restored: status = "restored"
+        case .nothingToRestore: status = "nothing_to_restore"
+        case .unavailable: status = "unavailable"
+        case .failed: status = "failed"
+        }
+        ProductAnalytics.shared.record(restoring ? "restore_result" : "purchase_result", ["result": status])
     }
 
     private func injectStoreResult(_ result: StoreActionResult) {

@@ -1117,7 +1117,8 @@
     } catch (error) {
       console.error("Style Atlas export failed", error);
       finishExportState("failed");
-      if (error?.name === "AbortError") return false;
+      if (error?.name === "AbortError") { usage("share_cancel"); return false; }
+      usage(fallbackKey === "shareFailed" ? "share_error" : "export_error");
       const knownCode = ["exportInProgress", "canvasUnavailable", "imageDecodeFailed", "blobCreationFailed"].includes(error?.code)
         ? error.code
         : fallbackKey;
@@ -1251,6 +1252,10 @@
     return true;
   }
 
+  function usage(name, fields = {}) {
+    window.StyleAtlasAnalytics?.track(name, { style_id: store.activeId, screen: store.view, ...fields });
+  }
+
   function hasNativeBridge() {
     return Boolean(window.webkit?.messageHandlers?.styleAtlas);
   }
@@ -1326,6 +1331,7 @@
   }
 
   function openAppStore() {
+    usage("download_click", { placement: "app_navigation" });
     if (store.drawerOpen) setDrawer(false, false);
     if (!dom.plusModal.hidden) closePlus(false);
     if (!hasNativeBridge() && isIPhoneWeChatBrowser()) {
@@ -1488,6 +1494,7 @@
   }
 
   function showPlus(reasonKey = "plusSubtitle") {
+    if (dom.plusModal.hidden) usage("paywall_view", { action: reasonKey });
     const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const returnFocus = activeElement?.closest("#drawer") ? dom.drawerBtn : activeElement;
     const native = hasNativeBridge();
@@ -1589,6 +1596,10 @@
 
   function setStoreActionFromNative(status, errorCode = "", debugMessage = "") {
     const normalized = String(status || "idle");
+    if (normalized === "photoSaved") usage("photo_saved");
+    if (normalized === "exportComplete") usage("share_success");
+    if (normalized === "exportCancelled") usage("share_cancel");
+    if (normalized === "exportFailed") usage("export_error");
     const normalizedErrorCode = String(errorCode || "");
     clearTimeout(setStoreActionFromNative.pendingTimer);
     window.STYLE_ATLAS_RUNTIME_CONFIG.storeAction = normalized;
@@ -2257,6 +2268,8 @@
   }
 
   function openGuided(returnFocus = null, stage = 0) {
+    usage("guided_start");
+    openGuided.completed = false;
     const style = activeStyle();
     const stages = guidedStages(style);
     store.guidedStage = clamp(Number.isFinite(Number(stage)) ? Number(stage) : 0, 0, stages.length - 1);
@@ -2271,10 +2284,13 @@
   function nextGuided() {
     const stages = guidedStages(activeStyle());
     if (store.guidedStage >= stages.length - 1) {
+      if (!openGuided.completed) usage("guided_complete");
+      openGuided.completed = true;
       closeGuided();
       return;
     }
     store.guidedStage += 1;
+    usage("guided_step", { step: store.guidedStage });
     renderGuidedStage();
     dom.guidedTitle.focus?.({ preventScroll: true });
   }
@@ -2314,6 +2330,7 @@
     clearTimeout(pending.timer);
     store.reflectionTimers.delete(styleId);
     const ok = writeReflection(styleId, pending.text);
+    if (ok) usage("reflection_saved", { style_id: styleId });
     setReflectionStatus(styleId, ok ? "reflectionSaved" : "reflectionStorageUnavailable");
     return ok;
   }
@@ -2653,6 +2670,9 @@
   }
 
   function setView(view, shouldRender = true) {
+    window.StyleAtlasAnalytics?.context({ screen: view, style_id: view === "detail" ? store.activeId : undefined });
+    usage("screen", { screen: view });
+    if (view === "detail") usage("style_view", { screen: view });
     readingAnchor = null;
     readingNeedsRestore = false;
     readingViewportWidth = window.innerWidth;
@@ -2797,6 +2817,7 @@
     }
     saveState();
     syncSavedState(id);
+    usage("favorite", { style_id: id, action: isSaved(id) ? "add" : "remove" });
     if (store.view === "detail") window.scrollTo(0, scrollPosition);
   }
 
@@ -2816,6 +2837,7 @@
         input.remove();
       }
       if (notify) toast(t("copied"));
+      usage("copy_success");
       return true;
     } catch {
       if (notify) toast(t("copyFailed"));
@@ -3095,6 +3117,7 @@
 
   async function shareImage(src = dom.lightbox.dataset.src) {
     if (!src) return;
+    usage("share_request", { placement: "lightbox" });
     return runExportOperation(async () => {
       const file = await imageFile(src, "style-atlas-image.png");
       if (hasNativeBridge()) {
@@ -3102,11 +3125,13 @@
         if (postNativeMessage("shareImage", { dataURL, filename: file.name })) return NATIVE_EXPORT_PENDING;
       }
       if (isWeChatBrowser()) {
+        usage("share_preview");
         openImage(await blobToDataURL(file), t("wechatShareHint"), true);
         return;
       }
       if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
         await navigator.share({ title: activeStyle().name[store.lang], files: [file] });
+        usage("share_success");
         return;
       }
       await copyText(src);
@@ -3115,6 +3140,7 @@
 
   async function saveImage(src = dom.lightbox.dataset.src) {
     if (!src) return;
+    usage("save_request", { placement: "lightbox" });
     return runExportOperation(async () => {
       const file = await imageFile(src, "style-atlas-image.png");
       if (hasNativeBridge()) {
@@ -3129,6 +3155,7 @@
   }
 
   async function shareStyle(style = activeStyle()) {
+    usage("share_request", { style_id: style.id, placement: "style" });
     const publicBase = new URL(window.STYLE_ATLAS_RUNTIME_CONFIG.publicBaseURL, "https://style-atlas.wonderelian.com/");
     publicBase.hash = "";
     publicBase.search = "";
@@ -3145,15 +3172,18 @@
         if (postNativeMessage("shareImage", { dataURL, filename: file.name })) return NATIVE_EXPORT_PENDING;
       }
       if (isWeChatBrowser()) {
+        usage("share_preview", { style_id: style.id });
         openImage(await blobToDataURL(file), t("wechatShareHint"), true);
         return;
       }
       if (navigator.share) {
         if (!navigator.canShare || navigator.canShare({ files: [file] })) {
           await navigator.share({ ...payload, files: [file] });
+          usage("share_success", { style_id: style.id });
           return;
         }
         await navigator.share(payload);
+        usage("share_success", { style_id: style.id });
         return;
       }
       await copyText(`${payload.title}\n${payload.text}\n${payload.url}`);
@@ -3161,6 +3191,7 @@
   }
 
   async function saveShareCard(style = activeStyle(), ratio = null) {
+    usage("save_request", { style_id: style.id, placement: "style_card" });
     return runExportOperation(async () => {
       const blob = hasPlusAccess()
         ? await pureImageBlob(style, ratio || "9:16")
@@ -3187,6 +3218,7 @@
   }
 
   function downloadBlob(blob, filename) {
+    usage("file_download");
     const link = document.createElement("a");
     link.download = filename;
     link.href = URL.createObjectURL(blob);
@@ -3883,6 +3915,7 @@
       if (action === "toggle-accordion") return toggleAccordion(event.target.closest("[data-action='toggle-accordion']"));
       if (action === "clear-reflection" && id) return clearReflection(id);
       if (filter) {
+        usage("filter", { action: filter });
         store.filter = store.filter === filter ? "" : filter;
         if (store.view !== "search") {
           store.query = "";
@@ -3961,6 +3994,10 @@
     dom.searchInput.addEventListener("input", () => {
       store.query = dom.searchInput.value;
       renderSearch();
+      clearTimeout(dom.searchInput.usageTimer);
+      dom.searchInput.usageTimer = setTimeout(() => {
+        if (store.query) usage("search", { result_count: dom.searchResults.querySelectorAll(".result-card").length });
+      }, 800);
     });
     dom.clearSearchBtn.addEventListener("click", () => {
       store.query = "";

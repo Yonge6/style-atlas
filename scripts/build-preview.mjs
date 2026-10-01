@@ -11,6 +11,8 @@ if (!output.startsWith(`${buildRoot}${path.sep}`)) {
 }
 
 const webFiles = [
+  "analytics.js",
+  "analytics.css",
   "styles.css",
   "game.js",
   "data-core.js",

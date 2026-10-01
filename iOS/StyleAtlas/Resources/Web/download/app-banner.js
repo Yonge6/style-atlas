@@ -27,6 +27,7 @@
   const languageObserver = new MutationObserver(translate);
   languageObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   action.addEventListener("click", (event) => {
+    window.StyleAtlasAnalytics?.track("download_click", { placement: "top_banner" });
     if (!/MicroMessenger/i.test(navigator.userAgent)) return;
     event.preventDefault();
     const destination = new URL("download.html", base);
@@ -39,6 +40,7 @@
   }
   const sizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver(measure) : null;
   close.addEventListener("click", () => {
+    window.StyleAtlasAnalytics?.track("banner_close");
     try { sessionStorage.setItem(key, "1"); } catch { /* Dismiss for this page. */ }
     languageObserver.disconnect();
     sizeObserver?.disconnect();

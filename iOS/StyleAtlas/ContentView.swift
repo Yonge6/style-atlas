@@ -42,6 +42,7 @@ struct ContentView: View {
                 bridge.injectPlusAccess(hasPlus)
             }
             .onChange(of: scenePhase) { phase in
+                bridge.setAnalyticsForeground(phase == .active)
                 guard phase == .active else { return }
                 Task {
                     await bridge.refreshAfterForeground()

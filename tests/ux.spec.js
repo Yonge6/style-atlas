@@ -408,6 +408,7 @@ test("native file preview saves through the bundled asset bridge without fetchin
     window.STYLE_ATLAS_RUNTIME_CONFIG = {nativeShell: true, externalGalleryEnabled: false, submissionMode: "iap"};
   });
   await page.goto(pathToFileURL(path.resolve(__dirname, "..", "index.html")).href + "#rinpa");
+  await page.locator('[data-consent="no"]').click();
   await page.locator(".hero-image-button").click();
   await page.locator("#saveLightboxBtn").click();
   await expect.poll(() => page.evaluate(() => window.__nativeMessages.filter(m => m.type === "exportImage").length)).toBe(1);
@@ -2844,7 +2845,7 @@ test("retired Reflection surface creates no fetch or Native bridge message", asy
   await page.goto("/#swiss-style");
   await expect(page.locator("[data-reflection-id]")).toHaveCount(0);
   expect(externalRequests).toEqual([]);
-  expect(await page.evaluate(() => window.__nativeMessages)).toEqual([]);
+  expect(await page.evaluate(() => window.__nativeMessages)).toEqual([{type: "analyticsConsent", payload: {enabled: false}}]);
 });
 
 test("preview payload is nested and cannot replace production root files", async () => {

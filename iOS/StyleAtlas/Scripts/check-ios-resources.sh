@@ -11,6 +11,8 @@ required_web_files=(
   "index.html"
   "styles.css"
   "game.js"
+  "analytics.js"
+  "analytics.css"
   "data-core.js"
   "data-styles.js"
   "data-refined.js"

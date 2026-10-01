@@ -6,6 +6,7 @@ module.exports = defineConfig({
   workers: 1,
   use: {
     baseURL: "http://127.0.0.1:8765",
+    storageState: { cookies: [], origins: [{ origin: "http://127.0.0.1:8765", localStorage: [{ name: "styleAtlas.analyticsConsent.v1", value: "denied" }] }] },
     trace: "retain-on-failure"
   },
   webServer: {
