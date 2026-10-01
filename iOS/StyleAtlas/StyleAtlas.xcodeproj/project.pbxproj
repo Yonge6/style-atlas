@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+        EA0000000000000000000001 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EA0000000000000000000002; };
+        EA0000000000000000000003 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EA0000000000000000000004; };
         E90000000000000000000001 = {isa = PBXBuildFile; fileRef = E90000000000000000000002; };
         E90000000000000000000003 = {isa = PBXBuildFile; productRef = E90000000000000000000005; };
 		BF0000010000000000000001 /* StyleAtlasApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0000010000000000000101 /* StyleAtlasApp.swift */; };
@@ -53,6 +55,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+        EA0000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+        EA0000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
         E90000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAnalytics.swift; sourceTree = "<group>"; };
 		BF0000010000000000000101 /* StyleAtlasApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleAtlasApp.swift; sourceTree = "<group>"; };
 		BF0000010000000000000102 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -106,6 +110,8 @@
 			isa = PBXGroup;
 			children = (
                 E90000000000000000000002,
+                EA0000000000000000000002,
+                EA0000000000000000000004,
 				BF0000010000000000000101 /* StyleAtlasApp.swift */,
 				BF0000010000000000000102 /* ContentView.swift */,
 				BF0000010000000000000111 /* Info.plist */,
@@ -227,6 +233,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF0000010000000000000007 /* Resources/Web in Resources */,
+                EA0000000000000000000001 /* GoogleService-Info.plist in Resources */,
+                EA0000000000000000000003 /* PrivacyInfo.xcprivacy in Resources */,
 				BF0000010000000000000009 /* Assets.xcassets in Resources */,
 				BF000001000000000000000C /* Resources/DailyStyles.json in Resources */,
 			);

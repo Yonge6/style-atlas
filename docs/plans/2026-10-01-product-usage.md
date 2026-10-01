@@ -21,3 +21,11 @@
 - Native debug/simulator/TestFlight excluded; native never uses web GA tag.
 - Existing pricing, promotions, assets and unrelated checkout changes preserved.
 - Production web and ops independently read back; native build is not represented as a released App.
+
+## Native activation continuation (user authorized using Yixiu's successful path)
+
+1. Use the already-signed-in administrator at Firebase to register only `com.xiazishuo.styleatlas` in the existing free project; preserve Yixiu/Buer registrations and account roles. Download the official configuration and verify identity before bundling.
+2. Add a native configuration/privacy validation test, first demonstrate failure without the required resources, then add `GoogleService-Info.plist` and `PrivacyInfo.xcprivacy` to the main target only. Keep collection default-off and all production/test gates.
+3. Restore the matching retained 23F77 Xcode platform from LaCie and build Release with DerivedData on LaCie; verify bundled flags/config and unchanged version/pricing. Do not alter an existing App Store submission in this activation step.
+4. Read back the newly created exact GA4 iOS stream; update only ignored `config/product-analytics.local.json` mapping and refresh only Style Atlas. Test isolation and deploy the same four-file ops delta with a distinct backup revision.
+5. Record official registration, build and reporting evidence; distinguish a verified connection from an App Store release and actual production observations. Commit scoped source changes, preserving unrelated files.
