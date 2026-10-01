@@ -2475,10 +2475,20 @@ test("review mode falls back safely for an invalid style", async ({ page }) => {
   await expect(page.locator("#detailContent")).not.toContainText("undefined");
 });
 
+async function expectComparisonBelowNavigation(page) {
+  // The optional download banner changes the viewport space occupied by chrome.
+  await expect.poll(() => page.evaluate(() => {
+    const sectionTop = document.querySelector("#detail-compare").getBoundingClientRect().top;
+    const topbarBottom = document.querySelector(".topbar").getBoundingClientRect().bottom;
+    const navBottom = document.querySelector(".detail-section-nav").getBoundingClientRect().bottom;
+    return sectionTop >= Math.max(topbarBottom, navBottom) && sectionTop - topbarBottom < 100;
+  })).toBe(true);
+}
+
 test("review mode scrolls to a valid comparison section", async ({ page }) => {
   await page.goto("/?review=detail&style=art-deco&section=compare");
   await expect(page.locator("#detail-compare")).toBeVisible();
-  await expect.poll(() => page.evaluate(() => Math.abs(document.querySelector("#detail-compare").getBoundingClientRect().top))).toBeLessThan(220);
+  await expectComparisonBelowNavigation(page);
 });
 
 test("review mode keeps the integrated creation heading below the top bar", async ({ page }) => {
@@ -2575,7 +2585,7 @@ test("comparison back returns near the comparison section", async ({ page }) => 
   await expect(page.locator("#detailTitle")).toHaveText("包豪斯风格");
   await page.locator("#backBtn").click();
   await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
-  await expect.poll(() => page.evaluate(() => Math.abs(document.querySelector("#detail-compare").getBoundingClientRect().top))).toBeLessThan(220);
+  await expectComparisonBelowNavigation(page);
 });
 
 test("legacy Reflection data remains local and is not rendered", async ({ page }) => {
@@ -2732,7 +2742,7 @@ test("related style returns to the source comparison region", async ({ page }) =
   await page.locator(".comparison-open").first().click();
   await page.locator("#backBtn").click();
   await expect(page.locator("#detailTitle")).toHaveText("瑞士国际主义风格");
-  await expect.poll(() => page.locator("#detail-compare").evaluate((node) => Math.abs(node.getBoundingClientRect().top))).toBeLessThan(220);
+  await expectComparisonBelowNavigation(page);
 });
 
 test("detail content remains visible at 200 percent zoom without retired Reflection controls", async ({ page }) => {

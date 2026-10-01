@@ -17,6 +17,10 @@ for file in index.html styles.css game.js data-core.js data-styles.js data-refin
   cp "$WEB_ROOT/$file" "$TARGET/$file"
 done
 
+mkdir -p "$TARGET/download"
+cp "$WEB_ROOT/download/app-banner.js" "$TARGET/download/app-banner.js"
+cp "$WEB_ROOT/download/app-banner.css" "$TARGET/download/app-banner.css"
+
 find "$WEB_ROOT/assets/styles" -maxdepth 1 -type f -name "*.webp" -exec cp {} "$TARGET/assets/styles/" \;
 cp "$WEB_ROOT/assets/styles/style-atlas-h5-qr.png" "$TARGET/assets/styles/style-atlas-h5-qr.png"
 cp "$WEB_ROOT/assets/brand/app-icon.png" "$TARGET/assets/brand/app-icon.png"

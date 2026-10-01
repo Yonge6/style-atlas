@@ -27,6 +27,8 @@ await mkdir(output, { recursive: true });
 
 await Promise.all(webFiles.map((file) => cp(path.join(root, file), path.join(output, file))));
 await Promise.all([
+  cp(path.join(root, "download"), path.join(output, "download"), { recursive: true }),
+  cp(path.join(root, "download.html"), path.join(output, "download.html")),
   cp(path.join(root, "assets", "brand"), path.join(output, "assets", "brand"), { recursive: true }),
   cp(path.join(root, "assets", "contact"), path.join(output, "assets", "contact"), { recursive: true }),
   cp(path.join(root, "assets", "examples"), path.join(output, "assets", "examples"), { recursive: true }),

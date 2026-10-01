@@ -1,0 +1,52 @@
+/* Shared by the H5 atlas and editorial pages. Modal layers stay above it. */
+.sa-download-banner {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 11;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: #171510;
+  color: #f8edcf;
+  border-bottom: 1px solid #53462d;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.sa-download-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: min(100%, 1120px);
+  min-height: 80px;
+  margin-inline: auto;
+  padding: 10px max(14px, env(safe-area-inset-right, 0px)) 10px max(4px, env(safe-area-inset-left, 0px));
+}
+.sa-banner-close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: #c5b792;
+  background: transparent;
+  cursor: pointer;
+}
+.sa-download-banner img { flex: 0 0 48px; width: 48px; height: 48px; border-radius: 11px; }
+.sa-banner-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
+.sa-banner-copy strong { font-size: 14px; line-height: 1.4; font-weight: 600; overflow-wrap: anywhere; }
+.sa-banner-copy span { color: #c5b792; font-size: 11px; line-height: 1.5; }
+.sa-banner-action { flex: none; display: grid; place-items: center; min-height: 44px; padding: 0 14px; border: 1px solid #d9aa45; border-radius: 999px; color: #16120c; background: #f3d486; text-decoration: none; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.sa-download-banner :focus-visible { outline: 2px solid #ffe59a; outline-offset: 3px; }
+body.sa-has-banner:not(.sa-banner-app) { padding-top: var(--sa-banner-height, 80px); }
+body.sa-has-banner:not(.sa-banner-app) .side-card { top: calc(var(--sa-banner-height, 80px) + 24px); }
+body.sa-has-banner:not(.sa-banner-app) .article-body section { scroll-margin-top: calc(var(--sa-banner-height, 80px) + 24px); }
+body.sa-has-banner.sa-banner-app { --topbar-height: calc(var(--topbar-content-height) + var(--sa-banner-height, 80px)); }
+body.sa-has-banner.sa-banner-app .topbar { top: var(--sa-banner-height, 80px); min-height: var(--topbar-content-height); padding-top: 0; }
+@media (max-width: 359px) {
+  .sa-download-banner-inner { gap: 7px; padding-right: 10px; }
+  .sa-download-banner img { flex-basis: 40px; width: 40px; height: 40px; }
+  .sa-banner-copy strong { font-size: 12px; }
+  .sa-banner-copy span { font-size: 10px; }
+  .sa-banner-action { padding-inline: 10px; font-size: 11px; }
+}
