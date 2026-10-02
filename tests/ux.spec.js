@@ -433,10 +433,12 @@ test("Chinese brand is exact across product surfaces", async ({ page }) => {
   await expect(page.locator(".drawer-work-card .drawer-row-copy strong")).toHaveText([
     "WonderElian",
     "一休冥想",
-    "不二 认识自己",
+    "不二见己",
     "三慢问道",
     "虾子曰"
   ]);
+  await expect(page.locator(".drawer-work-card").nth(2)).toHaveAttribute("href", "https://buer.wonderelian.com/");
+  await expect(page.locator("#drawerWorkHumanNote")).toHaveText("和 AI 成长伙伴豆豆龙一起，认识自己、明确行动，在记录与复盘中慢慢成长。");
   await page.locator("[data-view='about']").click();
   await expect(page.locator("#aboutContent")).toContainText("关于虾子曰艺术风格图鉴");
   await page.goto("/#screenshots");
@@ -459,10 +461,12 @@ test("English brand is exact across product surfaces", async ({ page }) => {
   await expect(page.locator(".drawer-work-card .drawer-row-copy strong")).toHaveText([
     "WonderElian",
     "Yixiu Meditation",
-    "Bu'er · Know Yourself",
+    "Buer Within",
     "Wendao",
     "Xiazi Says"
   ]);
+  await expect(page.locator(".drawer-work-card").nth(2)).toHaveAttribute("href", "https://buer.wonderelian.com/");
+  await expect(page.locator("#drawerWorkHumanNote")).toHaveText("Understand yourself and choose your next step with Doudoulong, your AI growth companion. Grow through journaling and reflection.");
   await page.locator("[data-view='about']").click();
   await expect(page.locator("#aboutContent")).toContainText("About Style Atlas");
 });
