@@ -3254,8 +3254,13 @@
   }
 
   async function drawShareQRCode(ctx, layout) {
-    const qr = await loadImage("./assets/styles/style-atlas-h5-qr.png");
     const { size, padding, width, height, x, y } = layout;
+    let qr = null;
+    try {
+      qr = await loadImage("./assets/styles/style-atlas-h5-qr.png?v=20261003");
+    } catch (error) {
+      console.warn("Style Atlas share QR unavailable; using text fallback", error);
+    }
     ctx.save();
     ctx.shadowColor = "rgba(0, 0, 0, 0.34)";
     ctx.shadowBlur = 18;
@@ -3264,7 +3269,19 @@
     ctx.fillStyle = "#fff8e7";
     ctx.fill();
     ctx.shadowColor = "transparent";
-    ctx.drawImage(qr, x + padding, y + padding, size, size);
+    if (qr) {
+      ctx.drawImage(qr, x + padding, y + padding, size, size);
+    } else {
+      ctx.fillStyle = "#15110a";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = `800 ${Math.max(15, Math.round(size * 0.12))}px sans-serif`;
+      ctx.fillText("STYLE ATLAS", x + width / 2, y + height / 2 - 13);
+      ctx.font = `600 ${Math.max(10, Math.round(size * 0.073))}px sans-serif`;
+      ctx.fillText("style-atlas.wonderelian.com", x + width / 2, y + height / 2 + 15);
+      ctx.textAlign = "start";
+      ctx.textBaseline = "alphabetic";
+    }
     ctx.restore();
   }
 

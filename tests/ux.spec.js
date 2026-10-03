@@ -908,6 +908,21 @@ test("WeChat H5 share opens a QR share image for long press instead of failing",
   await expect(page.locator("#shareLightboxBtn")).toBeHidden();
 });
 
+test("share card still opens when the QR asset is unavailable", async ({ page }) => {
+  await page.route("**/style-atlas-h5-qr.png?**", (route) => route.fulfill({ status: 404, body: "missing" }));
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "userAgent", {
+      configurable: true,
+      value: "Mozilla/5.0 MicroMessenger/8.0.50"
+    });
+  });
+  await page.goto("/#manga");
+  await page.locator(".detail-hero [data-action='share']").click();
+  await expect(page.locator("#lightbox")).toBeVisible();
+  await expect(page.locator("#lightboxImage")).toHaveAttribute("src", /^data:image\/png;base64,/);
+  await expect(page.locator("#toast")).not.toHaveText("图片读取失败，请重新打开后再试。");
+});
+
 test("detail overview uses a bottom-right icon copy control and hides free preview label", async ({ page }) => {
   await page.goto("/#baroque");
   const copy = page.locator(".detail-hero .overview-copy-btn");
